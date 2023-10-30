@@ -1,0 +1,12 @@
+{
+	"name": "adfiradbplt002",
+	"properties": {
+		"type": "SelfHosted",
+		"typeProperties": {
+			"linkedInfo": {
+				"resourceId": "/subscriptions/00ab5361-0cd5-44b3-b4df-8f24e00fe1df/resourcegroups/AZR-WEK-rg-adf-adb-001/providers/Microsoft.DataFactory/factories/adfadbplt001/integrationruntimes/adfiradbplt002",
+				"authorizationType": "Rbac"
+			}
+		}
+	}
+}
