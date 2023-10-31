@@ -1,0 +1,23 @@
+{
+	"name": "adfadbplt001lsawswdvsgpw0006",
+	"properties": {
+		"description": "Linked Service to MDS Production",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Data Source=awswdvsgpw0006.jx2.com;Initial Catalog=mds;User ID=MDS_PROD",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "placeholder"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
