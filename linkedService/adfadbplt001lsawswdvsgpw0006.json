@@ -12,7 +12,7 @@
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "placeholder"
+				"secretName": "adfadbplt001lsawswdvsgpw0006"
 			}
 		},
 		"connectVia": {
