@@ -5,6 +5,10 @@
 			"snowflake_load_app_name": {
 				"type": "string",
 				"value": "DEV_DNA_LOAD"
+			},
+			"snowflake_load_app_wh": {
+				"type": "string",
+				"value": "DEV_DNA_LOAD_INGEST1_WH"
 			}
 		}
 	},
