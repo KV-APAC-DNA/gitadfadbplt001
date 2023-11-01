@@ -11,6 +11,7 @@
 		"connectVia": {
 			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
-		}
+		},
+		"description": "Linked Service to CData Sync Production"
 	}
 }
