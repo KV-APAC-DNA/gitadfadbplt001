@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lsas3adpprd001",
 	"properties": {
-		"description": "Linked Services to JnJ ASPAC DNA PLATFORM S3 Production",
+		"description": "Linked Services to JnJ ASPAC DNA PLATFORM S3 Production environment",
 		"annotations": [],
 		"type": "AmazonS3",
 		"typeProperties": {
@@ -12,7 +12,7 @@
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "placeholder"
+				"secretName": "adfadbplt001lsas3adpprd001-AccessID"
 			},
 			"secretAccessKey": {
 				"type": "AzureKeyVaultSecret",
@@ -20,12 +20,12 @@
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "placeholder"
+				"secretName": "adfadbplt001lsas3adpprd001-SecretAccessKey"
 			},
 			"authenticationType": "AccessKey"
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt001",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
