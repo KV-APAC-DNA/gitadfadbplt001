@@ -1,0 +1,34 @@
+{
+	"name": "adfadbplt001lssnfkpltdnaload",
+	"properties": {
+		"parameters": {
+			"snowflake_load_app_name": {
+				"type": "String",
+				"defaultValue": "DEV_DNA_LOAD"
+			},
+			"snowflake_load_app_wh": {
+				"type": "String",
+				"defaultValue": "DEV_DNA_LOAD_INGESTION_SR"
+			}
+		},
+		"annotations": [],
+		"type": "Snowflake",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"connectionString": "jdbc:snowflake://yw48356.southeast-asia.azure.snowflakecomputing.com/?user=@{linkedService().snowflake_load_app_name}&db=@{linkedService().snowflake_load_app_name}&warehouse=@{linkedService().snowflake_load_app_wh}",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "placeholder",
+				"secretVersion": "placeholder"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
