@@ -1,0 +1,26 @@
+{
+	"name": "adfadbplt001lsarsadpprd001",
+	"properties": {
+		"description": "Linked Service to AWS Redshift in APAC DNA PLATFORM Production",
+		"annotations": [],
+		"type": "AmazonRedshift",
+		"typeProperties": {
+			"server": "conap-dna-prod.c1opccqxcdw2.ap-southeast-1.redshift.amazonaws.com",
+			"database": "conapdna",
+			"port": 5439,
+			"username": "sa-jnj-kdp-local",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "placeholder"
+			}
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
