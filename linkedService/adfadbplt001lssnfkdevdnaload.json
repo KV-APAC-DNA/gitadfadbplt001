@@ -1,0 +1,24 @@
+{
+	"name": "adfadbplt001lssnfkdevdnaload",
+	"properties": {
+		"description": "Linked Service to Snowflake DEV_DNA_LOAD database",
+		"annotations": [],
+		"type": "Snowflake",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"connectionString": "jdbc:snowflake://yw48356.southeast-asia.azure.snowflakecomputing.com/?user=SA-DNA-LOAD-DEV&db=DEV_DNA_LOAD&warehouse=DEV_DNA_LOAD_INGEST1_WH&role=DEV_DNA_LOAD_INGESTION_SR",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "placeholder"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
