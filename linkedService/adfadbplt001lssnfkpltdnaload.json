@@ -8,7 +8,7 @@
 			},
 			"snowflake_load_app_wh": {
 				"type": "String",
-				"defaultValue": "DEV_DNA_LOAD_INGESTION_SR"
+				"defaultValue": "DEV_DNA_LOAD_INGEST1_WH"
 			}
 		},
 		"annotations": [],
