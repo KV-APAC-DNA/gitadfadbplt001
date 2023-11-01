@@ -6,7 +6,17 @@
 		"typeProperties": {
 			"url": "https://au.dbt.com/",
 			"enableServerCertificateValidation": true,
-			"authenticationType": "Anonymous"
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"Authorization": {
+					"type": "AzureKeyVaultSecret",
+					"store": {
+						"referenceName": "adfadbplt001lsakvadbplt001",
+						"type": "LinkedServiceReference"
+					},
+					"secretName": "adfadbplt001lsdbtclouddnacore"
+				}
+			}
 		},
 		"connectVia": {
 			"referenceName": "adfiradbplt001",
