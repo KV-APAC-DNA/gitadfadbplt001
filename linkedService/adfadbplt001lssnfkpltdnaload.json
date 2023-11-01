@@ -1,16 +1,6 @@
 {
 	"name": "adfadbplt001lssnfkpltdnaload",
 	"properties": {
-		"parameters": {
-			"snowflake_load_app_name": {
-				"type": "String",
-				"defaultValue": "DEV_DNA_LOAD"
-			},
-			"snowflake_load_app_wh": {
-				"type": "String",
-				"defaultValue": "DEV_DNA_LOAD_INGEST1_WH"
-			}
-		},
 		"annotations": [],
 		"type": "Snowflake",
 		"typeProperties": {
