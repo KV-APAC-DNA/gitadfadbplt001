@@ -19,7 +19,7 @@
 			}
 		},
 		"connectVia": {
-			"referenceName": "AutoResolveIntegrationRuntime",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
