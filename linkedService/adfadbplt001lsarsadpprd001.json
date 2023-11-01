@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lsarsadpprd001",
 	"properties": {
-		"description": "Linked Service to AWS Redshift in APAC DNA PLATFORM Production",
+		"description": "Linked Service to AWS Redshift in APAC DNA PLATFORM Production environment",
 		"annotations": [],
 		"type": "AmazonRedshift",
 		"typeProperties": {
@@ -15,7 +15,7 @@
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "placeholder"
+				"secretName": "adfadbplt001lsarsadpprd001"
 			}
 		},
 		"connectVia": {
