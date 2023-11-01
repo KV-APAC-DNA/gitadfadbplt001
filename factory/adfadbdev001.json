@@ -1,0 +1,12 @@
+{
+	"name": "adfadbdev001",
+	"properties": {
+		"globalParameters": {
+			"snowflake_load_app_name": {
+				"type": "string",
+				"value": "DEV_DNA_LOAD"
+			}
+		}
+	},
+	"location": "southeastasia"
+}
