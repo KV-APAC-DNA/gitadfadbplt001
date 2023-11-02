@@ -1,0 +1,10 @@
+{
+	"name": "adfadbplt001lsakvadbplt001",
+	"properties": {
+		"annotations": [],
+		"type": "AzureKeyVault",
+		"typeProperties": {
+			"baseUrl": "https://akvadbplt001.vault.azure.net/"
+		}
+	}
+}
