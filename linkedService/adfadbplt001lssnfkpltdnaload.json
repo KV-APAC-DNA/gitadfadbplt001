@@ -13,21 +13,31 @@
 			"snowflake_load_app_role": {
 				"type": "string",
 				"defaultValue": "DEV_DNA_LOAD_INGESTION_SR"
+			},
+			"snowflake_load_app_kv": {
+				"type": "String",
+				"defaultValue": "adfadbplt001lssnfkdevdnaload"
+			},
+			"snowflake_load_app_svc_name": {
+				"type": "String",
+				"defaultValue": "SA-DNA-LOAD-DEV"
 			}
 		},
 		"annotations": [],
 		"type": "Snowflake",
 		"typeProperties": {
 			"authenticationType": "Basic",
-			"connectionString": "jdbc:snowflake://yw48356.southeast-asia.azure.snowflakecomputing.com/?user=@{linkedService().snowflake_load_app_name}&db=@{linkedService().snowflake_load_app_name}&warehouse=@{linkedService().snowflake_load_app_wh}&role=@{linkedService().snowflake_load_app_role}",
+			"connectionString": "jdbc:snowflake://yw48356.southeast-asia.azure.snowflakecomputing.com/?user=@{linkedService().snowflake_load_app_svc_name}&db=@{linkedService().snowflake_load_app_name}&warehouse=@{linkedService().snowflake_load_app_wh}&role=@{linkedService().snowflake_load_app_role}",
 			"password": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "placeholder",
-				"secretVersion": "placeholder"
+				"secretName": {
+					"value": "@linkedService().snowflake_load_app_kv",
+					"type": "Expression"
+				}
 			}
 		},
 		"connectVia": {
