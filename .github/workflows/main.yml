@@ -66,5 +66,3 @@ jobs:
         dataFactoryName: adfadbdev001
         armTemplateFile: ARMTemplateForFactory.json
         armTemplateParametersFile: ARMTemplateParametersForFactory.json
-        #additionalParameters:
-	#skipAzModuleInstallation:
