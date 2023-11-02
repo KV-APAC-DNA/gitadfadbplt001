@@ -39,19 +39,19 @@ jobs:
       with:
         name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
         path: ${{github.workspace}}/build/ExportedArmTemplate
-		
+
   release:
-	needs: build
-	runs-on: ubuntu-latest
-	steps:
-	
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+
  # Download the previously uploaded artifact to leverage it later in the release job     
-	- name: Download a Build Artifact
+    - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.2
       with:
         name: ExportedArmTemplate # (5) Artifact name 
 
-	- name: Login via Az module
+    - name: Login via Az module
       uses: azure/login@v1
       with:
         client-id: ${{ secrets.AZURE_CLIENT_ID }}
@@ -59,13 +59,12 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
 
-	- name: data-factory-deploy
+    - name: data-factory-deploy
       uses: Azure/data-factory-deploy-action@v1.2.0
       with:
-        resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }} # (6) your target ADF resource group name
-        dataFactoryName: adfadbdev001 # (7) your target ADF name
-        armTemplateFile: ARMTemplateForFactory.json # (8) ARM template file name ARMTemplateForFactory.json
-        armTemplateParametersFile: ARMTemplateParametersForFactory.json # (9) ARM template parameters file name ARMTemplateParametersForFactory.json
-        #additionalParameters: # (10) Parameters which will be replaced in the ARM template. Expected format 'key1=value key2=value keyN=value'. At the minimum here you should provide the target ADF name parameter. Check the ARMTemplateParametersForFactory.json file for all the parameters that are expected in your scenario
-	 
-	  # skipAzModuleInstallation:  # Parameters which skip the Az module installation. Optional, default is false.​
+        resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
+        dataFactoryName: adfadbdev001
+        armTemplateFile: ARMTemplateForFactory.json
+        armTemplateParametersFile: ARMTemplateParametersForFactory.json
+        #additionalParameters:
+	#skipAzModuleInstallation:

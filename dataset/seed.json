@@ -1,0 +1,29 @@
+{
+	"name": "seed",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "seed.txt",
+				"folderPath": "seed",
+				"fileSystem": "dataops"
+			},
+			"columnDelimiter": "",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "seed",
+				"type": "String"
+			}
+		]
+	}
+}
