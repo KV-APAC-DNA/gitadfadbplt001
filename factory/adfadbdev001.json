@@ -16,7 +16,9 @@
 			}
 		},
 		"globalConfigurations": {
-			"PipelineBillingEnabled": "true"
+			"PipelineBillingEnabled": "true",
+			"factoryStagingLSReferenceName": "adfadbplt001lsdlsadbplt001",
+			"factoryStagingLSType": "LinkedServiceReference"
 		}
 	},
 	"location": "southeastasia"
