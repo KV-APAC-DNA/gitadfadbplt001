@@ -59,10 +59,18 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
 
-    - name: data-factory-deploy
+    - name: data-factory-deploy-dev-live
       uses: Azure/data-factory-deploy-action@v1.2.0
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
         dataFactoryName: adfadbdev001
+        armTemplateFile: ARMTemplateForFactory.json
+        armTemplateParametersFile: ARMTemplateParametersForFactory.json
+
+    - name: data-factory-deploy-prod-live
+      uses: Azure/data-factory-deploy-action@v1.2.0
+      with:
+        resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
+        dataFactoryName: adfadbprd001
         armTemplateFile: ARMTemplateForFactory.json
         armTemplateParametersFile: ARMTemplateParametersForFactory.json
