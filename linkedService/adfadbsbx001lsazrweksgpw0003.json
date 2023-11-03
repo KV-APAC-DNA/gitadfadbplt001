@@ -21,6 +21,7 @@
 		"connectVia": {
 			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
-		}
+		},
+		"description": "Linked Service to Kenvue APAC DNA BASE CData Sync Rest API"
 	}
 }
