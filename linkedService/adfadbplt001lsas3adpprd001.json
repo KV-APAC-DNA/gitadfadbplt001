@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lsas3adpprd001",
 	"properties": {
-		"description": "Linked Services to JnJ ASPAC DNA PLATFORM S3 Production environment",
+		"description": "Linked Service to JnJ APAC DNA PLATFORM AWS S3 in Production environment",
 		"annotations": [],
 		"type": "AmazonS3",
 		"typeProperties": {
