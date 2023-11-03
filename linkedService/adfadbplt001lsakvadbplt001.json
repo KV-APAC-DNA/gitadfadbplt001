@@ -5,6 +5,7 @@
 		"type": "AzureKeyVault",
 		"typeProperties": {
 			"baseUrl": "https://akvadbplt001.vault.azure.net/"
-		}
+		},
+		"description": "Linked Service to Kenvue APAC DNA BASE Key Vault"
 	}
 }
