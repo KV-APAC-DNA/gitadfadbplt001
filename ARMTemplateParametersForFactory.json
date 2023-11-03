@@ -5,12 +5,6 @@
         "factoryName": {
             "value": "adfadbdev001"
         },
-        "adfadbplt001lsawswdvsgpw0006_connectionString": {
-            "value": "Integrated Security=False;Data Source=awswdvsgpw0006.jx2.com;Initial Catalog=mds;User ID=MDS_PROD"
-        },
-        "adfadbplt001lssnfkpltdnaload_connectionString": {
-            "value": "jdbc:snowflake://yw48356.southeast-asia.azure.snowflakecomputing.com/?user=@{linkedService().snowflake_load_app_svc_name}&db=@{linkedService().snowflake_load_app_name}&warehouse=@{linkedService().snowflake_load_app_wh}&role=@{linkedService().snowflake_load_app_role}"
-        },
         "adfadbplt001lsakvadbplt001_properties_typeProperties_baseUrl": {
             "value": "https://akvadbplt001.vault.azure.net/"
         },
@@ -33,17 +27,20 @@
                 "secretName": "adfadbplt001lsas3adpprd001-AccessID"
             }
         },
+        "adfadbplt001lsawswdvsgpw0006_properties_typeProperties_connectionString_secretName": {
+            "value": "adfadbplt001lsawswdvsgpw0006"
+        },
         "adfadbplt001lsdbtclouddnacore_properties_typeProperties_url": {
             "value": "https://au.dbt.com/"
         },
         "adfadbplt001lsdlsadbplt001_properties_typeProperties_url": {
             "value": "https://dlsadbplt001.dfs.core.windows.net/"
         },
-        "adfadbplt001lsprdbitabap_properties_typeProperties_url": {
-            "value": "https://prdbitabap.kenvue.com/api/3.17/"
+        "adfadbplt001lssnfkpltdnacore_properties_typeProperties_connectionString_secretName": {
+            "value": "adfadbplt001lssnfkdevdnacore"
         },
-        "adfadbsbx001lsazrweksgpw0002_properties_typeProperties_url": {
-            "value": "https://azrweksgpw0003.kenvue.com/api.rsc/"
+        "adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName": {
+            "value": "adfadbplt001lssnfkdevdnaload"
         },
         "adfiradbplt002_properties_typeProperties_linkedInfo_resourceId": {
             "value": "/subscriptions/00ab5361-0cd5-44b3-b4df-8f24e00fe1df/resourcegroups/AZR-WEK-rg-adf-adb-001/providers/Microsoft.DataFactory/factories/adfadbplt001/integrationruntimes/adfiradbplt002"
@@ -59,6 +56,9 @@
         },
         "adfadbplt001mpepdlsadbplt002_properties_groupId": {
             "value": "dfs"
+        },
+        "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url": {
+            "value": "https://azrweksgpw0003.kenvue.com/api.rsc/"
         }
     }
 }
