@@ -66,6 +66,8 @@ jobs:
         dataFactoryName: adfadbdev001
         armTemplateFile: ARMTemplateForFactory.json
         armTemplateParametersFile: ARMTemplateParametersForFactory.json
+        additionalParameters:
+          factoryName=${{ vars.ADF_DEV_FACTORYNAME }}
 
     - name: data-factory-deploy-prod-live
       uses: Azure/data-factory-deploy-action@v1.2.0
@@ -74,3 +76,8 @@ jobs:
         dataFactoryName: adfadbprd001
         armTemplateFile: ARMTemplateForFactory.json
         armTemplateParametersFile: ARMTemplateParametersForFactory.json
+        additionalParameters:
+          factoryName=${{ vars.ADF_PROD_FACTORYNAME }}
+          adfadbplt001lssnfkpltdnacore_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE }}
+          adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD }}
+          adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003 }}
