@@ -5,8 +5,7 @@
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
-			"connectionString": "Integrated Security=False;Data Source=awswdvsgpw0006.jx2.com;Initial Catalog=mds;User ID=MDS_PROD",
-			"password": {
+			"connectionString": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
 					"referenceName": "adfadbplt001lsakvadbplt001",
