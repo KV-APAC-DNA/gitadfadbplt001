@@ -22,6 +22,6 @@
 			"referenceName": "adfiradbplt001",
 			"type": "IntegrationRuntimeReference"
 		},
-		"description": "Linked Service to dbt cloud rest api"
+		"description": "Linked Service to Kenvue APAC DNA BASE dbt cloud REST API"
 	}
 }
