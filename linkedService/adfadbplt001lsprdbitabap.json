@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lsprdbitabap",
 	"properties": {
-		"description": "Linked Service to AP Tableau Production",
+		"description": "Linked Service to Kenvue APAC DNA BASE Tableau Server Rest API",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
