@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lsarsadpprd001",
 	"properties": {
-		"description": "Linked Service to AWS Redshift in APAC DNA PLATFORM Production environment",
+		"description": "Linked Service to JnJ APAC DNA PLATFORM AWS Redshift in Production environment",
 		"annotations": [],
 		"type": "AmazonRedshift",
 		"typeProperties": {
