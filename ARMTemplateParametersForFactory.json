@@ -33,6 +33,18 @@
         "adfadbplt001lsdbtclouddnacore_properties_typeProperties_url": {
             "value": "https://au.dbt.com/"
         },
+        "adfadbplt001lsdbtclouddnacore_properties_typeProperties_authHeaders": {
+            "value": {
+                "Authorization": {
+                    "type": "AzureKeyVaultSecret",
+                    "store": {
+                        "referenceName": "adfadbplt001lsakvadbplt001",
+                        "type": "LinkedServiceReference"
+                    },
+                    "secretName": "adfadbplt001lsdbtclouddnacore"
+                }
+            }
+        },
         "adfadbplt001lsdlsadbplt001_properties_typeProperties_url": {
             "value": "https://dlsadbplt001.dfs.core.windows.net/"
         },
@@ -41,6 +53,21 @@
         },
         "adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName": {
             "value": "adfadbplt001lssnfkdevdnaload"
+        },
+        "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url": {
+            "value": "https://azrweksgpw0003.kenvue.com/api.rsc/"
+        },
+        "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_authHeaders": {
+            "value": {
+                "x-cdata-authtoken": {
+                    "type": "AzureKeyVaultSecret",
+                    "store": {
+                        "referenceName": "adfadbplt001lsakvadbplt001",
+                        "type": "LinkedServiceReference"
+                    },
+                    "secretName": "adfadbsbx001lsazrweksgpw0003"
+                }
+            }
         },
         "adfiradbplt002_properties_typeProperties_linkedInfo_resourceId": {
             "value": "/subscriptions/00ab5361-0cd5-44b3-b4df-8f24e00fe1df/resourcegroups/AZR-WEK-rg-adf-adb-001/providers/Microsoft.DataFactory/factories/adfadbplt001/integrationruntimes/adfiradbplt002"
@@ -56,9 +83,6 @@
         },
         "adfadbplt001mpepdlsadbplt002_properties_groupId": {
             "value": "dfs"
-        },
-        "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url": {
-            "value": "https://azrweksgpw0003.kenvue.com/api.rsc/"
         }
     }
 }
