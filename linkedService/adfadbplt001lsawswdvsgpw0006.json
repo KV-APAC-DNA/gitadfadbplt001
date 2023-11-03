@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lsawswdvsgpw0006",
 	"properties": {
-		"description": "Linked Service to MDS Production",
+		"description": "Linked Service to Kenvue APAC MDS Production",
 		"annotations": [],
 		"type": "SqlServer",
 		"typeProperties": {
