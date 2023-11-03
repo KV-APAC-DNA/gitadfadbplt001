@@ -131,6 +131,18 @@
                     }
                 }
             }
+        },
+        "RestService": {
+            "properties": {
+                "typeProperties": {
+                    "url": "=",
+                    "authHeaders": {
+                        "x-cdata-authtoken": {
+                            "secretName": "="
+                        }
+                    }
+                }
+            }
         }
     },
     "Microsoft.DataFactory/factories/datasets": {
