@@ -10,6 +10,6 @@
 			"referenceName": "adfiradbplt001",
 			"type": "IntegrationRuntimeReference"
 		},
-		"description": "Linked Service to APAC DNA BASE ADLS Container for Landing zone"
+		"description": "Linked Service to Kenvue APAC DNA BASE ADLS Container for Landing zone"
 	}
 }
