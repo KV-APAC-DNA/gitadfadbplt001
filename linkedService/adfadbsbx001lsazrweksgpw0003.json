@@ -1,7 +1,6 @@
 {
-	"name": "adfadbsbx001lsazrweksgpw0002",
+	"name": "adfadbsbx001lsazrweksgpw0003",
 	"properties": {
-		"description": "Linked service to CData Sync Rest API in Production",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
@@ -15,13 +14,14 @@
 						"referenceName": "adfadbplt001lsakvadbplt001",
 						"type": "LinkedServiceReference"
 					},
-					"secretName": "adfadbsbx001lsazrweksgpw0002"
+					"secretName": "adfadbsbx001lsazrweksgpw0003"
 				}
 			}
 		},
 		"connectVia": {
 			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
-		}
+		},
+		"description": "Linked Service to Kenvue APAC DNA BASE CData Sync Rest API"
 	}
 }
