@@ -41,7 +41,7 @@
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "etl_run_control"
+				"defaultValue": "etl_parameter"
 			},
 			"Target_Schema": {
 				"type": "string",
