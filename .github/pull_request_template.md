@@ -8,7 +8,7 @@ Provide a short summary in the Title above. Examples of good PR titles:
 ## Description & motivation
 <!---
 Describe your changes, and why you're making them. Is this linked to an open
-issue, a Jira card or Github Issue, or another pull request? Link it here.
+ Github Issue, or another pull request? Link it here.
 -->
 
 ## To-do before merge
