@@ -1,6 +1,7 @@
 {
 	"name": "adfadbplt001lssnfkpltdnaload",
 	"properties": {
+		"description": "Linked Service to Kenvue APAC DNA BASE Snowflake L0",
 		"annotations": [],
 		"type": "Snowflake",
 		"typeProperties": {
@@ -15,9 +16,8 @@
 			}
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt001",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
-		},
-		"description": "Linked Service to Kenvue APAC DNA BASE Snowflake L0"
+		}
 	}
 }
