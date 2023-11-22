@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AmazonRedshiftSource",
-						"query": "@concat('unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/SBX_DNA_LAB1/AMAHIN01/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''|'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
+						"query": "@concat('unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/SBX_DNA_LAB1/AMAHIN01/DEV/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''|'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
 						"redshiftUnloadSettings": {
 							"s3LinkedServiceName": {
 								"referenceName": "adfadbplt001lsas3adpprd001",
@@ -41,7 +41,7 @@
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "etl_parameter"
+				"defaultValue": "etl_run_control"
 			},
 			"Target_Schema": {
 				"type": "string",
@@ -49,7 +49,7 @@
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "etl_parameter"
+				"defaultValue": "etl_run_control"
 			}
 		},
 		"folder": {
