@@ -49,7 +49,7 @@
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "etl_run_control"
+				"defaultValue": "etl_parameter"
 			}
 		},
 		"folder": {
