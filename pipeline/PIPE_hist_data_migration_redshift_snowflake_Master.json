@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "create schema SNAPSHOT_SDL_RAW;"
+							"text": "create Schema SNAPSHOT_SDL_RAW;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
