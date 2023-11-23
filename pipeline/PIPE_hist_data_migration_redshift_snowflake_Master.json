@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "create Schema SNAPSHOT_SDL_RAW;"
+							"text": "insert into DEV_DNA_LOAD.CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF values (1, 'rg_log','etl_run_control','APAHIL01_WORKSPACE','etl_run_control','','Y',2,'','','rg_log.etl_run_control','FULL REFRESH');"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
