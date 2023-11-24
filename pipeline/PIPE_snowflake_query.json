@@ -15,14 +15,14 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "create table SNAPASPITG_INTEGRATION.TBL_PROCESS_1 \n(\nid int,\nName varchar(10)\n)"
+							"text": "drop table CORE_RAW.TBL_PROCESS;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
