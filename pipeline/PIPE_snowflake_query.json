@@ -1,0 +1,39 @@
+{
+	"name": "PIPE_snowflake_query",
+	"properties": {
+		"activities": [
+			{
+				"name": "Script1",
+				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "create table CORE_RAW.TBL_PROCESS \r\n(\r\nid int,\r\nName varchar(10)\r\n)"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"folder": {
+			"name": "HIstorical_Data_migration_redshift_snowflake"
+		},
+		"annotations": []
+	}
+}
