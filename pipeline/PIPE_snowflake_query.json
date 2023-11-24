@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "USE DATABASE DEV_DNA_LOAD;\nUSE SCHEMA CORE_RAW;\ncreate or replace table CORE_RAW.TBL_PROCESS \n(\nid int,\nName varchar(10)\n)"
+							"text": "create table CORE_RAW.TBL_PROCESS \n(\nid int,\nName varchar(10)\n)"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
