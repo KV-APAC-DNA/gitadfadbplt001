@@ -83,6 +83,27 @@
 			"Target_Table": {
 				"type": "string",
 				"defaultValue": "etl_run_control"
+			},
+			"Filter": {
+				"type": "string"
+			},
+			"IsActive": {
+				"type": "string"
+			},
+			"Group_id": {
+				"type": "string"
+			},
+			"Country_code": {
+				"type": "string"
+			},
+			"isCompleted": {
+				"type": "string"
+			},
+			"Adls_path": {
+				"type": "string"
+			},
+			"type_of_load": {
+				"type": "string"
 			}
 		},
 		"folder": {
