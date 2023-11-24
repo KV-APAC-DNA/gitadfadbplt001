@@ -1,6 +1,8 @@
 {
 	"name": "adfadbsbx001lsazrweksgpw0003",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
+		"description": "Linked Service to Kenvue APAC DNA BASE CData Sync Rest API",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
@@ -21,7 +23,6 @@
 		"connectVia": {
 			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
-		},
-		"description": "Linked Service to Kenvue APAC DNA BASE CData Sync Rest API"
+		}
 	}
 }

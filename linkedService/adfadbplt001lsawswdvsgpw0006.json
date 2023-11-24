@@ -1,5 +1,6 @@
 {
 	"name": "adfadbplt001lsawswdvsgpw0006",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "Linked Service to Kenvue APAC MDS Production",
 		"annotations": [],
