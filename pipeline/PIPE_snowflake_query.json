@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "drop table CORE_RAW.TBL_PROCESS;"
+							"text": "drop table SNAPASPSDL_RAW.TBL_PROCESS_1;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
