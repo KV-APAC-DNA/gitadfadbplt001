@@ -5,6 +5,8 @@
 			{
 				"name": "Script1",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -22,10 +24,78 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "show tables ;"
+							"text": "insert into CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF values (1, 'rg_log','etl_run_control','APAHIL01_WORKSPACE','etl_run_control','','Y',2,'','','rg_log.etl_run_control','FULL REFRESH')"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Fetch_Parameter",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "select * from CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF;"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Fetch_Parameter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"activities": [
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PIPE_hist_data_migration_redshift_snowflake_child",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Source_Schema": "@item().SOURCE_SCHEMA",
+									"Source_Table": "@item().SOURCE_TABLE",
+									"Target_Schema": "@item().TARGET_SCHEMA",
+									"Target_Table": "@item().TARGET_TABLE",
+									"Filter": "@item().FILTER",
+									"IsActive": "@item().ISACTIVE",
+									"Group_id": "@item().GROUP_ID",
+									"Country_code": "@item().COUNTRY_CODE",
+									"isCompleted": "@item().isCompleted",
+									"Adls_path": "@item().Adls_path"
+								}
+							}
+						}
+					]
 				}
 			}
 		],
