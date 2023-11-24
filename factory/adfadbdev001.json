@@ -8,5 +8,10 @@
 			"factoryStagingFolderPath": "dataops"
 		}
 	},
-	"location": "southeastasia"
+	"location": "southeastasia",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "836b0708-733a-4c8a-8fc6-f255a73c3780",
+		"tenantId": "7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56"
+	}
 }

@@ -1,5 +1,6 @@
 {
 	"name": "adfadbplt001lsas3adpprd001",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "Linked Service to JnJ APAC DNA PLATFORM AWS S3 in Production environment",
 		"annotations": [],
