@@ -91,7 +91,11 @@
 									"Group_id": "@item().GROUP_ID",
 									"Country_code": "@item().COUNTRY_CODE",
 									"isCompleted": "@item().isCompleted",
-									"Adls_path": "@item().Adls_path"
+									"Adls_path": "@item().Adls_path",
+									"type_of_load": {
+										"value": "@item().type_of_load",
+										"type": "Expression"
+									}
 								}
 							}
 						}
