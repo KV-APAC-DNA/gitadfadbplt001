@@ -31,7 +31,7 @@
 				}
 			},
 			{
-				"name": "Fetch_Parameter",
+				"name": "Fetch Metadata",
 				"type": "Script",
 				"dependsOn": [],
 				"policy": {
@@ -50,7 +50,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF;"
+							"text": "select * from CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE';"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -61,7 +61,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Fetch_Parameter",
+						"activity": "Fetch Metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -69,9 +69,14 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('Fetch Metadata').output.resultSets[0].rows",
+						"type": "Expression"
+					},
+					"isSequential": true,
 					"activities": [
 						{
-							"name": "Execute Pipeline1",
+							"name": "Execute Child Pipeline",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
 							"userProperties": [],
@@ -82,16 +87,46 @@
 								},
 								"waitOnCompletion": true,
 								"parameters": {
-									"Source_Schema": "@item().SOURCE_SCHEMA",
-									"Source_Table": "@item().SOURCE_TABLE",
-									"Target_Schema": "@item().TARGET_SCHEMA",
-									"Target_Table": "@item().TARGET_TABLE",
-									"Filter": "@item().FILTER",
-									"IsActive": "@item().ISACTIVE",
-									"Group_id": "@item().GROUP_ID",
-									"Country_code": "@item().COUNTRY_CODE",
-									"isCompleted": "@item().isCompleted",
-									"Adls_path": "@item().Adls_path",
+									"Source_Schema": {
+										"value": "@item().SOURCE_SCHEMA",
+										"type": "Expression"
+									},
+									"Source_Table": {
+										"value": "@item().SOURCE_TABLE",
+										"type": "Expression"
+									},
+									"Target_Schema": {
+										"value": "@item().TARGET_SCHEMA",
+										"type": "Expression"
+									},
+									"Target_Table": {
+										"value": "@item().TARGET_TABLE",
+										"type": "Expression"
+									},
+									"Filter": {
+										"value": "@item().FILTER",
+										"type": "Expression"
+									},
+									"IsActive": {
+										"value": "@item().ISACTIVE",
+										"type": "Expression"
+									},
+									"Group_id": {
+										"value": "@item().GROUP_ID",
+										"type": "Expression"
+									},
+									"Country_code": {
+										"value": "@item().COUNTRY_CODE",
+										"type": "Expression"
+									},
+									"isCompleted": {
+										"value": "@item().isCompleted",
+										"type": "Expression"
+									},
+									"Adls_path": {
+										"value": "@item().Adls_path",
+										"type": "Expression"
+									},
 									"type_of_load": {
 										"value": "@item().type_of_load",
 										"type": "Expression"

@@ -3,42 +3,167 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Read_Redshift To S3",
-				"type": "Lookup",
+				"name": "If the table is transactional or full refresh",
+				"type": "IfCondition",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "AmazonRedshiftSource",
-						"query": "@concat('unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/SBX_DNA_LAB1/AMAHIN01/DEV/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''|'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
-						"redshiftUnloadSettings": {
-							"s3LinkedServiceName": {
-								"referenceName": "adfadbplt001lsas3adpprd001",
+					"expression": {
+						"value": "@equals(pipeline().parameters.Filter,'')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Truncate and Copy",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Unload_Redshift To S3_Full_Refresh",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
 								"type": "LinkedServiceReference"
 							},
-							"bucketName": "itx-arm-snowflake-external-stage"
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@APAHIL01_RAW.Test_POC_stage_s3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''APAHIL01_RAW.Test_POC_file_format_s3'' ',\n';')",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Unload_Redshift To S3_Full_Refresh",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AmazonRedshiftSource",
+									"query": {
+										"value": "@concat('unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/SBX_DNA_LAB1/AMAHIN01/DEV/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''|'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
+										"type": "Expression"
+									},
+									"redshiftUnloadSettings": {
+										"s3LinkedServiceName": {
+											"referenceName": "adfadbplt001lsas3adpprd001",
+											"type": "LinkedServiceReference"
+										},
+										"bucketName": "itx-arm-snowflake-external-stage"
+									}
+								},
+								"dataset": {
+									"referenceName": "AmazonRedshiftTable1",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
 						}
-					},
-					"dataset": {
-						"referenceName": "AmazonRedshiftTable1",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Unload_Redshift To S3_Transactional",
+							"type": "Lookup",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "AmazonRedshiftSource",
+									"query": {
+										"value": "@concat('unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/SBX_DNA_LAB1/AMAHIN01/DEV/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''|'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
+										"type": "Expression"
+									},
+									"redshiftUnloadSettings": {
+										"s3LinkedServiceName": {
+											"referenceName": "adfadbplt001lsas3adpprd001",
+											"type": "LinkedServiceReference"
+										},
+										"bucketName": "itx-arm-snowflake-external-stage"
+									}
+								},
+								"dataset": {
+									"referenceName": "AmazonRedshiftTable1",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "Delete and Copy",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Unload_Redshift To S3_Transactional",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@APAHIL01_RAW.Test_POC_stage_s3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''APAHIL01_RAW.Test_POC_file_format_s3'' ',\n';')",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
 				}
 			},
 			{
-				"name": "Script1",
+				"name": "Logging",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Read_Redshift To S3",
+						"activity": "If the table is transactional or full refresh",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -60,7 +185,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@APAHIL01_RAW.Test_POC_stage_s3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''APAHIL01_RAW.Test_POC_file_format_s3'' ',\n';')"
+							"text": "Select 1"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
