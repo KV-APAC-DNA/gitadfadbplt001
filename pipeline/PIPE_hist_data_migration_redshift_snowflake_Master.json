@@ -75,7 +75,7 @@
 										"value": "@item().TARGET_TABLE",
 										"type": "Expression"
 									},
-									"Filter": {
+									"FilterRD": {
 										"value": "@item().FILTER_RD",
 										"type": "Expression"
 									},
@@ -83,8 +83,8 @@
 										"value": "@item().ISACTIVE",
 										"type": "Expression"
 									},
-									"Country_code": {
-										"value": "@item().COUNTRY_CODE",
+									"Market": {
+										"value": "@item().MARKET",
 										"type": "Expression"
 									},
 									"type_of_load": {
