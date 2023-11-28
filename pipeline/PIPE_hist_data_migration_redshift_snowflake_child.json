@@ -194,7 +194,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@variables('countQuerySnowflake')",
+													"value": "@concat('Select count(*) from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
 													"type": "Expression"
 												}
 											}
@@ -281,8 +281,6 @@
 			{
 				"name": "Unload from Redshift",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If table is transactional or full refresh",
@@ -391,8 +389,6 @@
 			{
 				"name": "Select count from redshift",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Unload from Redshift",
@@ -413,15 +409,8 @@
 					"source": {
 						"type": "AmazonRedshiftSource",
 						"query": {
-							"value": "@variables('countQueryRedshift')",
+							"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table)",
 							"type": "Expression"
-						},
-						"redshiftUnloadSettings": {
-							"s3LinkedServiceName": {
-								"referenceName": "adfadbplt001lsas3adpprd001",
-								"type": "LinkedServiceReference"
-							},
-							"bucketName": "itx-arm-snowflake-external-stage"
 						}
 					},
 					"dataset": {
