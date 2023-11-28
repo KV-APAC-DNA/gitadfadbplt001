@@ -64,6 +64,54 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Count query redshift transactional",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Snowflake_Transactional_Query ",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "countQueryRedshift",
+										"value": {
+											"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Count query snowflake transactional",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Count query redshift transactional",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "countQuerySnowflake",
+										"value": {
+											"value": "@concat('Select count(*) from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -112,7 +160,7 @@
 							}
 						},
 						{
-							"name": "Count query redshift",
+							"name": "Count query redshift full refresh",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
@@ -136,11 +184,11 @@
 							}
 						},
 						{
-							"name": "Count query snowflake",
+							"name": "Count query snowflake full refresh",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Count query redshift",
+									"activity": "Count query redshift full refresh",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -213,7 +261,7 @@
 									}
 								},
 								{
-									"name": "Select count from snowflake",
+									"name": "Select count from snowflake dna load",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -276,6 +324,44 @@
 										"type": "Query",
 										"text": {
 											"value": "@variables('snowflakeQuery')",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Select count from snowflake dna Core",
+							"type": "Script",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [
+								{
+									"activity": "Load to Snowflake Dna Core",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@variables('countQuerySnowflake')",
 											"type": "Expression"
 										}
 									}
