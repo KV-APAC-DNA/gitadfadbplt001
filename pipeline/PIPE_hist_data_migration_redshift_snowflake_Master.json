@@ -3,34 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Script1",
-				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": "insert into CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF values (1, 'rg_log','etl_run_control','APAHIL01_WORKSPACE','etl_run_control','','Y',2,'','','rg_log.etl_run_control','FULL REFRESH')"
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
 				"name": "Fetch Metadata",
 				"type": "Script",
 				"dependsOn": [],
@@ -138,6 +110,14 @@
 				}
 			}
 		],
+		"variables": {
+			"redshift_unload_query": {
+				"type": "String"
+			},
+			"snowflakeQuery": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "HIstorical_Data_migration_redshift_snowflake"
 		},
