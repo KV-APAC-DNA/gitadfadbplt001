@@ -198,6 +198,8 @@
 			{
 				"name": "Unload from Redshift",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If table is transactional or full refresh",
