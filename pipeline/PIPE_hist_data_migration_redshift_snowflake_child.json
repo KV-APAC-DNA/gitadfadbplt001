@@ -5,7 +5,14 @@
 			{
 				"name": "If table is transactional or full refresh",
 				"type": "Switch",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Update Status in Metadata as InProgress",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
@@ -234,6 +241,71 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Update Status in Metadata as Completed",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "If target is DNA_LOAD or DNA_CORE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' where Id=',string(pipeline().parameters.Id),';')\n",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Update Status in Metadata as InProgress",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''In-Progress'' where Id=',string(pipeline().parameters.Id),';')\n",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
