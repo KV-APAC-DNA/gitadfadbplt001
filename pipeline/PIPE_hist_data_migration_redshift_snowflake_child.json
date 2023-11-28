@@ -326,7 +326,7 @@
 				"type": "string",
 				"defaultValue": "SDL_SAP_BW_COPA17"
 			},
-			"Filter": {
+			"FilterRD": {
 				"type": "string",
 				"defaultValue": " "
 			},
@@ -334,7 +334,7 @@
 				"type": "bool",
 				"defaultValue": true
 			},
-			"Country_code": {
+			"Market": {
 				"type": "string",
 				"defaultValue": "Regional"
 			},
