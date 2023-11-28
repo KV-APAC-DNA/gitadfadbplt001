@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(pipeline().parameters.Filter,'')",
+						"value": "@equals(pipeline().parameters.type_of_load,'Transactional')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [

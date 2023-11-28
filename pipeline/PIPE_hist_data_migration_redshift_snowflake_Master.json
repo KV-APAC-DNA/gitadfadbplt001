@@ -50,7 +50,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE';"
+							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE';"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -78,6 +78,8 @@
 						{
 							"name": "Execute Child Pipeline",
 							"type": "ExecutePipeline",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
@@ -111,20 +113,8 @@
 										"value": "@item().ISACTIVE",
 										"type": "Expression"
 									},
-									"Group_id": {
-										"value": "@item().GROUP_ID",
-										"type": "Expression"
-									},
 									"Country_code": {
 										"value": "@item().COUNTRY_CODE",
-										"type": "Expression"
-									},
-									"isCompleted": {
-										"value": "@item().isCompleted",
-										"type": "Expression"
-									},
-									"Adls_path": {
-										"value": "@item().Adls_path",
 										"type": "Expression"
 									},
 									"type_of_load": {
