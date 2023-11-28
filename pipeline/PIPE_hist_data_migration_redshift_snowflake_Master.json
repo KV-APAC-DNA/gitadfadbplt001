@@ -126,6 +126,10 @@
 									"Status": {
 										"value": "@item().STATUS",
 										"type": "Expression"
+									},
+									"Target_DB": {
+										"value": "@item().TARGET_DB",
+										"type": "Expression"
 									}
 								}
 							}
