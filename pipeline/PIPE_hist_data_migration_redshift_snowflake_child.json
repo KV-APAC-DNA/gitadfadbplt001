@@ -117,8 +117,6 @@
 			{
 				"name": "If target is DNA_LOAD or DNA_CORE",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Select count from redshift",
@@ -209,8 +207,6 @@
 						{
 							"name": "Load to Snowflake Dna Core",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -240,8 +236,6 @@
 						{
 							"name": "Select count from snowflake dna Core",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Load to Snowflake Dna Core",
@@ -322,8 +316,6 @@
 			{
 				"name": "Update Status in Metadata as Completed",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If target is DNA_LOAD or DNA_CORE",
@@ -349,7 +341,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' where Id=',string(pipeline().parameters.Id),';')\n",
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
 								"type": "Expression"
 							}
 						}
@@ -479,6 +471,9 @@
 			},
 			"countQuerySnowflake": {
 				"type": "String"
+			},
+			"target_count": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
