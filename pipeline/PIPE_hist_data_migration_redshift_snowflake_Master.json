@@ -78,8 +78,6 @@
 						{
 							"name": "Execute Child Pipeline",
 							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
@@ -118,7 +116,15 @@
 										"type": "Expression"
 									},
 									"type_of_load": {
-										"value": "@item().type_of_load",
+										"value": "@item().TYPE_OF_LOAD",
+										"type": "Expression"
+									},
+									"Id": {
+										"value": "@item().ID",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@item().STATUS",
 										"type": "Expression"
 									}
 								}
