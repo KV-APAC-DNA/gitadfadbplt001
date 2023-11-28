@@ -242,40 +242,47 @@
 		"parameters": {
 			"Source_Schema": {
 				"type": "string",
-				"defaultValue": "rg_log"
+				"defaultValue": "RG_SDL"
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "etl_run_control"
+				"defaultValue": "SDL_SAP_BW_COPA17"
 			},
 			"Target_Schema": {
 				"type": "string",
-				"defaultValue": "APAHIL01_INTEGRATION"
+				"defaultValue": "SNAPASPSDL_RAW"
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "etl_run_control"
+				"defaultValue": "SDL_SAP_BW_COPA17"
 			},
 			"Filter": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": " "
 			},
 			"IsActive": {
-				"type": "bool"
+				"type": "bool",
+				"defaultValue": "TRUE"
 			},
 			"Country_code": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Regional"
 			},
 			"type_of_load": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "FULL_REFRESH"
 			},
 			"Id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"Status": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Pending"
 			},
 			"Target_DB": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "DEV_DNA_LOAD"
 			}
 		},
 		"variables": {
