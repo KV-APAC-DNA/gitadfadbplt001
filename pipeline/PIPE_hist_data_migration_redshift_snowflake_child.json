@@ -21,7 +21,7 @@
 					},
 					"cases": [
 						{
-							"value": "TRANSACTION",
+							"value": "TRANSACTIONAL",
 							"activities": [
 								{
 									"name": "Unload_Redshift To S3_Transactional_Query",
