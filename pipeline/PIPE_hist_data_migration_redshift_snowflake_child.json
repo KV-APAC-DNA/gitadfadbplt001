@@ -110,6 +110,54 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Count query redshift",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Snowflake_Full_Refresh_Query ",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "countQueryRedshift",
+								"value": {
+									"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Count query snowflake",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Count query redshift",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "countQuerySnowflake",
+								"value": {
+									"value": "@concat('Select count(*) from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -119,7 +167,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Unload from Redshift",
+						"activity": "Select count from redshift",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -157,6 +205,42 @@
 												"type": "Query",
 												"text": {
 													"value": "@variables('snowflakeQuery')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Select count from snowflake",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Load to Snowflake Dna Load",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@variables('countQuerySnowflake')",
 													"type": "Expression"
 												}
 											}
@@ -307,6 +391,47 @@
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
+			},
+			{
+				"name": "Select count from redshift",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Unload from Redshift",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AmazonRedshiftSource",
+						"query": {
+							"value": "@variables('countQueryRedshift')",
+							"type": "Expression"
+						},
+						"redshiftUnloadSettings": {
+							"s3LinkedServiceName": {
+								"referenceName": "adfadbplt001lsas3adpprd001",
+								"type": "LinkedServiceReference"
+							},
+							"bucketName": "itx-arm-snowflake-external-stage"
+						}
+					},
+					"dataset": {
+						"referenceName": "AmazonRedshiftTable1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
 		"parameters": {
@@ -360,6 +485,12 @@
 				"type": "String"
 			},
 			"snowflakeQuery": {
+				"type": "String"
+			},
+			"countQueryRedshift": {
+				"type": "String"
+			},
+			"countQuerySnowflake": {
 				"type": "String"
 			}
 		},
