@@ -76,7 +76,7 @@
 										"type": "Expression"
 									},
 									"Filter": {
-										"value": "@item().FILTER",
+										"value": "@item().FILTER_RD",
 										"type": "Expression"
 									},
 									"IsActive": {
