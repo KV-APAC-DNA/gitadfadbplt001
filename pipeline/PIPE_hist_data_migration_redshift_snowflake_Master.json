@@ -45,7 +45,8 @@
 						"value": "@activity('Fetch Metadata').output.resultSets[0].rows",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 2,
 					"activities": [
 						{
 							"name": "Execute Child Pipeline",
