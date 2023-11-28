@@ -110,8 +110,6 @@
 			{
 				"name": "If target is DNA_LOAD or DNA_CORE",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Unload from Redshift",
@@ -133,6 +131,8 @@
 								{
 									"name": "Load to Snowflake Dna Load",
 									"type": "Script",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
@@ -198,8 +198,6 @@
 			{
 				"name": "Unload from Redshift",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If table is transactional or full refresh",
