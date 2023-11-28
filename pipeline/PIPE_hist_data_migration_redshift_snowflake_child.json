@@ -262,7 +262,7 @@
 			},
 			"IsActive": {
 				"type": "bool",
-				"defaultValue": "TRUE"
+				"defaultValue": "True"
 			},
 			"Country_code": {
 				"type": "string",
