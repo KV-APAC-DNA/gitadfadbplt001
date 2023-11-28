@@ -213,21 +213,18 @@
 				"type": "string"
 			},
 			"IsActive": {
-				"type": "string"
-			},
-			"Group_id": {
-				"type": "string"
+				"type": "bool"
 			},
 			"Country_code": {
 				"type": "string"
 			},
-			"isCompleted": {
-				"type": "string"
-			},
-			"Adls_path": {
-				"type": "string"
-			},
 			"type_of_load": {
+				"type": "string"
+			},
+			"Id": {
+				"type": "int"
+			},
+			"Status": {
 				"type": "string"
 			}
 		},
