@@ -64,54 +64,6 @@
 											"type": "Expression"
 										}
 									}
-								},
-								{
-									"name": "Count query redshift transactional",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Snowflake_Transactional_Query ",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "countQueryRedshift",
-										"value": {
-											"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Count query snowflake transactional",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Count query redshift transactional",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "countQuerySnowflake",
-										"value": {
-											"value": "@concat('Select count(*) from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
-											"type": "Expression"
-										}
-									}
 								}
 							]
 						}
@@ -158,54 +110,6 @@
 									"type": "Expression"
 								}
 							}
-						},
-						{
-							"name": "Count query redshift full refresh",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Snowflake_Full_Refresh_Query ",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "countQueryRedshift",
-								"value": {
-									"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table)",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "Count query snowflake full refresh",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "Count query redshift full refresh",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "countQuerySnowflake",
-								"value": {
-									"value": "@concat('Select count(*) from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
@@ -213,6 +117,8 @@
 			{
 				"name": "If target is DNA_LOAD or DNA_CORE",
 				"type": "Switch",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Select count from redshift",
@@ -375,6 +281,8 @@
 			{
 				"name": "Unload from Redshift",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If table is transactional or full refresh",
@@ -416,6 +324,8 @@
 			{
 				"name": "Update Status in Metadata as Completed",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If target is DNA_LOAD or DNA_CORE",
@@ -481,6 +391,8 @@
 			{
 				"name": "Select count from redshift",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Unload from Redshift",
