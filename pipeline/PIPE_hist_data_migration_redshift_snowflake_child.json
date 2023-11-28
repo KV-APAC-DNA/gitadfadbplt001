@@ -192,7 +192,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Select count(*) from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
+													"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
 													"type": "Expression"
 												}
 											}
@@ -228,7 +228,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' TARGET_COUNT = ',activity('Select count from snowflake dna load').output.value[0].count, ' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
+													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' TARGET_COUNT = ',activity('Select count from snowflake dna load').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
 													"type": "Expression"
 												}
 											}
