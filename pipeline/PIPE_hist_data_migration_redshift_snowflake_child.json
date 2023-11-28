@@ -300,7 +300,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''In-Progress'' where Id=',string(pipeline().parameters.Id),';')\n",
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''InProgress'' where Id=',string(pipeline().parameters.Id),';')\n",
 								"type": "Expression"
 							}
 						}
