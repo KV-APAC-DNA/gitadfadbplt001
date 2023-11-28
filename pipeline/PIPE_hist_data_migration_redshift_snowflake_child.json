@@ -226,6 +226,9 @@
 			},
 			"Status": {
 				"type": "string"
+			},
+			"Target_DB": {
+				"type": "string"
 			}
 		},
 		"folder": {
