@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "drop table SNAPASPSDL_RAW.TBL_PROCESS_1;"
+							"text": "Select * from DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF\nselect * from CORE_RAW.TBL_HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE';"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
