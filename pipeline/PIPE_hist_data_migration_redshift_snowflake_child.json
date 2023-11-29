@@ -106,7 +106,7 @@
 							"typeProperties": {
 								"variableName": "snowflakeQuery",
 								"value": {
-									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.DEV_CORE_STAGE_S3./',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
+									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.DEV_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
 									"type": "Expression"
 								}
 							}
@@ -297,7 +297,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@variables('countQuerySnowflake')",
+											"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
 											"type": "Expression"
 										}
 									}
@@ -333,7 +333,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' TARGET_COUNT = ',activity('Select count from snowflake dna Core').output.value[0].count, ' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
+											"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
 											"type": "Expression"
 										}
 									}
@@ -524,19 +524,19 @@
 		"parameters": {
 			"Source_Schema": {
 				"type": "string",
-				"defaultValue": "RG_SDL"
+				"defaultValue": "RG_WKS"
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "SDL_SAP_BW_COPA17"
+				"defaultValue": "WKS_ACCOUNT_ATTR_CIW"
 			},
 			"Target_Schema": {
 				"type": "string",
-				"defaultValue": "SNAPASPSDL_RAW"
+				"defaultValue": "SNAPASPWKS_INTEGRATION"
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "SDL_SAP_BW_COPA17"
+				"defaultValue": "WKS_ACCOUNT_ATTR_CIW"
 			},
 			"FilterRD": {
 				"type": "string",
@@ -556,7 +556,7 @@
 			},
 			"Id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 2
 			},
 			"Status": {
 				"type": "string",
@@ -564,11 +564,11 @@
 			},
 			"Target_DB": {
 				"type": "string",
-				"defaultValue": "DEV_DNA_LOAD"
+				"defaultValue": "DEV_DNA_CORE"
 			},
 			"Stage_Schema": {
 				"type": "string",
-				"defaultValue": "SNAPASPSDL_RAW"
+				"defaultValue": "UTILITY_RAW"
 			}
 		},
 		"variables": {

@@ -45,8 +45,7 @@
 						"value": "@activity('Fetch Metadata').output.resultSets[0].rows",
 						"type": "Expression"
 					},
-					"isSequential": false,
-					"batchCount": 2,
+					"isSequential": true,
 					"activities": [
 						{
 							"name": "Execute Child Pipeline",
@@ -102,6 +101,10 @@
 									},
 									"Target_DB": {
 										"value": "@item().TARGET_DB",
+										"type": "Expression"
+									},
+									"Stage_Schema": {
+										"value": "@item().STAGE_SCHEMA",
 										"type": "Expression"
 									}
 								}
