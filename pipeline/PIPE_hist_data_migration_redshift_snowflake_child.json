@@ -106,7 +106,7 @@
 							"typeProperties": {
 								"variableName": "snowflakeQuery",
 								"value": {
-									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@UTILITY_RAW.DEV_CORE_STAGE_S3./',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''UTILITY_RAW.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
+									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.DEV_CORE_STAGE_S3./',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '''',\n' FILE_FORMAT = ''UTILITY_RAW.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
 									"type": "Expression"
 								}
 							}
@@ -531,6 +531,10 @@
 			"Target_DB": {
 				"type": "string",
 				"defaultValue": "DEV_DNA_LOAD"
+			},
+			"Stage_Schema": {
+				"type": "string",
+				"defaultValue": "SNAPASPSDL_RAW"
 			}
 		},
 		"variables": {
