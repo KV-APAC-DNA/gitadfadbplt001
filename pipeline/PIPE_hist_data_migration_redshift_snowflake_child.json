@@ -524,19 +524,19 @@
 		"parameters": {
 			"Source_Schema": {
 				"type": "string",
-				"defaultValue": "RG_WKS"
+				"defaultValue": "RG_SDL"
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "WKS_ACCOUNT_ATTR_CIW"
+				"defaultValue": "SDL_SAP_ECC_SALES_ORG"
 			},
 			"Target_Schema": {
 				"type": "string",
-				"defaultValue": "SNAPASPWKS_INTEGRATION"
+				"defaultValue": "SNAPASPSDL_RAW"
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "WKS_ACCOUNT_ATTR_CIW"
+				"defaultValue": "SDL_SAP_ECC_SALES_ORG"
 			},
 			"FilterRD": {
 				"type": "string",
@@ -556,7 +556,7 @@
 			},
 			"Id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 34
 			},
 			"Status": {
 				"type": "string",
@@ -564,11 +564,11 @@
 			},
 			"Target_DB": {
 				"type": "string",
-				"defaultValue": "DEV_DNA_CORE"
+				"defaultValue": "DEV_DNA_LOAD"
 			},
 			"Stage_Schema": {
 				"type": "string",
-				"defaultValue": "UTILITY_RAW"
+				"defaultValue": "SNAPASPSDL_RAW"
 			}
 		},
 		"variables": {
