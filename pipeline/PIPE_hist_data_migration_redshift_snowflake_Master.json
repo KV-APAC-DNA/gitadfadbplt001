@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE' and STATUS='Error SF' ;"
+							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE' and STATUS='Pending' ;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
