@@ -1,0 +1,133 @@
+{
+	"name": "master copy",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fetch Metadata",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE' and id >201;"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Fetch Metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Fetch Metadata').output.resultSets[0].rows",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Child Pipeline",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "PIPE_hist_data_migration_redshift_snowflake_child",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Source_Schema": {
+										"value": "@item().SOURCE_SCHEMA",
+										"type": "Expression"
+									},
+									"Source_Table": {
+										"value": "@item().SOURCE_TABLE",
+										"type": "Expression"
+									},
+									"Target_Schema": {
+										"value": "@item().TARGET_SCHEMA",
+										"type": "Expression"
+									},
+									"Target_Table": {
+										"value": "@item().TARGET_TABLE",
+										"type": "Expression"
+									},
+									"FilterRD": {
+										"value": "@item().FILTER_RD",
+										"type": "Expression"
+									},
+									"IsActive": {
+										"value": "@item().ISACTIVE",
+										"type": "Expression"
+									},
+									"Market": {
+										"value": "@item().MARKET",
+										"type": "Expression"
+									},
+									"type_of_load": {
+										"value": "@item().TYPE_OF_LOAD",
+										"type": "Expression"
+									},
+									"Id": {
+										"value": "@item().ID",
+										"type": "Expression"
+									},
+									"Status": {
+										"value": "@item().STATUS",
+										"type": "Expression"
+									},
+									"Target_DB": {
+										"value": "@item().TARGET_DB",
+										"type": "Expression"
+									},
+									"Stage_Schema": {
+										"value": "@item().STAGE_SCHEMA",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"variables": {
+			"redshift_unload_query": {
+				"type": "String"
+			},
+			"snowflakeQuery": {
+				"type": "String"
+			},
+			"test": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "HIstorical_Data_migration_redshift_snowflake"
+		},
+		"annotations": []
+	}
+}
