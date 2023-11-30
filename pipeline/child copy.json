@@ -234,6 +234,42 @@
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
 									}
+								},
+								{
+									"name": "Update Status in Metadata as Error_Sf_copy1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Load to Snowflake Dna Load",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,'-',activity('Load to Snowflake Dna Load')?.error?.message,''' where Id=',string(pipeline().parameters.Id),';')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
 								}
 							]
 						}
@@ -486,6 +522,8 @@
 			{
 				"name": "Update Status in Metadata as Error_Sf",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If target is DNA_LOAD or DNA_CORE",
