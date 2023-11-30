@@ -160,8 +160,7 @@
 													"type": "Expression"
 												}
 											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
+										]
 									}
 								},
 								{
@@ -489,9 +488,9 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "If target is DNA_LOAD or DNA_CORE",
+						"activity": "Set variable1",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
@@ -512,12 +511,36 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,'-',activity('If table is transactional or full refresh').Error.mesage,''' where Id=',string(pipeline().parameters.Id),';')",
 								"type": "Expression"
 							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "If target is DNA_LOAD or DNA_CORE",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,'-',activity('If table is transactional or full refresh').Error,''' where Id=',string(pipeline().parameters.Id),';')",
+						"type": "Expression"
+					}
 				}
 			}
 		],

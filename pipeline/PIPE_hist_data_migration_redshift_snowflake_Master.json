@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE' and STATUS='Pending' ;"
+							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE' and STATUS='Error SF' ;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -119,6 +119,9 @@
 				"type": "String"
 			},
 			"snowflakeQuery": {
+				"type": "String"
+			},
+			"test": {
 				"type": "String"
 			}
 		},
