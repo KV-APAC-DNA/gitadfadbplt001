@@ -233,9 +233,9 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Set variable1",
+											"activity": "Load to Snowflake Dna Load",
 											"dependencyConditions": [
-												"Succeeded"
+												"Failed"
 											]
 										}
 									],
@@ -256,36 +256,12 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Load')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')\n",
+													"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Load')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
 													"type": "Expression"
 												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								},
-								{
-									"name": "Set variable1",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Load to Snowflake Dna Load",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "test",
-										"value": {
-											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Load')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')\n",
-											"type": "Expression"
-										}
 									}
 								}
 							]
@@ -421,7 +397,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')",
+											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
 											"type": "Expression"
 										}
 									}
@@ -551,7 +527,7 @@
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "SDL_SAP_BW_COPA17"
+				"defaultValue": "SDL_SAP_ECC_SALES_ORG"
 			},
 			"Target_Schema": {
 				"type": "string",
@@ -559,7 +535,7 @@
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "SDL_SAP_BW_COPA17"
+				"defaultValue": "SDL_SAP_ECC_SALES_ORG"
 			},
 			"IsActive": {
 				"type": "bool",
@@ -575,7 +551,7 @@
 			},
 			"Id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 34
 			},
 			"Target_DB": {
 				"type": "string",
