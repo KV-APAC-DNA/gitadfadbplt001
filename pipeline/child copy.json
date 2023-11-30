@@ -511,7 +511,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')",
+								"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
 								"type": "Expression"
 							}
 						}
