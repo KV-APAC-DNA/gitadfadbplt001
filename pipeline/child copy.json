@@ -527,7 +527,7 @@
 			},
 			"Source_Table": {
 				"type": "string",
-				"defaultValue": "SDL_SAP_ECC_SALES_ORG"
+				"defaultValue": "SDL_SAP_BW_COPA17"
 			},
 			"Target_Schema": {
 				"type": "string",
@@ -535,11 +535,7 @@
 			},
 			"Target_Table": {
 				"type": "string",
-				"defaultValue": "SDL_SAP_ECC_SALES_ORG"
-			},
-			"FilterRD": {
-				"type": "string",
-				"defaultValue": " "
+				"defaultValue": "SDL_SAP_BW_COPA17"
 			},
 			"IsActive": {
 				"type": "bool",
@@ -555,11 +551,7 @@
 			},
 			"Id": {
 				"type": "int",
-				"defaultValue": 34
-			},
-			"Status": {
-				"type": "string",
-				"defaultValue": "Pending"
+				"defaultValue": 1
 			},
 			"Target_DB": {
 				"type": "string",
