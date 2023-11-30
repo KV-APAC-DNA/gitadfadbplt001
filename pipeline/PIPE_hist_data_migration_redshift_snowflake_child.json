@@ -228,7 +228,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna load').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
+													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna load').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
 													"type": "Expression"
 												}
 											}
@@ -333,7 +333,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
+											"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')\n",
 											"type": "Expression"
 										}
 									}
@@ -476,7 +476,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error RD'', LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error RD'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
 								"type": "Expression"
 							}
 						}
@@ -512,7 +512,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp where Id=',string(pipeline().parameters.Id),';')",
+								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
 								"type": "Expression"
 							}
 						}
@@ -586,6 +586,9 @@
 			},
 			"target_count": {
 				"type": "Integer"
+			},
+			"test": {
+				"type": "String"
 			}
 		},
 		"folder": {
