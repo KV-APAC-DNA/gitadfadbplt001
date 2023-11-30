@@ -5,14 +5,7 @@
 			{
 				"name": "If table is transactional or full refresh",
 				"type": "Switch",
-				"dependsOn": [
-					{
-						"activity": "Update Status in Metadata as InProgress",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
@@ -200,7 +193,7 @@
 									}
 								},
 								{
-									"name": "Update Status in Metadata as Completed DNA LOAD",
+									"name": "Insert Status in Metadata as Completed DNA LOAD",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -227,7 +220,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna load').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
+													"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP, SOURCE_COUNT, TARGET_COUNT) VALUES (',string(pipeline().parameters.Id),', ''Completed'','',',pipeline().RunId, ',current_timestamp, ', \nactivity('Select count from redshift').output.value[0].count,', ',activity('Select count from snowflake dna load').output.resultSets[0].rows[0].count,'); ')",
 													"type": "Expression"
 												}
 											}
@@ -236,7 +229,7 @@
 									}
 								},
 								{
-									"name": "Update Status in Metadata as Error_Sf_copy1",
+									"name": "Insert Status in Metadata as Error_Sf_copy1",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -263,7 +256,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,'-',activity('Load to Snowflake Dna Load')?.error?.message,''' where Id=',string(pipeline().parameters.Id),';')",
+													"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Load')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')\n",
 													"type": "Expression"
 												}
 											}
@@ -341,7 +334,7 @@
 							}
 						},
 						{
-							"name": "Update Status in Metadata as Completed DNA CORE",
+							"name": "Insert Status in Metadata as Completed DNA CORE",
 							"type": "Script",
 							"dependsOn": [
 								{
@@ -368,7 +361,43 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Completed'' , SOURCE_COUNT= ',activity('Select count from redshift').output.value[0].count,' , TARGET_COUNT = ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count, ' , LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')\n",
+											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP, SOURCE_COUNT, TARGET_COUNT) VALUES (',string(pipeline().parameters.Id),', ''Completed'','',',pipeline().RunId, ',current_timestamp, ', \nactivity('Select count from redshift').output.value[0].count,', ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count,'); ')",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Insert Status in Metadata as Error SF DNA CORE",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Select count from snowflake dna Core",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')",
 											"type": "Expression"
 										}
 									}
@@ -421,35 +450,6 @@
 				}
 			},
 			{
-				"name": "Update Status in Metadata as InProgress",
-				"type": "Script",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''InProgress'' where Id=',string(pipeline().parameters.Id),';')\n",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
 				"name": "Select count from redshift",
 				"type": "Lookup",
 				"dependsOn": [
@@ -484,7 +484,7 @@
 				}
 			},
 			{
-				"name": "Update Status in Metadata as Error_Rd",
+				"name": "Insert Status in Metadata as Error_Rd",
 				"type": "Script",
 				"dependsOn": [
 					{
@@ -511,45 +511,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error RD'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "Update Status in Metadata as Error_Sf",
-				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "If target is DNA_LOAD or DNA_CORE",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('Update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF SET STATUS=''Error SF'', LOAD_TIMESTAMP = current_timestamp , MESSAGE = ''',pipeline().Pipeline,':',pipeline().RunId,''' where Id=',string(pipeline().parameters.Id),';')",
+								"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',',pipeline().RunId, ',current_timestamp); ')",
 								"type": "Expression"
 							}
 						}
