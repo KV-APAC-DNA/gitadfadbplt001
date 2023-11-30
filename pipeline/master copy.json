@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA_ADF where ISACTIVE='TRUE' and id >201;"
+							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE' ;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -54,7 +54,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "PIPE_hist_data_migration_redshift_snowflake_child",
+									"referenceName": "child copy",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -75,10 +75,6 @@
 										"value": "@item().TARGET_TABLE",
 										"type": "Expression"
 									},
-									"FilterRD": {
-										"value": "@item().FILTER_RD",
-										"type": "Expression"
-									},
 									"IsActive": {
 										"value": "@item().ISACTIVE",
 										"type": "Expression"
@@ -93,10 +89,6 @@
 									},
 									"Id": {
 										"value": "@item().ID",
-										"type": "Expression"
-									},
-									"Status": {
-										"value": "@item().STATUS",
 										"type": "Expression"
 									},
 									"Target_DB": {
