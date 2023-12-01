@@ -45,7 +45,8 @@
 						"value": "@activity('Fetch Metadata').output.resultSets[0].rows",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 3,
 					"activities": [
 						{
 							"name": "Execute Child Pipeline",
@@ -57,7 +58,7 @@
 									"referenceName": "child copy",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true,
+								"waitOnCompletion": false,
 								"parameters": {
 									"Source_Schema": {
 										"value": "@item().SOURCE_SCHEMA",
