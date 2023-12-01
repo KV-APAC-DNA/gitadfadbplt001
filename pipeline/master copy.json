@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE' and ID > 210 ;"
+							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE' and ID > 270 ;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"

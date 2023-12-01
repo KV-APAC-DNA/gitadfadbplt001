@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "Truncate table DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_LOGS;"
+							"text": "truncate table SNAPASPSDL_RAW.SDL_SAP_ECC_SALES_ORG;COPY INTO SNAPASPSDL_RAW.SDL_SAP_ECC_SALES_ORG FROM '@SNAPASPSDL_RAW.DEV_CORE_STAGE_S3/RG_SDL_SDL_SAP_ECC_SALES_ORG' FILE_FORMAT = 'SNAPASPSDL_RAW.DEV_CORE_CSV_FILEFORMAT' ;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
