@@ -374,7 +374,7 @@
 							"type": "Script",
 							"dependsOn": [
 								{
-									"activity": "Select count from snowflake dna Core",
+									"activity": "Load to Snowflake Dna Core",
 									"dependencyConditions": [
 										"Failed"
 									]
