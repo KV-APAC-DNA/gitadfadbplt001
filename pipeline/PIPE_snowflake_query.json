@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "update DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_METADATA_ADF set isActive= False where ID in (1,2,3,4,5,6,8,9,10)"
+							"text": "Truncate table DEV_DNA_LOAD.CORE_RAW.HISTORICAL_OBJ_LOGS;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
