@@ -15,14 +15,14 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"referenceName": "adfadbplt001lssnfkpltdnacore",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "truncate table SNAPASPSDL_RAW.SDL_SAP_ECC_SALES_ORG;COPY INTO SNAPASPSDL_RAW.SDL_SAP_ECC_SALES_ORG FROM '@SNAPASPSDL_RAW.DEV_CORE_STAGE_S3/RG_SDL_SDL_SAP_ECC_SALES_ORG' FILE_FORMAT = 'SNAPASPSDL_RAW.DEV_CORE_CSV_FILEFORMAT' ;"
+							"text": "COPY INTO SNAPASPWKS_INTEGRATION.WKS_RG_TRAVEL_RETAIL_INVENTORY FROM '@UTILITY_RAW.DEV_CORE_STAGE_S3/RG_WKS_WKS_RG_TRAVEL_RETAIL_INVENTORY_EXCL_SKU' FILE_FORMAT = 'UTILITY_RAW.DEV_CORE_CSV_FILEFORMAT' ;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
