@@ -1,5 +1,6 @@
 {
 	"name": "adfadbplt001lssnfkpltdnaload",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "Linked Service to Kenvue APAC DNA BASE Snowflake L0",
 		"annotations": [],

@@ -1,6 +1,8 @@
 {
 	"name": "adfadbplt001lsdbtclouddnacore",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
+		"description": "Linked Service to Kenvue APAC DNA BASE dbt cloud REST API",
 		"annotations": [],
 		"type": "RestService",
 		"typeProperties": {
@@ -21,7 +23,6 @@
 		"connectVia": {
 			"referenceName": "adfiradbplt001",
 			"type": "IntegrationRuntimeReference"
-		},
-		"description": "Linked Service to Kenvue APAC DNA BASE dbt cloud REST API"
+		}
 	}
 }
