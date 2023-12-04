@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from CORE_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE'  Order By PRIORITY;"
+							"text": "select * from META_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE'  Order By PRIORITY;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
