@@ -1,5 +1,5 @@
 {
-	"name": "child copy",
+	"name": "PIPE_hist_data_migration_redshift_snowflake_child",
 	"properties": {
 		"activities": [
 			{

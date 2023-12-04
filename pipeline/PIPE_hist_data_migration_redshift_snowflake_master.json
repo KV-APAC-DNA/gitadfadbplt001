@@ -1,5 +1,5 @@
 {
-	"name": "master copy",
+	"name": "PIPE_hist_data_migration_redshift_snowflake_master",
 	"properties": {
 		"activities": [
 			{
@@ -55,7 +55,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "child copy",
+									"referenceName": "PIPE_hist_data_migration_redshift_snowflake_child",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": false,
