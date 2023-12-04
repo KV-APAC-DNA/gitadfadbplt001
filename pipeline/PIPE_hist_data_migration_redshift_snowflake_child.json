@@ -361,7 +361,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP, SOURCE_COUNT, TARGET_COUNT) VALUES (',string(pipeline().parameters.Id),', ''Completed'',''SUCCESS'',''',pipeline().RunId, ''',current_timestamp, ', activity('Select count from redshift').output.value[0].count,', ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count,'); ')",
+											"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP, SOURCE_COUNT, TARGET_COUNT) VALUES (',string(pipeline().parameters.Id),', ''Completed'',''SUCCESS'',''',pipeline().RunId, ''',current_timestamp, ', activity('Select count from redshift').output.value[0].count,', ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count,'); ')",
 											"type": "Expression"
 										}
 									}
@@ -397,7 +397,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
+											"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
 											"type": "Expression"
 										}
 									}
@@ -511,7 +511,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('INSERT INTO CORE_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
+								"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
 								"type": "Expression"
 							}
 						}
