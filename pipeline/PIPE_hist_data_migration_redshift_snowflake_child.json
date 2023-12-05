@@ -74,7 +74,7 @@
 							"typeProperties": {
 								"variableName": "redshift_unload_query",
 								"value": {
-									"value": "@concat('unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/',pipeline().parameters.Target_DB,'/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''\\001'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
+									"value": "@concat('set autocommit=on; unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/',pipeline().parameters.Target_DB,'/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''\\001'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
 									"type": "Expression"
 								}
 							}
