@@ -1,0 +1,15 @@
+{
+	"name": "AmazonRedshiftTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsarsadpprd001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "HIstorical_Data_migration_redshift_snowflake"
+		},
+		"annotations": [],
+		"type": "AmazonRedshiftTable",
+		"schema": []
+	}
+}

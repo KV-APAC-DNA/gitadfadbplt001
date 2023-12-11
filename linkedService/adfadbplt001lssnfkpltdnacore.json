@@ -13,7 +13,8 @@
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "adfadbplt001lssnfkdevdnacore"
+				"secretName": "adfadbplt001lssnfkdevdnacore",
+				"secretVersion": "9eb83ee9bbc44fbbbde25faca62d1e20"
 			}
 		},
 		"connectVia": {
