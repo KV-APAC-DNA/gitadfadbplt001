@@ -233,6 +233,10 @@
 						"value": "https://cloud.getdbt.com/api/v2/accounts/@{variables('accountid')}/jobs/@{variables('job_id')}/run/",
 						"type": "Expression"
 					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
 					"method": "POST",
 					"headers": {
 						"Authorization": {
