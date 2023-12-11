@@ -33,10 +33,6 @@
 							"type": "SnowflakeExportCopyCommand"
 						}
 					},
-					"dataset": {
-						"referenceName": "mtd_process2",
-						"type": "DatasetReference"
-					},
 					"firstRowOnly": false
 				}
 			},
@@ -80,10 +76,6 @@
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
-													"pipeline": {
-														"referenceName": "Tableau1",
-														"type": "PipelineReference"
-													},
 													"waitOnCompletion": true
 												}
 											}
@@ -98,10 +90,6 @@
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
-													"pipeline": {
-														"referenceName": "Power BI1",
-														"type": "PipelineReference"
-													},
 													"waitOnCompletion": true
 												}
 											}
@@ -134,10 +122,6 @@
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log4",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true,
 					"parameters": {
 						"process_id": 0,
@@ -188,10 +172,6 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log4",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true,
 					"parameters": {
 						"process_id": 0,
@@ -242,10 +222,6 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log4",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true,
 					"parameters": {
 						"process_id": 0,
@@ -296,10 +272,6 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log4",
-						"type": "PipelineReference"
-					},
 					"waitOnCompletion": true,
 					"parameters": {
 						"process_id": 0,
