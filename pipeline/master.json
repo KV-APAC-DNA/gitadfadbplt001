@@ -1,0 +1,672 @@
+{
+	"name": "master",
+	"properties": {
+		"activities": [
+			{
+				"name": "read running status",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"parameters": [
+								{
+									"name": "job",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								},
+								{
+									"name": "category",
+									"type": "String",
+									"value": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"direction": "Input"
+								}
+							],
+							"type": "Query",
+							"text": "SET JOB= ?;\nSET CATEGORY = ?;\nSELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETADATA.PROCESS_AUDIT_LOG\nWHERE JOB_NAME = $JOB\nAND CATEGORY = $CATEGORY\nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1\n;"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "check running status",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "read running status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(if(equals(activity('read running status').output.resultSetCount,0),true,\n    not(equals(toUpper(activity('read running status').output.resultSets[0].rows[0].process_status),'START'))),\n    pipeline().parameters.force_rerun\n    )",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "fail",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "@concat(pipeline().Pipeline, ' is already running for ' , pipeline().parameters.category,\n', If that is of an obsolete status, please trigger the pipeling with force_rerun =  true.')",
+									"type": "Expression"
+								},
+								"errorCode": "1000"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "audit start",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": 0,
+									"status": "START",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline().GroupId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": 0,
+									"group_id": 0
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "audit fail on for loop",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "for each usecase",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().GroupId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": 0,
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "read usecases",
+				"description": "Get distinct use case sequence id's",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "check running status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "SELECT DISTINCT\n    USECASE.SEQUENCE_ID AS USECASE_SEQUENCE_ID\nFROM METADATA.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.SEQUENCE_ID ASC;",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "for each usecase",
+				"description": "Runs for each usecase, executes the phase_master pipeline with usecase_id as parameter",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "read usecases",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('read usecases').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "check phase master status",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@variables('isphasemasterfailed')",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "run phase master",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "usecase_master",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"usecase_sequence_id": {
+													"value": "@item().usecase_sequence_id",
+													"type": "Expression"
+												},
+												"category": {
+													"value": "@pipeline().parameters.category",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "set to failed",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "run phase master",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "isphasemasterfailed",
+											"value": true
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "audit fail on lookup",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "read usecases",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().GroupId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": 0,
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "eror log 2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "read usecases",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('read usecases').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": 0,
+						"error_code": {
+							"value": "@activity('read usecases').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": 0
+					}
+				}
+			},
+			{
+				"name": "error log 1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "read running status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('read running status').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": 0,
+						"error_code": {
+							"value": "@activity('read running status').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": 0
+					}
+				}
+			},
+			{
+				"name": "eror log 3",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "for each usecase",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('run phase master').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": 0,
+						"error_code": {
+							"value": "@activity('run phase master').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": 0
+					}
+				}
+			},
+			{
+				"name": "check phasemaster status",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "for each usecase",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@variables('isphasemasterfailed')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "audit success",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": 0,
+									"status": "FINISH",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline().GroupId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": 0,
+									"group_id": 0
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "audit fail child",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": 0,
+									"status": "FAIL",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline().GroupId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": 0,
+									"group_id": 0
+								}
+							}
+						},
+						{
+							"name": "eror log 4",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": 0,
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "@activity('read usecases').output.message",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": 0,
+									"error_code": {
+										"value": "@activity('read usecases').output.errorCode",
+										"type": "Expression"
+									},
+									"job_id": 0
+								}
+							}
+						},
+						{
+							"name": "fail this pipeline",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "eror log 4",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "audit fail child",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Phase master failed for @{pipeline().parameters.category}",
+									"type": "Expression"
+								},
+								"errorCode": "1005"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"category": {
+				"type": "string"
+			},
+			"force_rerun": {
+				"type": "bool",
+				"defaultValue": false
+			}
+		},
+		"variables": {
+			"test_variable": {
+				"type": "String"
+			},
+			"isphasemasterfailed": {
+				"type": "Boolean",
+				"defaultValue": false
+			}
+		},
+		"folder": {
+			"name": "Master_Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-27T15:01:57Z"
+	}
+}

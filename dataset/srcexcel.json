@@ -1,0 +1,49 @@
+{
+	"name": "srcexcel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"src_path": {
+				"type": "string"
+			},
+			"src_filename": {
+				"type": "string"
+			},
+			"src_sheetname": {
+				"type": "string",
+				"defaultValue": "Sheet1"
+			},
+			"src_container": {
+				"type": "string"
+			}
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().src_sheetname",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().src_filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().src_path",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().src_container",
+					"type": "Expression"
+				}
+			},
+			"firstRowAsHeader": true
+		},
+		"schema": []
+	}
+}
