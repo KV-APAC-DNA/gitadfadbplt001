@@ -42,7 +42,7 @@
 								}
 							],
 							"type": "Query",
-							"text": "SET JOB= ?;\nSET CATEGORY = ?;\nSELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETADATA.PROCESS_AUDIT_LOG\nWHERE JOB_NAME = $JOB\nAND CATEGORY = $CATEGORY\nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1\n;"
+							"text": "SET JOB= ?;\nSET CATEGORY = ?;\nSELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETA_RAW.PROCESS_AUDIT_LOG\nWHERE JOB_NAME = $JOB\nAND CATEGORY = $CATEGORY\nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1\n;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -197,7 +197,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT DISTINCT\n    USECASE.SEQUENCE_ID AS USECASE_SEQUENCE_ID\nFROM METADATA.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.SEQUENCE_ID ASC;",
+							"value": "SELECT DISTINCT\n    USECASE.SEQUENCE_ID AS USECASE_SEQUENCE_ID\nFROM META_RAW.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.SEQUENCE_ID ASC;",
 							"type": "Expression"
 						},
 						"exportSettings": {
