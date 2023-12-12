@@ -243,7 +243,7 @@
 								},
 								"ifFalseActivities": [
 									{
-										"name": "run phase master",
+										"name": "run usecase master",
 										"type": "ExecutePipeline",
 										"dependsOn": [],
 										"userProperties": [],
@@ -270,7 +270,7 @@
 										"type": "SetVariable",
 										"dependsOn": [
 											{
-												"activity": "run phase master",
+												"activity": "run usecase master",
 												"dependencyConditions": [
 													"Failed"
 												]
