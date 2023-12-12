@@ -26,7 +26,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT DISTINCT\n    USECASE.USECASE_ID\nFROM METADATA.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.SEQUENCE_ID = @{pipeline().parameters.usecase_sequence_id}\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.USECASE_ID ASC;",
+							"value": "SELECT DISTINCT\n    USECASE.USECASE_ID\nFROM META_RAW.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.SEQUENCE_ID = @{pipeline().parameters.usecase_sequence_id}\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.USECASE_ID ASC;",
 							"type": "Expression"
 						},
 						"exportSettings": {
