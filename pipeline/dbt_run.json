@@ -183,7 +183,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT PARAMETER_GROUP_NAME,\n\"'transform_script'\" TRANSFORM_SCRIPT,\n\"'job_id'\" JOB_ID,\n\"'account_id'\" ACCOUNT_ID\nFROM\n(SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM METADATA.PARAMETERS \nJOIN METADATA.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE\n)\nPIVOT(\nMAX(PARAMETER_VALUE) FOR PARAMETER_NAME IN (\n'transform_script','job_id','account_id')\n)",
+							"value": "SELECT PARAMETER_GROUP_NAME,\n\"'transform_script'\" TRANSFORM_SCRIPT,\n\"'job_id'\" JOB_ID,\n\"'account_id'\" ACCOUNT_ID\nFROM\n(SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE\n)\nPIVOT(\nMAX(PARAMETER_VALUE) FOR PARAMETER_NAME IN (\n'transform_script','job_id','account_id')\n)",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -232,6 +232,10 @@
 					"url": {
 						"value": "https://cloud.getdbt.com/api/v2/accounts/@{variables('accountid')}/jobs/@{variables('job_id')}/run/",
 						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
 					},
 					"method": "POST",
 					"headers": {

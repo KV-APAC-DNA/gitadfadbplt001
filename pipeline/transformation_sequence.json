@@ -26,7 +26,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT *\nFROM METADATA.PROCESS\nWHERE PROCESS.USECASE_ID = @{pipeline().parameters.usecase_id}\nAND PROCESS.PHASE_ID = @{pipeline().parameters.phase_id}\nAND PROCESS.SEQUENCE_ID = @{pipeline().parameters.sequence_id}\nAND PROCESS.IS_ACTIVE = TRUE\nORDER BY PROCESS.SEQUENCE_ID ASC;",
+							"value": "SELECT *\nFROM META_RAW.PROCESS\nWHERE PROCESS.USECASE_ID = @{pipeline().parameters.usecase_id}\nAND PROCESS.PHASE_ID = @{pipeline().parameters.phase_id}\nAND PROCESS.SEQUENCE_ID = @{pipeline().parameters.sequence_id}\nAND PROCESS.IS_ACTIVE = TRUE\nORDER BY PROCESS.SEQUENCE_ID ASC;",
 							"type": "Expression"
 						},
 						"exportSettings": {
