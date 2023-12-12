@@ -33,10 +33,6 @@
 							"type": "SnowflakeExportCopyCommand"
 						}
 					},
-					"dataset": {
-						"referenceName": "mtd_process1",
-						"type": "DatasetReference"
-					},
 					"firstRowOnly": false
 				}
 			},

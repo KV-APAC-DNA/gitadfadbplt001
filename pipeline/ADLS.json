@@ -196,10 +196,6 @@
 							"type": "SnowflakeExportCopyCommand"
 						}
 					},
-					"dataset": {
-						"referenceName": "mtd_process1",
-						"type": "DatasetReference"
-					},
 					"firstRowOnly": false
 				}
 			},
@@ -415,53 +411,8 @@
 										"fileExtension": ".csv"
 									}
 								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "adls_srcexcel1",
-									"type": "DatasetReference",
-									"parameters": {
-										"src_path": {
-											"value": "@variables('folder_path')",
-											"type": "Expression"
-										},
-										"src_filename": {
-											"value": "@item().name",
-											"type": "Expression"
-										},
-										"src_sheetname": "Sheet1",
-										"src_container": {
-											"value": "@variables('adls_container')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "csv1",
-									"type": "DatasetReference",
-									"parameters": {
-										"target_path": {
-											"value": "@variables('folder_path')",
-											"type": "Expression"
-										},
-										"target_filename": {
-											"value": "@replace(item().name,'.xlsx','.csv')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+								"enableStaging": false
+							}
 						}
 					]
 				}
@@ -576,25 +527,6 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"dataset": {
-						"referenceName": "adls_srcexcel1",
-						"type": "DatasetReference",
-						"parameters": {
-							"src_path": {
-								"value": "@variables('folder_path')",
-								"type": "Expression"
-							},
-							"src_filename": {
-								"value": "@concat('*',variables('file_spec'),'*')",
-								"type": "Expression"
-							},
-							"src_sheetname": "Sheet1",
-							"src_container": {
-								"value": "@variables('adls_container')",
-								"type": "Expression"
-							}
-						}
-					},
 					"fieldList": [
 						"childItems"
 					],
