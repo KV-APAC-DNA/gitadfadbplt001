@@ -20,6 +20,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "ADF_Framework_Datasets"
+		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
