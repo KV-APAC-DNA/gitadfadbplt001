@@ -23,7 +23,7 @@
 						{
 							"type": "NonQuery",
 							"text": {
-								"value": "INSERT INTO METADATA.ERROR_LOG (\n    PROCESS_ID,\n    PHASE_ID,\n    MOMENT,\n    RUN_ID,\n    JOB_ID,\n    JOB_NAME,\n    ERROR_MESSAGE,\n    ERROR_CODE,\n    CATEGORY\n) VALUES (\n    @{pipeline().parameters.process_id},\n    @{pipeline().parameters.phase_id},\n    CURRENT_TIMESTAMP,\n    '@{pipeline().parameters.run_id}',\n    '@{pipeline().parameters.job_id}',\n    '@{pipeline().parameters.job_name}',\n    '@{replace(pipeline().parameters.error_message,'''','''''')}',\n    '@{pipeline().parameters.error_code}',\n    '@{pipeline().parameters.category}'\n);",
+								"value": "INSERT INTO META_RAW.ERROR_LOG (\n    PROCESS_ID,\n    PHASE_ID,\n    MOMENT,\n    RUN_ID,\n    JOB_ID,\n    JOB_NAME,\n    ERROR_MESSAGE,\n    ERROR_CODE,\n    CATEGORY\n) VALUES (\n    @{pipeline().parameters.process_id},\n    @{pipeline().parameters.phase_id},\n    CURRENT_TIMESTAMP,\n    '@{pipeline().parameters.run_id}',\n    '@{pipeline().parameters.job_id}',\n    '@{pipeline().parameters.job_name}',\n    '@{replace(pipeline().parameters.error_message,'''','''''')}',\n    '@{pipeline().parameters.error_code}',\n    '@{pipeline().parameters.category}'\n);",
 								"type": "Expression"
 							}
 						}
