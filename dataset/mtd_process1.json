@@ -1,0 +1,12 @@
+{
+	"name": "mtd_process1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lssnfkpltdnaload",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SnowflakeTable",
+		"schema": []
+	}
+}
