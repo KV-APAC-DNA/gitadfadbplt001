@@ -1,0 +1,9 @@
+{
+	"name": "S3_To_Adls_pipeline",
+	"properties": {
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
