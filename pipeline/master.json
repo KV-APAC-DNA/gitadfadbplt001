@@ -455,7 +455,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('run phase master').error?.message",
+							"value": "@activity('run usecase master').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -468,7 +468,7 @@
 						},
 						"phase_id": 0,
 						"error_code": {
-							"value": "@activity('run phase master').error?.errorCode",
+							"value": "@activity('run usecase master').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": 0
