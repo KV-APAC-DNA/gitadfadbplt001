@@ -1,6 +1,56 @@
 {
 	"name": "S3_To_Adls_pipeline",
 	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "s3FileDataSet",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"S3Bucket": {
+				"type": "string"
+			},
+			"S3Directory": {
+				"type": "string"
+			},
+			"AdlsContainer": {
+				"type": "string"
+			},
+			"AdlsDirectory": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
