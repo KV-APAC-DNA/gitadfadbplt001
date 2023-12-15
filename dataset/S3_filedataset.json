@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "S3_filedataset",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsas3adpprd001",

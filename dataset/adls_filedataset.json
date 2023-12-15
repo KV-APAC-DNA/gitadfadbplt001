@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText2",
+	"name": "adls_filedataset",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
