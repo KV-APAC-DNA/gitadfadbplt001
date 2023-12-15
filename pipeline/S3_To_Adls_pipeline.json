@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "s3_to_adls_copy_activity",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -61,20 +61,6 @@
 				]
 			}
 		],
-		"parameters": {
-			"S3Bucket": {
-				"type": "string"
-			},
-			"S3Directory": {
-				"type": "string"
-			},
-			"AdlsContainer": {
-				"type": "string"
-			},
-			"AdlsDirectory": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
