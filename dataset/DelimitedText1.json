@@ -17,7 +17,7 @@
 				"folderPath": "SBX_DNA_LAB1/Dev/transactional",
 				"fileName": "Shilla_202201.xlsx"
 			},
-			"columnDelimiter": "",
+			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
