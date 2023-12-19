@@ -341,6 +341,50 @@
 												}
 											}
 										]
+									},
+									{
+										"value": "load_method",
+										"activities": [
+											{
+												"name": "set load_method",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "load_method",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "sp_name",
+										"activities": [
+											{
+												"name": "set sp_name",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "sp_name",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
 									}
 								],
 								"defaultActivities": [
@@ -398,7 +442,7 @@
 								"source": {
 									"type": "ExcelSource",
 									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
+										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
 										"enablePartitionDiscovery": false
 									}
@@ -406,7 +450,7 @@
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings",
+										"type": "AzureBlobFSWriteSettings",
 										"copyBehavior": "MergeFiles"
 									},
 									"formatSettings": {
@@ -697,6 +741,12 @@
 				"type": "String"
 			},
 			"file_format": {
+				"type": "String"
+			},
+			"load_method": {
+				"type": "String"
+			},
+			"sp_name": {
 				"type": "String"
 			}
 		},
