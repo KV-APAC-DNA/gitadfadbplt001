@@ -385,6 +385,28 @@
 												}
 											}
 										]
+									},
+									{
+										"value": "sheet_name",
+										"activities": [
+											{
+												"name": "set sheet_name",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "sheet_name",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
 									}
 								],
 								"defaultActivities": [
@@ -839,6 +861,9 @@
 				"type": "String"
 			},
 			"fileName": {
+				"type": "String"
+			},
+			"sheet_name": {
 				"type": "String"
 			}
 		},
