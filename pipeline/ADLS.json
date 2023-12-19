@@ -57,7 +57,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "load from file",
+						"activity": "check load method",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -114,7 +114,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "load from file",
+						"activity": "check load method",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -506,6 +506,30 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Set fileName",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "converttocsv",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileName",
+								"value": {
+									"value": "@replace(item().name,'.xlsx','.csv')",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -539,60 +563,6 @@
 							"type": "NonQuery",
 							"text": {
 								"value": "TRUNCATE TABLE @{variables('target_schema')}.@{variables('target_table')}",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "load from file",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "convertxlstocsv",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "truncate target table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "set stage",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "set file format",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "NonQuery",
-							"text": {
-								"value": "COPY INTO \n    @{variables('target_schema')}.@{variables('target_table')}\n     FROM @{concat('''@', variables('stage'), '/',variables('folder_path'),'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{variables('file_format')})",
 								"type": "Expression"
 							}
 						}
@@ -696,6 +666,125 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "check load method",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "convertxlstocsv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "truncate target table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "set stage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "set file format",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@variables('load_method')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "copy",
+							"activities": [
+								{
+									"name": "load from file",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "NonQuery",
+												"text": {
+													"value": "COPY INTO \n    @{variables('target_schema')}.@{variables('target_table')}\n     FROM @{concat('''@', variables('stage'), '/',variables('folder_path'),'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{variables('file_format')})",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						},
+						{
+							"value": "sp",
+							"activities": [
+								{
+									"name": "load with SP",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "NonQuery",
+												"text": {
+													"value": "CALL @{variables('sp_name')} (['@{variables('file_spec')}','@{variables('target_schema')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}');",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Fail Unknown Load Method",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Unknown Load Method",
+								"errorCode": "0000"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -747,6 +836,9 @@
 				"type": "String"
 			},
 			"sp_name": {
+				"type": "String"
+			},
+			"fileName": {
 				"type": "String"
 			}
 		},
