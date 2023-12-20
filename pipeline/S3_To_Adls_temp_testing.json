@@ -106,15 +106,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "ExcelSource",
 						"storeSettings": {
 							"type": "AmazonS3ReadSettings",
 							"recursive": true,
 							"modifiedDatetimeEnd": null,
 							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
@@ -141,7 +138,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "S3FileDataset",
+						"referenceName": "S3FileDatasetExcel",
 						"type": "DatasetReference",
 						"parameters": {
 							"s3Bucket": {
@@ -152,10 +149,11 @@
 								"value": "@pipeline().parameters.S3Directory",
 								"type": "Expression"
 							},
-							"s3fileName": {
+							"s3FileName": {
 								"value": "@pipeline().parameters.S3FileName",
 								"type": "Expression"
-							}
+							},
+							"s3FileSheet": 0
 						}
 					}
 				],
