@@ -8,6 +8,7 @@
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
+			"sheetName": "Apr22",
 			"location": {
 				"type": "AmazonS3Location",
 				"bucketName": "itx-arm-snowflake-external-stage",
