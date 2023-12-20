@@ -8,6 +8,7 @@
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
+			"sheetName": "Apr20",
 			"location": {
 				"type": "AmazonS3Location",
 				"bucketName": "itx-arm-conapdna-aspac-prod",
