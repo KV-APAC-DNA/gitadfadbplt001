@@ -168,7 +168,7 @@
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@pipeline().parameters.AdlsFiieName",
+								"value": "@{pipeline().parameters.AdlsFiieName}.csv",
 								"type": "Expression"
 							}
 						}
@@ -258,7 +258,7 @@
 			},
 			"AdlsFiieName": {
 				"type": "string",
-				"defaultValue": "Shilla_202004.xlsx"
+				"defaultValue": "Shilla_202004"
 			}
 		},
 		"folder": {
