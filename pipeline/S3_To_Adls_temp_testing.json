@@ -91,19 +91,24 @@
 		],
 		"parameters": {
 			"S3Bucket": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "itx-arm-conapdna-aspac-prod"
 			},
 			"S3Directory": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "raw-data-lake/travel_retail/transaction_files/archive"
 			},
 			"S3FileName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "Shilla_202204.xlsx"
 			},
 			"AdlsContainer": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "asp"
 			},
 			"AdlsDirectory": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "dev/transactional"
 			}
 		},
 		"folder": {
