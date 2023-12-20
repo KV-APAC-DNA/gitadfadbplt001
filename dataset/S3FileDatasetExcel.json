@@ -43,7 +43,8 @@
 			"sheetIndex": {
 				"value": "@dataset().s3FileSheet",
 				"type": "Expression"
-			}
+			},
+			"range": ""
 		},
 		"schema": [
 			{
