@@ -93,7 +93,7 @@
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
 										"quoteAllText": true,
-										"fileExtension": ".txt"
+										"fileExtension": ".xlsx"
 									}
 								},
 								"enableStaging": false,
@@ -109,7 +109,22 @@
 							"inputs": [
 								{
 									"referenceName": "S3FileDatasetExcel",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"s3Bucket": {
+											"value": "@pipeline().parameters.S3Bucket",
+											"type": "Expression"
+										},
+										"s3Directory": {
+											"value": "@pipeline().parameters.S3Directory",
+											"type": "Expression"
+										},
+										"s3FileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										},
+										"s3FileSheet": 1
+									}
 								}
 							],
 							"outputs": [
