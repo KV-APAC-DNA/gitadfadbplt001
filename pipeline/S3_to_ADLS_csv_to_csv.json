@@ -1,5 +1,5 @@
 {
-	"name": "S3_to_ADLS",
+	"name": "S3_to_ADLS_csv_to_csv",
 	"properties": {
 		"activities": [
 			{
@@ -80,8 +80,7 @@
 									"storeSettings": {
 										"type": "AmazonS3ReadSettings",
 										"recursive": true,
-										"modifiedDatetimeStart": "2023-07-01T00:00:00.000Z",
-										"modifiedDatetimeEnd": "2023-11-07T00:00:00.000Z",
+										"modifiedDatetimeEnd": null,
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
@@ -153,42 +152,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Update Metadata",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "ForEveryFileInsideFolder",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('Update DSHARM03_RAW.s3_adls_metadata\nSET ISLOADED = True,\nLOADTIMESTAMP = CONVERT_TIMEZONE(''Asia/Kolkata'', CURRENT_TIMESTAMP())\nwhere TASKID= ', string(pipeline().parameters.TaskId),';')",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
 			}
 		],
 		"parameters": {
@@ -203,9 +166,6 @@
 			},
 			"AdlsDirectory": {
 				"type": "string"
-			},
-			"TaskId": {
-				"type": "int"
 			}
 		},
 		"variables": {
