@@ -1,5 +1,5 @@
 {
-	"name": "HistoricalS3FileDataset",
+	"name": "S3FileDataset",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsas3adpprd001",

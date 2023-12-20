@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "HistoricalS3FolderDataset",
+						"referenceName": "S3FolderDataset",
 						"type": "DatasetReference",
 						"parameters": {
 							"s3bucket": {
@@ -111,7 +111,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "HistoricalS3FileDataset",
+									"referenceName": "S3FileDataset",
 									"type": "DatasetReference",
 									"parameters": {
 										"s3Bucket": {
@@ -131,7 +131,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "HistoricalAdlsFileDataset",
+									"referenceName": "AdlsFileDataset",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": {

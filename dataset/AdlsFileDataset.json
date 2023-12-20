@@ -1,5 +1,5 @@
 {
-	"name": "HistoricalAdlsFileDataset",
+	"name": "AdlsFileDataset",
 	"properties": {
 		"parameters": {
 			"container": {
