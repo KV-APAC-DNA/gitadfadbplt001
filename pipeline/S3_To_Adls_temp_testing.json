@@ -93,8 +93,6 @@
 			{
 				"name": "s3_to_adls_copy_activity_copy1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -171,7 +169,7 @@
 								"type": "Expression"
 							},
 							"fileName": {
-								"value": "@pipeline().parameters.S3FileName",
+								"value": "@pipeline().parameters.AdlsFiieName",
 								"type": "Expression"
 							}
 						}
@@ -181,6 +179,8 @@
 			{
 				"name": "s3_to_adls_copy_activity_copy1_copy1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -247,7 +247,7 @@
 			},
 			"S3FileName": {
 				"type": "string",
-				"defaultValue": "Shilla_202204.xlsx"
+				"defaultValue": "Shilla_202004.xlsx"
 			},
 			"AdlsContainer": {
 				"type": "string",
@@ -256,6 +256,10 @@
 			"AdlsDirectory": {
 				"type": "string",
 				"defaultValue": "dev/transactional"
+			},
+			"AdlsFiieName": {
+				"type": "string",
+				"defaultValue": "Shilla_202004.xlsx"
 			}
 		},
 		"folder": {
