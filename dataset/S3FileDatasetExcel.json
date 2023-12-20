@@ -19,6 +19,9 @@
 				"type": "int"
 			}
 		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
