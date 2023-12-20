@@ -1,0 +1,233 @@
+{
+	"name": "S3_to_ADLS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Get S3 Folder Details",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "HistoricalS3FolderDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"s3bucket": {
+								"value": "@pipeline().parameters.S3Bucket",
+								"type": "Expression"
+							},
+							"s3directory": {
+								"value": "@pipeline().parameters.S3Directory",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AmazonS3ReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
+				}
+			},
+			{
+				"name": "ForEveryFileInsideFolder",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Get S3 Folder Details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Get S3 Folder Details').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 10,
+					"activities": [
+						{
+							"name": "s3_to_adls_copy_activity",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AmazonS3ReadSettings",
+										"recursive": true,
+										"modifiedDatetimeStart": "2023-07-01T00:00:00.000Z",
+										"modifiedDatetimeEnd": "2023-11-07T00:00:00.000Z",
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "HistoricalS3FileDataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"s3Bucket": {
+											"value": "@pipeline().parameters.S3Bucket",
+											"type": "Expression"
+										},
+										"s3Directory": {
+											"value": "@pipeline().parameters.S3Directory",
+											"type": "Expression"
+										},
+										"s3fileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "HistoricalAdlsFileDataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@pipeline().parameters.AdlsDirectory",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Update Metadata",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "ForEveryFileInsideFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('Update DSHARM03_RAW.s3_adls_metadata\nSET ISLOADED = True,\nLOADTIMESTAMP = CONVERT_TIMEZONE(''Asia/Kolkata'', CURRENT_TIMESTAMP())\nwhere TASKID= ', string(pipeline().parameters.TaskId),';')",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"S3Bucket": {
+				"type": "string"
+			},
+			"S3Directory": {
+				"type": "string"
+			},
+			"AdlsContainer": {
+				"type": "string"
+			},
+			"AdlsDirectory": {
+				"type": "string"
+			},
+			"TaskId": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"test": {
+				"type": "String"
+			},
+			"S3BucketName": {
+				"type": "String"
+			},
+			"S3DirectoryName": {
+				"type": "String"
+			},
+			"AdlsContainer": {
+				"type": "String"
+			},
+			"AdlsDirectory": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "HistoricalFileMigration"
+		},
+		"annotations": []
+	}
+}
