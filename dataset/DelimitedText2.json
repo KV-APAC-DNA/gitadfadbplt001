@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "Shilla_202004.xlsx",
+				"fileName": "Shilla_202203.xlsx",
 				"folderPath": "dev/transactional",
 				"fileSystem": "asp"
 			},
