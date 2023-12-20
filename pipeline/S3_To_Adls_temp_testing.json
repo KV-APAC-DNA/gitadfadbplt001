@@ -1,9 +1,9 @@
 {
-	"name": "S3_To_Adls_pipeline",
+	"name": "S3_To_Adls_temp_testing",
 	"properties": {
 		"activities": [
 			{
-				"name": "s3_to_adls_copy_activity",
+				"name": "s3_to_adls_copy_activity_copy1",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -15,10 +15,97 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"enableStaging": false
-				}
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": true,
+							"modifiedDatetimeEnd": null,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".csv"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "S3FileDatasetExcel",
+						"type": "DatasetReference",
+						"parameters": {
+							"s3Bucket": {
+								"value": "@pipeline().parameters.S3Bucket",
+								"type": "Expression"
+							},
+							"s3Directory": {
+								"value": "@pipeline().parameters.S3Directory",
+								"type": "Expression"
+							},
+							"s3FileName": {
+								"value": "@pipeline().parameters.S3FileName",
+								"type": "Expression"
+							},
+							"s3FileSheet": 1
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AdlsFileDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@pipeline().parameters.AdlsDirectory",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.S3FileName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
+		"parameters": {
+			"S3Bucket": {
+				"type": "string"
+			},
+			"S3Directory": {
+				"type": "string"
+			},
+			"S3FileName": {
+				"type": "string"
+			},
+			"AdlsContainer": {
+				"type": "string"
+			},
+			"AdlsDirectory": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
