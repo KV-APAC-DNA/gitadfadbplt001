@@ -93,6 +93,8 @@
 			{
 				"name": "s3_to_adls_copy_activity_copy1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -179,8 +181,6 @@
 			{
 				"name": "s3_to_adls_copy_activity_copy1_copy1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
