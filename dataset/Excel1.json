@@ -8,12 +8,12 @@
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
-			"sheetName": "Apr20",
+			"sheetName": "Mar22",
 			"location": {
 				"type": "AmazonS3Location",
 				"bucketName": "itx-arm-conapdna-aspac-prod",
 				"folderPath": "raw-data-lake/travel_retail/transaction_files/archive",
-				"fileName": "Shilla_202004.xlsx"
+				"fileName": "Shilla_202203.xlsx"
 			}
 		},
 		"schema": [
