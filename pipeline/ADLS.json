@@ -783,7 +783,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('target_schema')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}');",
+													"value": "Select 'Success';",
 													"type": "Expression"
 												}
 											}
@@ -811,19 +811,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "REGIONAL"
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"process_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"variables": {
