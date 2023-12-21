@@ -504,7 +504,10 @@
 											"value": "@item().name",
 											"type": "Expression"
 										},
-										"src_sheetname": "Sheet1",
+										"src_sheetname": {
+											"value": "@variables('sheet_name')",
+											"type": "Expression"
+										},
 										"src_container": {
 											"value": "@variables('adls_container')",
 											"type": "Expression"
