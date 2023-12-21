@@ -525,7 +525,14 @@
 											"value": "@variables('folder_path')",
 											"type": "Expression"
 										},
-										"target_filename": "test.csv"
+										"target_filename": {
+											"value": "@replace(item().name,'.xlsx','.csv')",
+											"type": "Expression"
+										},
+										"target_container": {
+											"value": "@variables('adls_container')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
