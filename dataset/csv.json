@@ -11,6 +11,9 @@
 			},
 			"target_filename": {
 				"type": "string"
+			},
+			"target_container": {
+				"type": "string"
 			}
 		},
 		"folder": {
@@ -29,7 +32,10 @@
 					"value": "@dataset().target_path",
 					"type": "Expression"
 				},
-				"fileSystem": "converted"
+				"fileSystem": {
+					"value": "@dataset().target_container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
