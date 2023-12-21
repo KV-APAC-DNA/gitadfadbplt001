@@ -452,7 +452,14 @@
 						{
 							"name": "converttocsv",
 							"type": "Copy",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "FileStructureValidation SP Call",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -559,6 +566,52 @@
 									"value": "@replace(item().name,'.xlsx','.csv')",
 									"type": "Expression"
 								}
+							}
+						},
+						{
+							"name": "FileStructureValidation SP Call",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "NonQuery",
+										"text": {
+											"value": "Select 'Success';",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "FileStructureValidationFailed",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "FileStructureValidation SP Call",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "File Structure Validation Failed",
+								"errorCode": "001"
 							}
 						}
 					]
