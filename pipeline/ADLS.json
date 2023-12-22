@@ -513,7 +513,7 @@
 											"type": "Expression"
 										},
 										"src_sheetindex": {
-											"value": "@variables('sheet_name')",
+											"value": "@variables('sheet_index')",
 											"type": "Expression"
 										},
 										"src_container": {
