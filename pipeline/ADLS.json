@@ -829,7 +829,14 @@
 								{
 									"name": "load with SP",
 									"type": "Script",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set variable1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -853,6 +860,23 @@
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test_sp_call",
+										"value": {
+											"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}');",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -933,6 +957,9 @@
 				"type": "String"
 			},
 			"sheet_name": {
+				"type": "String"
+			},
+			"test_sp_call": {
 				"type": "String"
 			}
 		},
