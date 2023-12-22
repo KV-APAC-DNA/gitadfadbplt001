@@ -444,7 +444,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter1').output.Value",
+						"value": "@activity('Filter only Files').output.Value",
 						"type": "Expression"
 					},
 					"batchCount": 10,
