@@ -435,7 +435,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Filter1",
+						"activity": "Filter only Files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -444,7 +444,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter1').output",
+						"value": "@activity('Filter1').output.Value",
 						"type": "Expression"
 					},
 					"batchCount": 10,
@@ -897,7 +897,7 @@
 				}
 			},
 			{
-				"name": "Filter1",
+				"name": "Filter only Files",
 				"type": "Filter",
 				"dependsOn": [
 					{
@@ -914,7 +914,7 @@
 						"type": "Expression"
 					},
 					"condition": {
-						"value": "@equals(item(),'File')",
+						"value": "@equals(item().type,'File')",
 						"type": "Expression"
 					}
 				}
