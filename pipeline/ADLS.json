@@ -682,7 +682,7 @@
 								"type": "Expression"
 							},
 							"src_filename": {
-								"value": "@concat('*',variables('file_spec'),'*')",
+								"value": "@concat('*',variables('file_spec'),'*.xlsx')",
 								"type": "Expression"
 							},
 							"src_sheetname": {
