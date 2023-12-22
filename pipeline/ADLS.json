@@ -618,42 +618,6 @@
 				}
 			},
 			{
-				"name": "truncate target table",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "for each parameter",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "NonQuery",
-							"text": {
-								"value": "TRUNCATE TABLE @{variables('target_schema')}.@{variables('target_table')}",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
 				"name": "get file names",
 				"type": "GetMetadata",
 				"dependsOn": [
@@ -764,12 +728,6 @@
 						]
 					},
 					{
-						"activity": "truncate target table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
 						"activity": "set stage",
 						"dependencyConditions": [
 							"Succeeded"
@@ -813,7 +771,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "COPY INTO \n    @{variables('target_schema')}.@{variables('target_table')}\n     FROM @{concat('''@', variables('stage'), '/',variables('folder_path'),'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{variables('file_format')})",
+													"value": "TRUNCATE TABLE @{variables('target_schema')}.@{variables('target_table')};\nCOPY INTO \n    @{variables('target_schema')}.@{variables('target_table')}\n     FROM @{concat('''@', variables('stage'), '/',variables('folder_path'),'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{variables('file_format')});",
 													"type": "Expression"
 												}
 											}
@@ -847,7 +805,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
+													"value": "TRUNCATE TABLE @{variables('target_schema')}.@{variables('target_table')};\nCALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
 													"type": "Expression"
 												}
 											}
