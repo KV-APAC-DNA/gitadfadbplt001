@@ -854,7 +854,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "CALL @{variables('sp_name')} ('@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}');",
+													"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
 													"type": "Expression"
 												}
 											}
@@ -874,7 +874,7 @@
 									"typeProperties": {
 										"variableName": "test_sp_call",
 										"value": {
-											"value": "CALL @{variables('sp_name')} ('@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}');",
+											"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
 											"type": "Expression"
 										}
 									}
