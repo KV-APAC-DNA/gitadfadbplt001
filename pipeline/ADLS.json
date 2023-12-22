@@ -435,7 +435,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "get file names",
+						"activity": "Filtering Only Files ",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -681,7 +681,10 @@
 								"value": "@variables('folder_path')",
 								"type": "Expression"
 							},
-							"src_filename": "Shilla202204.xlsx",
+							"src_filename": {
+								"value": "@concat('*',variables('file_spec'),'*')",
+								"type": "Expression"
+							},
 							"src_sheetname": {
 								"value": "@variables('sheet_name')",
 								"type": "Expression"
@@ -891,6 +894,29 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Filtering Only Files",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "get file names",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get file names').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().type, 'File')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
