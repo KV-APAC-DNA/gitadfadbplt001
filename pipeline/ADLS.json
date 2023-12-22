@@ -387,10 +387,10 @@
 										]
 									},
 									{
-										"value": "sheet_name",
+										"value": "sheet_index",
 										"activities": [
 											{
-												"name": "set sheet_name",
+												"name": "set sheet_index",
 												"type": "SetVariable",
 												"dependsOn": [],
 												"policy": {
@@ -399,7 +399,7 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"variableName": "sheet_name",
+													"variableName": "sheet_index",
 													"value": {
 														"value": "@item().parameter_value",
 														"type": "Expression"
@@ -984,6 +984,9 @@
 			},
 			"test_sp_call": {
 				"type": "String"
+			},
+			"sheet_index": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
