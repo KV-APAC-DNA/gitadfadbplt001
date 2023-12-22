@@ -401,7 +401,7 @@
 												"typeProperties": {
 													"variableName": "sheet_index",
 													"value": {
-														"value": "@item().parameter_value",
+														"value": "@int(item().parameter_value)",
 														"type": "Expression"
 													}
 												}
