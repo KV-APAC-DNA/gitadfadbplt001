@@ -512,7 +512,7 @@
 											"value": "@item().name",
 											"type": "Expression"
 										},
-										"src_sheetname": {
+										"src_sheetindex": {
 											"value": "@variables('sheet_name')",
 											"type": "Expression"
 										},
@@ -685,8 +685,8 @@
 								"value": "@concat('*',variables('file_spec'),'*.xlsx')",
 								"type": "Expression"
 							},
-							"src_sheetname": {
-								"value": "@variables('sheet_name')",
+							"src_sheetindex": {
+								"value": "@variables('sheet_index')",
 								"type": "Expression"
 							},
 							"src_container": {

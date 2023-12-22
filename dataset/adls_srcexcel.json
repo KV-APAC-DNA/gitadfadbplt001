@@ -12,9 +12,8 @@
 			"src_filename": {
 				"type": "string"
 			},
-			"src_sheetname": {
-				"type": "string",
-				"defaultValue": "Sheet1"
+			"src_sheetindex": {
+				"type": "int"
 			},
 			"src_container": {
 				"type": "string"
@@ -26,10 +25,6 @@
 		"annotations": [],
 		"type": "Excel",
 		"typeProperties": {
-			"sheetName": {
-				"value": "@dataset().src_sheetname",
-				"type": "Expression"
-			},
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
@@ -44,6 +39,10 @@
 					"value": "@dataset().src_container",
 					"type": "Expression"
 				}
+			},
+			"sheetIndex": {
+				"value": "@dataset().src_sheetindex",
+				"type": "Expression"
 			},
 			"firstRowAsHeader": false
 		},
