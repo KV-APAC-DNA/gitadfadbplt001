@@ -681,10 +681,7 @@
 								"value": "@variables('folder_path')",
 								"type": "Expression"
 							},
-							"src_filename": {
-								"value": "@concat('*',variables('file_spec'),'*.xlsx')",
-								"type": "Expression"
-							},
+							"src_filename": "Shilla202204.xlsx",
 							"src_sheetname": {
 								"value": "@variables('sheet_name')",
 								"type": "Expression"
