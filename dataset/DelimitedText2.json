@@ -10,8 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "Shilla_202004.csv",
-				"folderPath": "dev/transactional",
+				"fileName": "CDFG_202301.csv",
+				"folderPath": "dev/transactional/CDFG",
 				"fileSystem": "asp"
 			},
 			"columnDelimiter": ",",
