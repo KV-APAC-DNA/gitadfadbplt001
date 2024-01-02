@@ -40,7 +40,7 @@
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
 			"firstRowAsHeader": false,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}

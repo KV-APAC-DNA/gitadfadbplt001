@@ -161,7 +161,7 @@
 			},
 			"S3FileName": {
 				"type": "string",
-				"defaultValue": "Shilla_202204.xlsx"
+				"defaultValue": "DFS_202009.xlsx"
 			},
 			"AdlsContainer": {
 				"type": "string",
@@ -173,7 +173,7 @@
 			},
 			"AdlsFiieName": {
 				"type": "string",
-				"defaultValue": "Shilla_202204"
+				"defaultValue": "DFS_202009"
 			},
 			"FileSheetIndex": {
 				"type": "int",
