@@ -1,0 +1,188 @@
+{
+	"name": "S3_To_Adls_temp_testing_copy1",
+	"properties": {
+		"activities": [
+			{
+				"name": "s3_to_adls_copy_activity_copy1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "S3FileDatasetExcel",
+						"type": "DatasetReference",
+						"parameters": {
+							"s3Bucket": {
+								"value": "@pipeline().parameters.S3Bucket",
+								"type": "Expression"
+							},
+							"s3Directory": {
+								"value": "@pipeline().parameters.S3Directory",
+								"type": "Expression"
+							},
+							"s3FileName": {
+								"value": "@pipeline().parameters.S3FileName",
+								"type": "Expression"
+							},
+							"s3FileSheet": {
+								"value": "@pipeline().parameters.FileSheetIndex",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AdlsFileDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@pipeline().parameters.AdlsDirectory",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@{pipeline().parameters.AdlsFiieName}.csv",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "s3_to_adls_copy_activity_copy1_copy1",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ExcelSource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": true,
+							"modifiedDatetimeEnd": null,
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ""
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Excel1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DelimitedText2",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"parameters": {
+			"S3Bucket": {
+				"type": "string",
+				"defaultValue": "itx-arm-conapdna-aspac-prod"
+			},
+			"S3Directory": {
+				"type": "string",
+				"defaultValue": "raw-data-lake/travel_retail/transaction_files/archive"
+			},
+			"S3FileName": {
+				"type": "string",
+				"defaultValue": "DFS_202009.xlsx"
+			},
+			"AdlsContainer": {
+				"type": "string",
+				"defaultValue": "asp"
+			},
+			"AdlsDirectory": {
+				"type": "string",
+				"defaultValue": "dev/transactional"
+			},
+			"AdlsFiieName": {
+				"type": "string",
+				"defaultValue": "DFS_202009"
+			},
+			"FileSheetIndex": {
+				"type": "int",
+				"defaultValue": 0
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
