@@ -40,7 +40,10 @@
 					"type": "Expression"
 				}
 			},
-			"sheetIndex": 0,
+			"sheetIndex": {
+				"value": "@dataset().s3FileSheet",
+				"type": "Expression"
+			},
 			"range": ""
 		},
 		"schema": [
