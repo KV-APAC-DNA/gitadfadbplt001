@@ -580,7 +580,7 @@
 									{
 										"type": "NonQuery",
 										"text": {
-											"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{variables('fileName')}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
+											"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{item().name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
 											"type": "Expression"
 										}
 									}
