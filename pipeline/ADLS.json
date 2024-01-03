@@ -407,6 +407,116 @@
 												}
 											}
 										]
+									},
+									{
+										"value": "index",
+										"activities": [
+											{
+												"name": "set index",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "index",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "validation",
+										"activities": [
+											{
+												"name": "set validation",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "validation",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "val_file_name",
+										"activities": [
+											{
+												"name": "set val_file_name",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "val_file_name",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "val_file_extn",
+										"activities": [
+											{
+												"name": "set val_file_extn",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "val_file_extn",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "val_file_header",
+										"activities": [
+											{
+												"name": "set val_file_header",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "val_file_header",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
 									}
 								],
 								"defaultActivities": [
@@ -921,6 +1031,21 @@
 			},
 			"sheet_index": {
 				"type": "Integer"
+			},
+			"index": {
+				"type": "String"
+			},
+			"validation": {
+				"type": "String"
+			},
+			"val_file_name": {
+				"type": "String"
+			},
+			"val_file_extn": {
+				"type": "String"
+			},
+			"val_file_header": {
+				"type": "String"
 			}
 		},
 		"folder": {
