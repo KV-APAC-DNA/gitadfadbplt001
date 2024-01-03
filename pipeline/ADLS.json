@@ -580,7 +580,7 @@
 									{
 										"type": "NonQuery",
 										"text": {
-											"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{variables('fileName')}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}']);",
+											"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{variables('fileName')}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
 											"type": "Expression"
 										}
 									}
@@ -927,7 +927,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "TRUNCATE TABLE @{variables('target_schema')}.@{variables('target_table')};\nCALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
+													"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
 													"type": "Expression"
 												}
 											}
