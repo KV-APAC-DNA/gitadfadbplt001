@@ -615,7 +615,7 @@
 										"userProperties": [],
 										"typeProperties": {
 											"message": {
-												"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value}",
+												"value": "File Structure Validation @{activity('FileStructureValidation SP Call2').output.value}",
 												"type": "Expression"
 											},
 											"errorCode": "001"
