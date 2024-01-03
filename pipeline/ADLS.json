@@ -699,7 +699,7 @@
 									{
 										"type": "NonQuery",
 										"text": {
-											"value": "Select 'Success';",
+											"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{variables('fileName')}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}']);",
 											"type": "Expression"
 										}
 									}
