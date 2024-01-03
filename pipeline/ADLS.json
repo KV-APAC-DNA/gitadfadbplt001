@@ -560,37 +560,6 @@
 					"batchCount": 10,
 					"activities": [
 						{
-							"name": "FileStructureValidation SP Call1",
-							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnaload",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "NonQuery",
-										"text": {
-											"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{item().name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
 							"name": "If Validation Successful",
 							"type": "IfCondition",
 							"dependsOn": [
