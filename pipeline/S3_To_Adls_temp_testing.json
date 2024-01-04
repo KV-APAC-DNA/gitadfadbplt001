@@ -153,7 +153,7 @@
 		"parameters": {
 			"S3Bucket": {
 				"type": "string",
-				"defaultValue": "itx-arm-conapdna-aspac-prod"
+				"defaultValue": "itx-arm-conapdna-aspac-qa"
 			},
 			"S3Directory": {
 				"type": "string",
@@ -161,7 +161,7 @@
 			},
 			"S3FileName": {
 				"type": "string",
-				"defaultValue": "DFS_202009.xlsx"
+				"defaultValue": "Dufry Hainan 122022.xlsx"
 			},
 			"AdlsContainer": {
 				"type": "string",
@@ -169,11 +169,11 @@
 			},
 			"AdlsDirectory": {
 				"type": "string",
-				"defaultValue": "dev/transactional"
+				"defaultValue": "dev/transactional/Dufry"
 			},
 			"AdlsFiieName": {
 				"type": "string",
-				"defaultValue": "DFS_202009"
+				"defaultValue": "Dufry Hainan 122022"
 			},
 			"FileSheetIndex": {
 				"type": "int",
