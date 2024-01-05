@@ -15,8 +15,8 @@
 			"s3FileName": {
 				"type": "string"
 			},
-			"s3FileSheet": {
-				"type": "int"
+			"s3FileSheetName": {
+				"type": "string"
 			}
 		},
 		"folder": {
