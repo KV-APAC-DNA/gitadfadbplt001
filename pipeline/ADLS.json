@@ -573,7 +573,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'Structure Validation for Shilla_202201.xlsx is passed!')",
+									"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'Structure Validation for DFS_202009.xlsx is passed!')",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -988,11 +988,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 2
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 2
 			},
 			"phase_id": {
 				"type": "int",
