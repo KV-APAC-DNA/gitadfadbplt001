@@ -73,6 +73,10 @@
 										"s3FileName": {
 											"value": "@pipeline().parameters.S3FileName",
 											"type": "Expression"
+										},
+										"s3FileSheetName": {
+											"value": "@item()",
+											"type": "Expression"
 										}
 									}
 								}
