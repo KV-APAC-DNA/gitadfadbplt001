@@ -95,7 +95,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "@{replace(pipeline().parameters.AdlsFiieName,' ','_')}.csv",
+											"value": "@{replace(item(),' ','_')}.csv",
 											"type": "Expression"
 										}
 									}
@@ -121,15 +121,11 @@
 			},
 			"AdlsContainer": {
 				"type": "string",
-				"defaultValue": "asp"
+				"defaultValue": "CNSC DR.CILABO SALES REPORT 202202.xlsx"
 			},
 			"AdlsDirectory": {
 				"type": "string",
-				"defaultValue": "dev/transactional/Dufry"
-			},
-			"AdlsFiieName": {
-				"type": "string",
-				"defaultValue": "Dufry Hainan 122022"
+				"defaultValue": "dev/transactional/CNSC"
 			},
 			"FileSheetNames": {
 				"type": "array",
