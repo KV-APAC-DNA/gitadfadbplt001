@@ -60,7 +60,25 @@
 							"inputs": [
 								{
 									"referenceName": "S3FileDatasetExcelSheetName",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"s3Bucket": {
+											"value": "@pipeline().parameters.S3Bucket",
+											"type": "Expression"
+										},
+										"s3Directory": {
+											"value": "@pipeline().parameters.S3Directory",
+											"type": "Expression"
+										},
+										"s3FileName": {
+											"value": "@pipeline().parameters.S3FileName",
+											"type": "Expression"
+										},
+										"s3FileSheetName": {
+											"value": "@item()",
+											"type": "Expression"
+										}
+									}
 								}
 							],
 							"outputs": [
