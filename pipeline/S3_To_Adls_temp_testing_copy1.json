@@ -129,7 +129,14 @@
 			},
 			"FileSheetNames": {
 				"type": "array",
-				"defaultValue": "['a','b','c']"
+				"defaultValue": [
+					"ZZ DT",
+					"HZ DT",
+					"BJ DT",
+					"CQ DT",
+					"DL DT",
+					"SY DT"
+				]
 			}
 		},
 		"folder": {
