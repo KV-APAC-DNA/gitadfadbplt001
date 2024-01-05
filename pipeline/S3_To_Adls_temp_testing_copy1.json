@@ -73,10 +73,6 @@
 										"s3FileName": {
 											"value": "@pipeline().parameters.S3FileName",
 											"type": "Expression"
-										},
-										"s3FileSheetName": {
-											"value": "@item()",
-											"type": "Expression"
 										}
 									}
 								}
@@ -117,11 +113,11 @@
 			},
 			"S3FileName": {
 				"type": "string",
-				"defaultValue": "Dufry Hainan 122022.xlsx"
+				"defaultValue": "CNSC DR.CILABO SALES REPORT 202202.xlsx"
 			},
 			"AdlsContainer": {
 				"type": "string",
-				"defaultValue": "CNSC DR.CILABO SALES REPORT 202202.xlsx"
+				"defaultValue": "asp"
 			},
 			"AdlsDirectory": {
 				"type": "string",
