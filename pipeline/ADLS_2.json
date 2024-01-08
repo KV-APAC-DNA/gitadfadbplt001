@@ -563,58 +563,6 @@
 				}
 			},
 			{
-				"name": "get file name",
-				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "for each parameter",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "adls_srcexcel",
-						"type": "DatasetReference",
-						"parameters": {
-							"src_path": {
-								"value": "@variables('folder_path')",
-								"type": "Expression"
-							},
-							"src_filename": {
-								"value": "@concat('*',variables('file_spec'),'*.xlsx')",
-								"type": "Expression"
-							},
-							"src_sheetindex": {
-								"value": "@variables('sheet_index')",
-								"type": "Expression"
-							},
-							"src_container": {
-								"value": "@variables('adls_container')",
-								"type": "Expression"
-							}
-						}
-					},
-					"fieldList": [
-						"childItems"
-					],
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
 				"name": "set stage",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -679,7 +627,7 @@
 						]
 					},
 					{
-						"activity": "If Validation Successful",
+						"activity": "Switch for csv or xlsx",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -776,11 +724,11 @@
 				}
 			},
 			{
-				"name": "Filter Only File",
-				"type": "Filter",
+				"name": "Switch for csv or xlsx",
+				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "get file name",
+						"activity": "for each parameter",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -788,130 +736,63 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"items": {
-						"value": "@activity('get file name').output.childItems",
+					"on": {
+						"value": "@variables('source_extn')",
 						"type": "Expression"
 					},
-					"condition": {
-						"value": "@equals(item().type,'File')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "If Validation Successful",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "FileStructureValidation SP Call",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
+					"cases": [
 						{
-							"name": "FileStructureValidationFailed",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": {
-									"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
-									"type": "Expression"
-								},
-								"errorCode": "001"
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "converttocsv",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "ExcelSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									}
-								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".csv"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
+							"value": "csv",
+							"activities": [
 								{
-									"referenceName": "adls_srcexcel",
-									"type": "DatasetReference",
-									"parameters": {
-										"src_path": {
-											"value": "@variables('folder_path')",
-											"type": "Expression"
+									"name": "get file name - csv",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "adls_srccsv",
+											"type": "DatasetReference"
 										},
-										"src_filename": {
-											"value": "@activity('Filter Only File').output.Value[0].name",
-											"type": "Expression"
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
 										},
-										"src_sheetindex": {
-											"value": "@variables('sheet_index')",
-											"type": "Expression"
-										},
-										"src_container": {
-											"value": "@variables('adls_container')",
-											"type": "Expression"
+										"formatSettings": {
+											"type": "DelimitedTextReadSettings"
 										}
 									}
-								}
-							],
-							"outputs": [
+								},
 								{
-									"referenceName": "csv",
-									"type": "DatasetReference",
-									"parameters": {
-										"target_path": {
-											"value": "@variables('folder_path')",
+									"name": "Filter Only File - csv",
+									"type": "Filter",
+									"dependsOn": [
+										{
+											"activity": "get file name - csv",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@activity('get file name - csv').output.childItems",
 											"type": "Expression"
 										},
-										"target_filename": {
-											"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
-											"type": "Expression"
-										},
-										"target_container": {
-											"value": "@variables('adls_container')",
+										"condition": {
+											"value": "@equals(item().type,'File')",
 											"type": "Expression"
 										}
 									}
@@ -919,67 +800,263 @@
 							]
 						},
 						{
-							"name": "Set fileName",
-							"type": "SetVariable",
-							"dependsOn": [
+							"value": "xlsx",
+							"activities": [
 								{
-									"activity": "converttocsv",
-									"dependencyConditions": [
-										"Succeeded"
-									]
+									"name": "get file name - xlsx",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "adls_srcexcel",
+											"type": "DatasetReference",
+											"parameters": {
+												"src_path": {
+													"value": "@variables('folder_path')",
+													"type": "Expression"
+												},
+												"src_filename": {
+													"value": "@concat('*',variables('file_spec'),'*.xlsx')",
+													"type": "Expression"
+												},
+												"src_sheetindex": {
+													"value": "@variables('sheet_index')",
+													"type": "Expression"
+												},
+												"src_container": {
+													"value": "@variables('adls_container')",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Filter Only File  - xlsx",
+									"type": "Filter",
+									"dependsOn": [
+										{
+											"activity": "get file name - xlsx",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@activity('get file name - xlsx').output.childItems",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@equals(item().type,'File')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "If Validation Successful",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "FileStructureValidation SP Call",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "FileStructureValidationFailed",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
+														"type": "Expression"
+													},
+													"errorCode": "001"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "converttocsv",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "ExcelSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"enablePartitionDiscovery": false
+														}
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".csv"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "adls_srcexcel",
+														"type": "DatasetReference",
+														"parameters": {
+															"src_path": {
+																"value": "@variables('folder_path')",
+																"type": "Expression"
+															},
+															"src_filename": {
+																"value": "@activity('Filter Only File  - xlsx').output.Value[0].name",
+																"type": "Expression"
+															},
+															"src_sheetindex": {
+																"value": "@variables('sheet_index')",
+																"type": "Expression"
+															},
+															"src_container": {
+																"value": "@variables('adls_container')",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "csv",
+														"type": "DatasetReference",
+														"parameters": {
+															"target_path": {
+																"value": "@variables('folder_path')",
+																"type": "Expression"
+															},
+															"target_filename": {
+																"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+																"type": "Expression"
+															},
+															"target_container": {
+																"value": "@variables('adls_container')",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Set fileName",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "converttocsv",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "fileName",
+													"value": {
+														"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "FileStructureValidation SP Call",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "Filter Only File  - xlsx",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeSource",
+											"query": {
+												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File  - xlsx').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand"
+											}
+										},
+										"dataset": {
+											"referenceName": "mtd_process",
+											"type": "DatasetReference"
+										},
+										"firstRowOnly": false
+									}
 								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileName",
-								"value": {
-									"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
-									"type": "Expression"
-								}
-							}
+							]
 						}
 					]
-				}
-			},
-			{
-				"name": "FileStructureValidation SP Call",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Filter Only File",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SnowflakeSource",
-						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
-							"type": "Expression"
-						},
-						"exportSettings": {
-							"type": "SnowflakeExportCopyCommand"
-						}
-					},
-					"dataset": {
-						"referenceName": "mtd_process",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
 				}
 			}
 		],
