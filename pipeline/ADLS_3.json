@@ -536,7 +536,10 @@
 												"userProperties": [],
 												"typeProperties": {
 													"variableName": "source_extn",
-													"value": "xlsx"
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
 												}
 											}
 										]
