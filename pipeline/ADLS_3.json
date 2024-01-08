@@ -536,10 +536,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"variableName": "source_extn",
-													"value": {
-														"value": "@item().parameter_value",
-														"type": "Expression"
-													}
+													"value": "xlsx"
 												}
 											}
 										]
@@ -628,12 +625,6 @@
 					},
 					{
 						"activity": "set file format",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "If Validation Successful ",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -732,8 +723,6 @@
 			{
 				"name": "Switch for csv or xlsx",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "for each parameter",
@@ -902,8 +891,6 @@
 			{
 				"name": "Filter Only File",
 				"type": "Filter",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Switch for csv or xlsx",
@@ -1052,8 +1039,6 @@
 			{
 				"name": "FileStructureValidation SP Call",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set fileName",
@@ -1091,8 +1076,6 @@
 			{
 				"name": "Set fileName",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Filter Only File",
