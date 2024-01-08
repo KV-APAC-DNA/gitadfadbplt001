@@ -55,8 +55,6 @@
 			{
 				"name": "audit success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check load method",
@@ -114,8 +112,6 @@
 			{
 				"name": "audit fail",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check load method",
@@ -617,8 +613,6 @@
 			{
 				"name": "check load method",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "set stage",
@@ -628,6 +622,12 @@
 					},
 					{
 						"activity": "set file format",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "If Validation Successful",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -917,8 +917,6 @@
 			{
 				"name": "If Validation Successful",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "FileStructureValidation SP Call",
