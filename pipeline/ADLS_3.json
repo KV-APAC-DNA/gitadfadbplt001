@@ -627,7 +627,7 @@
 						]
 					},
 					{
-						"activity": "If Validation Successful - xlsx_copy1",
+						"activity": "If Validation Successful ",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -789,8 +789,8 @@
 									}
 								},
 								{
-									"name": "Filter Only File - csv",
-									"type": "Filter",
+									"name": "Set fileArray_csv",
+									"type": "SetVariable",
 									"dependsOn": [
 										{
 											"activity": "get file name - csv",
@@ -799,200 +799,17 @@
 											]
 										}
 									],
-									"userProperties": [],
-									"typeProperties": {
-										"items": {
-											"value": "@activity('get file name - csv').output.childItems",
-											"type": "Expression"
-										},
-										"condition": {
-											"value": "@equals(item().type,'File')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "If Validation Successful - csv",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "FileStructureValidation SP Call - csv",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@equals(activity('FileStructureValidation SP Call - csv').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
-											"type": "Expression"
-										},
-										"ifFalseActivities": [
-											{
-												"name": "FileStructureValidationFailed_copy1",
-												"type": "Fail",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"message": {
-														"value": "File Structure Validation @{activity('FileStructureValidation SP Call - csv').output.value[0].FILE_VALIDATION}",
-														"type": "Expression"
-													},
-													"errorCode": "001"
-												}
-											}
-										],
-										"ifTrueActivities": [
-											{
-												"name": "converttocsv_copy1",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "ExcelSource",
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true,
-															"enablePartitionDiscovery": false
-														}
-													},
-													"sink": {
-														"type": "DelimitedTextSink",
-														"storeSettings": {
-															"type": "AzureBlobFSWriteSettings"
-														},
-														"formatSettings": {
-															"type": "DelimitedTextWriteSettings",
-															"quoteAllText": true,
-															"fileExtension": ".csv"
-														}
-													},
-													"enableStaging": false,
-													"translator": {
-														"type": "TabularTranslator",
-														"typeConversion": true,
-														"typeConversionSettings": {
-															"allowDataTruncation": true,
-															"treatBooleanAsNumber": false
-														}
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "adls_srcexcel",
-														"type": "DatasetReference",
-														"parameters": {
-															"src_path": {
-																"value": "@variables('folder_path')",
-																"type": "Expression"
-															},
-															"src_filename": {
-																"value": "@activity('Filter Only File - csv').output.Value[0].name",
-																"type": "Expression"
-															},
-															"src_sheetindex": {
-																"value": "@variables('sheet_index')",
-																"type": "Expression"
-															},
-															"src_container": {
-																"value": "@variables('adls_container')",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "csv",
-														"type": "DatasetReference",
-														"parameters": {
-															"target_path": {
-																"value": "@variables('folder_path')",
-																"type": "Expression"
-															},
-															"target_filename": {
-																"value": "@replace(activity('Filter Only File - csv').output.Value[0].name,'.xlsx','.csv')",
-																"type": "Expression"
-															},
-															"target_container": {
-																"value": "@variables('adls_container')",
-																"type": "Expression"
-															}
-														}
-													}
-												]
-											},
-											{
-												"name": "Set fileName_copy1",
-												"type": "SetVariable",
-												"dependsOn": [
-													{
-														"activity": "converttocsv_copy1",
-														"dependencyConditions": [
-															"Succeeded"
-														]
-													}
-												],
-												"policy": {
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "fileName",
-													"value": {
-														"value": "@replace(activity('Filter Only File - csv').output.Value[0].name,'.xlsx','.csv')",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "FileStructureValidation SP Call - csv",
-									"type": "Lookup",
-									"dependsOn": [
-										{
-											"activity": "Filter Only File - csv",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
 									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
 										"secureInput": false
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File - csv').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
-												"type": "Expression"
-											},
-											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
-											}
-										},
-										"dataset": {
-											"referenceName": "mtd_process",
-											"type": "DatasetReference"
-										},
-										"firstRowOnly": false
+										"variableName": "fileArray",
+										"value": {
+											"value": "@activity('get file name - csv').output.childItems",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -1046,8 +863,8 @@
 									}
 								},
 								{
-									"name": "Filter Only File  - xlsx",
-									"type": "Filter",
+									"name": "Set fileArray_xlsx",
+									"type": "SetVariable",
 									"dependsOn": [
 										{
 											"activity": "get file name - xlsx",
@@ -1056,200 +873,17 @@
 											]
 										}
 									],
-									"userProperties": [],
-									"typeProperties": {
-										"items": {
-											"value": "@activity('get file name - xlsx').output.childItems",
-											"type": "Expression"
-										},
-										"condition": {
-											"value": "@equals(item().type,'File')",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "If Validation Successful - xlsx",
-									"type": "IfCondition",
-									"dependsOn": [
-										{
-											"activity": "FileStructureValidation SP Call - xlsx",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"expression": {
-											"value": "@equals(activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
-											"type": "Expression"
-										},
-										"ifFalseActivities": [
-											{
-												"name": "FileStructureValidationFailed",
-												"type": "Fail",
-												"dependsOn": [],
-												"userProperties": [],
-												"typeProperties": {
-													"message": {
-														"value": "File Structure Validation @{activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION}",
-														"type": "Expression"
-													},
-													"errorCode": "001"
-												}
-											}
-										],
-										"ifTrueActivities": [
-											{
-												"name": "converttocsv",
-												"type": "Copy",
-												"dependsOn": [],
-												"policy": {
-													"timeout": "0.12:00:00",
-													"retry": 0,
-													"retryIntervalInSeconds": 30,
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"source": {
-														"type": "ExcelSource",
-														"storeSettings": {
-															"type": "AzureBlobFSReadSettings",
-															"recursive": true,
-															"enablePartitionDiscovery": false
-														}
-													},
-													"sink": {
-														"type": "DelimitedTextSink",
-														"storeSettings": {
-															"type": "AzureBlobFSWriteSettings"
-														},
-														"formatSettings": {
-															"type": "DelimitedTextWriteSettings",
-															"quoteAllText": true,
-															"fileExtension": ".csv"
-														}
-													},
-													"enableStaging": false,
-													"translator": {
-														"type": "TabularTranslator",
-														"typeConversion": true,
-														"typeConversionSettings": {
-															"allowDataTruncation": true,
-															"treatBooleanAsNumber": false
-														}
-													}
-												},
-												"inputs": [
-													{
-														"referenceName": "adls_srcexcel",
-														"type": "DatasetReference",
-														"parameters": {
-															"src_path": {
-																"value": "@variables('folder_path')",
-																"type": "Expression"
-															},
-															"src_filename": {
-																"value": "@activity('Filter Only File  - xlsx').output.Value[0].name",
-																"type": "Expression"
-															},
-															"src_sheetindex": {
-																"value": "@variables('sheet_index')",
-																"type": "Expression"
-															},
-															"src_container": {
-																"value": "@variables('adls_container')",
-																"type": "Expression"
-															}
-														}
-													}
-												],
-												"outputs": [
-													{
-														"referenceName": "csv",
-														"type": "DatasetReference",
-														"parameters": {
-															"target_path": {
-																"value": "@variables('folder_path')",
-																"type": "Expression"
-															},
-															"target_filename": {
-																"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
-																"type": "Expression"
-															},
-															"target_container": {
-																"value": "@variables('adls_container')",
-																"type": "Expression"
-															}
-														}
-													}
-												]
-											},
-											{
-												"name": "Set fileName",
-												"type": "SetVariable",
-												"dependsOn": [
-													{
-														"activity": "converttocsv",
-														"dependencyConditions": [
-															"Succeeded"
-														]
-													}
-												],
-												"policy": {
-													"secureOutput": false,
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"variableName": "fileName",
-													"value": {
-														"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
-														"type": "Expression"
-													}
-												}
-											}
-										]
-									}
-								},
-								{
-									"name": "FileStructureValidation SP Call - xlsx",
-									"type": "Lookup",
-									"dependsOn": [
-										{
-											"activity": "Filter Only File  - xlsx",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
 									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
 										"secureInput": false
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File  - xlsx').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
-												"type": "Expression"
-											},
-											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
-											}
-										},
-										"dataset": {
-											"referenceName": "mtd_process",
-											"type": "DatasetReference"
-										},
-										"firstRowOnly": false
+										"variableName": "fileArray",
+										"value": {
+											"value": "@activity('get file name - xlsx').output.childItems",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -1258,7 +892,7 @@
 				}
 			},
 			{
-				"name": "Filter Only File  - xlsx_copy1",
+				"name": "Filter Only File",
 				"type": "Filter",
 				"dependsOn": [
 					{
@@ -1281,11 +915,11 @@
 				}
 			},
 			{
-				"name": "If Validation Successful - xlsx_copy1",
+				"name": "If Validation Successful",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "FileStructureValidation SP Call - xlsx_copy1",
+						"activity": "FileStructureValidation SP Call",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1294,7 +928,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+						"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -1428,11 +1062,11 @@
 				}
 			},
 			{
-				"name": "FileStructureValidation SP Call - xlsx_copy1",
+				"name": "FileStructureValidation SP Call",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Filter Only File  - xlsx_copy1",
+						"activity": "Filter Only File",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1450,7 +1084,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File  - xlsx').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -1550,6 +1184,9 @@
 			},
 			"source_extn": {
 				"type": "String"
+			},
+			"fileArray": {
+				"type": "Array"
 			}
 		},
 		"folder": {
