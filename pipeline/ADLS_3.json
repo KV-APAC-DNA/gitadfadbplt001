@@ -1,0 +1,1561 @@
+{
+	"name": "ADLS_3",
+	"properties": {
+		"activities": [
+			{
+				"name": "audit start",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "check load method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FINISH",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "check load method",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "read parameters",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "audit start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE;",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "for each parameter",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('read parameters').output.value",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "check parameter name",
+							"type": "Switch",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@item().parameter_name",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "container",
+										"activities": [
+											{
+												"name": "set container",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "adls_container",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "folder_path",
+										"activities": [
+											{
+												"name": "set folder path",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "folder_path",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "target_table",
+										"activities": [
+											{
+												"name": "set target table",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "target_table",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "target_schema",
+										"activities": [
+											{
+												"name": "set target schema",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "target_schema",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "file_spec",
+										"activities": [
+											{
+												"name": "set file spec",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "file_spec",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "load_method",
+										"activities": [
+											{
+												"name": "set load_method",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "load_method",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "sp_name",
+										"activities": [
+											{
+												"name": "set sp_name",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "sp_name",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "sheet_index",
+										"activities": [
+											{
+												"name": "set sheet_index",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "sheet_index",
+													"value": {
+														"value": "@int(item().parameter_value)",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "index",
+										"activities": [
+											{
+												"name": "set index",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "index",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "validation",
+										"activities": [
+											{
+												"name": "set validation",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "validation",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "val_file_name",
+										"activities": [
+											{
+												"name": "set val_file_name",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "val_file_name",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "val_file_extn",
+										"activities": [
+											{
+												"name": "set val_file_extn",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "val_file_extn",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "val_file_header",
+										"activities": [
+											{
+												"name": "set val_file_header",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "val_file_header",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "source_extn",
+										"activities": [
+											{
+												"name": "set source_extn",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "source_extn",
+													"value": {
+														"value": "@item().parameter_value",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								],
+								"defaultActivities": [
+									{
+										"name": "unknown",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "Isunknown",
+											"value": true
+										}
+									}
+								]
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "set stage",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "stage",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].snowflake_stage",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "set file format",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_format",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].snowflake_file_format",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "check load method",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "set stage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "set file format",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "If Validation Successful - xlsx_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@variables('load_method')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "copy",
+							"activities": [
+								{
+									"name": "load from file",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "NonQuery",
+												"text": {
+													"value": "TRUNCATE TABLE @{variables('target_schema')}.@{variables('target_table')};\nCOPY INTO \n    @{variables('target_schema')}.@{variables('target_table')}\n     FROM @{concat('''@', variables('stage'), '/',variables('folder_path'),'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{variables('file_format')});",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						},
+						{
+							"value": "sp",
+							"activities": [
+								{
+									"name": "Load with SP",
+									"type": "Lookup",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeSource",
+											"query": {
+												"value": "CALL @{variables('sp_name')} (['@{variables('fileName')}','@{variables('stage')}','@{variables('folder_path')}','@{variables('target_table')}']);",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand"
+											}
+										},
+										"dataset": {
+											"referenceName": "mtd_process",
+											"type": "DatasetReference"
+										}
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Fail Unknown Load Method",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": "Unknown Load Method",
+								"errorCode": "0000"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Switch for csv or xlsx",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "for each parameter",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@variables('source_extn')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "csv",
+							"activities": [
+								{
+									"name": "get file name - csv",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "adls_srccsv",
+											"type": "DatasetReference",
+											"parameters": {
+												"src_path": {
+													"value": "@variables('folder_path')",
+													"type": "Expression"
+												},
+												"src_filename": {
+													"value": "@concat('*',variables('file_spec'),'*.csv')",
+													"type": "Expression"
+												},
+												"src_container": {
+													"value": "@variables('adls_container')",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										},
+										"formatSettings": {
+											"type": "DelimitedTextReadSettings"
+										}
+									}
+								},
+								{
+									"name": "Filter Only File - csv",
+									"type": "Filter",
+									"dependsOn": [
+										{
+											"activity": "get file name - csv",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@activity('get file name - csv').output.childItems",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@equals(item().type,'File')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "If Validation Successful - csv",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "FileStructureValidation SP Call - csv",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(activity('FileStructureValidation SP Call - csv').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "FileStructureValidationFailed_copy1",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "File Structure Validation @{activity('FileStructureValidation SP Call - csv').output.value[0].FILE_VALIDATION}",
+														"type": "Expression"
+													},
+													"errorCode": "001"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "converttocsv_copy1",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "ExcelSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"enablePartitionDiscovery": false
+														}
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".csv"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "adls_srcexcel",
+														"type": "DatasetReference",
+														"parameters": {
+															"src_path": {
+																"value": "@variables('folder_path')",
+																"type": "Expression"
+															},
+															"src_filename": {
+																"value": "@activity('Filter Only File - csv').output.Value[0].name",
+																"type": "Expression"
+															},
+															"src_sheetindex": {
+																"value": "@variables('sheet_index')",
+																"type": "Expression"
+															},
+															"src_container": {
+																"value": "@variables('adls_container')",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "csv",
+														"type": "DatasetReference",
+														"parameters": {
+															"target_path": {
+																"value": "@variables('folder_path')",
+																"type": "Expression"
+															},
+															"target_filename": {
+																"value": "@replace(activity('Filter Only File - csv').output.Value[0].name,'.xlsx','.csv')",
+																"type": "Expression"
+															},
+															"target_container": {
+																"value": "@variables('adls_container')",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Set fileName_copy1",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "converttocsv_copy1",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "fileName",
+													"value": {
+														"value": "@replace(activity('Filter Only File - csv').output.Value[0].name,'.xlsx','.csv')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "FileStructureValidation SP Call - csv",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "Filter Only File - csv",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeSource",
+											"query": {
+												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File - csv').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand"
+											}
+										},
+										"dataset": {
+											"referenceName": "mtd_process",
+											"type": "DatasetReference"
+										},
+										"firstRowOnly": false
+									}
+								}
+							]
+						},
+						{
+							"value": "xlsx",
+							"activities": [
+								{
+									"name": "get file name - xlsx",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "adls_srcexcel",
+											"type": "DatasetReference",
+											"parameters": {
+												"src_path": {
+													"value": "@variables('folder_path')",
+													"type": "Expression"
+												},
+												"src_filename": {
+													"value": "@concat('*',variables('file_spec'),'*.xlsx')",
+													"type": "Expression"
+												},
+												"src_sheetindex": {
+													"value": "@variables('sheet_index')",
+													"type": "Expression"
+												},
+												"src_container": {
+													"value": "@variables('adls_container')",
+													"type": "Expression"
+												}
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "Filter Only File  - xlsx",
+									"type": "Filter",
+									"dependsOn": [
+										{
+											"activity": "get file name - xlsx",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"items": {
+											"value": "@activity('get file name - xlsx').output.childItems",
+											"type": "Expression"
+										},
+										"condition": {
+											"value": "@equals(item().type,'File')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "If Validation Successful - xlsx",
+									"type": "IfCondition",
+									"dependsOn": [
+										{
+											"activity": "FileStructureValidation SP Call - xlsx",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"expression": {
+											"value": "@equals(activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+											"type": "Expression"
+										},
+										"ifFalseActivities": [
+											{
+												"name": "FileStructureValidationFailed",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "File Structure Validation @{activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION}",
+														"type": "Expression"
+													},
+													"errorCode": "001"
+												}
+											}
+										],
+										"ifTrueActivities": [
+											{
+												"name": "converttocsv",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "ExcelSource",
+														"storeSettings": {
+															"type": "AzureBlobFSReadSettings",
+															"recursive": true,
+															"enablePartitionDiscovery": false
+														}
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".csv"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "adls_srcexcel",
+														"type": "DatasetReference",
+														"parameters": {
+															"src_path": {
+																"value": "@variables('folder_path')",
+																"type": "Expression"
+															},
+															"src_filename": {
+																"value": "@activity('Filter Only File  - xlsx').output.Value[0].name",
+																"type": "Expression"
+															},
+															"src_sheetindex": {
+																"value": "@variables('sheet_index')",
+																"type": "Expression"
+															},
+															"src_container": {
+																"value": "@variables('adls_container')",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "csv",
+														"type": "DatasetReference",
+														"parameters": {
+															"target_path": {
+																"value": "@variables('folder_path')",
+																"type": "Expression"
+															},
+															"target_filename": {
+																"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+																"type": "Expression"
+															},
+															"target_container": {
+																"value": "@variables('adls_container')",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "Set fileName",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "converttocsv",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "fileName",
+													"value": {
+														"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "FileStructureValidation SP Call - xlsx",
+									"type": "Lookup",
+									"dependsOn": [
+										{
+											"activity": "Filter Only File  - xlsx",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeSource",
+											"query": {
+												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File  - xlsx').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand"
+											}
+										},
+										"dataset": {
+											"referenceName": "mtd_process",
+											"type": "DatasetReference"
+										},
+										"firstRowOnly": false
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Filter Only File  - xlsx_copy1",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "Switch for csv or xlsx",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get file name - xlsx').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@equals(item().type,'File')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "If Validation Successful - xlsx_copy1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call - xlsx_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "FileStructureValidationFailed_copy2",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "File Structure Validation @{activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION}",
+									"type": "Expression"
+								},
+								"errorCode": "001"
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "converttocsv_copy2",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "ExcelSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".csv"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "adls_srcexcel",
+									"type": "DatasetReference",
+									"parameters": {
+										"src_path": {
+											"value": "@variables('folder_path')",
+											"type": "Expression"
+										},
+										"src_filename": {
+											"value": "@activity('Filter Only File  - xlsx').output.Value[0].name",
+											"type": "Expression"
+										},
+										"src_sheetindex": {
+											"value": "@variables('sheet_index')",
+											"type": "Expression"
+										},
+										"src_container": {
+											"value": "@variables('adls_container')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "csv",
+									"type": "DatasetReference",
+									"parameters": {
+										"target_path": {
+											"value": "@variables('folder_path')",
+											"type": "Expression"
+										},
+										"target_filename": {
+											"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+											"type": "Expression"
+										},
+										"target_container": {
+											"value": "@variables('adls_container')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Set fileName_copy2",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "converttocsv_copy2",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileName",
+								"value": {
+									"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "FileStructureValidation SP Call - xlsx_copy1",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Filter Only File  - xlsx_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File  - xlsx').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"category": {
+				"type": "string",
+				"defaultValue": "REGIONAL"
+			},
+			"usecase_id": {
+				"type": "int",
+				"defaultValue": 1
+			},
+			"sequence_id": {
+				"type": "int",
+				"defaultValue": 2
+			},
+			"process_id": {
+				"type": "int",
+				"defaultValue": 2
+			},
+			"phase_id": {
+				"type": "int",
+				"defaultValue": 1
+			}
+		},
+		"variables": {
+			"output": {
+				"type": "String"
+			},
+			"Isunknown": {
+				"type": "Boolean"
+			},
+			"adls_container": {
+				"type": "String"
+			},
+			"folder_path": {
+				"type": "String"
+			},
+			"target_table": {
+				"type": "String"
+			},
+			"target_schema": {
+				"type": "String"
+			},
+			"file_spec": {
+				"type": "String"
+			},
+			"stage": {
+				"type": "String"
+			},
+			"file_format": {
+				"type": "String"
+			},
+			"load_method": {
+				"type": "String"
+			},
+			"sp_name": {
+				"type": "String"
+			},
+			"fileName": {
+				"type": "String"
+			},
+			"sheet_name": {
+				"type": "String"
+			},
+			"test_sp_call": {
+				"type": "String"
+			},
+			"sheet_index": {
+				"type": "Integer"
+			},
+			"index": {
+				"type": "String"
+			},
+			"validation": {
+				"type": "String"
+			},
+			"val_file_name": {
+				"type": "String"
+			},
+			"val_file_extn": {
+				"type": "String"
+			},
+			"val_file_header": {
+				"type": "String"
+			},
+			"source_extn": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Ingestion/Sources"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-28T12:21:01Z"
+	}
+}
