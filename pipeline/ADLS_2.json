@@ -798,11 +798,11 @@
 									}
 								},
 								{
-									"name": "If Validation Successful_copy1",
+									"name": "If Validation Successful - csv",
 									"type": "IfCondition",
 									"dependsOn": [
 										{
-											"activity": "FileStructureValidation SP Call_copy1",
+											"activity": "FileStructureValidation SP Call - csv",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -811,7 +811,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"expression": {
-											"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+											"value": "@equals(activity('FileStructureValidation SP Call - csv').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
 											"type": "Expression"
 										},
 										"ifFalseActivities": [
@@ -822,7 +822,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
-														"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
+														"value": "File Structure Validation @{activity('FileStructureValidation SP Call - csv').output.value[0].FILE_VALIDATION}",
 														"type": "Expression"
 													},
 													"errorCode": "001"
@@ -945,7 +945,7 @@
 									}
 								},
 								{
-									"name": "FileStructureValidation SP Call_copy1",
+									"name": "FileStructureValidation SP Call - csv",
 									"type": "Lookup",
 									"dependsOn": [
 										{
@@ -967,7 +967,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File  - xlsx').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
+												"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File - csv').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
