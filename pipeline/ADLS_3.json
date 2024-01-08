@@ -55,6 +55,8 @@
 			{
 				"name": "audit success",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check load method",
@@ -112,6 +114,8 @@
 			{
 				"name": "audit fail",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check load method",
@@ -613,6 +617,8 @@
 			{
 				"name": "check load method",
 				"type": "Switch",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "set stage",
@@ -726,6 +732,8 @@
 			{
 				"name": "Switch for csv or xlsx",
 				"type": "Switch",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "for each parameter",
@@ -894,6 +902,8 @@
 			{
 				"name": "Filter Only File",
 				"type": "Filter",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Switch for csv or xlsx",
@@ -905,7 +915,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get file name - xlsx').output.childItems",
+						"value": "@variables('fileArray')",
 						"type": "Expression"
 					},
 					"condition": {
@@ -917,6 +927,8 @@
 			{
 				"name": "If Validation Successful",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "FileStructureValidation SP Call",
@@ -939,7 +951,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"message": {
-									"value": "File Structure Validation @{activity('FileStructureValidation SP Call - xlsx').output.value[0].FILE_VALIDATION}",
+									"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
 									"type": "Expression"
 								},
 								"errorCode": "001"
@@ -948,7 +960,7 @@
 					],
 					"ifTrueActivities": [
 						{
-							"name": "converttocsv_copy2",
+							"name": "converttocsv",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -999,7 +1011,7 @@
 											"type": "Expression"
 										},
 										"src_filename": {
-											"value": "@activity('Filter Only File  - xlsx').output.Value[0].name",
+											"value": "@activity('Filter Only File').output.Value[0].name",
 											"type": "Expression"
 										},
 										"src_sheetindex": {
@@ -1023,7 +1035,7 @@
 											"type": "Expression"
 										},
 										"target_filename": {
-											"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+											"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
 											"type": "Expression"
 										},
 										"target_container": {
@@ -1033,30 +1045,6 @@
 									}
 								}
 							]
-						},
-						{
-							"name": "Set fileName_copy2",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "converttocsv_copy2",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "fileName",
-								"value": {
-									"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
@@ -1064,9 +1052,11 @@
 			{
 				"name": "FileStructureValidation SP Call",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Filter Only File",
+						"activity": "Set fileName",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1096,6 +1086,32 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set fileName",
+				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Filter Only File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fileName",
+					"value": {
+						"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
