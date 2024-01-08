@@ -855,8 +855,7 @@
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings",
-										"copyBehavior": "MergeFiles"
+										"type": "AzureBlobFSWriteSettings"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
@@ -908,7 +907,7 @@
 											"type": "Expression"
 										},
 										"target_filename": {
-											"value": "@replace(item().name,'.xlsx','.csv')",
+											"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
 											"type": "Expression"
 										},
 										"target_container": {
@@ -938,7 +937,7 @@
 							"typeProperties": {
 								"variableName": "fileName",
 								"value": {
-									"value": "@replace(item().name,'.xlsx','.csv')",
+									"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
 									"type": "Expression"
 								}
 							}
@@ -969,7 +968,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{item().name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File').output.Value[0].name}','@{variables('index')}','@{variables('validation')}','@{variables('val_file_name')}','@{variables('val_file_extn')}','@{variables('val_file_header')}']);",
 							"type": "Expression"
 						},
 						"exportSettings": {
