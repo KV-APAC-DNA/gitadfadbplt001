@@ -883,7 +883,7 @@
 											"type": "Expression"
 										},
 										"src_filename": {
-											"value": "@item().name",
+											"value": "@activity('Filter Only File').output.Value[0].name",
 											"type": "Expression"
 										},
 										"src_sheetindex": {
