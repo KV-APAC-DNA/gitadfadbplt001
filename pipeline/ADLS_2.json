@@ -882,7 +882,7 @@
 																"type": "Expression"
 															},
 															"src_filename": {
-																"value": "@activity('Filter Only File  - xlsx').output.Value[0].name",
+																"value": "@activity('Filter Only File - csv').output.Value[0].name",
 																"type": "Expression"
 															},
 															"src_sheetindex": {
@@ -906,7 +906,7 @@
 																"type": "Expression"
 															},
 															"target_filename": {
-																"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+																"value": "@replace(activity('Filter Only File - csv').output.Value[0].name,'.xlsx','.csv')",
 																"type": "Expression"
 															},
 															"target_container": {
@@ -936,7 +936,7 @@
 												"typeProperties": {
 													"variableName": "fileName",
 													"value": {
-														"value": "@replace(activity('Filter Only File  - xlsx').output.Value[0].name,'.xlsx','.csv')",
+														"value": "@replace(activity('Filter Only File - csv').output.Value[0].name,'.xlsx','.csv')",
 														"type": "Expression"
 													}
 												}
