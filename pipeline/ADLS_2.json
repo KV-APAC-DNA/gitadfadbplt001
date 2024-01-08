@@ -759,7 +759,21 @@
 									"typeProperties": {
 										"dataset": {
 											"referenceName": "adls_srccsv",
-											"type": "DatasetReference"
+											"type": "DatasetReference",
+											"parameters": {
+												"src_path": {
+													"value": "@variables('folder_path')",
+													"type": "Expression"
+												},
+												"src_filename": {
+													"value": "@concat('*',variables('file_spec'),'*.csv')",
+													"type": "Expression"
+												},
+												"src_container": {
+													"value": "@variables('adls_container')",
+													"type": "Expression"
+												}
+											}
 										},
 										"fieldList": [
 											"childItems"
