@@ -1,5 +1,5 @@
 {
-	"name": "adls_srccsv",
+	"name": "adls_src",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
@@ -9,10 +9,10 @@
 			"src_path": {
 				"type": "string"
 			},
-			"src_filename": {
+			"src_container": {
 				"type": "string"
 			},
-			"src_container": {
+			"src_filename": {
 				"type": "string"
 			}
 		},
