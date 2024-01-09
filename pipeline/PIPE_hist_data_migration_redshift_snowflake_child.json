@@ -99,7 +99,7 @@
 							"typeProperties": {
 								"variableName": "snowflakeQuery",
 								"value": {
-									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.DEV_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '/''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
+									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''', pipeline().parameters.Stage_Schema, '.',pipeline().parameters.Environment,'_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '/''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.',pipeline().parameters.Environment,'_CORE_CSV_FILEFORMAT'' ',\n';')",
 									"type": "Expression"
 								}
 							}
