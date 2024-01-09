@@ -627,7 +627,13 @@
 						]
 					},
 					{
-						"activity": "If Validation Successful",
+						"activity": "Switch1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "ForEach1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -915,129 +921,6 @@
 				}
 			},
 			{
-				"name": "If Validation Successful",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "FileStructureValidation SP Call",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "FileStructureValidationFailed_copy2",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": {
-									"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
-									"type": "Expression"
-								},
-								"errorCode": "001"
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "converttocsv",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "ExcelSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									}
-								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".csv"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "adls_srcexcel",
-									"type": "DatasetReference",
-									"parameters": {
-										"src_path": {
-											"value": "@variables('folder_path')",
-											"type": "Expression"
-										},
-										"src_filename": {
-											"value": "@activity('Filter Only File').output.Value[0].name",
-											"type": "Expression"
-										},
-										"src_sheetindex": {
-											"value": "@variables('sheet_index')",
-											"type": "Expression"
-										},
-										"src_container": {
-											"value": "@variables('adls_container')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "csv",
-									"type": "DatasetReference",
-									"parameters": {
-										"target_path": {
-											"value": "@variables('folder_path')",
-											"type": "Expression"
-										},
-										"target_filename": {
-											"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
-											"type": "Expression"
-										},
-										"target_container": {
-											"value": "@variables('adls_container')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					]
-				}
-			},
-			{
 				"name": "FileStructureValidation SP Call",
 				"type": "Lookup",
 				"dependsOn": [
@@ -1096,6 +979,171 @@
 						"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@if(\nequals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed'), \nif(equals(variables('source_extn'),'csv'),'1', if( empty(variables('sheet_names')),'2','')), '0')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "0",
+							"activities": [
+								{
+									"name": "FileStructureValidationFailed_copy2",
+									"type": "Fail",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
+											"type": "Expression"
+										},
+										"errorCode": "001"
+									}
+								}
+							]
+						},
+						{
+							"value": "1"
+						},
+						{
+							"value": "2",
+							"activities": [
+								{
+									"name": "converttocsv",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "ExcelSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".csv"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "adls_srcexcel",
+											"type": "DatasetReference",
+											"parameters": {
+												"src_path": {
+													"value": "@variables('folder_path')",
+													"type": "Expression"
+												},
+												"src_filename": {
+													"value": "@activity('Filter Only File').output.Value[0].name",
+													"type": "Expression"
+												},
+												"src_sheetindex": {
+													"value": "@variables('sheet_index')",
+													"type": "Expression"
+												},
+												"src_container": {
+													"value": "@variables('adls_container')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "csv",
+											"type": "DatasetReference",
+											"parameters": {
+												"target_path": {
+													"value": "@variables('folder_path')",
+													"type": "Expression"
+												},
+												"target_filename": {
+													"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
+													"type": "Expression"
+												},
+												"target_container": {
+													"value": "@variables('adls_container')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('sheet_names')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Wait1",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
+						}
+					]
 				}
 			}
 		],
@@ -1158,8 +1206,8 @@
 			"fileName": {
 				"type": "String"
 			},
-			"sheet_name": {
-				"type": "String"
+			"sheet_names": {
+				"type": "Array"
 			},
 			"test_sp_call": {
 				"type": "String"
