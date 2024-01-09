@@ -99,6 +99,10 @@
 									"Stage_Schema": {
 										"value": "@item().STAGE_SCHEMA",
 										"type": "Expression"
+									},
+									"Environment": {
+										"value": "@pipeline().parameters.Environment",
+										"type": "Expression"
 									}
 								}
 							}
@@ -107,6 +111,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"Environment": {
+				"type": "string",
+				"defaultValue": "DEV"
+			}
+		},
 		"variables": {
 			"redshift_unload_query": {
 				"type": "String"
