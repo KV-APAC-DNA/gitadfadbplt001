@@ -560,6 +560,10 @@
 			"Stage_Schema": {
 				"type": "string",
 				"defaultValue": "SNAPASPSDL_RAW"
+			},
+			"Environment": {
+				"type": "string",
+				"defaultValue": "DEV"
 			}
 		},
 		"variables": {
