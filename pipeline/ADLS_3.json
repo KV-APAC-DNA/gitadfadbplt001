@@ -1018,7 +1018,18 @@
 							]
 						},
 						{
-							"value": "1"
+							"value": "1",
+							"activities": [
+								{
+									"name": "Wait2",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
 						},
 						{
 							"value": "2",
