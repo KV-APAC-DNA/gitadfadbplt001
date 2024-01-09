@@ -245,7 +245,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n};\nCOPY INTO \n    @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n}\n     FROM @{concat('''@', activity('read parameters').output.value[0].stage\n, '/',activity('read parameters').output.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{activity('read parameters').output.value[0].file_format});",
+													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n};\nCOPY INTO \n    @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n}\n     FROM @{concat('''@', activity('read parameters').output.value[0].snowflake_stage\n, '/',activity('read parameters').output.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{activity('read parameters').output.value[0].snowflake_file_format});",
 													"type": "Expression"
 												}
 											}
@@ -274,7 +274,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
+												"value": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
