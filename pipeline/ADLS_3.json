@@ -189,7 +189,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT,\n\"'val_file_header'\" AS val_file_header,\n\"'file_spec'\" AS file_spec,\n\"'val_file_name'\" AS val_file_name,\n\"'val_file_extn'\" AS val_file_extn,\n\"'load_method'\" AS load_method,\n\"'sp_name'\" AS sp_name,\n\"'sheet_index'\" AS sheet_index,\n\"'folder_path'\" AS folder_path,\n\"'target_table'\" AS target_table,\n\"'container'\" AS container,\n\"'target_schema'\" AS target_schema,\n\"'validation'\" AS validation,\n\"'index'\" AS index,\n\"'source_extn'\" AS source_extn\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'val_file_header',\n'file_spec',\n'val_file_name',\n'val_file_extn',\n'load_method',\n'sp_name',\n'sheet_index',\n'folder_path',\n'target_table',\n'container',\n'target_schema',\n'validation',\n'index',\n'source_extn'));",
+							"value": "Select SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT,\n\"'val_file_header'\" AS val_file_header,\n\"'file_spec'\" AS file_spec,\n\"'val_file_name'\" AS val_file_name,\n\"'val_file_extn'\" AS val_file_extn,\n\"'load_method'\" AS load_method,\n\"'sp_name'\" AS sp_name,\n\"'sheet_index'\" AS sheet_index,\n\"'folder_path'\" AS folder_path,\n\"'target_table'\" AS target_table,\n\"'container'\" AS container,\n\"'target_schema'\" AS target_schema,\n\"'validation'\" AS validation,\n\"'index'\" AS index,\n\"'source_extn'\" AS source_extn,\n\"'sheet_names'\" AS sheet_names\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'val_file_header',\n'file_spec',\n'val_file_name',\n'val_file_extn',\n'load_method',\n'sp_name',\n'sheet_index',\n'folder_path',\n'target_table',\n'container',\n'target_schema',\n'validation',\n'index',\n'source_extn',\n'sheet_names'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -608,7 +608,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "sheet_names",
-					"value": []
+					"value": {
+						"value": "@if(equals(coalesce(activity('read parameters').output.value[0].sheet_names, variables('emptyArray')),variables('emptyArray')),variables('emptyArray'),split(activity('read parameters').output.value[0].sheet_names,','))",
+						"type": "Expression"
+					}
 				}
 			},
 			{
@@ -746,6 +749,13 @@
 			},
 			"sheet_names": {
 				"type": "Array"
+			},
+			"truncateQuery": {
+				"type": "String"
+			},
+			"emptyArray": {
+				"type": "Array",
+				"defaultValue": []
 			}
 		},
 		"folder": {

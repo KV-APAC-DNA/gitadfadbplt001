@@ -46,7 +46,7 @@
 						"type": "Expression"
 					},
 					"isSequential": false,
-					"batchCount": 3,
+					"batchCount": 4,
 					"activities": [
 						{
 							"name": "Execute Child Pipeline",
