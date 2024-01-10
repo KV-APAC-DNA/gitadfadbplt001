@@ -356,7 +356,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{activity('Filter Only File').output.Value[0].name}','@{activity('read parameters').output.value[0].INDEX}','@{activity('read parameters').output.value[0].Validation\n}','@{activity('read parameters').output.value[0].val_file_name\n}','@{activity('read parameters').output.value[0].val_file_extn\n}','@{activity('read parameters').output.value[0].val_file_header}']);\n",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(activity('Filter Only File').output.Value[0].name,' ','_')}','@{activity('read parameters').output.value[0].INDEX}','@{activity('read parameters').output.value[0].Validation\n}','@{activity('read parameters').output.value[0].val_file_name\n}','@{activity('read parameters').output.value[0].val_file_extn\n}','@{activity('read parameters').output.value[0].val_file_header}']);\n",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -389,7 +389,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv')",
+						"value": "@replace(replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv'),' ' ,'_' )",
 						"type": "Expression"
 					}
 				}
