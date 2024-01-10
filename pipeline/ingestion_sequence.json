@@ -121,7 +121,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
-														"referenceName": "ADLS_Backup",
+														"referenceName": "ADLS",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,
