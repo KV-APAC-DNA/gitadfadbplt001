@@ -1,5 +1,5 @@
 {
-	"name": "ADLS_3",
+	"name": "ADLS",
 	"properties": {
 		"activities": [
 			{
@@ -274,7 +274,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
+												"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n};\nCALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
