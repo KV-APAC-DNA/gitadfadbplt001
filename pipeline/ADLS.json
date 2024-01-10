@@ -274,7 +274,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n};\nCALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
+												"value": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -284,7 +284,8 @@
 										"dataset": {
 											"referenceName": "mtd_process",
 											"type": "DatasetReference"
-										}
+										},
+										"firstRowOnly": false
 									}
 								}
 							]
@@ -389,7 +390,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@replace(replace(activity('Filter Only File').output.Value[0].name,'.xlsx','.csv'),' ' ,'_' )",
+						"value": "@replace(replace(activity('Filter Only File').output.Value[0].name,' ' , '_'),'.xlsx' ,'.csv' )",
 						"type": "Expression"
 					}
 				}
@@ -732,11 +733,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 4
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 4
 			},
 			"phase_id": {
 				"type": "int",
