@@ -1,0 +1,50 @@
+{
+	"name": "S3FileDatasetExcelSheetName",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsas3adpprd001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"s3Bucket": {
+				"type": "string"
+			},
+			"s3Directory": {
+				"type": "string"
+			},
+			"s3FileName": {
+				"type": "string"
+			},
+			"s3FileSheetName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"sheetName": {
+				"value": "@dataset().s3FileSheetName",
+				"type": "Expression"
+			},
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": {
+					"value": "@dataset().s3Bucket",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().s3Directory",
+					"type": "Expression"
+				},
+				"fileName": {
+					"value": "@dataset().s3FileName",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": []
+	}
+}

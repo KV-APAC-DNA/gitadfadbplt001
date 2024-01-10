@@ -1,0 +1,75 @@
+{
+	"name": "write_error_log",
+	"properties": {
+		"activities": [
+			{
+				"name": "write to error log",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "INSERT INTO META_RAW.ERROR_LOG (\n    PROCESS_ID,\n    PHASE_ID,\n    MOMENT,\n    RUN_ID,\n    JOB_ID,\n    JOB_NAME,\n    ERROR_MESSAGE,\n    ERROR_CODE,\n    CATEGORY\n) VALUES (\n    @{pipeline().parameters.process_id},\n    @{pipeline().parameters.phase_id},\n    CURRENT_TIMESTAMP,\n    '@{pipeline().parameters.run_id}',\n    '@{pipeline().parameters.job_id}',\n    '@{pipeline().parameters.job_name}',\n    '@{replace(pipeline().parameters.error_message,'''','''''')}',\n    '@{pipeline().parameters.error_code}',\n    '@{pipeline().parameters.category}'\n);",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"process_id": {
+				"type": "int"
+			},
+			"job_name": {
+				"type": "string"
+			},
+			"error_message": {
+				"type": "string"
+			},
+			"run_id": {
+				"type": "string"
+			},
+			"category": {
+				"type": "string"
+			},
+			"phase_id": {
+				"type": "int"
+			},
+			"error_code": {
+				"type": "string"
+			},
+			"job_id": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"subscriptionid": {
+				"type": "String"
+			},
+			"test_variable": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Logging"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-27T15:02:31Z"
+	}
+}

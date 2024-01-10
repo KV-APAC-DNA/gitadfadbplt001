@@ -28,7 +28,7 @@
 									"typeProperties": {
 										"variableName": "redshift_unload_query",
 										"value": {
-											"value": "@concat('set autocommit=on; unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/',pipeline().parameters.Target_DB,'/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''\\001'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
+											"value": "@concat('set autocommit=on; unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/',pipeline().parameters.Target_DB,'/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''\\001'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 256 MB REGION as ''ap-southeast-1'' ;')",
 											"type": "Expression"
 										}
 									}
@@ -36,6 +36,30 @@
 								{
 									"name": "Snowflake_Transactional_Query",
 									"description": "",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "truncate query transactional",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "snowflakeQuery",
+										"value": {
+											"value": "@concat('COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''', pipeline().parameters.Stage_Schema, '.',pipeline().parameters.Environment,'_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '/''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.',pipeline().parameters.Environment,'_CORE_CSV_FILEFORMAT'' ',\n';')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "truncate query transactional",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
@@ -51,9 +75,9 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "snowflakeQuery",
+										"variableName": "truncateQuery",
 										"value": {
-											"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.DEV_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '/''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
+											"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')\n",
 											"type": "Expression"
 										}
 									}
@@ -74,7 +98,7 @@
 							"typeProperties": {
 								"variableName": "redshift_unload_query",
 								"value": {
-									"value": "@concat('set autocommit=on; unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/',pipeline().parameters.Target_DB,'/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''\\001'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 512 MB REGION as ''ap-southeast-1'' ;')",
+									"value": "@concat('set autocommit=on; unload ($$ select * from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,\n'$$ ) to ''s3://itx-arm-snowflake-external-stage/',pipeline().parameters.Target_DB,'/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table,'/'' iam_role ''arn:aws:iam::580538643236:role/project/scm/itx-arm-app-dremioserver-developmentRole-1O5G0LI8M5O4H'' HEADER DELIMITER as ''\\001'' null ''\\\\N'' escape GZIP CLEANPATH PARALLEL TRUE MAXFILESIZE as 256 MB REGION as ''ap-southeast-1'' ;')",
 									"type": "Expression"
 								}
 							}
@@ -82,6 +106,30 @@
 						{
 							"name": "Snowflake_Full_Refresh_Query",
 							"description": "",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "truncate query full refresh",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "snowflakeQuery",
+								"value": {
+									"value": "@concat('COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.',pipeline().parameters.Environment,'_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '/''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.',pipeline().parameters.Environment,'_CORE_CSV_FILEFORMAT'' ',\n';')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "truncate query full refresh",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
@@ -97,9 +145,9 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "snowflakeQuery",
+								"variableName": "truncateQuery",
 								"value": {
-									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';',\n'COPY INTO ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,\n' FROM ''@', pipeline().parameters.Stage_Schema, '.DEV_CORE_STAGE_S3/',pipeline().parameters.Source_Schema,'_',pipeline().parameters.Source_Table, '/''',\n' FILE_FORMAT = ''',pipeline().parameters.Stage_Schema, '.DEV_CORE_CSV_FILEFORMAT'' ',\n';')",
+									"value": "@concat('truncate table ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')\n",
 									"type": "Expression"
 								}
 							}
@@ -131,7 +179,14 @@
 								{
 									"name": "Load to Snowflake Dna Load",
 									"type": "Script",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Truncate Snowflake Dna Load",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -263,6 +318,34 @@
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
 									}
+								},
+								{
+									"name": "Truncate Snowflake Dna Load",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@variables('truncateQuery')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
 								}
 							]
 						}
@@ -271,7 +354,14 @@
 						{
 							"name": "Load to Snowflake Dna Core",
 							"type": "Script",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Truncate Snowflake Dna Core",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -403,6 +493,34 @@
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Truncate Snowflake Dna Core",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@variables('truncateQuery')",
+											"type": "Expression"
+										}
+									}
+								]
 							}
 						}
 					]
@@ -560,6 +678,10 @@
 			"Stage_Schema": {
 				"type": "string",
 				"defaultValue": "SNAPASPSDL_RAW"
+			},
+			"Environment": {
+				"type": "string",
+				"defaultValue": "DEV"
 			}
 		},
 		"variables": {
@@ -579,6 +701,9 @@
 				"type": "Integer"
 			},
 			"test": {
+				"type": "String"
+			},
+			"truncateQuery": {
 				"type": "String"
 			}
 		},

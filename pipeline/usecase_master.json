@@ -1,0 +1,374 @@
+{
+	"name": "usecase_master",
+	"properties": {
+		"activities": [
+			{
+				"name": "get usecases",
+				"description": "Retrieve all use cases from the current use case sequence",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "audit start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "SELECT DISTINCT\n    USECASE.USECASE_ID\nFROM META_RAW.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.SEQUENCE_ID = @{pipeline().parameters.usecase_sequence_id}\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.USECASE_ID ASC;",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "for each usecase",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "get usecases",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get usecases').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "run phase master",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "phase_master",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"usecase_id": {
+										"value": "@item().usecase_id",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "audit start",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "audit success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "for each usecase",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FINISH",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "audit fail on for loop",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "for each usecase",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "audit fail on lookup",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "get usecases",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "error log 1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "audit fail on lookup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('get usecases').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": 0,
+						"error_code": {
+							"value": "@activity('get usecases').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": 0
+					}
+				}
+			},
+			{
+				"name": "error log 2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "audit fail on for loop",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('get usecases').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": 0,
+						"error_code": {
+							"value": "@activity('run phase master').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": 0
+					}
+				}
+			}
+		],
+		"parameters": {
+			"usecase_sequence_id": {
+				"type": "int"
+			},
+			"category": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Master_Pipelines"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-27T15:01:56Z"
+	}
+}

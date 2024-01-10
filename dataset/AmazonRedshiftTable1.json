@@ -6,7 +6,7 @@
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
-			"name": "HIstorical_Data_migration_redshift_snowflake"
+			"name": "Historical_Data_migration_redshift_snowflake"
 		},
 		"annotations": [],
 		"type": "AmazonRedshiftTable",

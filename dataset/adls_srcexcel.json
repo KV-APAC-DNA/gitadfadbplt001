@@ -1,0 +1,51 @@
+{
+	"name": "adls_srcexcel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"src_path": {
+				"type": "string"
+			},
+			"src_filename": {
+				"type": "string"
+			},
+			"src_sheetindex": {
+				"type": "int"
+			},
+			"src_container": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().src_filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().src_path",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().src_container",
+					"type": "Expression"
+				}
+			},
+			"sheetIndex": {
+				"value": "@dataset().src_sheetindex",
+				"type": "Expression"
+			},
+			"firstRowAsHeader": false
+		},
+		"schema": []
+	}
+}

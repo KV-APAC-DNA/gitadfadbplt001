@@ -1,0 +1,40 @@
+{
+	"name": "S3FolderDataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsas3adpprd001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"s3bucket": {
+				"type": "string"
+			},
+			"s3directory": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": {
+					"value": "@dataset().s3bucket",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().s3directory",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

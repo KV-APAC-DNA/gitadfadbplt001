@@ -1,0 +1,112 @@
+{
+	"name": "S3FileDatasetExcel",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsas3adpprd001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"s3Bucket": {
+				"type": "string"
+			},
+			"s3Directory": {
+				"type": "string"
+			},
+			"s3FileName": {
+				"type": "string"
+			},
+			"s3FileSheet": {
+				"type": "int"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": [],
+		"type": "Excel",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location",
+				"bucketName": {
+					"value": "@dataset().s3Bucket",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().s3Directory",
+					"type": "Expression"
+				},
+				"fileName": {
+					"value": "@dataset().s3FileName",
+					"type": "Expression"
+				}
+			},
+			"sheetIndex": {
+				"value": "@dataset().s3FileSheet",
+				"type": "Expression"
+			},
+			"range": ""
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	}
+}

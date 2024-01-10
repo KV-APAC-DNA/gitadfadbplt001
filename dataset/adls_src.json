@@ -1,0 +1,47 @@
+{
+	"name": "adls_src",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"src_path": {
+				"type": "string"
+			},
+			"src_container": {
+				"type": "string"
+			},
+			"src_filename": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().src_filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().src_path",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().src_container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": false,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}

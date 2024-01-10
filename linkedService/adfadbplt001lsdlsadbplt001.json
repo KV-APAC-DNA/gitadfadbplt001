@@ -1,6 +1,5 @@
 {
 	"name": "adfadbplt001lsdlsadbplt001",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "Linked Service to Kenvue APAC DNA BASE ADLS Container for Landing zone",
 		"annotations": [],
@@ -12,5 +11,6 @@
 			"referenceName": "adfiradbplt001",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
