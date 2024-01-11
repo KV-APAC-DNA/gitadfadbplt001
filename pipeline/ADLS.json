@@ -403,7 +403,14 @@
 						{
 							"name": "Fail Unknown Load Method",
 							"type": "Fail",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "error log - load failed_3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"userProperties": [],
 							"typeProperties": {
 								"message": "Unknown Load Method",
@@ -413,14 +420,7 @@
 						{
 							"name": "error log - load failed_3",
 							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "Fail Unknown Load Method",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
+							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -882,6 +882,72 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Error Multisheet Excel Conversion",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "converttocsv sheetwise",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Error Multisheet Excel Conversion : @{activity('converttocsv sheetwise').error?.message}",
+									"type": "Expression"
+								},
+								"errorCode": "100"
+							}
+						},
+						{
+							"name": "error log - CsvConversion2_copy1",
+							"type": "ExecutePipeline",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "CSV Conversion Mutiple Excel Sheets Failed: @{activity('converttocsv sheetwise').error?.message}\n\n",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": "100",
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
 						}
 					]
 				}
@@ -996,6 +1062,117 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "audit fail - CsvConversion2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEachSheetInExcel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - CsvConversion2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEachSheetInExcel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "CSV Conversion Mutiple Excel Sheets Failed: @{activity('Error Multisheet Excel Conversion')[0].Error.message}\n\n",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "CSV Conversion Mutiple Sheets Failed: @{activity('Error Multisheet Excel Conversion')[0].Error.errorCode}",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1009,11 +1186,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 6
+				"defaultValue": 7
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 6
+				"defaultValue": 7
 			},
 			"phase_id": {
 				"type": "int",
