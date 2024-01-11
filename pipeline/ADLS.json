@@ -287,6 +287,26 @@
 										},
 										"firstRowOnly": false
 									}
+								},
+								{
+									"name": "Fail SP failed",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Load with SP",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "Load with SP Failed: @{activity('Load with SP').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "0001"
+									}
 								}
 							]
 						}
