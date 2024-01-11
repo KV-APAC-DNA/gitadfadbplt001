@@ -117,7 +117,7 @@
 			},
 			"S3FileName": {
 				"type": "string",
-				"defaultValue": "CNSC DR.CILABO SALES REPORT 202202.xlsx"
+				"defaultValue": "CNSC DR.CILABO SALES REPORT 202301.xlsx"
 			},
 			"AdlsContainer": {
 				"type": "string",
