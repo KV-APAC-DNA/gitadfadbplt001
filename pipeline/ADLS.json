@@ -736,11 +736,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 5
+				"defaultValue": 6
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5
+				"defaultValue": 6
 			},
 			"phase_id": {
 				"type": "int",
