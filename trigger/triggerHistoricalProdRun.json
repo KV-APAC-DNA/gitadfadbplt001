@@ -1,0 +1,28 @@
+{
+	"name": "triggerHistoricalProdRun",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Environment": "DEV"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2024-01-12T21:10:00",
+				"endTime": "2024-01-13T21:30:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}
