@@ -57,7 +57,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Check load method",
+						"activity": "Wait1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -110,11 +110,11 @@
 				}
 			},
 			{
-				"name": "audit fail - load failed",
+				"name": "audit fail",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Check load method",
+						"activity": "Wait1",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -256,14 +256,9 @@
 								{
 									"name": "error log - load failed_2",
 									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "load from file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
@@ -306,6 +301,45 @@
 											}
 										}
 									}
+								},
+								{
+									"name": "Load Failed1",
+									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "Load Failed : @{activity('load from file').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "101"
+									}
+								},
+								{
+									"name": "Set Error Message2",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "load from file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('load from file').error?.message}",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -345,14 +379,9 @@
 								{
 									"name": "error log - load failed_1",
 									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "Load with SP",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [],
 									"userProperties": [],
 									"typeProperties": {
 										"pipeline": {
@@ -395,6 +424,45 @@
 											}
 										}
 									}
+								},
+								{
+									"name": "Load Failed",
+									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "Load Failed : @{activity('Load with SP').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "101"
+									}
+								},
+								{
+									"name": "Set Error Message",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Load with SP",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('Load with SP').error?.message}",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -403,6 +471,8 @@
 						{
 							"name": "Fail Unknown Load Method",
 							"type": "Fail",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "error log - load failed_3",
@@ -420,6 +490,8 @@
 						{
 							"name": "error log - load failed_3",
 							"type": "ExecutePipeline",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
@@ -461,6 +533,23 @@
 										"value": "@pipeline()?.TriggeredByPipelineRunId",
 										"type": "Expression"
 									}
+								}
+							}
+						},
+						{
+							"name": "Set Error Message3",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "errorMessage",
+								"value": {
+									"value": "Undefined Load Method: Please check metadata for load_method key",
+									"type": "Expression"
 								}
 							}
 						}
@@ -1164,7 +1253,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "CSV Conversion Mutiple Sheets Failed: @{activity('Error Multisheet Excel Conversion')[0].Error.errorCode}",
+							"value": "@{activity('Error Multisheet Excel Conversion')[0].Error.errorCode}",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1172,6 +1261,166 @@
 							"type": "Expression"
 						}
 					}
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "If Error Encountered during load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 2
+				}
+			},
+			{
+				"name": "If Error Encountered during load",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Check load method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('errorMessage'),'NO')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "audit fail - load",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"status": "FAIL",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": {
+										"value": "@pipeline().parameters.usecase_id",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "error log - load",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "Data Load Failed : @{variables('errorMessage')}",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "102",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Data load fail",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "audit fail - load",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "error log - load",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Data Load Failed : @{variables('errorMessage')}",
+									"type": "Expression"
+								},
+								"errorCode": "102"
+							}
+						}
+					]
 				}
 			}
 		],
@@ -1186,11 +1435,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 7
+				"defaultValue": 6
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 7
+				"defaultValue": 6
 			},
 			"phase_id": {
 				"type": "int",
@@ -1210,6 +1459,10 @@
 			"emptyArray": {
 				"type": "Array",
 				"defaultValue": []
+			},
+			"errorMessage": {
+				"type": "String",
+				"defaultValue": "NO"
 			}
 		},
 		"folder": {
