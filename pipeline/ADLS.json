@@ -784,12 +784,6 @@
 						"dependencyConditions": [
 							"Failed"
 						]
-					},
-					{
-						"activity": "Filter Only File",
-						"dependencyConditions": [
-							"Failed"
-						]
 					}
 				],
 				"userProperties": [],
@@ -847,12 +841,6 @@
 						"dependencyConditions": [
 							"Failed"
 						]
-					},
-					{
-						"activity": "Filter Only File",
-						"dependencyConditions": [
-							"Failed"
-						]
 					}
 				],
 				"userProperties": [],
@@ -872,7 +860,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@coalesce(activity('get file name').error?.message, activity('Filter Only File').error?.message)",
+							"value": "@activity('get file name').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
