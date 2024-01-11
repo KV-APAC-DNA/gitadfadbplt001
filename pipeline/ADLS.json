@@ -771,7 +771,10 @@
 							"value": "@activity('Check load method').error?.errorCode",
 							"type": "Expression"
 						},
-						"job_id": 0
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
 					}
 				}
 			},
@@ -879,7 +882,10 @@
 							"value": "@activity('get file name').error?.errorCode",
 							"type": "Expression"
 						},
-						"job_id": 0
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
 					}
 				}
 			}
