@@ -693,7 +693,10 @@
 											"value": "@item()",
 											"type": "Expression"
 										},
-										"src_container": "@activity('read parameters').output.value[0].container"
+										"src_container": {
+											"value": "@activity('read parameters').output.value[0].container",
+											"type": "Expression"
+										}
 									}
 								}
 							],
