@@ -1,0 +1,18 @@
+{
+	"name": "triggerHistoricalRun",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2024-01-12T21:00:00",
+				"endTime": "2024-01-13T21:59:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}
