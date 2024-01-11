@@ -45,7 +45,7 @@
 					"type": "Expression"
 				}
 			},
-			"firstRowAsHeader": true
+			"firstRowAsHeader": false
 		},
 		"schema": []
 	}
