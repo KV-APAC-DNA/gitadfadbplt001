@@ -169,12 +169,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@pipeline().parameters.Target_DB",
+						"value": "@if(contains(pipeline().parameters.Target_DB,'DNA_LOAD'),'DNA_LOAD','DNA_CORE')",
 						"type": "Expression"
 					},
 					"cases": [
 						{
-							"value": "DEV_DNA_LOAD",
+							"value": "DNA_LOAD",
 							"activities": [
 								{
 									"name": "Load to Snowflake Dna Load",
@@ -346,181 +346,268 @@
 											}
 										]
 									}
+								},
+								{
+									"name": "Insert Status in Metadata as Error_SfTruncate",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Truncate Snowflake Dna Load",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Truncate Snowflake Dna Load')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						},
+						{
+							"value": "DNA_CORE",
+							"activities": [
+								{
+									"name": "Load to Snowflake Dna Core",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Truncate Snowflake Dna Core",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@variables('snowflakeQuery')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Select count from snowflake dna Core",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Load to Snowflake Dna Core",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Insert Status in Metadata as Completed DNA CORE",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Select count from snowflake dna Core",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP, SOURCE_COUNT, TARGET_COUNT) VALUES (',string(pipeline().parameters.Id),', ''Completed'',''SUCCESS'',''',pipeline().RunId, ''',current_timestamp, ', activity('Select count from redshift').output.value[0].count,', ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count,'); ')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Insert Status in Metadata as Error SF DNA CORE",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Load to Snowflake Dna Core",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Truncate Snowflake Dna Core",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@variables('truncateQuery')",
+													"type": "Expression"
+												}
+											}
+										]
+									}
+								},
+								{
+									"name": "Insert Status in Metadata as Error SF_Truncate",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Truncate Snowflake Dna Core",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Truncate Snowflake Dna Core')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
 								}
 							]
 						}
 					],
 					"defaultActivities": [
 						{
-							"name": "Load to Snowflake Dna Core",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Truncate Snowflake Dna Core",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@variables('snowflakeQuery')",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
-							"name": "Select count from snowflake dna Core",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Load to Snowflake Dna Core",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
-							"name": "Insert Status in Metadata as Completed DNA CORE",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Select count from snowflake dna Core",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnaload",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP, SOURCE_COUNT, TARGET_COUNT) VALUES (',string(pipeline().parameters.Id),', ''Completed'',''SUCCESS'',''',pipeline().RunId, ''',current_timestamp, ', activity('Select count from redshift').output.value[0].count,', ',activity('Select count from snowflake dna Core').output.resultSets[0].rows[0].count,'); ')",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
-							"name": "Insert Status in Metadata as Error SF DNA CORE",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Load to Snowflake Dna Core",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnaload",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('Load to Snowflake Dna Core')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
-							"name": "Truncate Snowflake Dna Core",
-							"type": "Script",
+							"name": "Fail Invalid Database Name",
+							"type": "Fail",
 							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
 							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
-								"type": "LinkedServiceReference"
-							},
 							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@variables('truncateQuery')",
-											"type": "Expression"
-										}
-									}
-								]
+								"message": "Fail Invalid Database Name",
+								"errorCode": "0000"
 							}
 						}
 					]
@@ -630,6 +717,42 @@
 							"type": "Query",
 							"text": {
 								"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Insert Status in Metadata as Error_Sf",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "If target is DNA_LOAD or DNA_CORE",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('If target is DNA_LOAD or DNA_CORE')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')",
 								"type": "Expression"
 							}
 						}
