@@ -1,0 +1,9 @@
+{
+	"name": "MDS",
+	"properties": {
+		"folder": {
+			"name": "Ingestion/Sources"
+		},
+		"annotations": []
+	}
+}
