@@ -13,6 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "RG_MDSQA_To_SnowflakeDEV.json",
 				"folderPath": "dev/cdata/",
 				"fileSystem": "asp"
 			}
