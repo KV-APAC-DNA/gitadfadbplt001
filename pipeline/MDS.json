@@ -51,6 +51,124 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "execute_job",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['@odata.context']"
+								},
+								"sink": {
+									"name": "@@odata.context"
+								}
+							},
+							{
+								"source": {
+									"path": "$['value'][0]['RunStartDate']"
+								},
+								"sink": {
+									"name": "RunStartDate"
+								}
+							},
+							{
+								"source": {
+									"path": "$['value'][0]['Query']"
+								},
+								"sink": {
+									"name": "Query"
+								}
+							},
+							{
+								"source": {
+									"path": "$['value'][0]['JobName']"
+								},
+								"sink": {
+									"name": "JobName"
+								}
+							},
+							{
+								"source": {
+									"path": "$['value'][0]['Status']"
+								},
+								"sink": {
+									"name": "Status"
+								}
+							},
+							{
+								"source": {
+									"path": "$['value'][0]['Detail']"
+								},
+								"sink": {
+									"name": "Detail"
+								}
+							},
+							{
+								"source": {
+									"path": "$['value'][0]['Result']"
+								},
+								"sink": {
+									"name": "Result"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "log_json",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DelimitedText1",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"folder": {
