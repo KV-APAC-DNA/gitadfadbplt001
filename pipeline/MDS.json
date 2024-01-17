@@ -5,8 +5,6 @@
 			{
 				"name": "execute_job",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -22,7 +20,10 @@
 						"httpRequestTimeout": "00:01:40",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
-						"requestBody": "{ \"JobName\": \"RG_MDSQA_To_SnowflakeDEV\"}",
+						"requestBody": {
+							"value": "@concat \n(\n'{ \n  \"JobName\":\"', string(pipeline().parameters.JOBNAME),'\"\n}\n'\n)",
+							"type": "Expression"
+						},
 						"additionalHeaders": {
 							"Content-Type": "application/json"
 						},
@@ -230,6 +231,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"JOBNAME": {
+				"type": "string",
+				"defaultValue": "RG_MDSQA_To_SnowflakeDEV"
+			}
+		},
 		"folder": {
 			"name": "Ingestion/Sources"
 		},
