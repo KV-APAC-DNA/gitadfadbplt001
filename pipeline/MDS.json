@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Until1",
+						"activity": "execute_job",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -212,8 +212,8 @@
 				}
 			},
 			{
-				"name": "Until1",
-				"type": "Until",
+				"name": "execute_job",
+				"type": "Copy",
 				"dependsOn": [
 					{
 						"activity": "Set variable1",
@@ -222,76 +222,61 @@
 						]
 					}
 				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"expression": {
-						"value": "@bool(1)",
-						"type": "Expression"
-					},
-					"activities": [
-						{
-							"name": "execute_job",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "RestSource",
-									"httpRequestTimeout": "00:01:40",
-									"requestInterval": "00.00:00:00.010",
-									"requestMethod": "POST",
-									"requestBody": {
-										"value": "@concat ('{ \"JobName\": \"', string(pipeline().parameters.JOBNAME), '\"}')",
-										"type": "Expression"
-									},
-									"additionalHeaders": {
-										"Content-Type": "application/json"
-									},
-									"paginationRules": {
-										"supportRFC5988": "true"
-									}
-								},
-								"sink": {
-									"type": "JsonSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings",
-										"copyBehavior": "MergeFiles"
-									},
-									"formatSettings": {
-										"type": "JsonWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "executejob",
-									"type": "DatasetReference"
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "log_json",
-									"type": "DatasetReference",
-									"parameters": {
-										"filename": {
-											"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": {
+							"value": "@concat ('{ \"JobName\": \"', string(pipeline().parameters.JOBNAME), '\"}')",
+							"type": "Expression"
+						},
+						"additionalHeaders": {
+							"Content-Type": "application/json"
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
 						}
-					],
-					"timeout": "0.12:00:00"
-				}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "MergeFiles"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "executejob",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "log_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
