@@ -5,6 +5,9 @@
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Cdata"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
