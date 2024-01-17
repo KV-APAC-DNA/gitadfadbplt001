@@ -155,8 +155,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"src_path": "dev",
-							"src_filename": "Amazon_202312.xlsx",
-							"src_sheetname": "RAW",
+							"src_filename": "Scommerce_202203.xlsx",
+							"src_sheetname": "Sheet1",
 							"src_container": "sgp"
 						}
 					}
@@ -167,7 +167,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"target_path": "dev",
-							"target_filename": "Amazon_202312.csv",
+							"target_filename": "Scommerce_202203.csv",
 							"target_container": "sgp"
 						}
 					}
