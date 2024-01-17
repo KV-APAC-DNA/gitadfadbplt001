@@ -223,7 +223,13 @@
 					},
 					"dataset": {
 						"referenceName": "get_status",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"filename": {
+								"value": "@variables('GET_STATUS_FILE')",
+								"type": "Expression"
+							}
+						}
 					}
 				}
 			},
