@@ -1,5 +1,5 @@
 {
-	"name": "DelimitedText1",
+	"name": "Sink_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
