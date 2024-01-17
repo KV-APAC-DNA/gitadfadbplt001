@@ -219,7 +219,13 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('read_the_paramter').output.firstRow.Status ,'SUCCESS')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"folder": {
