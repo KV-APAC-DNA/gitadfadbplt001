@@ -1,0 +1,49 @@
+{
+	"name": "get_status",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "test.csv",
+				"folderPath": "dev/cdata",
+				"fileSystem": "asp"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "RunStartDate",
+				"type": "String"
+			},
+			{
+				"name": "Query",
+				"type": "String"
+			},
+			{
+				"name": "JobName",
+				"type": "String"
+			},
+			{
+				"name": "Status",
+				"type": "String"
+			},
+			{
+				"name": "Detail",
+				"type": "String"
+			},
+			{
+				"name": "Result",
+				"type": "String"
+			}
+		]
+	}
+}
