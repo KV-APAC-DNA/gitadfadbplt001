@@ -5,6 +5,8 @@
 			{
 				"name": "execute_job",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -59,11 +61,9 @@
 			{
 				"name": "Get_the_status",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "execute_job",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -235,12 +235,41 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "execute_job",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "GET_STATUS_FILE",
+					"value": {
+						"value": "@concat(pipeline().parameters.JOBNAME,string(pipeline().RunId))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
 			"JOBNAME": {
 				"type": "string",
 				"defaultValue": "RG_MDSQA_To_SnowflakeDEV"
+			}
+		},
+		"variables": {
+			"GET_STATUS_FILE": {
+				"type": "String"
 			}
 		},
 		"folder": {
