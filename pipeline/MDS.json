@@ -21,7 +21,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "{ \"JobName\":\"'string(pipeline().parameters.JOBNAME)'\"}",
+							"value": "@concat \n(\n'{ \n  \"JobName\":\"', string(pipeline().parameters.JOBNAME)'\"\n}\n'\n)",
 							"type": "Expression"
 						},
 						"additionalHeaders": {
