@@ -21,7 +21,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "\n'{ \n  \"JobName\":\"' string(pipeline().parameters.JOBNAME)'\"\n}\n",
+							"value": "{ \"JobName\":\"'string(pipeline().parameters.JOBNAME)'\"}",
 							"type": "Expression"
 						},
 						"additionalHeaders": {
