@@ -225,7 +225,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "true",
+						"value": "@bool(1)",
 						"type": "Expression"
 					},
 					"activities": [
