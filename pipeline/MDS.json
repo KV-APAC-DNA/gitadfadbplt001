@@ -101,15 +101,7 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['@odata.context']"
-								},
-								"sink": {
-									"name": "@@odata.context"
-								}
-							},
-							{
-								"source": {
-									"path": "$['value'][0]['RunStartDate']"
+									"path": "['RunStartDate']"
 								},
 								"sink": {
 									"name": "RunStartDate"
@@ -117,7 +109,7 @@
 							},
 							{
 								"source": {
-									"path": "$['value'][0]['Query']"
+									"path": "['Query']"
 								},
 								"sink": {
 									"name": "Query"
@@ -125,7 +117,7 @@
 							},
 							{
 								"source": {
-									"path": "$['value'][0]['JobName']"
+									"path": "['JobName']"
 								},
 								"sink": {
 									"name": "JobName"
@@ -133,7 +125,7 @@
 							},
 							{
 								"source": {
-									"path": "$['value'][0]['Status']"
+									"path": "['Status']"
 								},
 								"sink": {
 									"name": "Status"
@@ -141,7 +133,7 @@
 							},
 							{
 								"source": {
-									"path": "$['value'][0]['Detail']"
+									"path": "['Detail']"
 								},
 								"sink": {
 									"name": "Detail"
@@ -149,13 +141,15 @@
 							},
 							{
 								"source": {
-									"path": "$['value'][0]['Result']"
+									"path": "['Result']"
 								},
 								"sink": {
 									"name": "Result"
 								}
 							}
-						]
+						],
+						"collectionReference": "$['value']",
+						"mapComplexValuesToString": false
 					}
 				},
 				"inputs": [
