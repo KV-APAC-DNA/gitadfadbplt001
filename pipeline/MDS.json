@@ -62,7 +62,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
-								"value": "@variables('GET_STATUS_FILE')",
+								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
 								"type": "Expression"
 							}
 						}
@@ -180,7 +180,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
-								"value": "@variables('GET_STATUS_FILE')",
+								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
 								"type": "Expression"
 							}
 						}
@@ -192,7 +192,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
-								"value": "@variables('GET_STATUS_FILE')",
+								"value": "@concat(variables('GET_STATUS_FILE'),'.csv')",
 								"type": "Expression"
 							}
 						}
@@ -235,7 +235,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"filename": {
-								"value": "@variables('GET_STATUS_FILE')",
+								"value": "@concat(variables('GET_STATUS_FILE'),'.csv')",
 								"type": "Expression"
 							}
 						}
@@ -245,8 +245,6 @@
 			{
 				"name": "If Condition1",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read_the_paramter",
@@ -275,7 +273,7 @@
 				"typeProperties": {
 					"variableName": "GET_STATUS_FILE",
 					"value": {
-						"value": "@concat(pipeline().parameters.JOBNAME,string(pipeline().RunId))",
+						"value": "@concat(pipeline().parameters.JOBNAME,'_',string(pipeline().RunId))",
 						"type": "Expression"
 					}
 				}
