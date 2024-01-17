@@ -21,7 +21,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "{ \"JobName\": \"RG_MDSQA_To_SnowflakeDEV\"}",
+							"value": "{\n   \"JobName\": \"@pipeline().parameters.JOBNAME\"\n}\n",
 							"type": "Expression"
 						},
 						"additionalHeaders": {
@@ -59,6 +59,8 @@
 			{
 				"name": "Get_the_status",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "execute_job",
@@ -177,6 +179,8 @@
 			{
 				"name": "read_the_paramter",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Get_the_status",
@@ -214,6 +218,8 @@
 			{
 				"name": "If Condition1",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read_the_paramter",
