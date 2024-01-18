@@ -274,7 +274,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "JsonResponse",
+						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference"
 					}
 				]
