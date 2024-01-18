@@ -1,0 +1,33 @@
+{
+	"name": "test_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "test_trigger",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-01-18T00:00:00",
+				"endTime": "2024-01-19T12:06:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						16
+					]
+				}
+			}
+		}
+	}
+}
