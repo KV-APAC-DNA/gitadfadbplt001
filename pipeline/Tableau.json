@@ -423,7 +423,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Read sourceId sourceName projectName",
+						"activity": "Read DataSource Details",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -486,7 +486,7 @@
 				]
 			},
 			{
-				"name": "Read sourceId sourceName projectName",
+				"name": "Read DataSource Details",
 				"type": "Lookup",
 				"dependsOn": [
 					{
