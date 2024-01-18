@@ -3,217 +3,79 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get_the_status",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "execute_job",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"path": "['RunStartDate']"
-								},
-								"sink": {
-									"name": "RunStartDate",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['Query']"
-								},
-								"sink": {
-									"name": "Query",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['JobName']"
-								},
-								"sink": {
-									"name": "JobName",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['Status']"
-								},
-								"sink": {
-									"name": "Status",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['Detail']"
-								},
-								"sink": {
-									"name": "Detail",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "['Result']"
-								},
-								"sink": {
-									"name": "Result",
-									"type": "String"
-								}
-							}
-						],
-						"collectionReference": "$['value']",
-						"mapComplexValuesToString": false
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "log_json",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Sink_csv",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@concat(variables('GET_STATUS_FILE'),'.csv')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "read_the_paramter",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Get_the_status",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "get_status",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@concat(variables('GET_STATUS_FILE'),'.csv')",
-								"type": "Expression"
-							}
-						}
-					}
-				}
-			},
-			{
-				"name": "If Condition1",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "read_the_paramter",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@contains(activity('read_the_paramter').output.firstRow.Result ,'Failure')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Set variable1",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "GET_STATUS_FILE",
-					"value": {
-						"value": "@concat(pipeline().parameters.JOBNAME,'_',string(pipeline().RunId))",
-						"type": "Expression"
+					"variableName": "output",
+					"value": "SQL Server Ingestion Executed"
+				}
+			},
+			{
+				"name": "Audit_Start",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
 					}
 				}
 			},
 			{
-				"name": "execute_job",
-				"type": "Copy",
+				"name": "Audit_Finish_Success",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "Set variable1",
@@ -222,70 +84,135 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
-						"requestInterval": "00.00:00:00.010",
-						"requestMethod": "POST",
-						"requestBody": {
-							"value": "@concat ('{ \"JobName\": \"', string(pipeline().parameters.JOBNAME), '\"}')",
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
 							"type": "Expression"
 						},
-						"additionalHeaders": {
-							"Content-Type": "application/json"
+						"status": "FINISH",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
 						},
-						"paginationRules": {
-							"supportRFC5988": "true"
-						}
-					},
-					"sink": {
-						"type": "JsonSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"copyBehavior": "MergeFiles"
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
 						},
-						"formatSettings": {
-							"type": "JsonWriteSettings"
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
 						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
 					{
-						"referenceName": "executejob",
-						"type": "DatasetReference"
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
 				],
-				"outputs": [
-					{
-						"referenceName": "log_json",
-						"type": "DatasetReference",
-						"parameters": {
-							"filename": {
-								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
-								"type": "Expression"
-							}
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
 						}
 					}
-				]
+				}
 			}
 		],
 		"parameters": {
+			"category": {
+				"type": "string"
+			},
+			"usecase_id": {
+				"type": "int"
+			},
+			"sequence_id": {
+				"type": "int"
+			},
+			"process_id": {
+				"type": "int"
+			},
+			"phase_id": {
+				"type": "int"
+			},
 			"JOBNAME": {
 				"type": "string",
 				"defaultValue": "RG_MDSQA_To_SnowflakeDEV"
 			}
 		},
 		"variables": {
+			"output": {
+				"type": "String"
+			},
 			"GET_STATUS_FILE": {
 				"type": "String"
 			}
@@ -293,6 +220,7 @@
 		"folder": {
 			"name": "Ingestion/Sources"
 		},
-		"annotations": []
+		"annotations": [],
+		"lastPublishTime": "2023-11-23T12:47:58Z"
 	}
 }
