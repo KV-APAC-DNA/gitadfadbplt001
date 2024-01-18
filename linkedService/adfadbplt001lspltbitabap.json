@@ -1,0 +1,17 @@
+{
+	"name": "adfadbplt001lspltbitabap",
+	"properties": {
+		"description": "Linked Service to Tableau Rest API",
+		"annotations": [],
+		"type": "RestService",
+		"typeProperties": {
+			"url": "https://devbitabap.kenvue.com/api/3.17/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
