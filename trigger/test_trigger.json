@@ -8,6 +8,9 @@
 				"pipelineReference": {
 					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Environment": "DEV"
 				}
 			}
 		],
@@ -21,7 +24,7 @@
 				"timeZone": "India Standard Time",
 				"schedule": {
 					"minutes": [
-						15
+						30
 					],
 					"hours": [
 						18
