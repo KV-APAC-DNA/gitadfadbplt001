@@ -275,7 +275,12 @@
 				"outputs": [
 					{
 						"referenceName": "TableauJsonResponse",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponse.json"
+						}
 					}
 				]
 			}
