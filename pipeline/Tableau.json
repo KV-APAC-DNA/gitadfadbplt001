@@ -3,27 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Fetch datasource id",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "output",
-					"value": "The Tableau refresh was executed"
-				}
-			},
-			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
 				"state": "Inactive",
@@ -82,7 +61,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "Sign Out Tableau ",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -141,7 +120,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "Sign Out Tableau ",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -285,7 +264,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponse.json"
+							"tempFileName": "tableauResponseSignIn.json"
 						}
 					}
 				]
@@ -332,7 +311,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Sign In Tableau To Get Auth Token",
+						"activity": "Read token and siteId",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -354,7 +333,10 @@
 						"requestMethod": "GET",
 						"additionalHeaders": {
 							"Content-Type": "application/xml",
-							"x-tableau-auth": "qQrCrSgKTi6L7k7-xqC-wg|dTMpVXFCrIPt6zTjtFo85U9zTBUz2Orb|e97b3d15-44f8-471e-b460-31d169ffb51f"
+							"x-tableau-auth": {
+								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+								"type": "Expression"
+							}
 						},
 						"paginationRules": {
 							"supportRFC5988": "true"
@@ -377,7 +359,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "/sites/site_id/datasources?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/datasources?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							}
 						}
@@ -390,10 +372,236 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponse.json"
+							"tempFileName": "tableauResponseDatasourceDetails.json"
 						}
 					}
 				]
+			},
+			{
+				"name": "Read token and siteId",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Sign In Tableau To Get Auth Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponse.json"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Sign Out Tableau",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Fetch datasource id_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"additionalHeaders": {
+							"x-tableau-auth": {
+								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "auth/signout"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseSignOut.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Fetch datasource id_copy1",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Read sourceId sourceName projectName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/xml",
+							"x-tableau-auth": {
+								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": {
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/datasources?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseDatasourceDetails.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Read sourceId sourceName projectName",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Fetch datasource id",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponse.json"
+						}
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
 		"parameters": {
