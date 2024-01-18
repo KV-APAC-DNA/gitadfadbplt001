@@ -330,23 +330,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "REGIONAL REFRESH"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 3
 			},
 			"phase_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 3
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 1
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 9
 			}
 		},
 		"variables": {
