@@ -3,7 +3,14 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"type": "PipelineReference"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
@@ -14,10 +21,10 @@
 				"timeZone": "India Standard Time",
 				"schedule": {
 					"minutes": [
-						50
+						15
 					],
 					"hours": [
-						17
+						18
 					]
 				}
 			}
