@@ -5,8 +5,6 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
@@ -423,8 +421,6 @@
 			{
 				"name": "Sign Out Tableau",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch datasource id_copy1",
@@ -492,8 +488,6 @@
 			{
 				"name": "Fetch datasource id_copy1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read sourceId sourceName projectName",
