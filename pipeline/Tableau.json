@@ -198,7 +198,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -289,6 +289,43 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "read parameters",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauSourceName'\" AS tableauSourceName\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauSourceName'\n));",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
 			}
 		],
 		"parameters": {
