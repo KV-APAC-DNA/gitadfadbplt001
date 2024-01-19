@@ -195,7 +195,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Read DataSource Refresh Status_copy1",
+									"activity": "Read DataSource Refresh Status Iteratively",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -209,13 +209,13 @@
 							"typeProperties": {
 								"variableName": "progress",
 								"value": {
-									"value": "@activity('Fetch Refresh Status Iteratively').output.value[0].job.progress",
+									"value": "@activity('Read DataSource Refresh Status Iteratively').output.value[0].job.progress",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Read DataSource Refresh Status_copy1",
+							"name": "Read DataSource Refresh Status Iteratively",
 							"type": "Lookup",
 							"dependsOn": [
 								{
