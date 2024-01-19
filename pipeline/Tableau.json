@@ -207,8 +207,6 @@
 			{
 				"name": "Sign In Tableau To Get Auth Token",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -311,8 +309,6 @@
 			{
 				"name": "Fetch datasource id",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
