@@ -309,6 +309,8 @@
 			{
 				"name": "Fetch datasource id",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -423,6 +425,8 @@
 			{
 				"name": "Sign Out Tableau",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Refresh Initail Response",
