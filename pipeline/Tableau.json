@@ -533,8 +533,6 @@
 			{
 				"name": "Fetch SourceIdName ProjectName",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Details",
