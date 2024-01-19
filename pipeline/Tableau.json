@@ -309,8 +309,6 @@
 			{
 				"name": "Fetch datasource id",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -535,6 +533,8 @@
 			{
 				"name": "Fetch SourceIdName ProjectName",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Details",
