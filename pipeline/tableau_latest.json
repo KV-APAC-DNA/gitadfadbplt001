@@ -272,8 +272,6 @@
 			{
 				"name": "read parameters",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
