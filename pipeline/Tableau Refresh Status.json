@@ -136,13 +136,16 @@
 		],
 		"parameters": {
 			"SiteId": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "e97b3d15-44f8-471e-b460-31d169ffb51f"
 			},
 			"JobId": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "a99ac52b-cfa0-4cb5-b3a0-1d4b293b40e4"
 			},
 			"token": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "n-S7K1AYSPSbAc9d5utOhg|XQNYHA5Xt87imr5F525LGWwfoaqfBj8U|e97b3d15-44f8-471e-b460-31d169ffb51f"
 			}
 		},
 		"variables": {
