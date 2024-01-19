@@ -309,6 +309,8 @@
 			{
 				"name": "Fetch datasource id",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
