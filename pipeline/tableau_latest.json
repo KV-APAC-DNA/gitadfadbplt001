@@ -175,8 +175,6 @@
 			{
 				"name": "Fetch Credential from Vault",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -195,6 +193,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-dev-pat?api-version=7.0",
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					},
 					"method": "GET",
 					"authentication": {
 						"type": "MSI",
@@ -205,8 +207,6 @@
 			{
 				"name": "Sign In Tableau To Get Auth Token",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -382,8 +382,6 @@
 			{
 				"name": "Read token and siteId",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -496,8 +494,6 @@
 			{
 				"name": "Read DataSource Details",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch datasource id",
@@ -541,8 +537,6 @@
 			{
 				"name": "Fetch SourceIdName ProjectName",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Details",
@@ -618,8 +612,6 @@
 			{
 				"name": "Read DataSource Refresh Initail Response",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch SourceIdName ProjectName",
