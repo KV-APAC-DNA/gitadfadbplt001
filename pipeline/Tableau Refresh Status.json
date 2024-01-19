@@ -207,7 +207,7 @@
 							"typeProperties": {
 								"variableName": "progress",
 								"value": {
-									"value": "@activity('Fetch Refresh Status Iteratively').output.value[0].progress",
+									"value": "@activity('Fetch Refresh Status Iteratively').output.value[0].job.progress",
 									"type": "Expression"
 								}
 							}
@@ -278,7 +278,7 @@
 				"typeProperties": {
 					"variableName": "progress",
 					"value": {
-						"value": "@activity('Read DataSource Refresh Status').output.value[0].progress",
+						"value": "@activity('Read DataSource Refresh Status').output.value[0].job.progress",
 						"type": "Expression"
 					}
 				}
