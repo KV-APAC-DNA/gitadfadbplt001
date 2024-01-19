@@ -5,6 +5,8 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
@@ -55,6 +57,8 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign Out Tableau",
@@ -112,6 +116,8 @@
 			{
 				"name": "Audit_Finish_Fail",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign Out Tableau",
@@ -169,6 +175,8 @@
 			{
 				"name": "Fetch Credential from Vault",
 				"type": "WebActivity",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -201,6 +209,8 @@
 			{
 				"name": "Sign In Tableau To Get Auth Token",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -266,6 +276,8 @@
 			{
 				"name": "read parameters",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -303,6 +315,8 @@
 			{
 				"name": "Fetch datasource id",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -374,6 +388,8 @@
 			{
 				"name": "Read token and siteId",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -417,6 +433,8 @@
 			{
 				"name": "Sign Out Tableau",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Refresh Initail Response",
@@ -484,6 +502,8 @@
 			{
 				"name": "Read DataSource Details",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch datasource id",
@@ -527,6 +547,8 @@
 			{
 				"name": "Fetch SourceIdName ProjectName",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Details",
@@ -602,6 +624,8 @@
 			{
 				"name": "Read DataSource Refresh Initail Response",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch SourceIdName ProjectName",
