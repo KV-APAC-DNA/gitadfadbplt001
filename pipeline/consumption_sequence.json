@@ -81,7 +81,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
-														"referenceName": "Tableau",
+														"referenceName": "tableau_latest",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true
