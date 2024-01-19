@@ -57,8 +57,6 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign Out Tableau",
@@ -116,8 +114,6 @@
 			{
 				"name": "Audit_Finish_Fail",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign Out Tableau",
@@ -425,11 +421,9 @@
 			{
 				"name": "Sign Out Tableau",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Refresh Initail Response",
+						"activity": "Trigger Tableau Refresh Status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -535,7 +529,7 @@
 				}
 			},
 			{
-				"name": "Fetch SourceIdName ProjectName",
+				"name": "Hit Refresh",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -614,7 +608,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Fetch SourceIdName ProjectName",
+						"activity": "Hit Refresh",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -646,10 +640,44 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDatasourceDetails.json"
+							"tempFileName": "tableauResponseDataSourceRefreshInitial.json"
 						}
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Trigger Tableau Refresh Status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Read DataSource Refresh Initail Response",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "Tableau Refresh Status",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": false,
+					"parameters": {
+						"SiteId": {
+							"value": "@{activity('Read token and siteId').output.value[0].credentials.site.id}",
+							"type": "Expression"
+						},
+						"JobId": {
+							"value": "@{activity('Hit Refresh').output.value[0].credentials.job.id}",
+							"type": "Expression"
+						},
+						"token": {
+							"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
@@ -677,6 +705,9 @@
 		},
 		"variables": {
 			"output": {
+				"type": "String"
+			},
+			"token": {
 				"type": "String"
 			}
 		},

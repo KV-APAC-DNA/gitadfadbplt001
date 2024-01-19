@@ -1,0 +1,158 @@
+{
+	"name": "Tableau Refresh Status",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fetch Refresh Status",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Tableau Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/xml",
+							"x-tableau-auth": {
+								"value": "@variables('token')",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": {
+								"value": "sites/@{pipeline().parameters.SiteId}/jobs/@{pipeline().parameters.JobId}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Read DataSource Refresh Status",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Fetch Refresh Status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Tableau Token",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "token",
+					"value": {
+						"value": "@pipeline().parameters.token",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SiteId": {
+				"type": "string"
+			},
+			"JobId": {
+				"type": "string"
+			},
+			"token": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"token": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Consumption"
+		},
+		"annotations": []
+	}
+}
