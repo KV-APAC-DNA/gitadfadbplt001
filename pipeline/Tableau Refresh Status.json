@@ -68,7 +68,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+							"tempFileName": "tableauResponseDataSourceRefreshStatusInitial.json"
 						}
 					}
 				]
@@ -183,7 +183,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": "dev/tableau",
-										"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+										"tempFileName": "tableauResponseDataSourceRefreshStatusCurrent.json"
 									}
 								}
 							]
@@ -249,7 +249,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": "dev/tableau",
-										"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+										"tempFileName": "tableauResponseDataSourceRefreshStatusCurrent.json"
 									}
 								},
 								"firstRowOnly": false
@@ -320,7 +320,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+							"tempFileName": "tableauResponseDataSourceRefreshStatusInitial.json"
 						}
 					},
 					"firstRowOnly": false
@@ -334,11 +334,11 @@
 			},
 			"JobId": {
 				"type": "string",
-				"defaultValue": "a99ac52b-cfa0-4cb5-b3a0-1d4b293b40e4"
+				"defaultValue": "5034d2ce-0290-4122-8568-57f5bd4f2521"
 			},
 			"token": {
 				"type": "string",
-				"defaultValue": "n-S7K1AYSPSbAc9d5utOhg|XQNYHA5Xt87imr5F525LGWwfoaqfBj8U|e97b3d15-44f8-471e-b460-31d169ffb51f"
+				"defaultValue": "G55EwzjJQVKXGG8NsVAvgw|riph9HmXfzX191qCh3CnO9UaTAyjLXym|e97b3d15-44f8-471e-b460-31d169ffb51f"
 			}
 		},
 		"variables": {
