@@ -74,49 +74,6 @@
 				]
 			},
 			{
-				"name": "Read DataSource Refresh Status",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "Until Completion",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "JsonSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "JsonReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "TableauJsonResponse",
-						"type": "DatasetReference",
-						"parameters": {
-							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
-						}
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "Tableau Token",
 				"type": "SetVariable",
 				"dependsOn": [],
@@ -236,7 +193,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Fetch Refresh Status Iteratively",
+									"activity": "Read DataSource Refresh Status_copy1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -254,6 +211,49 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Read DataSource Refresh Status_copy1",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Fetch Refresh Status Iteratively",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "TableauJsonResponse",
+									"type": "DatasetReference",
+									"parameters": {
+										"tempContainer": "asp",
+										"tempDirectory": "dev/tableau",
+										"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+									}
+								},
+								"firstRowOnly": false
+							}
 						}
 					],
 					"timeout": "0.12:00:00"
@@ -264,7 +264,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Fetch Refresh Status",
+						"activity": "Read DataSource Refresh Status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -278,9 +278,52 @@
 				"typeProperties": {
 					"variableName": "progress",
 					"value": {
-						"value": "@activity('Fetch Refresh Status').output.value[0].progress",
+						"value": "@activity('Read DataSource Refresh Status').output.value[0].progress",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Read DataSource Refresh Status",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Fetch Refresh Status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseDataSourceRefreshStatus.json"
+						}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
