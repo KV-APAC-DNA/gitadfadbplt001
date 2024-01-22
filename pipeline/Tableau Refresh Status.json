@@ -325,6 +325,73 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "Sign Out Tableau",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Until Completion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"additionalHeaders": {
+							"x-tableau-auth": {
+								"value": "@variables('token')",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "auth/signout"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseSignOut.json"
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
