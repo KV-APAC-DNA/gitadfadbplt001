@@ -5,8 +5,6 @@
 			{
 				"name": "Fetch Refresh Status",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tableau Token",
