@@ -597,6 +597,10 @@
 			"process_id": {
 				"type": "string",
 				"defaultValue": "9"
+			},
+			"waitTime": {
+				"type": "string",
+				"defaultValue": "60"
 			}
 		},
 		"variables": {
