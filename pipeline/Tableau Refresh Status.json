@@ -519,6 +519,30 @@
 						"dependencyConditions": [
 							"Failed"
 						]
+					},
+					{
+						"activity": "If Refresh Successful",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Until Completion",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Read DataSource Refresh Status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Fetch Refresh Status",
+						"dependencyConditions": [
+							"Failed"
+						]
 					}
 				],
 				"userProperties": [],
@@ -706,7 +730,8 @@
 				"type": "String"
 			},
 			"finishCode": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "1"
 			}
 		},
 		"folder": {
