@@ -667,6 +667,10 @@
 						"process_id": {
 							"value": "@pipeline().parameters.process_id",
 							"type": "Expression"
+						},
+						"waitTime": {
+							"value": "@{activity('read parameters').output.value[0].waitTime}",
+							"type": "Expression"
 						}
 					}
 				}
