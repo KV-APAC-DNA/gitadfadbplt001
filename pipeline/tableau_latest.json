@@ -201,6 +201,8 @@
 			{
 				"name": "Sign In Tableau To Get Auth Token",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -303,6 +305,8 @@
 			{
 				"name": "Fetch datasource id",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -460,6 +464,8 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read DataSource Details",
@@ -599,7 +605,7 @@
 							"type": "Expression"
 						},
 						"JobId": {
-							"value": "@{activity('Read DataSource Refresh Initail Response').output.value[0].credentials.job.id}",
+							"value": "@{activity('Read DataSource Refresh Initail Response').output.value[0].job.id}",
 							"type": "Expression"
 						},
 						"token": {
