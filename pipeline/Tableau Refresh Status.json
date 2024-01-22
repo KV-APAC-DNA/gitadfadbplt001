@@ -116,12 +116,15 @@
 					},
 					"activities": [
 						{
-							"name": "Wait 30 seconds",
+							"name": "Wait",
 							"type": "Wait",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
-								"waitTimeInSeconds": 30
+								"waitTimeInSeconds": {
+									"value": "@int(pipeline().parameters.waitTime)",
+									"type": "Expression"
+								}
 							}
 						},
 						{
@@ -129,7 +132,7 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Wait 30 seconds",
+									"activity": "Wait ",
 									"dependencyConditions": [
 										"Succeeded"
 									]
