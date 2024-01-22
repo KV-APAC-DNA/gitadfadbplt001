@@ -239,7 +239,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@contains(activity('read_the_paramter').output.firstRow.Result ,'Failure')",
+						"value": "@or(equals(activity('read_the_paramter').output.firstRow.Status, 'FAILED'),contains(activity('read_the_paramter').output.firstRow.Result ,'Failure'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
