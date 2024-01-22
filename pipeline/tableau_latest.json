@@ -666,7 +666,7 @@
 							"type": "Expression"
 						},
 						"JobId": {
-							"value": "@{activity('Hit Refresh').output.value[0].credentials.job.id}",
+							"value": "@{activity('Read DataSource Refresh Initail Response').output.value[0].credentials.job.id}",
 							"type": "Expression"
 						},
 						"token": {
