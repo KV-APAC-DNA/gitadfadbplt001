@@ -183,7 +183,7 @@
 				]
 			},
 			{
-				"name": "read_the_paramter",
+				"name": "read_status",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -231,7 +231,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "read_the_paramter",
+						"activity": "read_status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -240,7 +240,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(equals(activity('read_the_paramter').output.value[0].Status, 'FAILED'),contains(activity('read_the_paramter').output.value[0].Result ,'Failure'))",
+						"value": "@or(equals(activity('read_status').output.value[0].Status, 'FAILED'),contains(activity('read_status').output.value[0].Result ,'Failure'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -317,7 +317,7 @@
 										"type": "Expression"
 									},
 									"error_message": {
-										"value": "@activity('read_the_paramter').output.value[0].Result",
+										"value": "@activity('read_status').output.value[0].Result",
 										"type": "Expression"
 									},
 									"run_id": {
@@ -333,7 +333,7 @@
 										"type": "Expression"
 									},
 									"error_code": {
-										"value": "@activity('read_the_paramter').output.value[0].Detail",
+										"value": "@activity('read_status').output.value[0].Detail",
 										"type": "Expression"
 									},
 									"job_id": {
