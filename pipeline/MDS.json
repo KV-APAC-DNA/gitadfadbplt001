@@ -490,7 +490,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "ForEach1_1",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -573,7 +573,7 @@
 				}
 			},
 			{
-				"name": "If Condition2",
+				"name": "If job fail then update error for each task",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
