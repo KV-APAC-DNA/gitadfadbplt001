@@ -154,10 +154,10 @@
 						"referenceName": "adls_srcexcel_sheetname",
 						"type": "DatasetReference",
 						"parameters": {
-							"src_path": "dev",
-							"src_filename": "Scommerce_202203.xlsx",
-							"src_sheetname": "Sheet1",
-							"src_container": "sgp"
+							"src_path": "dev/transactional/DFS",
+							"src_filename": "Hainan Vendor Sales Report for Asian.xlsx",
+							"src_sheetname": "Hainan Vendor Sales Report for ",
+							"src_container": "asp"
 						}
 					}
 				],
@@ -166,9 +166,9 @@
 						"referenceName": "csv",
 						"type": "DatasetReference",
 						"parameters": {
-							"target_path": "dev",
-							"target_filename": "Scommerce_202203.csv",
-							"target_container": "sgp"
+							"target_path": "dev/transactional/DFS",
+							"target_filename": "Hainan Vendor Sales Report for Asian.xlsx",
+							"target_container": "asp"
 						}
 					}
 				]
