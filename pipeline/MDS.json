@@ -503,25 +503,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('read_status').output.value",
+						"value": "@activity('filter1').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
 					"activities": [
-						{
-							"name": "If Condition1",
-							"type": "IfCondition",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"expression": {
-									"value": "@and(equals(item().Status, 'FAILED'),not(contains(item().Result ,'Records affected')))",
-									"type": "Expression"
-								}
-							}
-						},
 						{
 							"name": "error log",
 							"type": "ExecutePipeline",
