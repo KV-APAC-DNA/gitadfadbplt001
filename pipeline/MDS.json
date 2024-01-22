@@ -515,7 +515,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(equals(item().Status, 'FAILED'),contains(item().Result ,'Failure'))",
+									"value": "@and(equals(item().Status, 'FAILED'),not(contains(item().Result ,'Records affected')))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
