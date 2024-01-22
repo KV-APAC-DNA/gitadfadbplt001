@@ -222,7 +222,8 @@
 								"type": "Expression"
 							}
 						}
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -239,7 +240,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(equals(activity('read_the_paramter').output.firstRow.Status, 'FAILED'),contains(activity('read_the_paramter').output.firstRow.Result ,'Failure'))",
+						"value": "@or(equals(activity('read_the_paramter').output.value[0].Status, 'FAILED'),contains(activity('read_the_paramter').output.value[0].Result ,'Failure'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
