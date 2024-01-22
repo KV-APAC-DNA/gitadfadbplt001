@@ -76,7 +76,14 @@
 			{
 				"name": "Tableau Token",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -392,6 +399,56 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Audit_Start",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -406,6 +463,26 @@
 			"token": {
 				"type": "string",
 				"defaultValue": "G55EwzjJQVKXGG8NsVAvgw|riph9HmXfzX191qCh3CnO9UaTAyjLXym|e97b3d15-44f8-471e-b460-31d169ffb51f"
+			},
+			"category": {
+				"type": "string",
+				"defaultValue": "REGIONAL_REFRESH"
+			},
+			"usecase_id": {
+				"type": "string",
+				"defaultValue": "3"
+			},
+			"phase_id": {
+				"type": "string",
+				"defaultValue": "3"
+			},
+			"sequence_id": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"process_id": {
+				"type": "string",
+				"defaultValue": "9"
 			}
 		},
 		"variables": {
