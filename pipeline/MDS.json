@@ -927,9 +927,6 @@
 			}
 		},
 		"variables": {
-			"output": {
-				"type": "String"
-			},
 			"GET_STATUS_FILE": {
 				"type": "String"
 			},
