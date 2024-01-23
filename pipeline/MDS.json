@@ -231,7 +231,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set job_name",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -256,6 +256,24 @@
 				"dependsOn": [
 					{
 						"activity": "set status_file_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set job_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "set container",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "set file_path",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -650,7 +668,26 @@
 			{
 				"name": "audit fail",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "execute_job",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "Get_the_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					},
+					{
+						"activity": "read_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -802,6 +839,54 @@
 							"value": "@pipeline()?.TriggeredByPipelineRunId",
 							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "set container",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "container",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].container",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "set file_path",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_path",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].file_path",
+						"type": "Expression"
 					}
 				}
 			}
