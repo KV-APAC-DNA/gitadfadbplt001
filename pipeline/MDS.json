@@ -364,7 +364,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'jobname'\" AS jobname\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'jobname'\n));",
+							"value": "Select \n\"'jobname'\" AS jobname,\n\"'container'\" as container,\n\"'file_path'\" as file_path\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'jobname',\n'container',\n'file_path'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -379,64 +379,7 @@
 				}
 			},
 			{
-				"name": "audit fail - file not present",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "execute_job",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "error log - file not present",
+				"name": "error log - Cdata",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -703,6 +646,164 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "audit fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - reading json",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Get_the_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('Execute_job').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('execute_job').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - Getting Status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "read_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('Execute_job').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('execute_job').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -735,6 +836,12 @@
 				"type": "String"
 			},
 			"JOBNAME": {
+				"type": "String"
+			},
+			"container": {
+				"type": "String"
+			},
+			"file_path": {
 				"type": "String"
 			}
 		},
