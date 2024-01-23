@@ -165,6 +165,10 @@
 							"filename": {
 								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
 								"type": "Expression"
+							},
+							"container": {
+								"value": "@variables('container')",
+								"type": "Expression"
 							}
 						}
 					}
