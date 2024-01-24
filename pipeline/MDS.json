@@ -295,7 +295,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
+						"httpRequestTimeout": "00:30:00",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
@@ -687,18 +687,6 @@
 						"dependencyConditions": [
 							"Failed"
 						]
-					},
-					{
-						"activity": "Get_the_status",
-						"dependencyConditions": [
-							"Failed"
-						]
-					},
-					{
-						"activity": "read_status",
-						"dependencyConditions": [
-							"Failed"
-						]
 					}
 				],
 				"userProperties": [],
@@ -900,6 +888,120 @@
 					"value": {
 						"value": "@activity('read parameters').output.value[0].file_path",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "audit fail - get_the_status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Get_the_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit fail - read_status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "read_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
 					}
 				}
 			}
