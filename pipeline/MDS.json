@@ -1009,11 +1009,11 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "REGIONAL"
+				"defaultValue": "SINGAPORE_MDS"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 5
 			},
 			"sequence_id": {
 				"type": "int",
@@ -1021,7 +1021,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 8
+				"defaultValue": 18
 			},
 			"phase_id": {
 				"type": "int",
