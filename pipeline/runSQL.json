@@ -48,12 +48,12 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"url": "https://dlsadbplt001.dfs.core.windows.net/asp/dev/transactional/test/test.sql",
+					"method": "GET",
+					"url": "https://raw.githubusercontent.com/KV-APAC-DNA/gitadfadbsbx002/main/",
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
-					},
-					"method": "GET"
+					}
 				}
 			},
 			{
