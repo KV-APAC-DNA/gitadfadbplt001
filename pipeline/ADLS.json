@@ -55,8 +55,6 @@
 			{
 				"name": "audit success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Error Encountered during load",
@@ -406,8 +404,6 @@
 			{
 				"name": "FileStructureValidation SP Call",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEachSheetInExcel",
@@ -961,8 +957,6 @@
 			{
 				"name": "audit fail - CsvConversion2",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEachSheetInExcel",
@@ -1020,8 +1014,6 @@
 			{
 				"name": "error log - CsvConversion2",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEachSheetInExcel",
@@ -1076,8 +1068,6 @@
 			{
 				"name": "If Error Encountered during load",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Check load method",
@@ -1166,8 +1156,6 @@
 			{
 				"name": "If Validation Passed",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "FileStructureValidation SP Call",
@@ -1202,8 +1190,6 @@
 			{
 				"name": "audit fail - validation",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Validation Passed",
@@ -1261,8 +1247,6 @@
 			{
 				"name": "error log - validation",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Validation Passed",
@@ -1317,8 +1301,6 @@
 			{
 				"name": "audit fail - CsvConversion1",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Check csv_excel_multiExcel",
@@ -1376,8 +1358,6 @@
 			{
 				"name": "error log - CsvConversion1",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Check csv_excel_multiExcel",
@@ -1432,8 +1412,6 @@
 			{
 				"name": "audit fail",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Error Encountered during load",
