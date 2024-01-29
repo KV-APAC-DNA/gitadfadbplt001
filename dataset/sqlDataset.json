@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "test.sql",
-				"folderPath": "dev/transactional/test",
+				"folderPath": "dev/test",
 				"fileSystem": "asp"
 			},
 			"columnDelimiter": ",",
