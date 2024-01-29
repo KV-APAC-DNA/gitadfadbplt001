@@ -210,27 +210,8 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
-				"inputs": [
-					{
-						"referenceName": "CSV_1",
-						"type": "DatasetReference",
-						"parameters": {
-							"src_path": "dev/scan360/dfi",
-							"src_filename": "DFI_202312.csv",
-							"src_container": "sgp"
-						}
-					}
-				],
 				"outputs": [
 					{
 						"referenceName": "csv",

@@ -11,7 +11,7 @@
 			}
 		},
 		"folder": {
-			"name": "Cdata"
+			"name": "ADF_Framework_Datasets/Cdata"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
