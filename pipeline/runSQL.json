@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://raw.githubusercontent.com/KV-APAC-DNA/gitadfadbsbx002/main/test.sql",
+					"url": "https://github.com/KV-APAC-DNA/gitadfadbplt001/blob/Fearture_adf_test/DEMO/test_v1.sql?raw=true",
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
