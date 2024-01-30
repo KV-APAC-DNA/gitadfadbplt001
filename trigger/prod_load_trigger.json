@@ -1,0 +1,47 @@
+{
+	"name": "prod_load_trigger",
+	"properties": {
+		"description": "Execute SQL scripts from Git",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "runSQL",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"load_folderName": "prod_release_scripts/load",
+					"RepoName": "gitadfadbplt001",
+					"BranchName": "DDL_DML_Scripts",
+					"load_fileNames": [
+						"load_regional.sql",
+						"load_sg_my.sql",
+						"clone_script_load.sql"
+					],
+					"core_fileNames": [
+						"core_regional.sql",
+						"core_sg_my.sql",
+						"clone_script_core.sql"
+					],
+					"core_folderName": "prod_release_scripts/core"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 15,
+				"startTime": "2024-01-31T10:00:00",
+				"endTime": "2024-01-31T14:03:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"hours": [
+						10
+					]
+				}
+			}
+		}
+	}
+}
