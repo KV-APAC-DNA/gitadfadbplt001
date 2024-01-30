@@ -1,0 +1,189 @@
+{
+	"name": "runSQL",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach_load",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.load_fileNames",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Web3",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "https://github.com/KV-APAC-DNA/@{pipeline().parameters.RepoName}/blob/@{pipeline().parameters.BranchName}/@{pipeline().parameters.load_folderName}/@{item()}?raw=true",
+									"type": "Expression"
+								},
+								"connectVia": {
+									"referenceName": "AutoResolveIntegrationRuntime",
+									"type": "IntegrationRuntimeReference"
+								}
+							}
+						},
+						{
+							"name": "Script4",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Web3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@activity('Web3').output.Response",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEach_core",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.core_fileNames",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Web_core",
+							"type": "WebActivity",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "https://github.com/KV-APAC-DNA/@{pipeline().parameters.RepoName}/blob/@{pipeline().parameters.BranchName}/@{pipeline().parameters.core_folderName}/@{item()}?raw=true",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Script4_copy1",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Web_core",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@activity('Web_core').output.Response",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"load_folderName": {
+				"type": "string",
+				"defaultValue": "prod_release_scripts/load"
+			},
+			"RepoName": {
+				"type": "string",
+				"defaultValue": "gitadfadbplt001"
+			},
+			"BranchName": {
+				"type": "string",
+				"defaultValue": "DDL_DML_Scripts"
+			},
+			"load_fileNames": {
+				"type": "array",
+				"defaultValue": [
+					"load_regional.sql",
+					"load_sg_my.sql",
+					"clone_script_load.sql"
+				]
+			},
+			"core_fileNames": {
+				"type": "array",
+				"defaultValue": [
+					"core_regional.sql",
+					"core_sg_my.sql",
+					"clone_script_core.sql"
+				]
+			},
+			"core_folderName": {
+				"type": "string",
+				"defaultValue": "prod_release_scripts/core"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
