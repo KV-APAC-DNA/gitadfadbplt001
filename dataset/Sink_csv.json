@@ -1,25 +1,33 @@
 {
-	"name": "sqlDataset",
+	"name": "Sink_csv",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"filename": {
+				"type": "string"
+			}
+		},
 		"folder": {
-			"name": "Miscellaneous Pipelines"
+			"name": "ADF_Framework_Datasets/Cdata"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "test.sql",
-				"folderPath": "dev/test",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": "dev/cdata/",
 				"fileSystem": "asp"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
-			"firstRowAsHeader": false,
+			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
 		"schema": []

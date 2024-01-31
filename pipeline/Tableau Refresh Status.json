@@ -1,0 +1,1155 @@
+{
+	"name": "Tableau Refresh Status",
+	"properties": {
+		"activities": [
+			{
+				"name": "Fetch Refresh Status",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Tableau Token",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"additionalHeaders": {
+							"Content-Type": "application/xml",
+							"x-tableau-auth": {
+								"value": "@variables('token')",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": {
+								"value": "sites/@{pipeline().parameters.SiteId}/jobs/@{pipeline().parameters.JobId}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseDataSourceRefreshStatusInitial.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Tableau Token",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "token",
+					"value": {
+						"value": "@pipeline().parameters.token",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Until Completion",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "Set progress",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('progress'),'100')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "Wait",
+							"type": "Wait",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": {
+									"value": "@int(pipeline().parameters.waitTime)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Fetch Refresh Status Iteratively",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"additionalHeaders": {
+										"Content-Type": "application/xml",
+										"x-tableau-auth": {
+											"value": "@variables('token')",
+											"type": "Expression"
+										}
+									},
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "TableauRestAPI",
+									"type": "DatasetReference",
+									"parameters": {
+										"relativeURL": {
+											"value": "sites/@{pipeline().parameters.SiteId}/jobs/@{pipeline().parameters.JobId}",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "TableauJsonResponse",
+									"type": "DatasetReference",
+									"parameters": {
+										"tempContainer": "asp",
+										"tempDirectory": "dev/tableau",
+										"tempFileName": "tableauResponseDataSourceRefreshStatusCurrent.json"
+									}
+								}
+							]
+						},
+						{
+							"name": "Set progress Iteratively",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Read DataSource Refresh Status Iteratively",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "progress",
+								"value": {
+									"value": "@activity('Read DataSource Refresh Status Iteratively').output.value[0].job.progress",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Read DataSource Refresh Status Iteratively",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Fetch Refresh Status Iteratively",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "JsonSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "JsonReadSettings"
+									}
+								},
+								"dataset": {
+									"referenceName": "TableauJsonResponse",
+									"type": "DatasetReference",
+									"parameters": {
+										"tempContainer": "asp",
+										"tempDirectory": "dev/tableau",
+										"tempFileName": "tableauResponseDataSourceRefreshStatusCurrent.json"
+									}
+								},
+								"firstRowOnly": false
+							}
+						},
+						{
+							"name": "Error Fetching Refresh Status Iteratively",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Fetch Refresh Status Iteratively",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "@activity('Fetch Refresh Status Iteratively').error?.message",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "@activity('Fetch Refresh Status Iteratively').error?.errorCode",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Error Reading Refresh Status Iteratively",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Read DataSource Refresh Status Iteratively",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "@activity('Read DataSource Refresh Status Iteratively').error?.message",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "@activity('Read DataSource Refresh Status Iteratively').error?.errorCode",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "Set progress",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Read DataSource Refresh Status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "progress",
+					"value": {
+						"value": "@activity('Read DataSource Refresh Status').output.value[0].job.progress",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Read DataSource Refresh Status",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Fetch Refresh Status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseDataSourceRefreshStatusInitial.json"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Sign Out Tableau",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "If Refresh Successful",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"additionalHeaders": {
+							"x-tableau-auth": {
+								"value": "@variables('token')",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "auth/signout"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/tableau",
+							"tempFileName": "tableauResponseSignOut.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Audit_Start",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Sign Out Tableau",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FINISH",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Sign Out Tableau",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "If Refresh Successful",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set finishCode",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(variables('finishCode'),'0')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "error response after refresh",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "@activity('Read DataSource Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "@variables('finishCode')",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set finishCode",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Until Completion",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "finishCode",
+					"value": {
+						"value": "@activity('Read DataSource Refresh Status Iteratively').output.value[0].job.finishCode",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Error Fetching Refresh Status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fetch Refresh Status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('Fetch Refresh Status').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('Fetch Refresh Status').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Error Reading Refresh Status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Read DataSource Refresh Status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('Read DataSource Refresh Status').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('Read DataSource Refresh Status').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail_1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Fetch Refresh Status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail_2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Read DataSource Refresh Status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail_3",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Until Completion",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail_4",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Refresh Successful",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"SiteId": {
+				"type": "string",
+				"defaultValue": "e97b3d15-44f8-471e-b460-31d169ffb51f"
+			},
+			"JobId": {
+				"type": "string",
+				"defaultValue": "5034d2ce-0290-4122-8568-57f5bd4f2521"
+			},
+			"token": {
+				"type": "string",
+				"defaultValue": "G55EwzjJQVKXGG8NsVAvgw|riph9HmXfzX191qCh3CnO9UaTAyjLXym|e97b3d15-44f8-471e-b460-31d169ffb51f"
+			},
+			"category": {
+				"type": "string",
+				"defaultValue": "REGIONAL_REFRESH"
+			},
+			"usecase_id": {
+				"type": "string",
+				"defaultValue": "3"
+			},
+			"phase_id": {
+				"type": "string",
+				"defaultValue": "3"
+			},
+			"sequence_id": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"process_id": {
+				"type": "string",
+				"defaultValue": "9"
+			},
+			"waitTime": {
+				"type": "string",
+				"defaultValue": "60"
+			}
+		},
+		"variables": {
+			"token": {
+				"type": "String"
+			},
+			"progress": {
+				"type": "String"
+			},
+			"finishCode": {
+				"type": "String",
+				"defaultValue": "1"
+			}
+		},
+		"folder": {
+			"name": "Consumption"
+		},
+		"annotations": []
+	}
+}

@@ -57,7 +57,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "If Error Encountered during load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -110,63 +110,6 @@
 				}
 			},
 			{
-				"name": "audit fail",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Wait1",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "read parameters",
 				"type": "Lookup",
 				"dependsOn": [
@@ -189,7 +132,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT,\n\"'val_file_header'\" AS val_file_header,\n\"'file_spec'\" AS file_spec,\n\"'val_file_name'\" AS val_file_name,\n\"'val_file_extn'\" AS val_file_extn,\n\"'load_method'\" AS load_method,\n\"'sp_name'\" AS sp_name,\n\"'sheet_index'\" AS sheet_index,\n\"'folder_path'\" AS folder_path,\n\"'target_table'\" AS target_table,\n\"'container'\" AS container,\n\"'target_schema'\" AS target_schema,\n\"'validation'\" AS validation,\n\"'index'\" AS index,\n\"'source_extn'\" AS source_extn,\n\"'sheet_names'\" AS sheet_names\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'val_file_header',\n'file_spec',\n'val_file_name',\n'val_file_extn',\n'load_method',\n'sp_name',\n'sheet_index',\n'folder_path',\n'target_table',\n'container',\n'target_schema',\n'validation',\n'index',\n'source_extn',\n'sheet_names'\n));",
+							"value": "Select SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT,\n\"'val_file_header'\" AS val_file_header,\n\"'file_spec'\" AS file_spec,\n\"'val_file_name'\" AS val_file_name,\n\"'val_file_extn'\" AS val_file_extn,\n\"'load_method'\" AS load_method,\n\"'sp_name'\" AS sp_name,\n\"'sheet_index'\" AS sheet_index,\n\"'folder_path'\" AS folder_path,\n\"'target_table'\" AS target_table,\n\"'container'\" AS container,\n\"'target_schema'\" AS target_schema,\n\"'validation'\" AS validation,\n\"'index'\" AS index,\n\"'source_extn'\" AS source_extn,\n\"'sheet_names'\" AS sheet_names,\n\"'file_header_row_num'\" AS file_header_row_num\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'val_file_header',\n'file_spec',\n'val_file_name',\n'val_file_extn',\n'load_method',\n'sp_name',\n'sheet_index',\n'folder_path',\n'target_table',\n'container',\n'target_schema',\n'validation',\n'index',\n'source_extn',\n'sheet_names',\n'file_header_row_num'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -208,7 +151,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "ForEachSheetInExcel",
+						"activity": "If Validation Passed",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -377,70 +320,6 @@
 									}
 								},
 								{
-									"name": "error log - load failed_1",
-									"type": "ExecutePipeline",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "write_error_log",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"process_id": {
-												"value": "@pipeline().parameters.process_id",
-												"type": "Expression"
-											},
-											"job_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"error_message": {
-												"value": "Load with SP Failed: @{activity('Load with SP').error?.message}",
-												"type": "Expression"
-											},
-											"run_id": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"category": {
-												"value": "@pipeline().parameters.category",
-												"type": "Expression"
-											},
-											"phase_id": {
-												"value": "@pipeline().parameters.phase_id",
-												"type": "Expression"
-											},
-											"error_code": {
-												"value": "@activity('Load with SP').error?.errorCode",
-												"type": "Expression"
-											},
-											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "Load Failed",
-									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "Load Failed : @{activity('Load with SP').error?.message}",
-											"type": "Expression"
-										},
-										"errorCode": "101"
-									}
-								},
-								{
 									"name": "Set Error Message",
 									"type": "SetVariable",
 									"dependsOn": [
@@ -483,99 +362,12 @@
 									"typeProperties": {
 										"variableName": "errorMessage",
 										"value": {
-											"value": "NO",
+											"value": "@string(activity('Load with SP').output.value[0])",
 											"type": "Expression"
 										}
 									}
 								}
 							]
-						}
-					],
-					"defaultActivities": [
-						{
-							"name": "Fail Unknown Load Method",
-							"type": "Fail",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [
-								{
-									"activity": "error log - load failed_3",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"message": "Unknown Load Method",
-								"errorCode": "0000"
-							}
-						},
-						{
-							"name": "error log - load failed_3",
-							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "Fail Unknown Load Method",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "0000",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "Set Error Message3",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "errorMessage",
-								"value": {
-									"value": "Undefined Load Method: Please check metadata for load_method key",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
@@ -608,13 +400,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set sheet_names array",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set fileName csv",
+						"activity": "ForEachSheetInExcel",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -632,7 +418,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(activity('Filter Only File').output.Value[0].name,' ','_')}','@{activity('read parameters').output.value[0].INDEX}','@{activity('read parameters').output.value[0].Validation\n}','@{activity('read parameters').output.value[0].val_file_name\n}','@{activity('read parameters').output.value[0].val_file_extn\n}','@{activity('read parameters').output.value[0].val_file_header}']);\n",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(activity('Filter Only File').output.Value[0].name,' ','_')}','@{activity('read parameters').output.value[0].INDEX}','@{activity('read parameters').output.value[0].Validation\n}','@{activity('read parameters').output.value[0].val_file_name\n}','@{activity('read parameters').output.value[0].val_file_extn\n}','@{activity('read parameters').output.value[0].val_file_header}',@{activity('read parameters').output.value[0].file_header_row_num},'@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}']);",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -671,11 +457,17 @@
 				}
 			},
 			{
-				"name": "Check validation_csv_excel_multiExcel",
+				"name": "Check csv_excel_multiExcel",
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "FileStructureValidation SP Call",
+						"activity": "Set fileName csv",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set sheet_names array",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -684,28 +476,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(\nequals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed'), \nif(equals(activity('read parameters').output.value[0].source_extn,'csv'),'1', if( empty(variables('sheet_names')),'2','')), '0')\n\n",
+						"value": "@if(equals(activity('read parameters').output.value[0].source_extn,'csv'),'1', if( empty(variables('sheet_names')),'2',''))\n\n",
 						"type": "Expression"
 					},
 					"cases": [
-						{
-							"value": "0",
-							"activities": [
-								{
-									"name": "FileStructureValidationFailed",
-									"type": "Fail",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "File Structure Validation @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
-											"type": "Expression"
-										},
-										"errorCode": "001"
-									}
-								}
-							]
-						},
 						{
 							"value": "1",
 							"activities": [
@@ -809,6 +583,50 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Error Singlesheet Excel Conversion",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "converttocsv",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "Error Singlesheet Excel Conversion : @{activity('converttocsv').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "100"
+									}
+								},
+								{
+									"name": "Set Error Message_convertToCsv",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "converttocsv",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Error Singlesheet Excel Conversion : @{activity('converttocsv').error?.message}",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -895,7 +713,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Check validation_csv_excel_multiExcel",
+						"activity": "Check csv_excel_multiExcel",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1014,52 +832,6 @@
 									"type": "Expression"
 								},
 								"errorCode": "100"
-							}
-						},
-						{
-							"name": "error log - CsvConversion2_copy1",
-							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "CSV Conversion Mutiple Excel Sheets Failed: @{activity('converttocsv sheetwise').error?.message}\n\n",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": "100",
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
 							}
 						}
 					]
@@ -1288,22 +1060,6 @@
 				}
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "If Error Encountered during load",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 2
-				}
-			},
-			{
 				"name": "If Error Encountered during load",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -1317,60 +1073,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(variables('errorMessage'),'NO')",
+						"value": "@or(contains(variables('errorMessage'),'Success'),equals(variables('errorMessage'),'NO'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
-						{
-							"name": "audit fail - load",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"message": {
-										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									}
-								}
-							}
-						},
 						{
 							"name": "error log - load",
 							"type": "ExecutePipeline",
@@ -1423,12 +1129,6 @@
 							"type": "Fail",
 							"dependsOn": [
 								{
-									"activity": "audit fail - load",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								},
-								{
 									"activity": "error log - load",
 									"dependencyConditions": [
 										"Succeeded"
@@ -1445,6 +1145,319 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "If Validation Passed",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION,'SUCCESS: File validation passed')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Fail Validation",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Validation Failed: @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}",
+									"type": "Expression"
+								},
+								"errorCode": "103"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "audit fail - validation",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Validation Passed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - validation",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Validation Passed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@{activity('Fail Validation')[0].Error.message}\n\n",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@{activity('Fail Validation')[0].Error.errorCode}",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit fail - CsvConversion1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Check csv_excel_multiExcel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - CsvConversion1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Check csv_excel_multiExcel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@variables('errorMessage')",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "100",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Error Encountered during load",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

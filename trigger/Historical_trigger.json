@@ -1,0 +1,36 @@
+{
+	"name": "Historical_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Environment": "PROD"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 15,
+				"startTime": "2024-01-31T12:25:00",
+				"endTime": "2024-01-31T14:17:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						12
+					]
+				}
+			}
+		}
+	}
+}

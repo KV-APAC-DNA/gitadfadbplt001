@@ -1,18 +1,18 @@
 {
-	"name": "adls_src",
+	"name": "TableauJsonResponse",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"src_path": {
+			"tempContainer": {
 				"type": "string"
 			},
-			"src_container": {
+			"tempDirectory": {
 				"type": "string"
 			},
-			"src_filename": {
+			"tempFileName": {
 				"type": "string"
 			}
 		},
@@ -20,28 +20,24 @@
 			"name": "ADF_Framework_Datasets"
 		},
 		"annotations": [],
-		"type": "DelimitedText",
+		"type": "Json",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": {
-					"value": "@dataset().src_filename",
+					"value": "@dataset().tempFileName",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().src_path",
+					"value": "@dataset().tempDirectory",
 					"type": "Expression"
 				},
 				"fileSystem": {
-					"value": "@dataset().src_container",
+					"value": "@dataset().tempContainer",
 					"type": "Expression"
 				}
-			},
-			"columnDelimiter": ",",
-			"escapeChar": "\\",
-			"firstRowAsHeader": false,
-			"quoteChar": ""
+			}
 		},
-		"schema": []
+		"schema": {}
 	}
 }

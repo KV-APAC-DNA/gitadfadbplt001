@@ -37,10 +37,10 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "\u0001",
 			"escapeChar": "\\",
 			"firstRowAsHeader": false,
-			"quoteChar": "\""
+			"quoteChar": ""
 		},
 		"schema": [
 			{
