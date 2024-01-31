@@ -462,7 +462,8 @@
 				"defaultValue": 0
 			},
 			"run_status": {
-				"type": "Integer"
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"folder": {
