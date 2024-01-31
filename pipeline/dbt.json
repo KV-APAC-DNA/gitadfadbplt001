@@ -269,42 +269,8 @@
 							}
 						},
 						{
-							"name": "get dbt job statusw",
-							"type": "WebActivity",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": true
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"method": "GET",
-								"headers": {
-									"Authorization": {
-										"value": "Token @{variables('dbtapitoken')}",
-										"type": "Expression"
-									}
-								},
-								"url": {
-									"value": "https://cloud.getdbt.com/api/v2/accounts/@{variables('accountid')}/runs/@{variables('run_id')}/",
-									"type": "Expression"
-								},
-								"connectVia": {
-									"referenceName": "AutoResolveIntegrationRuntime",
-									"type": "IntegrationRuntimeReference"
-								}
-							}
-						},
-						{
-							"name": "set status value",
+							"name": "Set Status Value",
 							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Read Job Status",
@@ -321,7 +287,7 @@
 							"typeProperties": {
 								"variableName": "run_status",
 								"value": {
-									"value": "@activity('get dbt job status').output.data?.status",
+									"value": "@activity('Read Job Status').output.data?.status",
 									"type": "Expression"
 								}
 							}
@@ -494,6 +460,9 @@
 			"run_id": {
 				"type": "Integer",
 				"defaultValue": 0
+			},
+			"run_status": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
