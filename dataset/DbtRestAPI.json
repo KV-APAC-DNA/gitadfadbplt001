@@ -1,0 +1,26 @@
+{
+	"name": "DbtRestAPI",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdbtclouddnacore",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"url": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/DBT"
+		},
+		"annotations": [],
+		"type": "RestResource",
+		"typeProperties": {
+			"relativeUrl": {
+				"value": "@dataset().url",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}

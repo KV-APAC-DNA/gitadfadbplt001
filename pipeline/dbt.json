@@ -1,0 +1,257 @@
+{
+	"name": "dbt",
+	"properties": {
+		"activities": [
+			{
+				"name": "read parameters",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "SELECT PARAMETER_GROUP_NAME,\n\"'transform_script'\" TRANSFORM_SCRIPT,\n\"'job_id'\" JOB_ID,\n\"'account_id'\" ACCOUNT_ID\nFROM\n(SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE\n)\nPIVOT(\nMAX(PARAMETER_VALUE) FOR PARAMETER_NAME IN (\n'transform_script','job_id','account_id')\n)",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": true
+				}
+			},
+			{
+				"name": "Trigger DBT Job",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Fetch Credential from Vault",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": "{\n  \"cause\": \"Triggered via ADF transformation pipeline\"\n}",
+						"additionalHeaders": {
+							"Content-Type": "application/json",
+							"Authorization": {
+								"value": "Token @{activity('Fetch Credential from Vault').output.value}",
+								"type": "Expression"
+							}
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DbtRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"url": "api/v2/accounts/99/jobs/6175/run/"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DbtAPIResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/dbt",
+							"tempFileName": "dbtResponse.json"
+						}
+					}
+				]
+			},
+			{
+				"name": "Read response",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Trigger DBT Job",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "DbtAPIResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": "dev/dbt",
+							"tempFileName": "dbtResponse.json"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Fetch Credential from Vault",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacore?api-version=7.0",
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"category": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"usecase_id": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"sequence_id": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"process_id": {
+				"type": "int",
+				"defaultValue": 0
+			},
+			"phase_id": {
+				"type": "int",
+				"defaultValue": 0
+			}
+		},
+		"variables": {
+			"dbt-result": {
+				"type": "String"
+			},
+			"trans_script": {
+				"type": "String"
+			},
+			"Isunknown": {
+				"type": "Boolean"
+			},
+			"adls_container": {
+				"type": "String"
+			},
+			"folder_path": {
+				"type": "String"
+			},
+			"target_table": {
+				"type": "String"
+			},
+			"target_schema": {
+				"type": "String"
+			},
+			"file_spec": {
+				"type": "String"
+			},
+			"stage": {
+				"type": "String"
+			},
+			"file_format": {
+				"type": "String"
+			},
+			"job_id": {
+				"type": "String"
+			},
+			"accountid": {
+				"type": "String"
+			},
+			"dbtapitoken": {
+				"type": "String"
+			},
+			"isdbtcomplete": {
+				"type": "Boolean",
+				"defaultValue": false
+			},
+			"run_id": {
+				"type": "Integer",
+				"defaultValue": 0
+			},
+			"run_status": {
+				"type": "Integer",
+				"defaultValue": 0
+			}
+		},
+		"folder": {
+			"name": "Transformation/dbt"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-28T12:20:59Z"
+	}
+}

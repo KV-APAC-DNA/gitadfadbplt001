@@ -1,0 +1,43 @@
+{
+	"name": "DbtAPIResponse",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"tempContainer": {
+				"type": "string"
+			},
+			"tempDirectory": {
+				"type": "string"
+			},
+			"tempFileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/DBT"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@dataset().tempFileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().tempDirectory",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().tempContainer",
+					"type": "Expression"
+				}
+			}
+		},
+		"schema": {}
+	}
+}
