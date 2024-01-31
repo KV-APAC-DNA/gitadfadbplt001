@@ -189,8 +189,6 @@
 			{
 				"name": "audit start",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -287,7 +285,7 @@
 							"typeProperties": {
 								"variableName": "run_status",
 								"value": {
-									"value": "@activity('Read Job Status').output.data?.status",
+									"value": "@activity('Read Job Status').output.value[0].data?.status",
 									"type": "Expression"
 								}
 							}
@@ -428,8 +426,156 @@
 				"typeProperties": {
 					"variableName": "run_id",
 					"value": {
-						"value": "@activity('Read response').output.data?.id",
+						"value": "@activity('Read response').output.value[0].data?.id",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "audit success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "fail pipeline",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FINISH",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "fail pipeline",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "wait until job is complete",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(variables('run_status'),10)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "fail this job",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "dbt job failed, check on run_id @{variables('run_id')} and rey",
+									"type": "Expression"
+								},
+								"errorCode": "2002"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "audit failure of dbt status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "fail pipeline",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
 					}
 				}
 			}
