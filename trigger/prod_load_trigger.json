@@ -37,8 +37,11 @@
 				"endTime": "2024-01-31T14:03:00",
 				"timeZone": "India Standard Time",
 				"schedule": {
+					"minutes": [
+						30
+					],
 					"hours": [
-						10
+						11
 					]
 				}
 			}
