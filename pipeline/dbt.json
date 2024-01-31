@@ -93,7 +93,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"url": {
-								"value": "api/v2/accounts/@{activity('read parameters').output.value[0].jobId}/jobs/@{activity('read parameters').output.value[0].accountId}/run/",
+								"value": "api/v2/accounts/@{activity('read parameters').output.value[0].accountId}/jobs/@{activity('read parameters').output.value[0].jobId}/run/",
 								"type": "Expression"
 							}
 						}
@@ -441,19 +441,19 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 7
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 1
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 20
 			},
 			"phase_id": {
 				"type": "int",
-				"defaultValue": 0
+				"defaultValue": 2
 			}
 		},
 		"variables": {
