@@ -25,6 +25,12 @@
 							"type": "BinaryReadSettings"
 						}
 					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
 					"enableStaging": false
 				},
 				"inputs": [
@@ -42,6 +48,22 @@
 							},
 							"file": {
 								"value": "@pipeline().parameters.s3_file",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adls_sink_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.adls_container",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@pipeline().parameters.adls_path",
 								"type": "Expression"
 							}
 						}
