@@ -1,0 +1,74 @@
+{
+	"name": "s3_to_adls",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AmazonS3ReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "s3_sorce_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"bucket": {
+								"value": "@pipeline().parameters.s3_bucket",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@pipeline().parameters.s3_path",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@pipeline().parameters.s3_file",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"s3_bucket": {
+				"type": "string"
+			},
+			"s3_path": {
+				"type": "string"
+			},
+			"s3_file": {
+				"type": "string"
+			},
+			"adls_container": {
+				"type": "string"
+			},
+			"adls_path": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
