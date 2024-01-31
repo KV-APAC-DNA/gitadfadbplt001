@@ -6,6 +6,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -60,6 +63,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -114,6 +120,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -229,6 +238,13 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"method": "POST",
+					"headers": {
+						"Authorization": {
+							"value": "Token @{variables('dbtapitoken')}",
+							"type": "Expression"
+						}
+					},
 					"url": {
 						"value": "https://cloud.getdbt.com/api/v2/accounts/@{variables('accountid')}/jobs/@{variables('job_id')}/run/",
 						"type": "Expression"
@@ -236,13 +252,6 @@
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
-					},
-					"method": "POST",
-					"headers": {
-						"Authorization": {
-							"value": "Token @{variables('dbtapitoken')}",
-							"type": "Expression"
-						}
 					},
 					"body": {
 						"cause": "Triggered via API"
@@ -260,6 +269,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -314,6 +326,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -476,16 +491,16 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"url": {
-									"value": "https://cloud.getdbt.com/api/v2/accounts/@{variables('accountid')}/runs/@{variables('run_id')}/",
-									"type": "Expression"
-								},
 								"method": "GET",
 								"headers": {
 									"Authorization": {
 										"value": "Token @{variables('dbtapitoken')}",
 										"type": "Expression"
 									}
+								},
+								"url": {
+									"value": "https://cloud.getdbt.com/api/v2/accounts/@{variables('accountid')}/runs/@{variables('run_id')}/",
+									"type": "Expression"
 								}
 							}
 						},
@@ -586,6 +601,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -649,11 +667,11 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"method": "GET",
 					"url": {
 						"value": "https://kenvuekeyvault.vault.azure.net/secrets/dbttoken/?api-version=7.0",
 						"type": "Expression"
 					},
-					"method": "GET",
 					"authentication": {
 						"type": "MSI",
 						"resource": "https://vault.azure.net"
