@@ -15,6 +15,10 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"items": {
+						"value": "@activity('get_metadata').output.value",
+						"type": "Expression"
+					},
 					"isSequential": true,
 					"activities": [
 						{
@@ -54,15 +58,15 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"bucket": {
-											"value": "@pipeline().parameters.s3_bucket",
+											"value": "@item().S3_BUCKET",
 											"type": "Expression"
 										},
 										"path": {
-											"value": "@pipeline().parameters.s3_path",
+											"value": "@item().S3_PATH",
 											"type": "Expression"
 										},
 										"file": {
-											"value": "@pipeline().parameters.s3_file",
+											"value": "@item().S3_FILE",
 											"type": "Expression"
 										}
 									}
@@ -74,11 +78,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"adls_container": {
-											"value": "@pipeline().parameters.adls_container",
+											"value": "@item().ADLS_CONTAINER",
 											"type": "Expression"
 										},
 										"adls_path": {
-											"value": "@pipeline().parameters.adls_path",
+											"value": "@item().ADLS_PATH",
 											"type": "Expression"
 										}
 									}
