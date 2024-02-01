@@ -78,6 +78,9 @@
 												"name": "tableau refresh",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
@@ -96,6 +99,9 @@
 												"name": "power bi refresh",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
@@ -132,6 +138,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -186,6 +195,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -240,6 +252,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -294,6 +309,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
