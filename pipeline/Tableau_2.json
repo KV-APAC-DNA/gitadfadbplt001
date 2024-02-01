@@ -266,7 +266,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
+							"tempDirectory": "tableau",
 							"tempFileName": "tableauResponseSignIn.json"
 						}
 					}
@@ -277,7 +277,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Set refreshType",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -310,7 +310,7 @@
 				}
 			},
 			{
-				"name": "Fetch datasource id",
+				"name": "Fetch id",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -362,7 +362,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{pipeline().parameters.refreshType}?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}\n",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}\n",
 								"type": "Expression"
 							}
 						}
@@ -374,8 +374,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDatasourceDetails.json"
+							"tempDirectory": "tableau",
+							"tempFileName": "tableauResponseDetails.json"
 						}
 					}
 				]
@@ -416,7 +416,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
+							"tempDirectory": "tableau",
 							"tempFileName": "tableauResponseSignIn.json"
 						}
 					},
@@ -424,11 +424,11 @@
 				}
 			},
 			{
-				"name": "Read DataSource Details",
+				"name": "Read Details",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Fetch datasource id",
+						"activity": "Fetch id",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -459,8 +459,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDatasourceDetails.json"
+							"tempDirectory": "tableau",
+							"tempFileName": "tableauResponseDetails.json"
 						}
 					},
 					"firstRowOnly": false
@@ -471,7 +471,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Details",
+						"activity": "Read Details",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -523,7 +523,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/datasources/@{activity('Read DataSource Details').output.value[0].datasources.datasource[0].id}/refresh",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}/@{activity('Read DataSource Details').output.value[0].datasources.datasource[0].id}/refresh",
 								"type": "Expression"
 							}
 						}
@@ -535,14 +535,14 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDataSourceRefreshInitial.json"
+							"tempDirectory": "tableau",
+							"tempFileName": "tableauResponseRefreshInitial.json"
 						}
 					}
 				]
 			},
 			{
-				"name": "Read DataSource Refresh Initail Response",
+				"name": "Read Refresh Initail Response",
 				"type": "Lookup",
 				"dependsOn": [
 					{
@@ -577,8 +577,8 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/tableau",
-							"tempFileName": "tableauResponseDataSourceRefreshInitial.json"
+							"tempDirectory": "tableau",
+							"tempFileName": "tableauResponseRefreshInitial.json"
 						}
 					},
 					"firstRowOnly": false
@@ -589,7 +589,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Refresh Initail Response",
+						"activity": "Read Refresh Initail Response",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -611,7 +611,7 @@
 							"type": "Expression"
 						},
 						"JobId": {
-							"value": "@{activity('Read DataSource Refresh Initail Response').output.value[0].job.id}",
+							"value": "@{activity('Read Refresh Initail Response').output.value[0].job.id}",
 							"type": "Expression"
 						},
 						"token": {
@@ -821,7 +821,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Fetch datasource id",
+						"activity": "Fetch id",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -878,7 +878,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Details",
+						"activity": "Read Details",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -992,7 +992,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Refresh Initail Response",
+						"activity": "Read Refresh Initail Response",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1106,7 +1106,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Refresh Initail Response",
+						"activity": "Read Refresh Initail Response",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1226,7 +1226,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Read DataSource Details",
+						"activity": "Read Details",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1286,7 +1286,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Fetch datasource id",
+						"activity": "Fetch id",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1520,6 +1520,30 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Set refreshType",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "refreshType",
+					"value": {
+						"value": "@pipeline().parameters.refreshType",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1545,7 +1569,7 @@
 			},
 			"refreshType": {
 				"type": "string",
-				"defaultValue": "datasource"
+				"defaultValue": "datasources"
 			}
 		},
 		"variables": {
@@ -1558,6 +1582,9 @@
 			"run_status": {
 				"type": "Integer",
 				"defaultValue": 0
+			},
+			"refreshType": {
+				"type": "String"
 			}
 		},
 		"folder": {
