@@ -74,15 +74,15 @@
 		"parameters": {
 			"s3_bucket": {
 				"type": "string",
-				"defaultValue": "itx-arm-conapdna-aspac-qa"
+				"defaultValue": "itx-arm-conapdna-singapore-prod"
 			},
 			"s3_path": {
 				"type": "string",
-				"defaultValue": "raw-data-lake/travel_retail/transaction_files/archive/"
+				"defaultValue": "Scan/"
 			},
 			"s3_file": {
 				"type": "string",
-				"defaultValue": "CNSC DR.CILABO SALES REPORT 202301.xlsx"
+				"defaultValue": "SG_SCAN_DATA_WATSONS_Sep19.CSV"
 			},
 			"adls_container": {
 				"type": "string",
