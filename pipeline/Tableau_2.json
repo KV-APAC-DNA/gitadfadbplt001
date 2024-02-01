@@ -362,7 +362,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/datasources?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{pipeline().parameters.refreshType}?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}\n",
 								"type": "Expression"
 							}
 						}
@@ -1542,6 +1542,10 @@
 			"process_id": {
 				"type": "int",
 				"defaultValue": 9
+			},
+			"refreshType": {
+				"type": "string",
+				"defaultValue": "datasource"
 			}
 		},
 		"variables": {
