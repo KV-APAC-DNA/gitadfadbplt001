@@ -3,74 +3,90 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "s3_to_adls",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "AmazonS3ReadSettings",
-							"recursive": true
-						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
-						}
-					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
 					{
-						"referenceName": "s3_sorce_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"bucket": {
-								"value": "@pipeline().parameters.s3_bucket",
-								"type": "Expression"
-							},
-							"path": {
-								"value": "@pipeline().parameters.s3_path",
-								"type": "Expression"
-							},
-							"file": {
-								"value": "@pipeline().parameters.s3_file",
-								"type": "Expression"
-							}
-						}
+						"activity": "get_metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
-				"outputs": [
-					{
-						"referenceName": "adls_sink_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"adls_container": {
-								"value": "@pipeline().parameters.adls_container",
-								"type": "Expression"
+				"userProperties": [],
+				"typeProperties": {
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "s3_to_adls",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
 							},
-							"adls_path": {
-								"value": "@pipeline().parameters.adls_path",
-								"type": "Expression"
-							}
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AmazonS3ReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "s3_sorce_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"bucket": {
+											"value": "@pipeline().parameters.s3_bucket",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@pipeline().parameters.s3_path",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@pipeline().parameters.s3_file",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adls_sink_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.adls_container",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@pipeline().parameters.adls_path",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
-					}
-				]
+					]
+				}
 			},
 			{
 				"name": "get_metadata",
@@ -96,7 +112,7 @@
 						"referenceName": "mtd_process",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": true
+					"firstRowOnly": false
 				}
 			}
 		],
