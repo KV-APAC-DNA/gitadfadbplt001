@@ -180,7 +180,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "read parameters",
+						"activity": "Set refreshType",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -277,7 +277,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Audit_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -362,7 +362,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}\n",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}s?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							}
 						}
@@ -523,7 +523,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}/@{activity('Read DataSource Details').output.value[0].datasources.datasource[0].id}/refresh",
+								"value": "@if(equals(variables('refreshType'),'datasource'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].datasources.datasource[0].id,'/refresh'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].workbooks.workbook[0].id,'/refresh'))",
 								"type": "Expression"
 							}
 						}
@@ -847,7 +847,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Fetch datasource id').error?.message",
+							"value": "@activity('Fetch id').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -863,7 +863,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Fetch datasource id').error?.errorCode",
+							"value": "@activity('Fetch id').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -904,7 +904,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Read DataSource Details').error?.message",
+							"value": "@activity('Read Details').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -920,7 +920,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Read DataSource Details').error?.errorCode",
+							"value": "@activity('Read Details').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1018,7 +1018,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Read DataSource Refresh Initail Response').error?.message",
+							"value": "@activity('Read Refresh Initail Response').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -1034,7 +1034,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Read DataSource Refresh Initail Response').error?.errorCode",
+							"value": "@activity('Read Refresh Initail Response').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1526,7 +1526,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1569,7 +1569,7 @@
 			},
 			"refreshType": {
 				"type": "string",
-				"defaultValue": "datasources"
+				"defaultValue": "datasource"
 			}
 		},
 		"variables": {
