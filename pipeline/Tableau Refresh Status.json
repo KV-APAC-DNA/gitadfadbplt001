@@ -210,7 +210,7 @@
 							"typeProperties": {
 								"variableName": "progress",
 								"value": {
-									"value": "@activity('Read DataSource Refresh Status Iteratively').output.value[0].job.progress",
+									"value": "@activity('Read Refresh Status Iteratively').output.value[0].job.progress",
 									"type": "Expression"
 								}
 							}
@@ -346,7 +346,7 @@
 										"type": "Expression"
 									},
 									"error_message": {
-										"value": "@activity('Read DataSource Refresh Status Iteratively').error?.message",
+										"value": "@activity('Read Refresh Status Iteratively').error?.message",
 										"type": "Expression"
 									},
 									"run_id": {
@@ -362,7 +362,7 @@
 										"type": "Expression"
 									},
 									"error_code": {
-										"value": "@activity('Read DataSource Refresh Status Iteratively').error?.errorCode",
+										"value": "@activity('Read Refresh Status Iteratively').error?.errorCode",
 										"type": "Expression"
 									},
 									"job_id": {
@@ -773,7 +773,7 @@
 				"typeProperties": {
 					"variableName": "finishCode",
 					"value": {
-						"value": "@activity('Read DataSource Refresh Status Iteratively').output.value[0].job.finishCode",
+						"value": "@activity('Read Refresh Status Iteratively').output.value[0].job.finishCode",
 						"type": "Expression"
 					}
 				}
