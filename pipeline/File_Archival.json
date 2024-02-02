@@ -496,7 +496,7 @@
 			},
 			"directory": {
 				"type": "string",
-				"defaultValue": "dev/transactional"
+				"defaultValue": "devdev/transactional/DFS"
 			},
 			"sourceFile": {
 				"type": "string",
