@@ -387,7 +387,7 @@
 				"typeProperties": {
 					"variableName": "output",
 					"value": {
-						"value": "@{substring(pipeline().parameters.directory,0,variables('index2'))}\n@{substring(pipeline().parameters.directory,variables('index2'),variables('indexLast'))}",
+						"value": "@{substring(pipeline().parameters.directory,0,variables('index2'))}processed/archive/@{substring(pipeline().parameters.directory,variables('index2'),variables('indexLast'))}",
 						"type": "Expression"
 					}
 				}
