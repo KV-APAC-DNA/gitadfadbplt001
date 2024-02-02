@@ -387,7 +387,7 @@
 				"typeProperties": {
 					"variableName": "output",
 					"value": {
-						"value": "@{substring(pipeline().parameters.directory,0,indexof(pipeline().parameters.directory,'/')\n)}/processed/archive/@{substring(pipeline().parameters.directory,add(indexof(pipeline().parameters.directory,'/'),1),sub(length(pipeline().parameters.directory),4))}",
+						"value": "/processed/archive/@{substring(pipeline().parameters.directory,add(indexof(pipeline().parameters.directory,'/'),1),sub(length(pipeline().parameters.directory),6))}",
 						"type": "Expression"
 					}
 				}
