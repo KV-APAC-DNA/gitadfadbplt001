@@ -232,7 +232,7 @@
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@pipeline().parameters.directory",
+								"value": "@{substring(pipeline().parameters.directory,0,indexof(pipeline().parameters.directory,'/')\n)}/processed/archive/@{substring(pipeline().parameters.directory,add(indexof(pipeline().parameters.directory,'/'),1),sub(length(pipeline().parameters.directory),4))}",
 								"type": "Expression"
 							},
 							"sourceFile": {
@@ -324,7 +324,7 @@
 													"type": "Expression"
 												},
 												"directory": {
-													"value": "@{substring(pipeline().parameters.directory,0,indexof(pipeline().parameters.directory,'/'))}",
+													"value": "@{substring(pipeline().parameters.directory,0,indexof(pipeline().parameters.directory,'/')\n)}/processed/archive/@{substring(pipeline().parameters.directory,add(indexof(pipeline().parameters.directory,'/'),1),sub(length(pipeline().parameters.directory),4))}",
 													"type": "Expression"
 												},
 												"sourceFile": {
