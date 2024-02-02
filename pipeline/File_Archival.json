@@ -387,7 +387,7 @@
 				"typeProperties": {
 					"variableName": "output",
 					"value": {
-						"value": "@{substring(pipeline().parameters.directory,0,variables('index2'))}processed/archive/@{substring(pipeline().parameters.directory,variables('index2'),variables('indexLast'))}",
+						"value": "@{substring(pipeline().parameters.directory,0,indexof(pipeline().parameters.directory,'/')\n)}/processed/archive/@{substring(pipeline().parameters.directory,add(indexof(pipeline().parameters.directory,'/'),1),sub(length(pipeline().parameters.directory),4))}",
 						"type": "Expression"
 					}
 				}
@@ -395,6 +395,8 @@
 			{
 				"name": "Set variable2",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -419,6 +421,8 @@
 			{
 				"name": "Set variable2_copy1",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -443,6 +447,8 @@
 			{
 				"name": "Set variable2_copy2",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
