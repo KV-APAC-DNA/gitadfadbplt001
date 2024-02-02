@@ -361,19 +361,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set variable2",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set variable2_copy1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set variable2_copy2",
+						"activity": "Audit_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -387,79 +375,7 @@
 				"typeProperties": {
 					"variableName": "output",
 					"value": {
-						"value": "/processed/archive/@{substring(pipeline().parameters.directory,add(indexof(pipeline().parameters.directory,'/'),1),sub(length(pipeline().parameters.directory),6))}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set variable2",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Audit_Start",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "index1",
-					"value": {
-						"value": "@indexof(pipeline().parameters.directory,'/')\n",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set variable2_copy1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Audit_Start",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "indexLast",
-					"value": {
-						"value": "@length(pipeline().parameters.directory)",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set variable2_copy2",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Audit_Start",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "index2",
-					"value": {
-						"value": "@add(indexof(pipeline().parameters.directory,'/'),1)",
+						"value": "@{split(pipeline().parameters.directory, '/')[0]}/processed/archive/@{split(pipeline().parameters.directory, '/')[1]}",
 						"type": "Expression"
 					}
 				}
