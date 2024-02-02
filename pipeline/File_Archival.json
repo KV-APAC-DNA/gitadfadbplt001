@@ -340,7 +340,7 @@
 													"type": "Expression"
 												},
 												"directory": {
-													"value": "@{split(pipeline().parameters.directory, '/')[0]}/processed/archive/@{split(pipeline().parameters.directory, '/')[1]}",
+													"value": "@{split(pipeline().parameters.directory, '/')[0]}/processed/error/@{split(pipeline().parameters.directory, '/')[1]}",
 													"type": "Expression"
 												}
 											}
