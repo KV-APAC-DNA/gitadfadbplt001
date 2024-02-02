@@ -510,15 +510,15 @@
 			},
 			"directory": {
 				"type": "string",
-				"defaultValue": "dev/transactional"
+				"defaultValue": "dev/transactional/CNSC"
 			},
 			"sourceFile": {
 				"type": "string",
-				"defaultValue": "DFS_202009.xlsx"
+				"defaultValue": "CNSC DR.CILABO SALES REPORT 202001.xlsx"
 			},
 			"sheetNames": {
 				"type": "array",
-				"defaultValue": []
+				"defaultValue": "['ZZ DT','HZ DT','BJ DT','CQ DT','DL DT','SY DT']"
 			}
 		},
 		"variables": {
