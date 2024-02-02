@@ -518,7 +518,7 @@
 			},
 			"sheetNames": {
 				"type": "array",
-				"defaultValue": "'['ZZ DT','HZ DT','BJ DT','CQ DT','DL DT','SY DT']'"
+				"defaultValue": "'[\"ZZ DT\",\"HZ DT\",\"BJ DT\",\"CQ DT\",\"DL DT\",\"SY DT\"]'"
 			}
 		},
 		"variables": {
