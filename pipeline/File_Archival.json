@@ -395,8 +395,6 @@
 			{
 				"name": "Set variable2",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -421,8 +419,6 @@
 			{
 				"name": "Set variable2_copy1",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -439,7 +435,7 @@
 				"typeProperties": {
 					"variableName": "indexLast",
 					"value": {
-						"value": "@sub(length(pipeline().parameters.directory),4)",
+						"value": "@length(pipeline().parameters.directory)",
 						"type": "Expression"
 					}
 				}
@@ -447,8 +443,6 @@
 			{
 				"name": "Set variable2_copy2",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
