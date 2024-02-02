@@ -157,7 +157,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('fileName')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}','@{activity('read parameters').output.value[0].target_table\n}']);\n",
+												"value": "CALL @{pipeline().parameters.parameters.output.value[0].sp_name} (['@{variables('fileName')}','@{pipeline().parameters.parameters.output.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.output.value[0].folder_path\n}','@{pipeline().parameters.parameters.output.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -1151,9 +1151,6 @@
 			"fileName": {
 				"type": "String"
 			},
-			"sheet_names": {
-				"type": "Array"
-			},
 			"truncateQuery": {
 				"type": "String"
 			},
@@ -1164,9 +1161,6 @@
 			"errorMessage": {
 				"type": "String",
 				"defaultValue": "NO"
-			},
-			"tempPath": {
-				"type": "String"
 			}
 		},
 		"folder": {
