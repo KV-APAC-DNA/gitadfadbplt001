@@ -64,7 +64,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "ForEachSheetFromXlsx",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -126,9 +126,9 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "ForEachSheetFromXlsx",
 						"dependencyConditions": [
-							"Succeeded"
+							"Failed"
 						]
 					}
 				],
@@ -250,7 +250,7 @@
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@{split(pipeline().parameters.directory, '/')[0]}/processed/archive/@{split(pipeline().parameters.directory, '/')[1]}",
+								"value": "@{variables('tempPath')}/processed/archive@{split(pipeline().parameters.directory, variables('tempPath'))[1]}",
 								"type": "Expression"
 							}
 						}
@@ -262,7 +262,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Set temp path",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -340,7 +340,7 @@
 													"type": "Expression"
 												},
 												"directory": {
-													"value": "@{split(pipeline().parameters.directory, '/')[0]}/processed/error/@{split(pipeline().parameters.directory, '/')[1]}",
+													"value": "@{variables('tempPath')}/processed/error@{split(pipeline().parameters.directory, variables('tempPath'))[1]}",
 													"type": "Expression"
 												}
 											}
@@ -477,6 +477,30 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set temp path",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "tempPath",
+					"value": {
+						"value": "@{split(pipeline().parameters.directory, '/')[0]}",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -540,6 +564,9 @@
 			},
 			"indexLast": {
 				"type": "Integer"
+			},
+			"tempPath": {
+				"type": "String"
 			}
 		},
 		"folder": {
