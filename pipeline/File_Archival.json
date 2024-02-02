@@ -62,7 +62,14 @@
 				"type": "ExecutePipeline",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -117,7 +124,14 @@
 				"type": "ExecutePipeline",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -339,7 +353,7 @@
 				}
 			},
 			{
-				"name": "Is Csv",
+				"name": "Is xlsx",
 				"type": "Switch",
 				"dependsOn": [
 					{
@@ -357,7 +371,7 @@
 					},
 					"cases": [
 						{
-							"value": "csv",
+							"value": "xlsx",
 							"activities": [
 								{
 									"name": "Delete csv",
@@ -402,6 +416,67 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "ForEachSheetFromXlsx",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Is xlsx",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.sheetNames",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Delete csv one by one",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "BinarySource",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@pipeline().parameters.container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@pipeline().parameters.directory",
+											"type": "Expression"
+										},
+										"sourceFile": {
+											"value": "@{item()}.csv",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -435,11 +510,15 @@
 			},
 			"directory": {
 				"type": "string",
-				"defaultValue": "dev/transactional/DFS"
+				"defaultValue": "dev/transactional"
 			},
 			"sourceFile": {
 				"type": "string",
 				"defaultValue": "DFS_202009.xlsx"
+			},
+			"sheetNames": {
+				"type": "array",
+				"defaultValue": []
 			}
 		},
 		"variables": {
