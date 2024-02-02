@@ -76,7 +76,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@activity('read parameters').output.value[0].load_method",
+						"value": "@pipeline().parameters.parameters.output.value[0].load_method",
 						"type": "Expression"
 					},
 					"cases": [
@@ -104,79 +104,12 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n};\nCOPY INTO \n    @{activity('read parameters').output.value[0].target_schema\n}.@{activity('read parameters').output.value[0].target_table\n}\n     FROM @{concat('''@', activity('read parameters').output.value[0].snowflake_stage\n, '/',activity('read parameters').output.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{activity('read parameters').output.value[0].snowflake_file_format});",
+													"value": "TRUNCATE TABLE @{pipeline().parameters.parameters.output.value[0].target_schema\n}.@{pipeline().parameters.parameters.output.value[0].target_table\n};\nCOPY INTO \n    @{pipeline().parameters.parameters.output.value[0].target_schema\n}.@{pipeline().parameters.parameters.output.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.output.value[0].snowflake_stage\n, '/',pipeline().parameters.parameters.output.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.output.value[0].snowflake_file_format});",
 													"type": "Expression"
 												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								},
-								{
-									"name": "error log - load failed_2",
-									"type": "ExecutePipeline",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
-									"dependsOn": [],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "write_error_log",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"process_id": {
-												"value": "@pipeline().parameters.process_id",
-												"type": "Expression"
-											},
-											"job_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"error_message": {
-												"value": "Load from File Failed: @{activity('load from file').error?.message}",
-												"type": "Expression"
-											},
-											"run_id": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"category": {
-												"value": "@pipeline().parameters.category",
-												"type": "Expression"
-											},
-											"phase_id": {
-												"value": "@pipeline().parameters.phase_id",
-												"type": "Expression"
-											},
-											"error_code": {
-												"value": "@activity('load from file').error?.errorCode",
-												"type": "Expression"
-											},
-											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "Load Failed1",
-									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "Load Failed : @{activity('load from file').error?.message}",
-											"type": "Expression"
-										},
-										"errorCode": "101"
 									}
 								},
 								{
@@ -314,7 +247,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(activity('Filter Only File').output.Value[0].name,' ','_')}','@{activity('read parameters').output.value[0].INDEX}','@{activity('read parameters').output.value[0].Validation\n}','@{activity('read parameters').output.value[0].val_file_name\n}','@{activity('read parameters').output.value[0].val_file_extn\n}','@{activity('read parameters').output.value[0].val_file_header}',@{activity('read parameters').output.value[0].file_header_row_num},'@{activity('read parameters').output.value[0].snowflake_stage\n}','@{activity('read parameters').output.value[0].folder_path\n}']);",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.output.value[0].INDEX}','@{pipeline().parameters.parameters.output.value[0].Validation\n}','@{pipeline().parameters.parameters.output.value[0].val_file_name\n}','@{pipeline().parameters.parameters.output.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.output.value[0].val_file_header}',@{pipeline().parameters.parameters.output.value[0].file_header_row_num},'@{pipeline().parameters.parameters.output.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.output.value[0].folder_path\n}']);",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -340,7 +273,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@replace(replace(activity('Filter Only File').output.Value[0].name,' ' , '_'),'.xlsx' ,'.csv' )",
+						"value": "@replace(replace(pipeline().parameters.sourceFileName,' ' , '_'),'.xlsx' ,'.csv' )",
 						"type": "Expression"
 					}
 				}
@@ -359,7 +292,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(activity('read parameters').output.value[0].source_extn,'csv'),'1', if( empty(variables('sheet_names')),'2',''))\n\n",
+						"value": "@if(equals(pipeline().parameters.Parameters.output.value[0].source_extn,'csv'),'1', if( empty(variables('sheet_names')),'2',''))",
 						"type": "Expression"
 					},
 					"cases": [
@@ -428,19 +361,19 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"src_path": {
-													"value": "@activity('read parameters').output.value[0].folder_path",
+													"value": "@pipeline().parameters.Parameters.output.value[0].folder_path",
 													"type": "Expression"
 												},
 												"src_filename": {
-													"value": "@activity('Filter Only File').output.Value[0].name",
+													"value": "@pipeline().parameters.sourceFileName",
 													"type": "Expression"
 												},
 												"src_sheetindex": {
-													"value": "@activity('read parameters').output.value[0].sheet_index",
+													"value": "@pipeline().parameters.Parameters.output.value[0].sheet_index",
 													"type": "Expression"
 												},
 												"src_container": {
-													"value": "@activity('read parameters').output.value[0].container",
+													"value": "@pipeline().parameters.Parameters.output.value[0].container",
 													"type": "Expression"
 												}
 											}
@@ -452,7 +385,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"target_path": {
-													"value": "@activity('read parameters').output.value[0].folder_path",
+													"value": "@pipeline().parameters.Parameters.output.value[0].folder_path",
 													"type": "Expression"
 												},
 												"target_filename": {
@@ -460,7 +393,7 @@
 													"type": "Expression"
 												},
 												"target_container": {
-													"value": "@activity('read parameters').output.value[0].container",
+													"value": "@pipeline().parameters.Parameters.output.value[0].container",
 													"type": "Expression"
 												}
 											}
@@ -530,7 +463,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@variables('sheet_names')",
+						"value": "@pipeline().parameters.sheetNames",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -583,11 +516,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"src_path": {
-											"value": "@activity('read parameters').output.value[0].folder_path",
+											"value": "@pipeline().parameters.parameters.output.value[0].folder_path",
 											"type": "Expression"
 										},
 										"src_filename": {
-											"value": "@activity('Filter Only File').output.Value[0].name",
+											"value": "@pipeline().parameters.sourceFileName",
 											"type": "Expression"
 										},
 										"src_sheetname": {
@@ -595,7 +528,7 @@
 											"type": "Expression"
 										},
 										"src_container": {
-											"value": "@activity('read parameters').output.value[0].container",
+											"value": "@pipeline().parameters.parameters.output.value[0].container",
 											"type": "Expression"
 										}
 									}
@@ -607,7 +540,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_path": {
-											"value": "@activity('read parameters').output.value[0].folder_path",
+											"value": "@pipeline().parameters.parameters.output.value[0].folder_path",
 											"type": "Expression"
 										},
 										"target_filename": {
@@ -615,7 +548,7 @@
 											"type": "Expression"
 										},
 										"target_container": {
-											"value": "@activity('read parameters').output.value[0].container",
+											"value": "@pipeline().parameters.parameters.output.value[0].container",
 											"type": "Expression"
 										}
 									}
@@ -1202,6 +1135,16 @@
 			"phase_id": {
 				"type": "int",
 				"defaultValue": 1
+			},
+			"sourceFileName": {
+				"type": "string"
+			},
+			"parameters": {
+				"type": "object"
+			},
+			"sheetNames": {
+				"type": "array",
+				"defaultValue": []
 			}
 		},
 		"variables": {
