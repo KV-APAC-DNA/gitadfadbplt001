@@ -462,7 +462,7 @@
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@{item()}.csv",
+											"value": "@{replace(item(),' ','_')}.csv",
 											"type": "Expression"
 										}
 									}
