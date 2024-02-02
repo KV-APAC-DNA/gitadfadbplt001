@@ -361,7 +361,13 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Set variable2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable2_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -376,6 +382,78 @@
 					"variableName": "output",
 					"value": {
 						"value": "@{substring(pipeline().parameters.directory,0,indexof(pipeline().parameters.directory,'/'))}\n@{substring(pipeline().parameters.directory,indexof(pipeline().parameters.directory,'/'),length(pipeline().parameters.directory))}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "index1",
+					"value": {
+						"value": "@indexof(pipeline().parameters.directory,'/')\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "indexLast",
+					"value": {
+						"value": "@sub(length(pipeline().parameters.directory),1)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2_copy2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "index2",
+					"value": {
+						"value": "@add(indexof(pipeline().parameters.directory,'/'),1)",
 						"type": "Expression"
 					}
 				}
@@ -422,6 +500,15 @@
 		"variables": {
 			"output": {
 				"type": "String"
+			},
+			"index1": {
+				"type": "Integer"
+			},
+			"index2": {
+				"type": "Integer"
+			},
+			"indexLast": {
+				"type": "Integer"
 			}
 		},
 		"folder": {
