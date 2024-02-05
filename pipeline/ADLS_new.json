@@ -441,7 +441,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Filter Only File').output.Value[0]",
+						"value": "@activity('Filter Only File').output.Value",
 						"type": "Expression"
 					},
 					"isSequential": true,
