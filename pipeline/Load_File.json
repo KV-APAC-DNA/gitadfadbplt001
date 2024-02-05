@@ -76,7 +76,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@pipeline().parameters.parameters.output.value[0].load_method",
+						"value": "@pipeline().parameters.parameters.value[0].load_method",
 						"type": "Expression"
 					},
 					"cases": [
