@@ -104,7 +104,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "TRUNCATE TABLE @{pipeline().parameters.parameters.output.value[0].target_schema\n}.@{pipeline().parameters.parameters.output.value[0].target_table\n};\nCOPY INTO \n    @{pipeline().parameters.parameters.output.value[0].target_schema\n}.@{pipeline().parameters.parameters.output.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.output.value[0].snowflake_stage\n, '/',pipeline().parameters.parameters.output.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.output.value[0].snowflake_file_format});",
+													"value": "TRUNCATE TABLE @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n};\nCOPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage\n, '/',pipeline().parameters.parameters.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
 													"type": "Expression"
 												}
 											}
@@ -157,7 +157,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{pipeline().parameters.parameters.output.value[0].sp_name} (['@{variables('fileName')}','@{pipeline().parameters.parameters.output.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.output.value[0].folder_path\n}','@{pipeline().parameters.parameters.output.value[0].target_table\n}']);\n",
+												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('fileName')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.value[0].folder_path\n}','@{pipeline().parameters.parameters.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -247,7 +247,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.output.value[0].INDEX}','@{pipeline().parameters.parameters.output.value[0].Validation\n}','@{pipeline().parameters.parameters.output.value[0].val_file_name\n}','@{pipeline().parameters.parameters.output.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.output.value[0].val_file_header}',@{pipeline().parameters.parameters.output.value[0].file_header_row_num},'@{pipeline().parameters.parameters.output.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.output.value[0].folder_path\n}']);",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.value[0].folder_path\n}']);",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -361,7 +361,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"src_path": {
-													"value": "@pipeline().parameters.Parameters.output.value[0].folder_path",
+													"value": "@pipeline().parameters.Parameters.value[0].folder_path",
 													"type": "Expression"
 												},
 												"src_filename": {
@@ -369,11 +369,11 @@
 													"type": "Expression"
 												},
 												"src_sheetindex": {
-													"value": "@pipeline().parameters.Parameters.output.value[0].sheet_index",
+													"value": "@pipeline().parameters.Parameters.value[0].sheet_index",
 													"type": "Expression"
 												},
 												"src_container": {
-													"value": "@pipeline().parameters.Parameters.output.value[0].container",
+													"value": "@pipeline().parameters.Parameters.value[0].container",
 													"type": "Expression"
 												}
 											}
@@ -385,7 +385,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"target_path": {
-													"value": "@pipeline().parameters.Parameters.output.value[0].folder_path",
+													"value": "@pipeline().parameters.Parameters.value[0].folder_path",
 													"type": "Expression"
 												},
 												"target_filename": {
@@ -393,7 +393,7 @@
 													"type": "Expression"
 												},
 												"target_container": {
-													"value": "@pipeline().parameters.Parameters.output.value[0].container",
+													"value": "@pipeline().parameters.Parameters.value[0].container",
 													"type": "Expression"
 												}
 											}
