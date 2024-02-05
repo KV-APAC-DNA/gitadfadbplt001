@@ -292,7 +292,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(pipeline().parameters.Parameters.output.value[0].source_extn,'csv'),'1', if( empty(variables('sheet_names')),'2',''))",
+						"value": "@if(equals(pipeline().parameters.Parameters.output.value[0].source_extn,'csv'),'1', if( empty(pipeline().parameters.sheetNames),'2',''))",
 						"type": "Expression"
 					},
 					"cases": [
@@ -1150,13 +1150,6 @@
 		"variables": {
 			"fileName": {
 				"type": "String"
-			},
-			"truncateQuery": {
-				"type": "String"
-			},
-			"emptyArray": {
-				"type": "Array",
-				"defaultValue": []
 			},
 			"errorMessage": {
 				"type": "String",
