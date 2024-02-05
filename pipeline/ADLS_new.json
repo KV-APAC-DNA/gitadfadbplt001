@@ -231,7 +231,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Filter Only File",
+						"activity": "If No file is present",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -497,6 +497,154 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "If No file is present",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Filter Only File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greater(activity('Filter Only File').output.FilteredItemsCount,0)",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "error log - no file",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "No file present at the location",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "404",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "No file Present",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "error log - no file",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "No file present at the location",
+									"type": "Expression"
+								},
+								"errorCode": "404"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "error log - file not present2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If No file is present",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('No file Present').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('No file Present').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
