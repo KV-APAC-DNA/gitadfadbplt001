@@ -482,7 +482,7 @@
 										"type": "Expression"
 									},
 									"sourceFileName": {
-										"value": "@item.name",
+										"value": "@item().name",
 										"type": "Expression"
 									},
 									"parameters": {
