@@ -511,11 +511,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 6
+				"defaultValue": 4
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 6
+				"defaultValue": 4
 			},
 			"phase_id": {
 				"type": "int",
