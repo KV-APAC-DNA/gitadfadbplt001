@@ -393,7 +393,7 @@
 													"type": "Expression"
 												},
 												"sourceFile": {
-													"value": "@replace(pipeline().parameters.sourceFile,'.xlsx','.csv')",
+													"value": "@replace(replace(pipeline().parameters.sourceFile,'.xlsx','.csv'),' ', '_')",
 													"type": "Expression"
 												}
 											}
