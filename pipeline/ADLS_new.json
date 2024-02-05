@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Execute Load_File",
+						"activity": "ForEveryFile",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -372,7 +372,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Execute Load_File",
+						"activity": "ForEveryFile",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -428,8 +428,8 @@
 				}
 			},
 			{
-				"name": "Execute Load_File",
-				"type": "ExecutePipeline",
+				"name": "ForEveryFile",
+				"type": "ForEach",
 				"dependsOn": [
 					{
 						"activity": "Set sheet_names array",
@@ -438,50 +438,65 @@
 						]
 					}
 				],
-				"policy": {
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "Load_File",
-						"type": "PipelineReference"
+					"items": {
+						"value": "@activity('Filter Only File').output.Value[0]",
+						"type": "Expression"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"sequence_id": {
-							"value": "@pipeline().parameters.sequence_id",
-							"type": "Expression"
-						},
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"sourceFileName": {
-							"value": "@activity('Filter Only File').output.Value[0].name",
-							"type": "Expression"
-						},
-						"parameters": {
-							"value": "@activity('read parameters').output",
-							"type": "Expression"
-						},
-						"sheetNames": {
-							"value": "@variables('sheet_names')",
-							"type": "Expression"
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Execute Load_File",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "Load_File",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": {
+										"value": "@pipeline().parameters.usecase_id",
+										"type": "Expression"
+									},
+									"sequence_id": {
+										"value": "@pipeline().parameters.sequence_id",
+										"type": "Expression"
+									},
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"sourceFileName": {
+										"value": "@item.name",
+										"type": "Expression"
+									},
+									"parameters": {
+										"value": "@activity('read parameters').output",
+										"type": "Expression"
+									},
+									"sheetNames": {
+										"value": "@variables('sheet_names')",
+										"type": "Expression"
+									}
+								}
+							}
 						}
-					}
+					]
 				}
 			}
 		],
