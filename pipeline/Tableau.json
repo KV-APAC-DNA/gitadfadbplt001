@@ -1553,7 +1553,7 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 6
+				"defaultValue": 10
 			},
 			"phase_id": {
 				"type": "int",
@@ -1565,7 +1565,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 19
+				"defaultValue": 25
 			}
 		},
 		"variables": {
