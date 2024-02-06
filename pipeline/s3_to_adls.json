@@ -120,23 +120,6 @@
 				}
 			}
 		],
-		"parameters": {
-			"s3_bucket": {
-				"type": "string"
-			},
-			"s3_path": {
-				"type": "string"
-			},
-			"s3_file": {
-				"type": "string"
-			},
-			"adls_container": {
-				"type": "string"
-			},
-			"adls_path": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
