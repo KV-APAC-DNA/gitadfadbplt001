@@ -19,7 +19,7 @@
 			"src_container": {
 				"type": "string"
 			},
-			"src_sheetRange": {
+			"src_startRange": {
 				"type": "string"
 			}
 		},
