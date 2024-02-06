@@ -6,6 +6,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -63,6 +66,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -120,6 +126,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -655,7 +664,8 @@
 													"src_container": {
 														"value": "@variables('adls_container')",
 														"type": "Expression"
-													}
+													},
+													"src_startRange": "testRange"
 												}
 											}
 										],
@@ -779,7 +789,8 @@
 							"src_container": {
 								"value": "@variables('adls_container')",
 								"type": "Expression"
-							}
+							},
+							"src_startRange": "testRange"
 						}
 					},
 					"fieldList": [
