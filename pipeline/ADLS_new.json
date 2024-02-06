@@ -432,7 +432,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Set sheet_names array",
+						"activity": "If is_truncate Y",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -705,6 +705,56 @@
 							"type": "Expression"
 						}
 					}
+				}
+			},
+			{
+				"name": "If is_truncate Y",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set sheet_names array",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('read parameters').output.value[0].is_truncate,'Y')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "truncate table",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "NonQuery",
+										"text": {
+											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema}.@{activity('read parameters').output.value[0].target_table};",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
 				}
 			}
 		],
