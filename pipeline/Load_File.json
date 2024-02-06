@@ -1483,6 +1483,185 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "audit fail - sp fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - sp fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('FileStructureValidation SP Call').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('FileStructureValidation SP Call').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Execute Archival Error Validation_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "FileStructureValidation SP Call",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "File_Archival",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"sequence_id": {
+							"value": "@pipeline().parameters.sequence_id",
+							"type": "Expression"
+						},
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"isError": "Yes",
+						"container": {
+							"value": "@pipeline().parameters.Parameters.value[0].container",
+							"type": "Expression"
+						},
+						"directory": {
+							"value": "@pipeline().parameters.Parameters.value[0].folder_path",
+							"type": "Expression"
+						},
+						"sourceFile": {
+							"value": "@pipeline().parameters.sourceFileName",
+							"type": "Expression"
+						},
+						"sheetNames": {
+							"value": "@pipeline().parameters.sheetNames",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
