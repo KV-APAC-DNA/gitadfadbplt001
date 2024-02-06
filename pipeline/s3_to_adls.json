@@ -122,24 +122,19 @@
 		],
 		"parameters": {
 			"s3_bucket": {
-				"type": "string",
-				"defaultValue": "itx-arm-conapdna-singapore-prod"
+				"type": "string"
 			},
 			"s3_path": {
-				"type": "string",
-				"defaultValue": "Scan/"
+				"type": "string"
 			},
 			"s3_file": {
-				"type": "string",
-				"defaultValue": "SG_SCAN_DATA_WATSONS_Sep19.CSV"
+				"type": "string"
 			},
 			"adls_container": {
-				"type": "string",
-				"defaultValue": "asp"
+				"type": "string"
 			},
 			"adls_path": {
-				"type": "string",
-				"defaultValue": "dev/cdata"
+				"type": "string"
 			}
 		},
 		"folder": {
