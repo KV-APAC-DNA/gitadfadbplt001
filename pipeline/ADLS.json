@@ -568,7 +568,8 @@
 												"src_container": {
 													"value": "@activity('read parameters').output.value[0].container",
 													"type": "Expression"
-												}
+												},
+												"src_startRange": "testRange"
 											}
 										}
 									],
