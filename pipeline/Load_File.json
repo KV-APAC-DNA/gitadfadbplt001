@@ -382,6 +382,10 @@
 												"src_container": {
 													"value": "@pipeline().parameters.Parameters.value[0].container",
 													"type": "Expression"
+												},
+												"src_startRange": {
+													"value": "@pipeline().parameters.Parameters.value[0].startRange",
+													"type": "Expression"
 												}
 											}
 										}
