@@ -523,7 +523,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"src_path": {
-											"value": "@pipeline().parameters.parameters.output.value[0].folder_path",
+											"value": "@pipeline().parameters.parameters.value[0].folder_path",
 											"type": "Expression"
 										},
 										"src_filename": {
@@ -535,7 +535,7 @@
 											"type": "Expression"
 										},
 										"src_container": {
-											"value": "@pipeline().parameters.parameters.output.value[0].container",
+											"value": "@pipeline().parameters.parameters.value[0].container",
 											"type": "Expression"
 										}
 									}
@@ -547,7 +547,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_path": {
-											"value": "@pipeline().parameters.parameters.output.value[0].folder_path",
+											"value": "@pipeline().parameters.parameters.value[0].folder_path",
 											"type": "Expression"
 										},
 										"target_filename": {
@@ -555,7 +555,7 @@
 											"type": "Expression"
 										},
 										"target_container": {
-											"value": "@pipeline().parameters.parameters.output.value[0].container",
+											"value": "@pipeline().parameters.parameters.value[0].container",
 											"type": "Expression"
 										}
 									}
