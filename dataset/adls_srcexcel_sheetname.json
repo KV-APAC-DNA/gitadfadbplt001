@@ -49,7 +49,7 @@
 				}
 			},
 			"range": {
-				"value": "@dataset().src_sheetRange",
+				"value": "@dataset().src_startRange",
 				"type": "Expression"
 			},
 			"firstRowAsHeader": false
