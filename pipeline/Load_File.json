@@ -104,7 +104,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "TRUNCATE TABLE @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n};\nCOPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage\n, '/',pipeline().parameters.parameters.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
+													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage\n, '/',pipeline().parameters.parameters.value[0].folder_path\n,'/''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
 													"type": "Expression"
 												}
 											}
