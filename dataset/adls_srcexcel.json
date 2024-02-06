@@ -17,6 +17,9 @@
 			},
 			"src_container": {
 				"type": "string"
+			},
+			"src_startRange": {
+				"type": "string"
 			}
 		},
 		"folder": {
@@ -42,6 +45,10 @@
 			},
 			"sheetIndex": {
 				"value": "@dataset().src_sheetindex",
+				"type": "Expression"
+			},
+			"range": {
+				"value": "@dataset().src_startRange",
 				"type": "Expression"
 			},
 			"firstRowAsHeader": false
