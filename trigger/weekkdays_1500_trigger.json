@@ -1,5 +1,5 @@
 {
-	"name": "workdays_1500_trigger",
+	"name": "weekkdays_1500_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
