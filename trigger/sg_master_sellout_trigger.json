@@ -1,8 +1,8 @@
 {
-	"name": "daily_0900_180m_cyclic_trigger",
+	"name": "sg_master_sellout_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
