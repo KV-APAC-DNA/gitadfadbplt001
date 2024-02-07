@@ -1,5 +1,5 @@
 {
-	"name": "daily_0330_trigger",
+	"name": "sg_transactional_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
