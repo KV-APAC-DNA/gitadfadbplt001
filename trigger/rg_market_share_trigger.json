@@ -1,8 +1,8 @@
 {
-	"name": "daily_2100_trigger",
+	"name": "rg_market_share_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
