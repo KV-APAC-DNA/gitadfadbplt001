@@ -1,8 +1,8 @@
 {
-	"name": "daily_2330_trigger",
+	"name": "rg_mat_uom_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
