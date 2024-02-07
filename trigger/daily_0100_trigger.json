@@ -1,5 +1,5 @@
 {
-	"name": "daily_1am_trigger",
+	"name": "daily_0100_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
