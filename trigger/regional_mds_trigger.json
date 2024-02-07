@@ -1,5 +1,5 @@
 {
-	"name": "regional_delivery_trigger",
+	"name": "regional_mds_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
