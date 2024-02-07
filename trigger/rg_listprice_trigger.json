@@ -1,5 +1,5 @@
 {
-	"name": "daily_midnight_trigger",
+	"name": "rg_listprice_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
