@@ -353,8 +353,6 @@
 			{
 				"name": "Is xlsx",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Move to Archive",
@@ -420,8 +418,6 @@
 			{
 				"name": "ForEachSheetFromXlsx",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Is xlsx",
