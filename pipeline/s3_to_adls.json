@@ -68,6 +68,10 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
+								"expression": {
+									"value": "@activity('if_file_exists').output.exists",
+									"type": "Expression"
+								},
 								"ifTrueActivities": [
 									{
 										"name": "s3_to_adls",
