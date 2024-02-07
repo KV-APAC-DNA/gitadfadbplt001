@@ -22,82 +22,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "s3_to_adls",
-							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "Get Metadata1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AmazonS3ReadSettings",
-										"recursive": true
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "s3_sorce_binary",
-									"type": "DatasetReference",
-									"parameters": {
-										"bucket": {
-											"value": "@item().S3_BUCKET",
-											"type": "Expression"
-										},
-										"path": {
-											"value": "@item().S3_PATH",
-											"type": "Expression"
-										},
-										"file": {
-											"value": "@item().S3_FILE",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "adls_sink_binary",
-									"type": "DatasetReference",
-									"parameters": {
-										"adls_container": {
-											"value": "@item().ADLS_CONTAINER",
-											"type": "Expression"
-										},
-										"adls_path": {
-											"value": "@item().ADLS_PATH",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"name": "Get Metadata1",
+							"name": "if_file_exists",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -128,6 +53,91 @@
 								"formatSettings": {
 									"type": "BinaryReadSettings"
 								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "if_file_exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"ifTrueActivities": [
+									{
+										"name": "s3_to_adls",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AmazonS3ReadSettings",
+													"recursive": true
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												}
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "s3_sorce_binary",
+												"type": "DatasetReference",
+												"parameters": {
+													"bucket": {
+														"value": "@item().S3_BUCKET",
+														"type": "Expression"
+													},
+													"path": {
+														"value": "@item().S3_PATH",
+														"type": "Expression"
+													},
+													"file": {
+														"value": "@item().S3_FILE",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "adls_sink_binary",
+												"type": "DatasetReference",
+												"parameters": {
+													"adls_container": {
+														"value": "@item().ADLS_CONTAINER",
+														"type": "Expression"
+													},
+													"adls_path": {
+														"value": "@item().ADLS_PATH",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
 							}
 						}
 					]
