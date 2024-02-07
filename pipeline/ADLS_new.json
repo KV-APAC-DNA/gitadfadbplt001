@@ -769,11 +769,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 3
+				"defaultValue": 6
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 3
+				"defaultValue": 6
 			},
 			"phase_id": {
 				"type": "int",
