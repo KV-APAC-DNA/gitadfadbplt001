@@ -777,7 +777,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 11
+				"defaultValue": 10
 			},
 			"phase_id": {
 				"type": "int",
