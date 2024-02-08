@@ -502,6 +502,8 @@
 			{
 				"name": "If No file is present",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Filter Only File",
@@ -593,6 +595,8 @@
 			{
 				"name": "error log - file not present2",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If No file is present",
@@ -650,6 +654,8 @@
 			{
 				"name": "audit fail - file not present2",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If No file is present",
@@ -773,7 +779,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 35
+				"defaultValue": 1
 			},
 			"phase_id": {
 				"type": "int",
