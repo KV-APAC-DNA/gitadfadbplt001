@@ -1343,10 +1343,7 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": {
-											"value": "@activity('Script3').output.resultSets[0].rows[0].QUERY",
-											"type": "Expression"
-										}
+										"text": "Select 'SUCCESS' as Result;"
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
