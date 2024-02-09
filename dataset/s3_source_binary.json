@@ -1,5 +1,5 @@
 {
-	"name": "s3_sorce_binary",
+	"name": "s3_source_binary",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsas3adpprd001",
@@ -15,6 +15,9 @@
 			"file": {
 				"type": "string"
 			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
 		},
 		"annotations": [],
 		"type": "Binary",

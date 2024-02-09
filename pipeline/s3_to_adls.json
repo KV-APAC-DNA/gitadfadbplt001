@@ -35,7 +35,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"dataset": {
-									"referenceName": "s3_sorce_binary",
+									"referenceName": "s3_source_binary",
 									"type": "DatasetReference",
 									"parameters": {
 										"bucket": "@item().S3_BUCKET",
@@ -48,6 +48,7 @@
 								],
 								"storeSettings": {
 									"type": "AmazonS3ReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -106,7 +107,7 @@
 										},
 										"inputs": [
 											{
-												"referenceName": "s3_sorce_binary",
+												"referenceName": "s3_source_binary",
 												"type": "DatasetReference",
 												"parameters": {
 													"bucket": {
