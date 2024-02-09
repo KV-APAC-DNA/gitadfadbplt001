@@ -1027,7 +1027,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Script2",
+						"activity": "ForEveryModel",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1107,7 +1107,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "select * from dev_dna_core.core_integration.dbtjobs_test_cdc_metadata\nwhere jobid = '1';",
+								"value": "select * from dev_dna_core.core_integration.dbtjobs_test_cdc_metadata where job_id='1';\n",
 								"type": "Expression"
 							}
 						}
@@ -1150,6 +1150,81 @@
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
+			},
+			{
+				"name": "ModelName Array",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Script2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "modelNameArray",
+					"value": {
+						"value": "@activity('Script2').output.resultSets[0].rows",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEveryModel",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ModelName Array",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('modelNameArray')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Script3",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "select * from dev_dna_core.CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= @{item().model_name};",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -1182,6 +1257,9 @@
 			"run_status": {
 				"type": "Integer",
 				"defaultValue": 12
+			},
+			"modelNameArray": {
+				"type": "Array"
 			}
 		},
 		"folder": {
