@@ -684,7 +684,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "CSV Conversion Mutiple Excel Sheets Failed: @{activity('Error Multisheet Excel Conversion')}",
+							"value": "CSV Conversion Mutiple Excel Sheets Failed: @{activity('Error Multisheet Excel Conversion').message}",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -700,7 +700,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "102",
+							"value": "CSV Conversion Mutiple Excel Sheets Failed: @{activity('Error Multisheet Excel Conversion').errorCode}",
 							"type": "Expression"
 						},
 						"job_id": {
