@@ -1,0 +1,460 @@
+{
+	"name": "GIT_SQL_Deployment_Utility",
+	"properties": {
+		"activities": [
+			{
+				"name": "read_parameters",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "WITH ranked_data AS (\n  SELECT\n    *,\n    ROW_NUMBER() OVER (PARTITION BY DB ORDER BY version DESC) AS row_num\n  FROM\n    META_RAW.prod_run_metadata\n)\nSELECT\n  DB,VERSION\nFROM\n  ranked_data\nWHERE\n  row_num = 1;",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process1",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEachDataFromMetaData",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "read_parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('read_parameters').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "fetch version",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "version",
+								"value": {
+									"value": "@item().VERSION",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Fetch DB",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "fetch version",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "db",
+								"value": {
+									"value": "@item().DB",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Fetch SQL File",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Merge version with file name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "GET",
+								"url": {
+									"value": "@concat('https://github.com/KV-APAC-DNA/',pipeline().parameters.RepoName,'/blob/',pipeline().parameters.BranchName,'/',pipeline().parameters.FolderName,'/', variables('db'), '/', variables('version_merge'),'?raw=true')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Switch for Load or Core",
+							"type": "Switch",
+							"dependsOn": [
+								{
+									"activity": "Fetch SQL File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@if(equals(variables('db'),'load'),'1', if(equals(variables('db'),'core'),'2',''))",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "1",
+										"activities": [
+											{
+												"name": "Execute Load scripts",
+												"type": "Script",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnaload",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@activity('Fetch SQL File').output.Response",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "Success_load",
+												"type": "Script",
+												"dependsOn": [
+													{
+														"activity": "Execute Load scripts",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnaload",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@concat('INSERT INTO META_RAW.PROD_RUN_METADATA (DB, version,file_name, status, timestamp) values(''',variables('db'),''',',variables('version_update'),',''',variables('version_merge'),''',''Success''',',''',formatDateTime(utcNow(),'yyyy-MM-dd HH:MM:ss'),''');')",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "Failure_load",
+												"type": "Script",
+												"dependsOn": [
+													{
+														"activity": "Execute Load scripts",
+														"dependencyConditions": [
+															"Failed"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnaload",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@concat('INSERT INTO META_RAW.PROD_RUN_METADATA (DB, version,file_name, status, timestamp) values(''',variables('db'),''',',variables('version_update'),',''',variables('version_merge'),''',''Failed''',',''',formatDateTime(utcNow(),'yyyy-MM-dd HH:MM:ss'),''');')",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											}
+										]
+									},
+									{
+										"value": "2",
+										"activities": [
+											{
+												"name": "Execute Core Scripts",
+												"type": "Script",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnacore",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@activity('Fetch SQL File').output.Response",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "Success_core",
+												"type": "Script",
+												"dependsOn": [
+													{
+														"activity": "Execute Core Scripts",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnaload",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@concat('INSERT INTO META_RAW.PROD_RUN_METADATA (DB, version,file_name, status, timestamp) values(''',variables('db'),''',',variables('version_update'),',''',variables('version_merge'),''',''Success''',',''',formatDateTime(utcNow(),'yyyy-MM-dd HH:MM:ss'),''');')",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "Failure_core",
+												"type": "Script",
+												"dependsOn": [
+													{
+														"activity": "Execute Core Scripts",
+														"dependencyConditions": [
+															"Failed"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnaload",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@concat('INSERT INTO META_RAW.PROD_RUN_METADATA (DB, version,file_name, status, timestamp) values(''',variables('db'),''',',variables('version_update'),',''',variables('version_merge'),''',''Failed''',',''',formatDateTime(utcNow(),'yyyy-MM-dd HH:MM:ss'),''');')",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "Set new version",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Fetch DB",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "version_update",
+								"value": {
+									"value": "@string(add(int(variables('version')),1))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Merge version with file name",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set new version",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "version_merge",
+								"value": {
+									"value": "@concat(variables('version_update'),'.sql')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Fail1",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "Fetch SQL File",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "@concat(variables('version_merge'),' file not found in ',variables('db'),' folder')",
+									"type": "Expression"
+								},
+								"errorCode": "404:File not found"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"RepoName": {
+				"type": "string",
+				"defaultValue": "gitadfadbplt001"
+			},
+			"BranchName": {
+				"type": "string",
+				"defaultValue": "Feature_ADF_Sprint5_tshekar"
+			},
+			"FolderName": {
+				"type": "string",
+				"defaultValue": "demo"
+			}
+		},
+		"variables": {
+			"db": {
+				"type": "String"
+			},
+			"version": {
+				"type": "String"
+			},
+			"version_update": {
+				"type": "String"
+			},
+			"version_merge": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
