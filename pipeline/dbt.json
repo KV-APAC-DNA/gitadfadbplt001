@@ -1029,7 +1029,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "SwitchBetweenTypeResume",
+						"activity": "ForEveryModel",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1182,7 +1182,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Set variable1",
+											"activity": "Script1",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -1205,7 +1205,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}','@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''','\\')}')",
+													"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}','@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''' ,'\\''')}');",
 													"type": "Expression"
 												}
 											}
@@ -1233,30 +1233,6 @@
 										"variableName": "modelNameArray",
 										"value": {
 											"value": "@activity('Script2').output.resultSets[0].rows",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set variable1",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Script1",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "test",
-										"value": {
-											"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}','@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''','\\')}')",
 											"type": "Expression"
 										}
 									}
@@ -1290,55 +1266,6 @@
 						"value": "@{activity('read parameters').output.value[0].tempId}",
 						"type": "Expression"
 					}
-				}
-			},
-			{
-				"name": "SwitchBetweenTypeResume",
-				"type": "Switch",
-				"dependsOn": [
-					{
-						"activity": "ForEveryModel",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"on": {
-						"value": "@variables('refreshType')",
-						"type": "Expression"
-					},
-					"cases": [
-						{
-							"value": "Ingestion",
-							"activities": [
-								{
-									"name": "Wait_copy1",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
-								}
-							]
-						},
-						{
-							"value": "Transformation",
-							"activities": [
-								{
-									"name": "Wait1",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
-								}
-							]
-						}
-					]
 				}
 			},
 			{
@@ -1381,12 +1308,85 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "select * from dev_dna_core.CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item().model_name}';",
+											"value": "select * from CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item().model_name}';",
 											"type": "Expression"
 										}
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Script4",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Script3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@activity('Script3').output.resultSets[0].rows[0].QUERY",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Lookup1",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Script4",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SnowflakeSource",
+									"query": {
+										"value": "@activity('Script3').output.resultSets[0].rows[0].QUERY",
+										"type": "Expression"
+									},
+									"exportSettings": {
+										"type": "SnowflakeExportCopyCommand"
+									}
+								},
+								"dataset": {
+									"referenceName": "DNA_CORE_Dataset",
+									"type": "DatasetReference"
+								},
+								"firstRowOnly": false
 							}
 						}
 					]
