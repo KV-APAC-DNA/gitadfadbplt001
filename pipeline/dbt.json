@@ -27,7 +27,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'jobId'\" AS jobId,\n\"'accountId'\" AS accountId,\n\"'waitTime'\" AS waitTime\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'jobId',\n'accountId',\n'waitTime'\n));",
+							"value": "Select \n\"'jobId'\" AS jobId,\n\"'accountId'\" AS accountId,\n\"'waitTime'\" AS waitTime,\n\"'transformationType'\" AS transformationType,\n\"'tempId'\" AS tempId,\n\"'dbName'\" AS dbName\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'jobId',\n'accountId',\n'waitTime',\n'transformationType',\n'tempId',\n'dbName'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -1025,6 +1025,8 @@
 			{
 				"name": "error dbt run failed",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEveryModel",
@@ -1084,9 +1086,9 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "fail pipeline",
+						"activity": "SwitchBetweenType",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
@@ -1225,6 +1227,87 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set tempId",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "fail pipeline",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "temp_id",
+					"value": {
+						"value": "@{activity('read parameters').output.value[0].tempId}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set refreshType",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "fail pipeline",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "refreshType",
+					"value": {
+						"value": "@{activity('read parameters').output.value[0].refreshType}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "SwitchBetweenType",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "Set tempId",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set refreshType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@variables('refreshType')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "Ingestion"
+						},
+						{
+							"value": "Transformation"
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -1260,6 +1343,14 @@
 			},
 			"modelNameArray": {
 				"type": "Array"
+			},
+			"temp_id": {
+				"type": "String",
+				"defaultValue": "1"
+			},
+			"refreshType": {
+				"type": "String",
+				"defaultValue": "Transformation"
 			}
 		},
 		"folder": {
