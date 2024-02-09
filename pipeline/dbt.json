@@ -1132,7 +1132,7 @@
 					},
 					"cases": [
 						{
-							"value": "Ingestion",
+							"value": "Transformation",
 							"activities": [
 								{
 									"name": "Wait",
@@ -1146,7 +1146,7 @@
 							]
 						},
 						{
-							"value": "Transformation",
+							"value": "Ingestion",
 							"activities": [
 								{
 									"name": "Script1",
