@@ -1185,8 +1185,6 @@
 			{
 				"name": "Execute Archival Success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Error Encountered during load",
