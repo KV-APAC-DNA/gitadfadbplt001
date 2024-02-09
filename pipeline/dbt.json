@@ -995,7 +995,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "SwitchBetweenType2",
+						"activity": "Switch and Update CDC Logic",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1050,6 +1050,8 @@
 			{
 				"name": "Set refreshType",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "fail pipeline",
@@ -1074,6 +1076,8 @@
 			{
 				"name": "SwitchBetweenType",
 				"type": "Switch",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set refreshType",
@@ -1209,6 +1213,8 @@
 			{
 				"name": "Set tempId",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "fail pipeline",
@@ -1233,6 +1239,8 @@
 			{
 				"name": "ForEveryModel",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "SwitchBetweenType",
@@ -1352,8 +1360,10 @@
 				}
 			},
 			{
-				"name": "SwitchBetweenType2",
-				"type": "Switch",
+				"name": "Switch and Update CDC Logic",
+				"type": "Wait",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ForEveryModel",
@@ -1364,29 +1374,7 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"on": {
-						"value": "@variables('refreshType')",
-						"type": "Expression"
-					},
-					"cases": [
-						{
-							"value": "Transformation",
-							"activities": [
-								{
-									"name": "Wait2",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
-								}
-							]
-						},
-						{
-							"value": "Ingestion"
-						}
-					]
+					"waitTimeInSeconds": 1
 				}
 			}
 		],
