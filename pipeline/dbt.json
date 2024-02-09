@@ -1215,7 +1215,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "select * from dev_dna_core.CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= @{item().model_name};",
+											"value": "select * from dev_dna_core.CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item().model_name}';",
 											"type": "Expression"
 										}
 									}
