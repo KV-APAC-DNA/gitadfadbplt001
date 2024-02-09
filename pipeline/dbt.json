@@ -1182,7 +1182,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Script1",
+											"activity": "Set variable1",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -1205,7 +1205,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "call core_integration.SP_failed_tests_models('1','(\\'vw_stg_sdl_sap_ecc_company_code_text\\',\\'vw_stg_sdl_sap_ecc_company\\')')",
+													"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}','@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''','\\')}')",
 													"type": "Expression"
 												}
 											}
@@ -1233,6 +1233,30 @@
 										"variableName": "modelNameArray",
 										"value": {
 											"value": "@activity('Script2').output.resultSets[0].rows",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Script1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "test",
+										"value": {
+											"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}','@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''','\\')}')",
 											"type": "Expression"
 										}
 									}
@@ -1411,6 +1435,9 @@
 			"refreshType": {
 				"type": "String",
 				"defaultValue": "Transformation"
+			},
+			"test": {
+				"type": "String"
 			}
 		},
 		"folder": {
