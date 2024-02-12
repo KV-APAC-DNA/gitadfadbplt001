@@ -507,8 +507,6 @@
 			{
 				"name": "fail pipeline",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "wait until job is complete",
