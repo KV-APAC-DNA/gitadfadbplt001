@@ -1310,7 +1310,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "select * from CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item()}';",
+											"value": "select * from CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item().model_name}';",
 											"type": "Expression"
 										}
 									}
