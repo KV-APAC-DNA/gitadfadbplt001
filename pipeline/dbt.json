@@ -1216,6 +1216,8 @@
 								{
 									"name": "ModelName Array",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Script2",
@@ -1308,7 +1310,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "select * from CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item().model_name}';",
+											"value": "select * from CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item()}';",
 											"type": "Expression"
 										}
 									}
@@ -1441,7 +1443,9 @@
 			},
 			"modelNameArray": {
 				"type": "Array",
-				"defaultValue": []
+				"defaultValue": [
+					"a"
+				]
 			},
 			"temp_id": {
 				"type": "String",
