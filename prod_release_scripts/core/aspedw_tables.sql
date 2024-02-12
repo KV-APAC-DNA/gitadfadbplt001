@@ -1,144 +1,83 @@
 USE DATABASE PROD_DNA_CORE;
 USE schema ASPEDW_INTEGRATION;
 
-CREATE TABLE IF NOT EXISTS EDW_PERFECT_STORE_REBASE_WT (
-	HASHKEY VARCHAR(32),
-	HASH_ROW NUMBER(38,0),
-	DATASET VARCHAR(49),
-	CUSTOMERID VARCHAR(255),
-	SALESPERSONID VARCHAR(255),
-	VISITID VARCHAR(255),
-	QUESTIONTEXT VARCHAR(512),
-	PRODUCTID VARCHAR(255),
-	KPI VARCHAR(67),
-	SCHEDULEDDATE DATE,
-	LATESTDATE DATE,
-	FISC_YR NUMBER(18,0),
-	FISC_PER NUMBER(18,0),
-	MERCHANDISER_NAME VARCHAR(512),
-	CUSTOMERNAME VARCHAR(500),
-	COUNTRY VARCHAR(200),
-	STATE VARCHAR(256),
-	PARENT_CUSTOMER VARCHAR(255),
-	RETAIL_ENVIRONMENT VARCHAR(256),
-	CHANNEL VARCHAR(255),
-	RETAILER VARCHAR(331),
-	BUSINESS_UNIT VARCHAR(200),
-	EANNUMBER VARCHAR(150),
-	MATL_NUM VARCHAR(100),
-	PROD_HIER_L1 VARCHAR(500),
-	PROD_HIER_L2 VARCHAR(500),
-	PROD_HIER_L3 VARCHAR(510),
-	PROD_HIER_L4 VARCHAR(510),
-	PROD_HIER_L5 VARCHAR(2000),
-	PROD_HIER_L6 VARCHAR(500),
-	PROD_HIER_L7 VARCHAR(500),
-	PROD_HIER_L8 VARCHAR(500),
-	PROD_HIER_L9 VARCHAR(1000),
-	QUES_TYPE VARCHAR(112),
-	"y/n_flag" VARCHAR(150),
-	PRIORITY_STORE_FLAG VARCHAR(10),
-	ADD_INFO VARCHAR(65535),
-	RESPONSE VARCHAR(65535),
-	RESPONSE_SCORE VARCHAR(65535),
-	KPI_CHNL_WT FLOAT,
-	CHANNEL_WEIGHTAGE FLOAT,
-	WEIGHT_MSL NUMBER(38,37),
-	WEIGHT_OOS NUMBER(38,37),
-	WEIGHT_SOA NUMBER(38,37),
-	WEIGHT_SOS NUMBER(38,37),
-	WEIGHT_PROMO NUMBER(38,37),
-	WEIGHT_PLANOGRAM NUMBER(38,37),
-	WEIGHT_DISPLAY NUMBER(38,37),
-	MKT_SHARE FLOAT,
-	SALIENCE_VAL NUMBER(20,4),
-	ACTUAL_VALUE NUMBER(14,4),
-	REF_VALUE NUMBER(14,4),
-	KPI_ACTUAL_WT_VAL NUMBER(14,4),
-	KPI_REF_VAL NUMBER(14,4),
-	KPI_REF_WT_VAL NUMBER(14,4),
-	PHOTO_URL VARCHAR(500),
-	COMPLIANCE NUMBER(14,3),
-	GAP_TO_TARGET NUMBER(14,3),
-	COMPLIANCE_PROPOGATED NUMBER(14,3),
-	GAP_PROPAGATED NUMBER(14,3),
-	FULL_OPPORTUNITY_LCY NUMBER(14,4),
-	WEIGHTED_OPPORTUNITY_LCY NUMBER(14,4),
-	FULL_OPPORTUNITY_USD NUMBER(14,4),
-	WEIGHTED_OPPORTUNITY_USD NUMBER(14,4),
-	SOTP_LCY NUMBER(14,3),
-	SOTP_USD NUMBER(14,3),
-	STORE_GRADE VARCHAR(50)
-);
+CREATE OR REPLACE TABLE EDW_RPT_REGIONAL_SELLOUT_OFFTAKE (		--// CREATE TABLE rg_edw.edw_rpt_regional_sellout_offtake (
+    year numeric(18,0),		--//  ENCODE az64 // integer
+    qrtr_no varchar(14),		--//  ENCODE lzo // character varying
+    mnth_id varchar(23),		--//  ENCODE lzo // character varying
+    mnth_no numeric(18,0),		--//  ENCODE az64 // integer
+    cal_date date,		--//  ENCODE az64
+    week_start_date date,		--//  ENCODE az64
+    univ_year numeric(18,0),		--//  ENCODE az64 // integer
+    univ_month numeric(18,0),		--//  ENCODE az64 // integer
+    country_code varchar(2),		--//  ENCODE lzo // character varying
+    country_name varchar(50),		--//  ENCODE lzo // character varying
+    data_source varchar(14),		--//  ENCODE lzo // character varying
+    soldto_code varchar(255),		--//  ENCODE lzo // character varying
+    distributor_code varchar(100),		--//  ENCODE lzo // character varying
+    distributor_name varchar(255),		--//  ENCODE lzo // character varying
+    store_code varchar(100),		--//  ENCODE lzo // character varying
+    store_name varchar(500),		--//  ENCODE lzo // character varying
+    store_type varchar(255),		--//  ENCODE lzo // character varying
+    distributor_additional_attribute1 varchar(150),		--//  ENCODE lzo // character varying
+    distributor_additional_attribute2 varchar(150),		--//  ENCODE lzo // character varying
+    distributor_additional_attribute3 varchar(150),		--//  ENCODE lzo // character varying
+    sap_parent_customer_key varchar(12),		--//  ENCODE lzo // character varying
+    sap_parent_customer_description varchar(75),		--//  ENCODE lzo // character varying
+    sap_customer_channel_key varchar(12),		--//  ENCODE lzo // character varying
+    sap_customer_channel_description varchar(75),		--//  ENCODE lzo // character varying
+    sap_customer_sub_channel_key varchar(12),		--//  ENCODE lzo // character varying
+    sap_sub_channel_description varchar(75),		--//  ENCODE lzo // character varying
+    sap_go_to_mdl_key varchar(12),		--//  ENCODE lzo // character varying
+    sap_go_to_mdl_description varchar(75),		--//  ENCODE lzo // character varying
+    sap_banner_key varchar(12),		--//  ENCODE lzo // character varying
+    sap_banner_description varchar(75),		--//  ENCODE lzo // character varying
+    sap_banner_format_key varchar(12),		--//  ENCODE lzo // character varying
+    sap_banner_format_description varchar(75),		--//  ENCODE lzo // character varying
+    retail_environment varchar(50),		--//  ENCODE lzo // character varying
+    region varchar(150),		--//  ENCODE lzo // character varying
+    zone_or_area varchar(150),		--//  ENCODE lzo // character varying
+    customer_segment_key varchar(12),		--//  ENCODE lzo // character varying
+    customer_segment_description varchar(50),		--//  ENCODE lzo // character varying
+    global_product_franchise varchar(30),		--//  ENCODE lzo // character varying
+    global_product_brand varchar(30),		--//  ENCODE lzo // character varying
+    global_product_sub_brand varchar(100),		--//  ENCODE lzo // character varying
+    global_product_variant varchar(100),		--//  ENCODE lzo // character varying
+    global_product_segment varchar(50),		--//  ENCODE lzo // character varying
+    global_product_subsegment varchar(100),		--//  ENCODE lzo // character varying
+    global_product_category varchar(50),		--//  ENCODE lzo // character varying
+    global_product_subcategory varchar(50),		--//  ENCODE lzo // character varying
+    global_put_up_description varchar(100),		--//  ENCODE lzo // character varying
+    ean varchar(50),		--//  ENCODE lzo // character varying
+    sku_code varchar(40),		--//  ENCODE lzo // character varying
+    sku_description varchar(150),		--//  ENCODE lzo // character varying
+    pka_product_key varchar(68),		--//  ENCODE lzo // character varying
+    pka_product_key_description varchar(255),		--//  ENCODE lzo // character varying
+    from_currency varchar(5),		--//  ENCODE lzo // character varying
+    to_currency varchar(5),		--//  ENCODE lzo // character varying
+    exchange_rate numeric(15,5),		--//  ENCODE az64
+    sellout_sales_quantity numeric(38,6),		--//  ENCODE az64
+    sellout_sales_value numeric(38,6),		--//  ENCODE az64
+    sellout_sales_value_usd numeric(38,11),		--//  ENCODE az64
+    list_price numeric(38,6),		--//  ENCODE az64
+    sellout_value_list_price numeric(38,12),		--//  ENCODE az64
+    sellout_value_list_price_usd numeric(38,17),		--//  ENCODE az64
+    selling_price numeric(38,4),		--//  ENCODE az64
+    first_scan_flag_parent_customer_level varchar(1),		--//  ENCODE lzo // character varying
+    first_scan_flag_market_level varchar(1),		--//  ENCODE lzo // character varying
+    npd_flag_market_level varchar(1),		--//  ENCODE lzo // character varying
+    npd_flag_parent_customer_level varchar(1),		--//  ENCODE lzo // character varying
+    customer_product_desc varchar(300),		--//  ENCODE lzo // character varying
+    msl_product_code varchar(150),		--//  ENCODE lzo // character varying
+    msl_product_desc varchar(300),		--//  ENCODE lzo // character varying
+    store_grade varchar(150),		--//  ENCODE lzo // character varying
+    retail_env varchar(150),		--//  ENCODE lzo // character varying
+    channel varchar(150),		--//  ENCODE lzo // character varying
+    crtd_dttm timestamp without time zone,		--//  ENCODE az64
+    updt_dttm timestamp without time zone		--//  ENCODE az64
+)
+		--// DISTSTYLE AUTO
+;		--// SORTKEY ( country_code );
 
 
-CREATE TABLE IF NOT EXISTS EDW_RPT_REGIONAL_SELLOUT_OFFTAKE (
-	YEAR NUMBER(18,0),
-	QRTR_NO VARCHAR(14),
-	MNTH_ID VARCHAR(23),
-	MNTH_NO NUMBER(18,0),
-	CAL_DATE DATE,
-	WEEK_START_DATE DATE,
-	UNIV_YEAR NUMBER(18,0),
-	UNIV_MONTH NUMBER(18,0),
-	COUNTRY_CODE VARCHAR(2),
-	COUNTRY_NAME VARCHAR(50),
-	DATA_SOURCE VARCHAR(14),
-	SOLDTO_CODE VARCHAR(255),
-	DISTRIBUTOR_CODE VARCHAR(100),
-	DISTRIBUTOR_NAME VARCHAR(255),
-	STORE_CODE VARCHAR(100),
-	STORE_NAME VARCHAR(500),
-	STORE_TYPE VARCHAR(255),
-	DISTRIBUTOR_ADDITIONAL_ATTRIBUTE1 VARCHAR(150),
-	DISTRIBUTOR_ADDITIONAL_ATTRIBUTE2 VARCHAR(150),
-	DISTRIBUTOR_ADDITIONAL_ATTRIBUTE3 VARCHAR(150),
-	SAP_PARENT_CUSTOMER_KEY VARCHAR(12),
-	SAP_PARENT_CUSTOMER_DESCRIPTION VARCHAR(75),
-	SAP_CUSTOMER_CHANNEL_KEY VARCHAR(12),
-	SAP_CUSTOMER_CHANNEL_DESCRIPTION VARCHAR(75),
-	SAP_CUSTOMER_SUB_CHANNEL_KEY VARCHAR(12),
-	SAP_SUB_CHANNEL_DESCRIPTION VARCHAR(75),
-	SAP_GO_TO_MDL_KEY VARCHAR(12),
-	SAP_GO_TO_MDL_DESCRIPTION VARCHAR(75),
-	SAP_BANNER_KEY VARCHAR(12),
-	SAP_BANNER_DESCRIPTION VARCHAR(75),
-	SAP_BANNER_FORMAT_KEY VARCHAR(12),
-	SAP_BANNER_FORMAT_DESCRIPTION VARCHAR(75),
-	RETAIL_ENVIRONMENT VARCHAR(50),
-	REGION VARCHAR(150),
-	ZONE_OR_AREA VARCHAR(150),
-	CUSTOMER_SEGMENT_KEY VARCHAR(12),
-	CUSTOMER_SEGMENT_DESCRIPTION VARCHAR(50),
-	GLOBAL_PRODUCT_FRANCHISE VARCHAR(30),
-	GLOBAL_PRODUCT_BRAND VARCHAR(30),
-	GLOBAL_PRODUCT_SUB_BRAND VARCHAR(100),
-	GLOBAL_PRODUCT_VARIANT VARCHAR(100),
-	GLOBAL_PRODUCT_SEGMENT VARCHAR(50),
-	GLOBAL_PRODUCT_SUBSEGMENT VARCHAR(100),
-	GLOBAL_PRODUCT_CATEGORY VARCHAR(50),
-	GLOBAL_PRODUCT_SUBCATEGORY VARCHAR(50),
-	GLOBAL_PUT_UP_DESCRIPTION VARCHAR(100),
-	EAN VARCHAR(50),
-	SKU_CODE VARCHAR(40),
-	SKU_DESCRIPTION VARCHAR(150),
-	PKA_PRODUCT_KEY VARCHAR(68),
-	PKA_PRODUCT_KEY_DESCRIPTION VARCHAR(255),
-	FROM_CURRENCY VARCHAR(5),
-	TO_CURRENCY VARCHAR(5),
-	EXCHANGE_RATE NUMBER(15,5),
-	SELLOUT_SALES_QUANTITY NUMBER(38,6),
-	SELLOUT_SALES_VALUE NUMBER(38,6),
-	SELLOUT_SALES_VALUE_USD NUMBER(38,11),
-	LIST_PRICE NUMBER(38,6),
-	SELLOUT_VALUE_LIST_PRICE NUMBER(38,12),
-	SELLOUT_VALUE_LIST_PRICE_USD NUMBER(38,17),
-	SELLING_PRICE NUMBER(38,4),
-	FIRST_SCAN_FLAG_PARENT_CUSTOMER_LEVEL VARCHAR(1),
-	FIRST_SCAN_FLAG_MARKET_LEVEL VARCHAR(1),
-	NPD_FLAG_MARKET_LEVEL VARCHAR(1),
-	NPD_FLAG_PARENT_CUSTOMER_LEVEL VARCHAR(1),
-	CUSTOMER_PRODUCT_DESC VARCHAR(300),
-	CRTD_DTTM TIMESTAMP_NTZ(9),
-	UPDT_DTTM TIMESTAMP_NTZ(9)
-);
+
