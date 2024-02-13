@@ -1,3 +1,1495 @@
+create or replace view DEV_DNA_CORE.ASPEDW_ACCESS.V_RPT_COPA(
+	"prev_fisc_yr_per",
+	"latest_date",
+	"latest_fisc_yrmnth",
+	"fisc_yr",
+	"fisc_yr_per",
+	"fisc_day",
+	"ctry_nm",
+	"cluster",
+	"obj_crncy_co_obj",
+	"b1 mega-brand",
+	"b2 brand",
+	"b3 base product",
+	"b4 variant",
+	"b5 put-up",
+	"prod h1 operating group",
+	"prod h2 franchise group",
+	"prod h3 franchise",
+	"prod h4 product franchise",
+	"prod h5 product major",
+	"prod h6 product minor",
+	"parent customer",
+	"banner",
+	"banner format",
+	"channel",
+	"go to model",
+	"sub channel",
+	"retail_env",
+	"nts_usd",
+	"nts_lcy",
+	"gts_usd",
+	"gts_lcy",
+	"eq_usd",
+	"eq_lcy",
+	"from_crncy",
+	"to_crncy",
+	"nts_qty",
+	"gts_qty",
+	"eq_qty",
+	"ord_pc_qty",
+	"unspp_qty",
+	"cust_num"
+) as
+ --================statement 1================  
+SELECT
+  main.prev_fisc_yr_per AS "prev_fisc_yr_per",
+  main.latest_date AS "latest_date",
+  main.latest_fisc_yrmnth AS "latest_fisc_yrmnth",
+  main.fisc_yr AS "fisc_yr",
+  main.fisc_yr_per AS "fisc_yr_per",
+  main.fisc_day AS "fisc_day",
+  main.ctry_nm AS "ctry_nm",
+  main."cluster",
+  main.obj_crncy_co_obj AS "obj_crncy_co_obj",
+  mat.mega_brnd_desc AS "b1 mega-brand",
+  mat.brnd_desc AS "b2 brand",
+  mat.base_prod_desc AS "b3 base product",
+  mat.varnt_desc AS "b4 variant",
+  mat.put_up_desc AS "b5 put-up",
+  mat.prodh1_txtmd AS "prod h1 operating group",
+  mat.prodh2_txtmd AS "prod h2 franchise group",
+  mat.prodh3_txtmd AS "prod h3 franchise",
+  mat.prodh4_txtmd AS "prod h4 product franchise",
+  mat.prodh5_txtmd AS "prod h5 product major",
+  mat.prodh6_txtmd AS "prod h6 product minor",
+  cus_sales_extn."parent customer",
+  cus_sales_extn."banner" AS "banner",
+  cus_sales_extn."banner format",
+  cus_sales_extn."channel" AS "channel",
+  cus_sales_extn."go to model",
+  cus_sales_extn."sub channel",
+  cus_sales_extn."retail_env" AS "retail_env",
+  SUM(main.nts_usd) AS "nts_usd",
+  SUM(main.nts_lcy) AS "nts_lcy",
+  SUM(main.gts_usd) AS "gts_usd",
+  SUM(main.gts_lcy) AS "gts_lcy",
+  SUM(main.eq_usd) AS "eq_usd",
+  SUM(main.eq_lcy) AS "eq_lcy",
+  main.from_crncy AS "from_crncy",
+  main.to_crncy AS "to_crncy",
+  SUM(main.nts_qty) AS "nts_qty",
+  SUM(main.gts_qty) AS "gts_qty",
+  SUM(main.eq_qty) AS "eq_qty",
+  SUM(main.ord_pc_qty) AS "ord_pc_qty",
+  SUM(main.unspp_qty) AS "unspp_qty",
+  main.cust_num AS "cust_num"
+FROM (
+  (
+    (
+      (
+        SELECT
+          CAST((((
+                CAST((
+                  CAST((
+                    DATE_PART(
+                      'YEAR',
+                      (
+                        TO_DATE(
+                          (
+                            CAST((
+                              CAST((
+                                calendar.fisc_yr
+                              ) AS VARCHAR)
+                            ) AS TEXT) || SUBSTRING(CAST((
+                              CAST((
+                                calendar.fisc_per
+                              ) AS VARCHAR)
+                            ) AS TEXT), 6)
+                          ),
+                          CAST((
+                            CAST('yyyymm' AS VARCHAR)
+                          ) AS TEXT)
+                        ) -1
+                      )
+                    )
+                  ) AS VARCHAR)
+                ) AS TEXT) || CAST((
+                  CAST('0' AS VARCHAR)
+                ) AS TEXT)
+              ) || CAST((
+                CAST((
+                  DATE_PART(
+                   'MONTH',
+                    (
+                      TO_DATE(
+                        (
+                          CAST((
+                            CAST((
+                              calendar.fisc_yr
+                            ) AS VARCHAR)
+                          ) AS TEXT) || SUBSTRING(CAST((
+                            CAST((
+                              calendar.fisc_per
+                            ) AS VARCHAR)
+                          ) AS TEXT), 6)
+                        ),
+                        CAST((
+                          CAST('yyyymm' AS VARCHAR)
+                        ) AS TEXT)
+                      ) - 1
+                    )
+                  )
+                ) AS VARCHAR)
+              ) AS TEXT)
+            )
+          ) AS VARCHAR) AS prev_fisc_yr_per,
+            TO_CHAR(
+           CONVERT_TIMEZONE(
+             'Asia/Singapore',
+             CURRENT_TIMESTAMP::TIMESTAMP_NTZ
+           )::TIMESTAMP_NTZ,
+           'YYYYMMDD'
+       ) AS latest_date,
+          CAST((
+            (
+              CAST((
+                CAST((
+                  calendar.fisc_yr
+                ) AS VARCHAR)
+              ) AS TEXT) || SUBSTRING(CAST((
+                CAST((
+                  calendar.fisc_per
+                ) AS VARCHAR)
+              ) AS TEXT), 6)
+            )
+          ) AS VARCHAR) AS latest_fisc_yrmnth,
+          copa.fisc_yr,
+          copa.fisc_yr_per,
+          TO_DATE(
+            (
+              (
+                SUBSTRING(CAST((
+                  CAST((
+                    copa.fisc_yr_per
+                  ) AS VARCHAR)
+                ) AS TEXT), 6, 8) || CAST((
+                  CAST('01' AS VARCHAR)
+                ) AS TEXT)
+              ) || SUBSTRING(CAST((
+                CAST((
+                  copa.fisc_yr_per
+                ) AS VARCHAR)
+              ) AS TEXT), 1, 4)
+            ),
+            CAST((
+              CAST('MMDDYYYY' AS VARCHAR)
+            ) AS TEXT)
+          ) AS fisc_day,
+          CASE
+            WHEN (
+              (
+                (
+                  (
+                    (
+                      (
+                        (
+                          LTRIM(
+                            CAST((
+                              copa.cust_num
+                            ) AS TEXT),
+                            CAST((
+                              CAST((
+                                0
+                              ) AS VARCHAR)
+                            ) AS TEXT)
+                          ) = CAST((
+                            CAST('134559' AS VARCHAR)
+                          ) AS TEXT)
+                        )
+                        OR (
+                          LTRIM(
+                            CAST((
+                              copa.cust_num
+                            ) AS TEXT),
+                            CAST((
+                              CAST((
+                                0
+                              ) AS VARCHAR)
+                            ) AS TEXT)
+                          ) = CAST((
+                            CAST('134106' AS VARCHAR)
+                          ) AS TEXT)
+                        )
+                      )
+                      OR (
+                        LTRIM(
+                          CAST((
+                            copa.cust_num
+                          ) AS TEXT),
+                          CAST((
+                            CAST((
+                              0
+                            ) AS VARCHAR)
+                          ) AS TEXT)
+                        ) = CAST((
+                          CAST('134258' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                    )
+                    OR (
+                      LTRIM(
+                        CAST((
+                          copa.cust_num
+                        ) AS TEXT),
+                        CAST((
+                          CAST((
+                            0
+                          ) AS VARCHAR)
+                        ) AS TEXT)
+                      ) = CAST((
+                        CAST('134855' AS VARCHAR)
+                      ) AS TEXT)
+                    )
+                  )
+                  AND (
+                    LTRIM(
+                      CAST((
+                        copa.acct_num
+                      ) AS TEXT),
+                      CAST((
+                        CAST((
+                          0
+                        ) AS VARCHAR)
+                      ) AS TEXT)
+                    ) <> CAST((
+                      CAST('403185' AS VARCHAR)
+                    ) AS TEXT)
+                  )
+                )
+                AND (
+                  CAST((
+                    mat.mega_brnd_desc
+                  ) AS TEXT) <> CAST((
+                    CAST('Vogue Int\'l' AS VARCHAR)
+                  ) AS TEXT)
+                )
+              )
+              AND (
+                copa.fisc_yr = 2018
+              )
+            )
+            THEN CAST('China Selfcare' AS VARCHAR)
+            ELSE cmp.ctry_group
+          END AS ctry_nm,
+          CASE
+            WHEN (
+              (
+                (
+                  (
+                    (
+                      (
+                        (
+                          LTRIM(
+                            CAST((
+                              copa.cust_num
+                            ) AS TEXT),
+                            CAST((
+                              CAST((
+                                0
+                              ) AS VARCHAR)
+                            ) AS TEXT)
+                          ) = CAST((
+                            CAST('134559' AS VARCHAR)
+                          ) AS TEXT)
+                        )
+                        OR (
+                          LTRIM(
+                            CAST((
+                              copa.cust_num
+                            ) AS TEXT),
+                            CAST((
+                              CAST((
+                                0
+                              ) AS VARCHAR)
+                            ) AS TEXT)
+                          ) = CAST((
+                            CAST('134106' AS VARCHAR)
+                          ) AS TEXT)
+                        )
+                      )
+                      OR (
+                        LTRIM(
+                          CAST((
+                            copa.cust_num
+                          ) AS TEXT),
+                          CAST((
+                            CAST((
+                              0
+                            ) AS VARCHAR)
+                          ) AS TEXT)
+                        ) = CAST((
+                          CAST('134258' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                    )
+                    OR (
+                      LTRIM(
+                        CAST((
+                          copa.cust_num
+                        ) AS TEXT),
+                        CAST((
+                          CAST((
+                            0
+                          ) AS VARCHAR)
+                        ) AS TEXT)
+                      ) = CAST((
+                        CAST('134855' AS VARCHAR)
+                      ) AS TEXT)
+                    )
+                  )
+                  AND (
+                    LTRIM(
+                      CAST((
+                        copa.acct_num
+                      ) AS TEXT),
+                      CAST((
+                        CAST((
+                          0
+                        ) AS VARCHAR)
+                      ) AS TEXT)
+                    ) <> CAST((
+                      CAST('403185' AS VARCHAR)
+                    ) AS TEXT)
+                  )
+                )
+                AND (
+                  CAST((
+                    mat.mega_brnd_desc
+                  ) AS TEXT) <> CAST((
+                    CAST('Vogue Int\'l' AS VARCHAR)
+                  ) AS TEXT)
+                )
+              )
+              AND (
+                copa.fisc_yr = 2018
+              )
+            )
+            THEN CAST('China' AS VARCHAR)
+            ELSE cmp."cluster"
+          END AS "cluster",
+          CASE
+            WHEN (
+              CAST((
+                cmp.ctry_group
+              ) AS TEXT) = CAST((
+                CAST('India' AS VARCHAR)
+              ) AS TEXT)
+            )
+            THEN CAST('INR' AS VARCHAR)
+            WHEN (
+              CAST((
+                cmp.ctry_group
+              ) AS TEXT) = CAST((
+                CAST('Philippines' AS VARCHAR)
+              ) AS TEXT)
+            )
+            THEN CAST('PHP' AS VARCHAR)
+            WHEN (
+              (
+                CAST((
+                  cmp.ctry_group
+                ) AS TEXT) = CAST((
+                  CAST('China Selfcare' AS VARCHAR)
+                ) AS TEXT)
+              )
+              OR (
+                CAST((
+                  cmp.ctry_group
+                ) AS TEXT) = CAST((
+                  CAST('China Personal Care' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN CAST('RMB' AS VARCHAR)
+            ELSE copa.obj_crncy_co_obj
+          END AS obj_crncy_co_obj,
+          copa.matl_num,
+          copa.co_cd,
+          CASE
+            WHEN (
+              (
+                LTRIM(CAST((
+                  copa.cust_num
+                ) AS TEXT), CAST((
+                  CAST('0' AS VARCHAR)
+                ) AS TEXT)) = CAST((
+                  CAST('135520' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                (
+                  CAST((
+                    copa.co_cd
+                  ) AS TEXT) = CAST((
+                    CAST('703A' AS VARCHAR)
+                  ) AS TEXT)
+                )
+                OR (
+                  CAST((
+                    copa.co_cd
+                  ) AS TEXT) = CAST((
+                    CAST('8888' AS VARCHAR)
+                  ) AS TEXT)
+                )
+              )
+            )
+            THEN CAST('100A' AS VARCHAR)
+            ELSE copa.sls_org
+          END AS sls_org,
+          CASE
+            WHEN (
+              (
+                LTRIM(CAST((
+                  copa.cust_num
+                ) AS TEXT), CAST((
+                  CAST('0' AS VARCHAR)
+                ) AS TEXT)) = CAST((
+                  CAST('135520' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                (
+                  CAST((
+                    copa.co_cd
+                  ) AS TEXT) = CAST((
+                    CAST('703A' AS VARCHAR)
+                  ) AS TEXT)
+                )
+                OR (
+                  CAST((
+                    copa.co_cd
+                  ) AS TEXT) = CAST((
+                    CAST('8888' AS VARCHAR)
+                  ) AS TEXT)
+                )
+              )
+            )
+            THEN CAST('15' AS VARCHAR)
+            ELSE copa.dstr_chnl
+          END AS dstr_chnl,
+          copa.div,
+          copa.cust_num,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('NTS' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CAST('USD' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN SUM((
+              copa.amt_obj_crncy * exch_rate.ex_rt
+            ))
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS nts_usd,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('NTS' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CASE
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('India' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'India' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('INR' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('Philippines' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'Philippines' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('PHP' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('China Selfcare' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'China Selfcare' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('RMB' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('China Personal Care' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'China Personal Care' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('RMB' AS VARCHAR)
+                    ELSE copa.obj_crncy_co_obj
+                  END
+                ) AS TEXT)
+              )
+            )
+            THEN SUM((
+              copa.amt_obj_crncy * exch_rate.ex_rt
+            ))
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS nts_lcy,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('GTS' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CAST('USD' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN SUM((
+              copa.amt_obj_crncy * exch_rate.ex_rt
+            ))
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS gts_usd,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('GTS' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CASE
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('India' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'India' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('INR' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('Philippines' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'Philippines' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('PHP' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('China Selfcare' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'China Selfcare' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('RMB' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('China Personal Care' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'China Personal Care' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('RMB' AS VARCHAR)
+                    ELSE copa.obj_crncy_co_obj
+                  END
+                ) AS TEXT)
+              )
+            )
+            THEN SUM((
+              copa.amt_obj_crncy * exch_rate.ex_rt
+            ))
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS gts_lcy,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('EQ' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CAST('USD' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN SUM((
+              copa.amt_obj_crncy * exch_rate.ex_rt
+            ))
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS eq_usd,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('EQ' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CASE
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('India' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'India' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('INR' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('Philippines' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'Philippines' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('PHP' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('China Selfcare' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'China Selfcare' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('RMB' AS VARCHAR)
+                    WHEN (
+                      (
+                        CAST((
+                          cmp.ctry_group
+                        ) AS TEXT) = CAST((
+                          CAST('China Personal Care' AS VARCHAR)
+                        ) AS TEXT)
+                      )
+                      OR (
+                        (
+                          cmp.ctry_group IS NULL
+                        ) AND (
+                          'China Personal Care' IS NULL
+                        )
+                      )
+                    )
+                    THEN CAST('RMB' AS VARCHAR)
+                    ELSE copa.obj_crncy_co_obj
+                  END
+                ) AS TEXT)
+              )
+            )
+            THEN SUM((
+              copa.amt_obj_crncy * exch_rate.ex_rt
+            ))
+            ELSE CAST((
+              CAST(NULL AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS eq_lcy,
+          CASE
+            WHEN (
+              CAST((
+                cmp.ctry_group
+              ) AS TEXT) = CAST((
+                CAST('India' AS VARCHAR)
+              ) AS TEXT)
+            )
+            THEN CAST('INR' AS VARCHAR)
+            WHEN (
+              CAST((
+                cmp.ctry_group
+              ) AS TEXT) = CAST((
+                CAST('Philippines' AS VARCHAR)
+              ) AS TEXT)
+            )
+            THEN CAST('PHP' AS VARCHAR)
+            WHEN (
+              (
+                CAST((
+                  cmp.ctry_group
+                ) AS TEXT) = CAST((
+                  CAST('China Selfcare' AS VARCHAR)
+                ) AS TEXT)
+              )
+              OR (
+                CAST((
+                  cmp.ctry_group
+                ) AS TEXT) = CAST((
+                  CAST('China Personal Care' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN CAST('RMB' AS VARCHAR)
+            ELSE exch_rate.from_crncy
+          END AS from_crncy,
+          exch_rate.to_crncy,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('NTS' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CAST('USD' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN SUM(copa.qty)
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS nts_qty,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('GTS' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CAST('USD' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN SUM(copa.qty)
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS gts_qty,
+          CASE
+            WHEN (
+              (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('EQ' AS VARCHAR)
+                ) AS TEXT)
+              )
+              AND (
+                CAST((
+                  exch_rate.to_crncy
+                ) AS TEXT) = CAST((
+                  CAST('USD' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            THEN SUM(copa.qty)
+            ELSE CAST((
+              CAST((
+                0
+              ) AS DECIMAL)
+            ) AS DECIMAL(18, 0))
+          END AS eq_qty,
+          0 AS ord_pc_qty,
+          0 AS unspp_qty
+        FROM (
+          (
+            (
+              (
+                ASPEDW_INTEGRATION.edw_copa_trans_fact AS copa
+                  LEFT JOIN ASPEDW_INTEGRATION.edw_calendar_dim AS calendar
+                    ON (
+                      (
+                        calendar.cal_day = TO_DATE(
+                          TO_CHAR(
+							CONVERT_TIMEZONE(
+							'Asia/Singapore',
+					CURRENT_TIMESTAMP::TIMESTAMP_NTZ
+							)::TIMESTAMP_NTZ,
+								'YYYY-MM-DD'
+								)::TEXT,
+								'YYYY-MM-DD'
+                        )
+                      )
+                    )
+              )
+              LEFT JOIN ASPEDW_INTEGRATION.edw_company_dim AS cmp
+                ON (
+                  (
+                    CAST((
+                      copa.co_cd
+                    ) AS TEXT) = CAST((
+                      cmp.co_cd
+                    ) AS TEXT)
+                  )
+                )
+            )
+            LEFT JOIN ASPEDW_INTEGRATION.edw_material_dim AS mat
+              ON (
+                (
+                  CAST((
+                    copa.matl_num
+                  ) AS TEXT) = CAST((
+                    mat.matl_num
+                  ) AS TEXT)
+                )
+              )
+          )
+          LEFT JOIN ASPEDW_ACCESS.v_intrm_reg_crncy_exch_fiscper AS exch_rate
+            ON (
+              (
+                (
+                  (
+                    CAST((
+                      copa.obj_crncy_co_obj
+                    ) AS TEXT) = CAST((
+                      exch_rate.from_crncy
+                    ) AS TEXT)
+                  )
+                  AND (
+                    copa.fisc_yr_per = exch_rate.fisc_per
+                  )
+                )
+                AND CASE
+                  WHEN (
+                    CAST((
+                      exch_rate.to_crncy
+                    ) AS TEXT) <> CAST((
+                      CAST('USD' AS VARCHAR)
+                    ) AS TEXT)
+                  )
+                  THEN (
+                    CAST((
+                      exch_rate.to_crncy
+                    ) AS TEXT) = CAST((
+                      CASE
+                        WHEN (
+                          (
+                            CAST((
+                              cmp.ctry_group
+                            ) AS TEXT) = CAST((
+                              CAST('India' AS VARCHAR)
+                            ) AS TEXT)
+                          )
+                          OR (
+                            (
+                              cmp.ctry_group IS NULL
+                            ) AND (
+                              'India' IS NULL
+                            )
+                          )
+                        )
+                        THEN CAST('INR' AS VARCHAR)
+                        WHEN (
+                          (
+                            CAST((
+                              cmp.ctry_group
+                            ) AS TEXT) = CAST((
+                              CAST('Philippines' AS VARCHAR)
+                            ) AS TEXT)
+                          )
+                          OR (
+                            (
+                              cmp.ctry_group IS NULL
+                            ) AND (
+                              'Philippines' IS NULL
+                            )
+                          )
+                        )
+                        THEN CAST('PHP' AS VARCHAR)
+                        WHEN (
+                          (
+                            CAST((
+                              cmp.ctry_group
+                            ) AS TEXT) = CAST((
+                              CAST('China Selfcare' AS VARCHAR)
+                            ) AS TEXT)
+                          )
+                          OR (
+                            (
+                              cmp.ctry_group IS NULL
+                            ) AND (
+                              'China Selfcare' IS NULL
+                            )
+                          )
+                        )
+                        THEN CAST('RMB' AS VARCHAR)
+                        WHEN (
+                          (
+                            CAST((
+                              cmp.ctry_group
+                            ) AS TEXT) = CAST((
+                              CAST('China Personal Care' AS VARCHAR)
+                            ) AS TEXT)
+                          )
+                          OR (
+                            (
+                              cmp.ctry_group IS NULL
+                            ) AND (
+                              'China Personal Care' IS NULL
+                            )
+                          )
+                        )
+                        THEN CAST('RMB' AS VARCHAR)
+                        ELSE copa.obj_crncy_co_obj
+                      END
+                    ) AS TEXT)
+                  )
+                  ELSE (
+                    CAST((
+                      exch_rate.to_crncy
+                    ) AS TEXT) = CAST((
+                      CAST('USD' AS VARCHAR)
+                    ) AS TEXT)
+                  )
+                END
+              )
+            )
+        )
+        WHERE
+          (
+            (
+              (
+                (
+                  CAST((
+                    copa.acct_hier_shrt_desc
+                  ) AS TEXT) = CAST((
+                    CAST('GTS' AS VARCHAR)
+                  ) AS TEXT)
+                )
+                OR (
+                  CAST((
+                    copa.acct_hier_shrt_desc
+                  ) AS TEXT) = CAST((
+                    CAST('NTS' AS VARCHAR)
+                  ) AS TEXT)
+                )
+              )
+              OR (
+                CAST((
+                  copa.acct_hier_shrt_desc
+                ) AS TEXT) = CAST((
+                  CAST('EQ' AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+            AND (
+              CAST((
+                CAST((
+                  copa.fisc_yr_per
+                ) AS VARCHAR)
+              ) AS TEXT) >= (
+                (
+                  (
+                    CAST((
+                      CAST((
+                        (
+                          DATE_PART(YEAR, CURRENT_DATE()) - 2
+                        )
+                      ) AS VARCHAR)
+                    ) AS TEXT) || CAST((
+                      CAST((
+                        0
+                      ) AS VARCHAR)
+                    ) AS TEXT)
+                  ) || CAST((
+                    CAST((
+                      0
+                    ) AS VARCHAR)
+                  ) AS TEXT)
+                ) || CAST((
+                  CAST((
+                    1
+                  ) AS VARCHAR)
+                ) AS TEXT)
+              )
+            )
+          )
+        GROUP BY
+          calendar.fisc_yr,
+          calendar.fisc_per,
+          copa.fisc_yr,
+          copa.fisc_yr_per,
+          copa.obj_crncy_co_obj,
+          copa.matl_num,
+          copa.co_cd,
+          copa.sls_org,
+          copa.dstr_chnl,
+          copa.div,
+          copa.cust_num,
+          copa.acct_num,
+          copa.acct_hier_shrt_desc,
+          exch_rate.from_crncy,
+          exch_rate.to_crncy,
+          cmp.ctry_group,
+          cmp."cluster",
+          mat.mega_brnd_desc
+        UNION ALL
+        SELECT
+          CAST((((
+                CAST((
+                  CAST((
+                    DATE_PART(
+                      'YEAR',
+                      (
+                        TO_DATE(
+                          (
+                            CAST((
+                              CAST((
+                                calendar1.fisc_yr
+                              ) AS VARCHAR)
+                            ) AS TEXT) || SUBSTRING(CAST((
+                              CAST((
+                                calendar1.fisc_per
+                              ) AS VARCHAR)
+                            ) AS TEXT), 6)
+                          ),
+                          CAST((
+                            CAST('yyyymm' AS VARCHAR)
+                          ) AS TEXT)
+                        ) -1
+                      )
+                    )
+                  ) AS VARCHAR)
+                ) AS TEXT) || CAST((
+                  CAST('0' AS VARCHAR)
+                ) AS TEXT)
+              ) || CAST((
+                CAST((
+                  DATE_PART(
+                   'MONTH',
+                    (
+                      TO_DATE(
+                        (
+                          CAST((
+                            CAST((
+                              calendar1.fisc_yr
+                            ) AS VARCHAR)
+                          ) AS TEXT) || SUBSTRING(CAST((
+                            CAST((
+                              calendar1.fisc_per
+                            ) AS VARCHAR)
+                          ) AS TEXT), 6)
+                        ),
+                        CAST((
+                          CAST('yyyymm' AS VARCHAR)
+                        ) AS TEXT)
+                      ) - 1
+                    )
+                  )
+                ) AS VARCHAR)
+              ) AS TEXT)
+            )
+          ) AS VARCHAR) AS prev_fisc_yr_per,
+          TO_CHAR(
+           CONVERT_TIMEZONE(
+             'Asia/Singapore',
+             CURRENT_TIMESTAMP::TIMESTAMP_NTZ
+           )::TIMESTAMP_NTZ,
+           'YYYYMMDD'
+       ) AS latest_date,
+          CAST((
+            (
+              CAST((
+                CAST((
+                  calendar1.fisc_yr
+                ) AS VARCHAR)
+              ) AS TEXT) || SUBSTRING(CAST((
+                CAST((
+                  calendar1.fisc_per
+                ) AS VARCHAR)
+              ) AS TEXT), 6)
+            )
+          ) AS VARCHAR) AS latest_fisc_yrmnth,
+          CAST((
+            SUBSTRING(CAST((
+              CAST((
+                cal.fisc_per
+              ) AS VARCHAR)
+            ) AS TEXT), 1, 4)
+          ) AS INT) AS fisc_yr,
+          cal.fisc_per AS fisc_yr_per,
+          TO_DATE(
+            (
+              (
+                SUBSTRING(CAST((
+                  CAST((
+                    cal.fisc_per
+                  ) AS VARCHAR)
+                ) AS TEXT), 6, 8) || CAST((
+                  CAST('01' AS VARCHAR)
+                ) AS TEXT)
+              ) || SUBSTRING(CAST((
+                CAST((
+                  cal.fisc_per
+                ) AS VARCHAR)
+              ) AS TEXT), 1, 4)
+            ),
+            CAST((
+              CAST('MMDDYYYY' AS VARCHAR)
+            ) AS TEXT)
+          ) AS fisc_day,
+          cmp.ctry_group AS ctry_nm,
+          cmp."cluster",
+          invc.curr_key AS obj_crncy_co_obj,
+          invc.matl_num,
+          invc.co_cd,
+          invc.sls_org,
+          invc.dstr_chnl,
+          invc.div,
+          invc.cust_num,
+          SUM(0) AS nts_usd,
+          SUM(0) AS nts_lcy,
+          SUM(0) AS gts_usd,
+          SUM(0) AS gts_lcy,
+          SUM(0) AS eq_usd,
+          SUM(0) AS eq_lcy,
+          CAST('N/A' AS VARCHAR) AS from_crncy,
+          CAST('N/A' AS VARCHAR) AS to_crncy,
+          SUM(0) AS nts_qty,
+          SUM(0) AS gts_qty,
+          SUM(0) AS eq_qty,
+          SUM(invc.ord_pc_qty) AS ord_pc_qty,
+          SUM(invc.unspp_qty) AS unspp_qty
+        FROM (
+          (
+            (
+              ASPEDW_INTEGRATION.edw_invoice_fact AS invc
+                LEFT JOIN ASPEDW_INTEGRATION.edw_company_dim AS cmp
+                  ON (
+                    (
+                      CAST((
+                        invc.co_cd
+                      ) AS TEXT) = CAST((
+                        cmp.co_cd
+                      ) AS TEXT)
+                    )
+                  )
+            )
+            LEFT JOIN ASPEDW_INTEGRATION.edw_calendar_dim AS cal
+              ON (
+                (
+                  invc.rqst_delv_dt = cal.cal_day
+                )
+              )
+          )
+          LEFT JOIN ASPEDW_INTEGRATION.edw_calendar_dim AS calendar1
+            ON (
+              (
+                calendar1.cal_day = TO_DATE(
+                    TO_CHAR(
+						CONVERT_TIMEZONE(
+						'Asia/Singapore',
+				CURRENT_TIMESTAMP::TIMESTAMP_NTZ
+				)::TIMESTAMP_NTZ,
+				'YYYY-MM-DD'
+					)::TEXT,
+					'YYYY-MM-DD'
+                )
+              )
+            )
+        )
+        WHERE
+          (
+            CAST((
+              CAST((
+                cal.fisc_per
+              ) AS VARCHAR)
+            ) AS TEXT) >= (
+              (
+                (
+                  CAST((
+                    CAST((
+                      (
+                        DATE_PART(YEAR, CURRENT_DATE()) - 2
+                      )
+                    ) AS VARCHAR)
+                  ) AS TEXT) || CAST((
+                    CAST((
+                      0
+                    ) AS VARCHAR)
+                  ) AS TEXT)
+                ) || CAST((
+                  CAST((
+                    0
+                  ) AS VARCHAR)
+                ) AS TEXT)
+              ) || CAST((
+                CAST((
+                  1
+                ) AS VARCHAR)
+              ) AS TEXT)
+            )
+          )
+        GROUP BY
+          calendar1.fisc_yr,
+          calendar1.fisc_per,
+          cal.fisc_per,
+          cmp.ctry_group,
+          cmp."cluster",
+          invc.curr_key,
+          invc.matl_num,
+          invc.co_cd,
+          invc.sls_org,
+          invc.dstr_chnl,
+          invc.div,
+          invc.cust_num
+      ) AS main
+      LEFT JOIN ASPEDW_INTEGRATION.edw_material_dim AS mat
+        ON (
+          (
+            CAST((
+              main.matl_num
+            ) AS TEXT) = CAST((
+              mat.matl_num
+            ) AS TEXT)
+          )
+        )
+    )
+    JOIN ASPEDW_INTEGRATION.edw_company_dim AS company
+      ON (
+        (
+          CAST((
+            main.co_cd
+          ) AS TEXT) = CAST((
+            company.co_cd
+          ) AS TEXT)
+        )
+      )
+  )
+  LEFT JOIN ASPEDW_ACCESS.v_edw_customer_sales_dim AS cus_sales_extn
+    ON (
+      (
+        (
+          (
+            (
+              CAST((
+                main.sls_org
+              ) AS TEXT) = CAST((
+                cus_sales_extn.sls_org
+              ) AS TEXT)
+            )
+            AND (
+              CAST((
+                main.dstr_chnl
+              ) AS TEXT) = CAST((
+                cus_sales_extn.dstr_chnl
+              ) AS TEXT)
+            )
+          )
+          AND (
+            CAST((
+              main.div
+            ) AS TEXT) = CAST((
+              cus_sales_extn.div
+            ) AS TEXT)
+          )
+        )
+        AND (
+          CAST((
+            main.cust_num
+          ) AS TEXT) = CAST((
+            cus_sales_extn.cust_num
+          ) AS TEXT)
+        )
+      )
+    )
+)
+GROUP BY
+  main.prev_fisc_yr_per,
+  main.latest_date,
+  main.latest_fisc_yrmnth,
+  main.fisc_yr,
+  main.fisc_yr_per,
+  main.fisc_day,
+  main.ctry_nm,
+  main."cluster",
+  main.obj_crncy_co_obj,
+  mat.mega_brnd_desc,
+  mat.brnd_desc,
+  mat.base_prod_desc,
+  mat.varnt_desc,
+  mat.put_up_desc,
+  mat.prodh1_txtmd,
+  mat.prodh2_txtmd,
+  mat.prodh3_txtmd,
+  mat.prodh4_txtmd,
+  mat.prodh5_txtmd,
+  mat.prodh6_txtmd,
+  cus_sales_extn."parent customer",
+  cus_sales_extn."banner",
+  cus_sales_extn."banner format",
+  cus_sales_extn."channel",
+  cus_sales_extn."channel",
+  cus_sales_extn."go to model",
+  cus_sales_extn."sub channel",
+  cus_sales_extn."retail_env",
+  main.from_crncy,
+  main.to_crncy,
+  main.cust_num;
 ---------------------------------------
 create or replace view ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
 	"fisc_yr",
