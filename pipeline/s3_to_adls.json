@@ -300,6 +300,18 @@
 		"variables": {
 			"list_of_file": {
 				"type": "Array"
+			},
+			"s3_bucket": {
+				"type": "String"
+			},
+			"s3_path": {
+				"type": "String"
+			},
+			"adls_container": {
+				"type": "String"
+			},
+			"adls_path": {
+				"type": "String"
 			}
 		},
 		"folder": {
