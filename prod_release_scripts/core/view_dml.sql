@@ -1,4 +1,4 @@
-create view aspedw_integration.edw_vw_greenlight_skus
+create or replace view aspedw_integration.edw_vw_greenlight_skus
 as
 (
   with edw_material_dim as (
@@ -339,7 +339,7 @@ as
   select * from final
 );
 ------------------------------------------------------
-create view aspedw_integration.v_intrm_reg_crncy_exch_fiscper
+create or replace view aspedw_integration.v_intrm_reg_crncy_exch_fiscper
 as
 (
   --Import CTE
@@ -637,7 +637,7 @@ as
   select * from final
 );
 ---------------------------------------------
-create view aspedw_integration.v_edw_customer_sales_dim
+create or replace view aspedw_integration.v_edw_customer_sales_dim
 as
 (
   with edw_customer_sales_dim as(
@@ -1753,7 +1753,7 @@ as
 );
 ----------------------------------------------------------------------------------
 
-create view aspedw_integration.v_rpt_copa
+create or replace view aspedw_integration.v_rpt_copa
 as
 (
   with edw_copa_trans_fact as(
@@ -3231,7 +3231,7 @@ as
 
   select * from transformed
 );
-create view aspedw_integration.v_rpt_copa_ciw
+create or replace view aspedw_integration.v_rpt_copa_ciw
 as
 (
   with edw_copa_trans_fact as(
@@ -4318,7 +4318,7 @@ as
 
   select * from transformed
 );
-create view aspedw_integration.v_rpt_copa_sku
+create or replace view aspedw_integration.v_rpt_copa_sku
 as
 (
   with edw_copa_trans_fact as(
@@ -5628,7 +5628,7 @@ as
 );
 
 
-create view aspedw_integration.edw_acct_ciw_hier
+create or replace view aspedw_integration.edw_acct_ciw_hier
 as
 (
   with edw_account_ciw_dim as(
@@ -5636,7 +5636,7 @@ as
   ),
   edw_account_ciw_xref as (
     select * from aspedw_integration.edw_account_ciw_xref
-  )
+  ),
   tranformed as(
   SELECT
     derived_table1.chrt_acct,
