@@ -22,16 +22,9 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "if_file_exists",
+							"name": "get file name",
 							"type": "GetMetadata",
-							"dependsOn": [
-								{
-									"activity": "Filter Only File",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -45,9 +38,157 @@
 									"referenceName": "s3_source_binary",
 									"type": "DatasetReference",
 									"parameters": {
-										"bucket": "@item().S3_BUCKET",
-										"path": "@item().S3_PATH",
-										"file": "@item().S3_FILE"
+										"bucket": {
+											"value": "@item().S3_BUCKET",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@item().S3_PATH",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@concat('*',item().S3_FILE,'*.*')",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Filter Only File",
+							"type": "Filter",
+							"dependsOn": [
+								{
+									"activity": "get file name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('get file name').output.childItems",
+									"type": "Expression"
+								},
+								"condition": {
+									"value": "@equals(item().type,'File')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Filter Only File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "list_of_file",
+								"value": {
+									"value": "@activity('get_metadata').output.value",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "get_metadata",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": "select *\nfrom\nmeta_raw.s3_to_adls",
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('list_of_file')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "if_file_exists",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "s3_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"bucket": {
+											"value": "@activity('get_metadata').output.value.S3_BUCKET",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@activity('get_metadata').output.value.S3_PATH",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
 									}
 								},
 								"fieldList": [
@@ -118,15 +259,15 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"bucket": {
-														"value": "@item().S3_BUCKET",
+														"value": "@activity('get_metadata').output.value.S3_BUCKET",
 														"type": "Expression"
 													},
 													"path": {
-														"value": "@item().S3_PATH",
+														"value": "@activity('get_metadata').output.value.S3_PATH",
 														"type": "Expression"
 													},
 													"file": {
-														"value": "@item().S3_FILE",
+														"value": "@item().name",
 														"type": "Expression"
 													}
 												}
@@ -138,11 +279,11 @@
 												"type": "DatasetReference",
 												"parameters": {
 													"adls_container": {
-														"value": "@item().ADLS_CONTAINER",
+														"value": "@activity('get_metadata').output.value.ADLS_CONTAINER",
 														"type": "Expression"
 													},
 													"adls_path": {
-														"value": "@item().ADLS_PATH",
+														"value": "@activity('get_metadata').output.value.ADLS_PATH",
 														"type": "Expression"
 													}
 												}
@@ -151,104 +292,16 @@
 									}
 								]
 							}
-						},
-						{
-							"name": "get file name",
-							"type": "GetMetadata",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"dataset": {
-									"referenceName": "s3_source_binary",
-									"type": "DatasetReference",
-									"parameters": {
-										"bucket": {
-											"value": "@item().S3_BUCKET",
-											"type": "Expression"
-										},
-										"path": {
-											"value": "@item().S3_PATH",
-											"type": "Expression"
-										},
-										"file": {
-											"value": "@concat('*',item().S3_FILE,'*.*')",
-											"type": "Expression"
-										}
-									}
-								},
-								"fieldList": [
-									"childItems"
-								],
-								"storeSettings": {
-									"type": "AmazonS3ReadSettings",
-									"enablePartitionDiscovery": false
-								},
-								"formatSettings": {
-									"type": "BinaryReadSettings"
-								}
-							}
-						},
-						{
-							"name": "Filter Only File",
-							"type": "Filter",
-							"dependsOn": [
-								{
-									"activity": "get file name",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"items": {
-									"value": "@activity('get file name').output.childItems",
-									"type": "Expression"
-								},
-								"condition": {
-									"value": "@equals(item().type,'File')",
-									"type": "Expression"
-								}
-							}
 						}
 					]
 				}
-			},
-			{
-				"name": "get_metadata",
-				"type": "Lookup",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "SnowflakeSource",
-						"query": "select *\nfrom\nmeta_raw.s3_to_adls",
-						"exportSettings": {
-							"type": "SnowflakeExportCopyCommand"
-						}
-					},
-					"dataset": {
-						"referenceName": "mtd_process",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
 			}
 		],
+		"variables": {
+			"list_of_file": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
