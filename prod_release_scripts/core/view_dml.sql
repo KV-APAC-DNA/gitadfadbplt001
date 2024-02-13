@@ -11,7 +11,7 @@ as
       select * from aspedw_integration.edw_company_dim
   ),
   itg_mds_ap_greenlight_skus as (
-      select * from aspedw_integration.itg_mds_ap_greenlight_skus
+      select * from aspitg_integration.itg_mds_ap_greenlight_skus
   ),
   edw_material_sales_dim as (
       select * from aspedw_integration.edw_material_sales_dim
