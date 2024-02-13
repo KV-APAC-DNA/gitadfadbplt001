@@ -198,19 +198,19 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "BinarySource",
+						"referenceName": "s3_source_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": {
+							"bucket": {
 								"value": "@activity('get_metadata').output.value[0].S3_BUCKET",
 								"type": "Expression"
 							},
-							"directory": {
+							"path": {
 								"value": "@activity('get_metadata').output.value[0].S3_PATH",
 								"type": "Expression"
 							},
-							"sourceFile": {
-								"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.')\n",
+							"file": {
+								"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.')",
 								"type": "Expression"
 							}
 						}
@@ -219,8 +219,7 @@
 						"childItems"
 					],
 					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
+						"type": "AmazonS3ReadSettings",
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
