@@ -5,8 +5,6 @@
 			{
 				"name": "read parameters",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "audit start",
@@ -44,8 +42,6 @@
 			{
 				"name": "Trigger DBT Job",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -118,8 +114,6 @@
 			{
 				"name": "Read response",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger DBT Job",
@@ -163,8 +157,6 @@
 			{
 				"name": "Fetch Credential from Vault",
 				"type": "WebActivity",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -197,8 +189,6 @@
 			{
 				"name": "audit start",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -249,8 +239,6 @@
 			{
 				"name": "wait until job is complete",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "get run id",
@@ -422,8 +410,6 @@
 			{
 				"name": "get run id",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read response",
@@ -448,8 +434,6 @@
 			{
 				"name": "audit success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "fail pipeline",
@@ -541,8 +525,6 @@
 			{
 				"name": "audit failure of dbt status",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "fail pipeline",
@@ -600,8 +582,6 @@
 			{
 				"name": "error Fetching token from Vault",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -659,8 +639,6 @@
 			{
 				"name": "Audit_Finish_Fail_1",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Credential from Vault",
@@ -721,8 +699,6 @@
 			{
 				"name": "Audit_Finish_Fail_2",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger DBT Job",
@@ -783,8 +759,6 @@
 			{
 				"name": "Audit_Finish_Fail_3",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read response",
@@ -845,8 +819,6 @@
 			{
 				"name": "Audit_Finish_Fail_4",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "wait until job is complete",
@@ -907,8 +879,6 @@
 			{
 				"name": "error triggering DBT job",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger DBT Job",
@@ -966,8 +936,6 @@
 			{
 				"name": "error reading DBT response",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read response",
@@ -1082,8 +1050,6 @@
 			{
 				"name": "Set refreshType",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "fail pipeline",
@@ -1267,8 +1233,6 @@
 			{
 				"name": "Set tempId",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "fail pipeline",
