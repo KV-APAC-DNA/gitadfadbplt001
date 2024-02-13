@@ -1,3 +1,6 @@
+USE DATABASE PROD_DNA_LOAD;
+USE SCHEMA META_RAW;
+
 INSERT INTO PHASE (PHASE_ID, PHASE_NAME,PHASE_DESCRIPTION) VALUES (1,'Ingestion','Parent Ingestion Orchestration Pipeline');
 INSERT INTO PHASE (PHASE_ID, PHASE_NAME,PHASE_DESCRIPTION) VALUES (2,'Transformation','Parent Transformation Orchestration Pipeline');
 INSERT INTO PHASE (PHASE_ID, PHASE_NAME,PHASE_DESCRIPTION) VALUES (3,'Consumption','Parent Consumption Orchestration Pipeline');
