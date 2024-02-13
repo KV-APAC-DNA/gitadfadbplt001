@@ -5,9 +5,11 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "get_metadata",
+						"activity": "get file name",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -173,6 +175,57 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "get file name",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "get_metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinarySource",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@activity('get_metadata').output.value.S3_BUCKET",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@activity('get_metadata').output.value.S3_PATH",
+								"type": "Expression"
+							},
+							"sourceFile": {
+								"value": "@concat('*',activity('get_metadata').output.value.S3_FILE,'*.')\n",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"childItems"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
 				}
 			}
 		],
