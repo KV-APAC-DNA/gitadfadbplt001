@@ -202,15 +202,15 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": {
-								"value": "@activity('get_metadata').output.value.S3_BUCKET",
+								"value": "@activity('get_metadata').output.value[0].S3_BUCKET",
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@activity('get_metadata').output.value.S3_PATH",
+								"value": "@activity('get_metadata').output.value[0].S3_PATH",
 								"type": "Expression"
 							},
 							"sourceFile": {
-								"value": "@concat('*',activity('get_metadata').output.value.S3_FILE,'*.')\n",
+								"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.')\n",
 								"type": "Expression"
 							}
 						}
