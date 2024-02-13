@@ -25,7 +25,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'jobId'\" AS jobId,\n\"'accountId'\" AS accountId,\n\"'waitTime'\" AS waitTime,\n\"'transformationType'\" AS transformationType,\n\"'tempId'\" AS tempId,\n\"'dbName'\" AS dbName\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'jobId',\n'accountId',\n'waitTime',\n'transformationType',\n'tempId',\n'dbName'\n));",
+							"value": "Select \n\"'jobId'\" AS jobId,\n\"'accountId'\" AS accountId,\n\"'waitTime'\" AS waitTime,\n\"'transformationType'\" AS transformationType,\n\"'tempId'\" AS tempId\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'jobId',\n'accountId',\n'waitTime',\n'transformationType',\n'tempId'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -1452,12 +1452,10 @@
 		},
 		"variables": {
 			"run_id": {
-				"type": "Integer",
-				"defaultValue": 0
+				"type": "Integer"
 			},
 			"run_status": {
-				"type": "Integer",
-				"defaultValue": 12
+				"type": "Integer"
 			},
 			"modelNameArray": {
 				"type": "Array",
