@@ -1,20 +1,20 @@
-create view .aspedw_integration.edw_vw_greenlight_skus
+create view aspedw_integration.edw_vw_greenlight_skus
 as
 (
   with edw_material_dim as (
-      select * from .aspedw_integration.edw_material_dim
+      select * from aspedw_integration.edw_material_dim
   ),
   edw_sales_org_dim as (
-      select * from .aspedw_integration.edw_sales_org_dim
+      select * from aspedw_integration.edw_sales_org_dim
   ),
   edw_company_dim as (
-      select * from .aspedw_integration.edw_company_dim
+      select * from aspedw_integration.edw_company_dim
   ),
   itg_mds_ap_greenlight_skus as (
-      select * from .aspedw_integration.itg_mds_ap_greenlight_skus
+      select * from aspedw_integration.itg_mds_ap_greenlight_skus
   ),
   edw_material_sales_dim as (
-      select * from .aspedw_integration.edw_material_sales_dim
+      select * from aspedw_integration.edw_material_sales_dim
   ),
   final as(
   select
