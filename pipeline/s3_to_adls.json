@@ -299,7 +299,7 @@
 		],
 		"variables": {
 			"list_of_file": {
-				"type": "String"
+				"type": "Array"
 			}
 		},
 		"folder": {
