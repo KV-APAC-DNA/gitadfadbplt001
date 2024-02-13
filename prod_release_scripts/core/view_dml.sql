@@ -981,7 +981,7 @@ as
                   )
                 )
             )
-            LEFT JOIN ASPEDW_ACCESS.v_intrm_reg_crncy_exch_fiscper AS exch_rate
+            LEFT JOIN ASPEDW_INTEGRATION.v_intrm_reg_crncy_exch_fiscper AS exch_rate
               ON (
                 (
                   (
@@ -1403,7 +1403,7 @@ as
           )
         )
     )
-    LEFT JOIN ASPEDW_ACCESS.v_edw_customer_sales_dim AS cus_sales_extn
+    LEFT JOIN aspedw_integration.v_edw_customer_sales_dim AS cus_sales_extn
       ON (
         (
           (
