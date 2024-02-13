@@ -1,4 +1,4 @@
-create or replace view DEV_DNA_CORE.ASPEDW_ACCESS.V_RPT_COPA(
+create or replace view aspedw_integration.V_RPT_COPA(
 	"prev_fisc_yr_per",
 	"latest_date",
 	"latest_fisc_yrmnth",
@@ -998,7 +998,7 @@ FROM (
                 )
               )
           )
-          LEFT JOIN ASPEDW_ACCESS.v_intrm_reg_crncy_exch_fiscper AS exch_rate
+          LEFT JOIN aspedw_integration.v_intrm_reg_crncy_exch_fiscper AS exch_rate
             ON (
               (
                 (
@@ -1420,7 +1420,7 @@ FROM (
         )
       )
   )
-  LEFT JOIN ASPEDW_ACCESS.v_edw_customer_sales_dim AS cus_sales_extn
+  LEFT JOIN aspedw_integration.v_edw_customer_sales_dim AS cus_sales_extn
     ON (
       (
         (
