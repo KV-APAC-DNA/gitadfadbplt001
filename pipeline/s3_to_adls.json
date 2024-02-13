@@ -9,7 +9,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "get file name",
+						"activity": "get_metadata",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -26,7 +26,14 @@
 						{
 							"name": "if_file_exists",
 							"type": "GetMetadata",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "get file name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -146,6 +153,49 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "get file name",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "s3_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"bucket": {
+											"value": "@activity('get_metadata').output.value[0].S3_BUCKET",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@activity('get_metadata').output.value[0].S3_PATH",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.*')",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
 						}
 					]
 				}
@@ -175,56 +225,6 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "get file name",
-				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "get_metadata",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "s3_source_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"bucket": {
-								"value": "@activity('get_metadata').output.value[0].S3_BUCKET",
-								"type": "Expression"
-							},
-							"path": {
-								"value": "@activity('get_metadata').output.value[0].S3_PATH",
-								"type": "Expression"
-							},
-							"file": {
-								"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.*')",
-								"type": "Expression"
-							}
-						}
-					},
-					"fieldList": [
-						"childItems"
-					],
-					"storeSettings": {
-						"type": "AmazonS3ReadSettings",
-						"enablePartitionDiscovery": false
-					},
-					"formatSettings": {
-						"type": "BinaryReadSettings"
-					}
 				}
 			}
 		],
