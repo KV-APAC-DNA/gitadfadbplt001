@@ -210,7 +210,7 @@
 								"type": "Expression"
 							},
 							"file": {
-								"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.')",
+								"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.*')",
 								"type": "Expression"
 							}
 						}
