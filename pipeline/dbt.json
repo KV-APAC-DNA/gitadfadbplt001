@@ -1025,11 +1025,9 @@
 			{
 				"name": "error dbt run failed",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Switch and Update CDC Logic",
+						"activity": "SwitchBetweenType1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1182,7 +1180,7 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "Script1",
+											"activity": "Set parameters",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -1205,7 +1203,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}','@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''' ,'\\''')}');",
+													"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}',@{variables('sp_params')});",
 													"type": "Expression"
 												}
 											}
@@ -1233,6 +1231,30 @@
 										"variableName": "modelNameArray",
 										"value": {
 											"value": "@activity('Script2').output.resultSets[0].rows",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set parameters",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Script1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "sp_params",
+										"value": {
+											"value": "'@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''' ,'\\''')}'",
 											"type": "Expression"
 										}
 									}
@@ -1317,7 +1339,7 @@
 							}
 						},
 						{
-							"name": "Lookup1",
+							"name": "Fetch Failed Records",
 							"type": "Lookup",
 							"dependsOn": [
 								{
@@ -1352,15 +1374,29 @@
 								},
 								"firstRowOnly": false
 							}
+						},
+						{
+							"name": "Email records",
+							"type": "Wait",
+							"dependsOn": [
+								{
+									"activity": "Fetch Failed Records",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"waitTimeInSeconds": 1
+							}
 						}
 					]
 				}
 			},
 			{
-				"name": "Switch and Update CDC Logic",
-				"type": "Wait",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
+				"name": "SwitchBetweenType1",
+				"type": "Switch",
 				"dependsOn": [
 					{
 						"activity": "ForEveryModel",
@@ -1371,7 +1407,60 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"waitTimeInSeconds": 1
+					"on": {
+						"value": "@variables('refreshType')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "Transformation",
+							"activities": [
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "Ingestion",
+							"activities": [
+								{
+									"name": "Script5",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "call core_integration.SP_updatecdc_failed_tests_models('@{variables('temp_id')}',@{variables('sp_params')});",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
+						}
+					]
 				}
 			}
 		],
@@ -1419,6 +1508,9 @@
 				"defaultValue": "Ingestion"
 			},
 			"test": {
+				"type": "String"
+			},
+			"sp_params": {
 				"type": "String"
 			}
 		},
