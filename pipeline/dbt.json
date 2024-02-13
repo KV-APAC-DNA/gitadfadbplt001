@@ -1443,9 +1443,7 @@
 			},
 			"modelNameArray": {
 				"type": "Array",
-				"defaultValue": [
-					"a"
-				]
+				"defaultValue": []
 			},
 			"temp_id": {
 				"type": "String",
