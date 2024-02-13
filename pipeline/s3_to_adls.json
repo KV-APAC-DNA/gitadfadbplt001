@@ -106,7 +106,7 @@
 							"typeProperties": {
 								"variableName": "list_of_file",
 								"value": {
-									"value": "@activity('get_metadata').output.value",
+									"value": "@activity('Filter Only File').output.value",
 									"type": "Expression"
 								}
 							}
