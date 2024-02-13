@@ -1216,8 +1216,6 @@
 								{
 									"name": "ModelName Array",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Script2",
@@ -1319,44 +1317,11 @@
 							}
 						},
 						{
-							"name": "Script4",
-							"type": "Script",
-							"dependsOn": [
-								{
-									"activity": "Script3",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": "Select 'SUCCESS' as Result;"
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
 							"name": "Lookup1",
 							"type": "Lookup",
 							"dependsOn": [
 								{
-									"activity": "Script4",
+									"activity": "Script3",
 									"dependencyConditions": [
 										"Succeeded"
 									]
