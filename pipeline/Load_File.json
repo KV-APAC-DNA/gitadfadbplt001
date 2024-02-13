@@ -1674,6 +1674,8 @@
 			{
 				"name": "If is_sg_tp",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "audit start",
@@ -1685,9 +1687,28 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('read parameters').output.value[0].is_sg_tp,'Y')",
+						"value": "@equals(pipeline().parameters.parameters.value[0].is_sg_tp,'Y')\n",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "Set parameter_sheet_names array",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "sheetNames",
+								"value": {
+									"value": "@pipeline().parameters.sheetNames",
+									"type": "Expression"
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Run SP Extract Sheet Names",
@@ -1705,7 +1726,7 @@
 								"source": {
 									"type": "SnowflakeSource",
 									"query": {
-										"value": "CALL @{activity('read parameters').output.value[0].extract_sp} ('');\n",
+										"value": "CALL @{pipeline().parameters.parameters.value[0].extract_sp} ('@{pipeline().parameters.sourceFileName}');\n",
 										"type": "Expression"
 									},
 									"exportSettings": {
@@ -1736,7 +1757,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "sheet_names",
+								"variableName": "sheetNames",
 								"value": {
 									"value": "@activity('Run SP Extract Sheet Names').output",
 									"type": "Expression"
@@ -1786,6 +1807,9 @@
 			"errorMessage": {
 				"type": "String",
 				"defaultValue": "NO"
+			},
+			"sheetNames": {
+				"type": "Array"
 			}
 		},
 		"folder": {
