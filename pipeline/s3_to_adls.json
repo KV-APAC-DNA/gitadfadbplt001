@@ -5,8 +5,6 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "get_metadata",
@@ -26,9 +24,11 @@
 						{
 							"name": "if_file_exists",
 							"type": "GetMetadata",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
-									"activity": "get file name",
+									"activity": "Filter Only File",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -68,6 +68,8 @@
 						{
 							"name": "If Condition1",
 							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "if_file_exists",
@@ -172,15 +174,15 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"bucket": {
-											"value": "@activity('get_metadata').output.value[0].S3_BUCKET",
+											"value": "@item().S3_BUCKET",
 											"type": "Expression"
 										},
 										"path": {
-											"value": "@activity('get_metadata').output.value[0].S3_PATH",
+											"value": "@item().S3_PATH",
 											"type": "Expression"
 										},
 										"file": {
-											"value": "@concat('*',activity('get_metadata').output.value[0].S3_FILE,'*.*')",
+											"value": "@concat('*',item().S3_FILE,'*.*')",
 											"type": "Expression"
 										}
 									}
@@ -194,6 +196,29 @@
 								},
 								"formatSettings": {
 									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Filter Only File",
+							"type": "Filter",
+							"dependsOn": [
+								{
+									"activity": "get file name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('get file name').output.childItems",
+									"type": "Expression"
+								},
+								"condition": {
+									"value": "@equals(item().type,'File')",
+									"type": "Expression"
 								}
 							}
 						}
