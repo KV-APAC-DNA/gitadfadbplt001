@@ -21,8 +21,16 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T16:00:00",
-				"timeZone": "Singapore Standard Time"
+				"startTime": "2024-02-14T15:55:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						16
+					]
+				}
 			}
 		}
 	}
