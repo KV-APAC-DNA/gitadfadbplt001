@@ -18,16 +18,15 @@
 		"typeProperties": {
 			"recurrence": {
 				"frequency": "Day",
-				"interval": 15,
-				"startTime": "2024-01-31T12:25:00",
-				"endTime": "2024-01-31T14:17:00",
-				"timeZone": "India Standard Time",
+				"interval": 1,
+				"startTime": "2024-02-14T13:55:00",
+				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						0
 					],
 					"hours": [
-						12
+						14
 					]
 				}
 			}
