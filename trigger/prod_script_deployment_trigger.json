@@ -1,5 +1,5 @@
 {
-	"name": "prod_load_trigger",
+	"name": "prod_script_deployment_trigger",
 	"properties": {
 		"description": "Execute SQL scripts from Git",
 		"annotations": [],
