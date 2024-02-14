@@ -5,6 +5,8 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "get_metadata",
@@ -152,7 +154,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "@concat('select * from meta_raw.s3_to_adl where GROUP_ID=',pipeline().parameters.Groupid)",
+							"value": "@concat('select * from meta_raw.s3_to_adls where GROUP_ID=',pipeline().parameters.Groupid)",
 							"type": "Expression"
 						},
 						"exportSettings": {
