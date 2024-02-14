@@ -864,7 +864,7 @@ SELECT
 	data_type AS "data_type",
 	description AS "description",
 	base_unit AS "base_unit",
-	"region",
+	region as "region",
 	regional_brand AS "regional_brand",
 	regional_subbrand AS "regional_subbrand",
 	regional_megabrand AS "regional_megabrand",
