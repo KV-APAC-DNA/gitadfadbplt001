@@ -1694,14 +1694,17 @@
 				"defaultValue": 1
 			},
 			"sourceFileName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "test"
 			},
 			"parameters": {
 				"type": "object"
 			},
 			"sheetNames": {
 				"type": "array",
-				"defaultValue": []
+				"defaultValue": [
+					"test"
+				]
 			}
 		},
 		"variables": {
