@@ -4,7 +4,18 @@
 		"description": "Refresh Pop6 and Customer360 tableau datasources",
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "POP6_CUSTOMER360_refresh",
+					"force_rerun": false
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
