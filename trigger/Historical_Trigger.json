@@ -1,6 +1,7 @@
 {
 	"name": "Historical_Trigger",
 	"properties": {
+		"description": "For historical load - Regional",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
