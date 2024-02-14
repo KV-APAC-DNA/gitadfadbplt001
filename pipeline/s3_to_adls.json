@@ -57,6 +57,7 @@
 								],
 								"storeSettings": {
 									"type": "AmazonS3ReadSettings",
+									"recursive": true,
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -150,7 +151,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeSource",
-						"query": "select *\nfrom\nmeta_raw.s3_to_adls",
+						"query": {
+							"value": "@concat('select * from meta_raw.s3_to_adl where GROUP_ID=',pipeline().parameters.Groupid)",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -163,6 +167,11 @@
 				}
 			}
 		],
+		"parameters": {
+			"Groupid": {
+				"type": "string"
+			}
+		},
 		"variables": {
 			"list_of_file": {
 				"type": "Array"
