@@ -152,7 +152,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "@concat('select * from meta_raw.s3_to_adls where GROUP_ID=',pipeline().parameters.Groupid)",
+							"value": "@concat('select * from meta_raw.s3_to_adls where GROUP_ID=',pipeline().parameters.Group_id)",
 							"type": "Expression"
 						},
 						"exportSettings": {
