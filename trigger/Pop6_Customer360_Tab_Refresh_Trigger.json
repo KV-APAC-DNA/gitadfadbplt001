@@ -1,0 +1,17 @@
+{
+	"name": "Pop6_Customer360_Tab_Refresh_Trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 15,
+				"startTime": "2024-02-14T07:53:00",
+				"timeZone": "India Standard Time"
+			}
+		}
+	}
+}
