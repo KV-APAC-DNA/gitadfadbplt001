@@ -1,26 +1,26 @@
-create view v_rpt_copa
+create view aspedw_integration.v_rpt_copa
 as
 (
   with edw_copa_trans_fact as(
-      select * from edw_copa_trans_fact
+      select * from aspedw_integration.edw_copa_trans_fact
   ),
   edw_calendar_dim as(
-      select * from edw_calendar_dim
+      select * from aspedw_integration.edw_calendar_dim
   ),
   edw_company_dim as(
-      select * from edw_company_dim
+      select * from aspedw_integration.edw_company_dim
   ),
   edw_material_dim as(
-      select * from edw_material_dim
+      select * from aspedw_integration.edw_material_dim
   ),
   v_intrm_reg_crncy_exch_fiscper as(
-      select * from v_intrm_reg_crncy_exch_fiscper
+      select * from aspedw_integration.v_intrm_reg_crncy_exch_fiscper
   ),
   edw_invoice_fact as(
-      select * from edw_invoice_fact
+      select * from aspedw_integration.edw_invoice_fact
   ),
   v_edw_customer_sales_dim as(
-      select * from v_edw_customer_sales_dim
+      select * from aspedw_integration.v_edw_customer_sales_dim
   ),
 
   transformed as(
@@ -981,7 +981,7 @@ as
                   )
                 )
             )
-            LEFT JOIN v_intrm_reg_crncy_exch_fiscper AS exch_rate
+            LEFT JOIN aspedw_integration.v_intrm_reg_crncy_exch_fiscper AS exch_rate
               ON (
                 (
                   (
@@ -1403,7 +1403,7 @@ as
           )
         )
     )
-    LEFT JOIN v_edw_customer_sales_dim AS cus_sales_extn
+    LEFT JOIN aspedw_integration.v_edw_customer_sales_dim AS cus_sales_extn
       ON (
         (
           (
@@ -1476,33 +1476,33 @@ as
 
   select * from transformed
 );
-create view v_rpt_copa_ciw
+create view aspedw_integration.v_rpt_copa_ciw
 as
 (
   with edw_copa_trans_fact as(
-      select * from edw_copa_trans_fact
+      select * from aspedw_integration.edw_copa_trans_fact
   ),
   edw_company_dim as(
-      select * from edw_company_dim
+      select * from aspedw_integration.edw_company_dim
   ),
   edw_material_dim as(
-      select * from edw_material_dim
+      select * from aspedw_integration.edw_material_dim
   ),
   v_edw_customer_sales_dim as(
-      select * from v_edw_customer_sales_dim
+      select * from aspedw_integration.v_edw_customer_sales_dim
   ),
   v_intrm_reg_crncy_exch_fiscper as(
-      select * from v_intrm_reg_crncy_exch_fiscper
+      select * from aspedw_integration.v_intrm_reg_crncy_exch_fiscper
   ),
   edw_acct_ciw_hier as(
-      select * from edw_acct_ciw_hier
+      select * from aspedw_integration.edw_acct_ciw_hier
   ),
   edw_account_ciw_dim as(
-      select * from edw_account_ciw_dim
+      select * from aspedw_integration.edw_account_ciw_dim
   ),
 
   edw_gch_producthierarchy as(
-      select * from edw_gch_producthierarchy
+      select * from aspedw_integration.edw_gch_producthierarchy
   ),
 
   transformed as(
@@ -2563,26 +2563,26 @@ as
 
   select * from transformed
 );
-create view v_rpt_copa_sku
+create view aspedw_integration.v_rpt_copa_sku
 as
 (
   with edw_copa_trans_fact as(
-      select * from edw_copa_trans_fact
+      select * from aspedw_integration.edw_copa_trans_fact
   ),
   edw_company_dim as(
-      select * from edw_company_dim
+      select * from aspedw_integration.edw_company_dim
   ),
   edw_material_dim as(
-      select * from edw_material_dim
+      select * from aspedw_integration.edw_material_dim
   ),
   v_edw_customer_sales_dim as(
-      select * from v_edw_customer_sales_dim
+      select * from aspedw_integration.v_edw_customer_sales_dim
   ),
   edw_vw_greenlight_skus as(
-      select * from edw_vw_greenlight_skus
+      select * from aspedw_integration.edw_vw_greenlight_skus
   ),
   v_intrm_reg_crncy_exch_fiscper as(
-      select * from v_intrm_reg_crncy_exch_fiscper
+      select * from aspedw_integration.v_intrm_reg_crncy_exch_fiscper
   ),
   transformed as(
   SELECT
