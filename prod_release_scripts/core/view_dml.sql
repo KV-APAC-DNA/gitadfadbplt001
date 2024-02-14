@@ -196,7 +196,7 @@ FROM (
                         (
                           LTRIM(
                             CAST((
-                              copa."cust_num"
+                              copa.cust_num
                             ) AS TEXT),
                             CAST((
                               CAST((
@@ -210,7 +210,7 @@ FROM (
                         OR (
                           LTRIM(
                             CAST((
-                              copa."cust_num"
+                              copa.cust_num
                             ) AS TEXT),
                             CAST((
                               CAST((
@@ -225,7 +225,7 @@ FROM (
                       OR (
                         LTRIM(
                           CAST((
-                            copa."cust_num"
+                            copa.cust_num
                           ) AS TEXT),
                           CAST((
                             CAST((
@@ -240,7 +240,7 @@ FROM (
                     OR (
                       LTRIM(
                         CAST((
-                          copa."cust_num"
+                          copa.cust_num
                         ) AS TEXT),
                         CAST((
                           CAST((
@@ -292,7 +292,7 @@ FROM (
                         (
                           LTRIM(
                             CAST((
-                              copa."cust_num"
+                              copa.cust_num
                             ) AS TEXT),
                             CAST((
                               CAST((
@@ -306,7 +306,7 @@ FROM (
                         OR (
                           LTRIM(
                             CAST((
-                              copa."cust_num"
+                              copa.cust_num
                             ) AS TEXT),
                             CAST((
                               CAST((
@@ -321,7 +321,7 @@ FROM (
                       OR (
                         LTRIM(
                           CAST((
-                            copa."cust_num"
+                            copa.cust_num
                           ) AS TEXT),
                           CAST((
                             CAST((
@@ -336,7 +336,7 @@ FROM (
                     OR (
                       LTRIM(
                         CAST((
-                          copa."cust_num"
+                          copa.cust_num
                         ) AS TEXT),
                         CAST((
                           CAST((
@@ -420,7 +420,7 @@ FROM (
             WHEN (
               (
                 LTRIM(CAST((
-                  copa."cust_num"
+                  copa.cust_num
                 ) AS TEXT), CAST((
                   CAST('0' AS VARCHAR)
                 ) AS TEXT)) = CAST((
@@ -445,13 +445,13 @@ FROM (
               )
             )
             THEN CAST('100A' AS VARCHAR)
-            ELSE copa."sls_org"
+            ELSE copa.sls_org
           END AS "sls_org",
           CASE
             WHEN (
               (
                 LTRIM(CAST((
-                  copa."cust_num"
+                  copa.cust_num
                 ) AS TEXT), CAST((
                   CAST('0' AS VARCHAR)
                 ) AS TEXT)) = CAST((
@@ -476,10 +476,10 @@ FROM (
               )
             )
             THEN CAST('15' AS VARCHAR)
-            ELSE copa."dstr_chnl"
+            ELSE copa.dstr_chnl
           END AS "dstr_chnl",
-          copa."div",
-          copa."cust_num",
+          copa.div,
+          copa.cust_num,
           CASE
             WHEN (
               (
@@ -1176,10 +1176,10 @@ FROM (
           copa.obj_crncy_co_obj,
           copa.matl_num,
           copa.co_cd,
-          copa."sls_org",
-          copa."dstr_chnl",
-          copa."div",
-          copa."cust_num",
+          copa.sls_org,
+          copa.dstr_chnl,
+          copa.div,
+          copa.cust_num,
           copa.acct_num,
           copa.acct_hier_shrt_desc,
           exch_rate.from_crncy,
@@ -1817,7 +1817,7 @@ FROM (
                   WHEN (
                     (
                       LTRIM(CAST((
-                        copa."cust_num"
+                        copa.cust_num
                       ) AS TEXT), CAST((
                         CAST('0' AS VARCHAR)
                       ) AS TEXT)) = CAST((
@@ -1842,13 +1842,13 @@ FROM (
                     )
                   )
                   THEN CAST('100A' AS VARCHAR)
-                  ELSE copa."sls_org"
+                  ELSE copa.sls_org
                 END AS "sls_org",
                 CASE
                   WHEN (
                     (
                       LTRIM(CAST((
-                        copa."cust_num"
+                        copa.cust_num
                       ) AS TEXT), CAST((
                         CAST('0' AS VARCHAR)
                       ) AS TEXT)) = CAST((
@@ -1873,10 +1873,10 @@ FROM (
                     )
                   )
                   THEN CAST('15' AS VARCHAR)
-                  ELSE copa."dstr_chnl"
+                  ELSE copa.dstr_chnl
                 END AS "dstr_chnl",
-                copa."div",
-                copa."cust_num",
+                copa.div,
+                copa.cust_num,
                 CASE
                   WHEN (
                     CAST((
@@ -2334,10 +2334,10 @@ FROM (
                 copa.acct_num,
                 copa.matl_num,
                 copa.co_cd,
-                copa."sls_org",
-                copa."dstr_chnl",
-                copa."div",
-                copa."cust_num",
+                copa.sls_org,
+                copa.dstr_chnl,
+                copa.div,
+                copa.cust_num,
                 copa.acct_hier_shrt_desc,
                 exch_rate.from_crncy,
                 exch_rate.to_crncy
@@ -2756,7 +2756,7 @@ FROM (
                 (
                   LTRIM(
                     CAST((
-                      copa."cust_num"
+                      copa.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -2770,7 +2770,7 @@ FROM (
                 OR (
                   LTRIM(
                     CAST((
-                      copa."cust_num"
+                      copa.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -2785,7 +2785,7 @@ FROM (
               OR (
                 LTRIM(
                   CAST((
-                    copa."cust_num"
+                    copa.cust_num
                   ) AS TEXT),
                   CAST((
                     CAST((
@@ -2800,7 +2800,7 @@ FROM (
             OR (
               LTRIM(
                 CAST((
-                  copa."cust_num"
+                  copa.cust_num
                 ) AS TEXT),
                 CAST((
                   CAST((
@@ -2843,7 +2843,7 @@ FROM (
                 (
                   LTRIM(
                     CAST((
-                      copa."cust_num"
+                      copa.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -2857,7 +2857,7 @@ FROM (
                 OR (
                   LTRIM(
                     CAST((
-                      copa."cust_num"
+                      copa.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -2872,7 +2872,7 @@ FROM (
               OR (
                 LTRIM(
                   CAST((
-                    copa."cust_num"
+                    copa.cust_num
                   ) AS TEXT),
                   CAST((
                     CAST((
@@ -2887,7 +2887,7 @@ FROM (
             OR (
               LTRIM(
                 CAST((
-                  copa."cust_num"
+                  copa.cust_num
                 ) AS TEXT),
                 CAST((
                   CAST((
@@ -3507,11 +3507,11 @@ FROM (
                           WHEN (
                             (
                               (
-                                copa."sls_org" IS NULL
+                                copa.sls_org IS NULL
                               )
                               AND (
                                 LTRIM(CAST((
-                                  copa."cust_num"
+                                  copa.cust_num
                                 ) AS TEXT), CAST((
                                   CAST('0' AS VARCHAR)
                                 ) AS TEXT)) = CAST((
@@ -3528,7 +3528,7 @@ FROM (
                             )
                           )
                           THEN CAST('100A' AS VARCHAR)
-                          ELSE copa."sls_org"
+                          ELSE copa.sls_org
                         END
                       ) AS TEXT)
                     )
@@ -3540,11 +3540,11 @@ FROM (
                           WHEN (
                             (
                               (
-                                copa."dstr_chnl" IS NULL
+                                copa.dstr_chnl IS NULL
                               )
                               AND (
                                 LTRIM(CAST((
-                                  copa."cust_num"
+                                  copa.cust_num
                                 ) AS TEXT), CAST((
                                   CAST('0' AS VARCHAR)
                                 ) AS TEXT)) = CAST((
@@ -3561,14 +3561,14 @@ FROM (
                             )
                           )
                           THEN CAST('15' AS VARCHAR)
-                          ELSE copa."dstr_chnl"
+                          ELSE copa.dstr_chnl
                         END
                       ) AS TEXT)
                     )
                   )
                   AND (
                     CAST((
-                      copa."div"
+                      copa.div
                     ) AS TEXT) = CAST((
                       cus_sales_extn."div"
                     ) AS TEXT)
@@ -3576,7 +3576,7 @@ FROM (
                 )
                 AND (
                   CAST((
-                    copa."cust_num"
+                    copa.cust_num
                   ) AS TEXT) = CAST((
                     cus_sales_extn."cust_num"
                   ) AS TEXT)
@@ -3810,7 +3810,7 @@ FROM (
     copa.fisc_yr,
     copa.fisc_yr_per,
     copa.obj_crncy_co_obj,
-    copa."cust_num",
+    copa.cust_num,
     copa.acct_num,
     cmp.ctry_group,
     cmp."cluster",
