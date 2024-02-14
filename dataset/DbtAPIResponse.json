@@ -1,5 +1,5 @@
 {
-	"name": "TableauJsonResponse",
+	"name": "DbtAPIResponse",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
@@ -17,7 +17,7 @@
 			}
 		},
 		"folder": {
-			"name": "ADF_Framework_Datasets/Tableau"
+			"name": "ADF_Framework_Datasets/DBT"
 		},
 		"annotations": [],
 		"type": "Json",

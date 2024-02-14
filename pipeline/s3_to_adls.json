@@ -1,0 +1,197 @@
+{
+	"name": "s3_to_adls",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "get_metadata",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get_metadata').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "get file name",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "s3_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"bucket": {
+											"value": "@item().S3_BUCKET",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@item().S3_PATH",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@concat('*',item().S3_FILE,'*.*')",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Filter Only File",
+							"type": "Filter",
+							"dependsOn": [
+								{
+									"activity": "get file name",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('get file name').output.childItems",
+									"type": "Expression"
+								},
+								"condition": {
+									"value": "@equals(item().type,'File')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Execute Pipeline1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Filter Only File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "s3_adls_child",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"s3_bucket": {
+										"value": "@item().S3_BUCKET",
+										"type": "Expression"
+									},
+									"s3_path": {
+										"value": "@item().S3_PATH",
+										"type": "Expression"
+									},
+									"s3_file": {
+										"value": "@activity('Filter Only File').output.value",
+										"type": "Expression"
+									},
+									"adls_container": {
+										"value": "@item().ADLS_CONTAINER",
+										"type": "Expression"
+									},
+									"adls_path": {
+										"value": "@item().ADLS_PATH",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "get_metadata",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "@concat('select * from meta_raw.s3_to_adls where GROUP_ID=',pipeline().parameters.Group_id)",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"Group_id": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"list_of_file": {
+				"type": "Array"
+			},
+			"s3_bucket": {
+				"type": "String"
+			},
+			"s3_path": {
+				"type": "String"
+			},
+			"adls_container": {
+				"type": "String"
+			},
+			"adls_path": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/s3_to_adls"
+		},
+		"annotations": []
+	}
+}

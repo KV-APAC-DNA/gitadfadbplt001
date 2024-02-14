@@ -1,43 +1,35 @@
 {
-	"name": "TableauJsonResponse",
+	"name": "BinaryDestination",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"tempContainer": {
+			"container": {
 				"type": "string"
 			},
-			"tempDirectory": {
-				"type": "string"
-			},
-			"tempFileName": {
+			"directory": {
 				"type": "string"
 			}
 		},
 		"folder": {
-			"name": "ADF_Framework_Datasets/Tableau"
+			"name": "ADF_Framework_Datasets"
 		},
 		"annotations": [],
-		"type": "Json",
+		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().tempFileName",
-					"type": "Expression"
-				},
 				"folderPath": {
-					"value": "@dataset().tempDirectory",
+					"value": "@dataset().directory",
 					"type": "Expression"
 				},
 				"fileSystem": {
-					"value": "@dataset().tempContainer",
+					"value": "@dataset().container",
 					"type": "Expression"
 				}
 			}
-		},
-		"schema": {}
+		}
 	}
 }

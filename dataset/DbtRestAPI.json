@@ -1,23 +1,23 @@
 {
-	"name": "TableauRestAPI",
+	"name": "DbtRestAPI",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lspltbitabap",
+			"referenceName": "adfadbplt001lsdbtclouddnacore",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"relativeURL": {
+			"url": {
 				"type": "string"
 			}
 		},
 		"folder": {
-			"name": "ADF_Framework_Datasets/Tableau"
+			"name": "ADF_Framework_Datasets/DBT"
 		},
 		"annotations": [],
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@dataset().relativeURL",
+				"value": "@dataset().url",
 				"type": "Expression"
 			}
 		},

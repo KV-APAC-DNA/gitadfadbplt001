@@ -6,6 +6,9 @@
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -420,6 +423,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -486,6 +492,9 @@
 							"name": "error log",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -554,6 +563,9 @@
 							"name": "Audit_Finish_Success",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -606,6 +618,9 @@
 							"name": "audit fail - file not present_copy1",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -689,6 +704,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -746,6 +764,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -800,6 +821,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -902,6 +926,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -959,6 +986,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -1009,11 +1039,11 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "SINGAPORE_MDS"
+				"defaultValue": "REGIONAL_MDS"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 5
+				"defaultValue": 8
 			},
 			"sequence_id": {
 				"type": "int",
@@ -1021,7 +1051,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 18
+				"defaultValue": 22
 			},
 			"phase_id": {
 				"type": "int",

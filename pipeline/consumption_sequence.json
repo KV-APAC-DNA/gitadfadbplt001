@@ -54,7 +54,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Get processes').output.value",
+						"value": "@activity('get processes').output.value",
 						"type": "Expression"
 					},
 					"batchCount": 10,
@@ -78,13 +78,38 @@
 												"name": "tableau refresh",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
 														"referenceName": "Tableau",
 														"type": "PipelineReference"
 													},
-													"waitOnCompletion": true
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														}
+													}
 												}
 											}
 										]
@@ -96,6 +121,9 @@
 												"name": "power bi refresh",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
@@ -132,6 +160,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -186,6 +217,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -240,6 +274,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -294,6 +331,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {

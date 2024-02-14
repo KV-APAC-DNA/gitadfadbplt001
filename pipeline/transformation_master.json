@@ -6,6 +6,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -60,6 +63,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -137,6 +143,9 @@
 										"name": "exec transform sequence",
 										"type": "ExecutePipeline",
 										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
 										"userProperties": [],
 										"typeProperties": {
 											"pipeline": {
@@ -214,7 +223,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT DISTINCT \n    PROCESS.SEQUENCE_ID\nFROM METADATA.USECASE\nLEFT JOIN META_RAW.PROCESS USING(USECASE_ID)\nLEFT JOIN META_RAW.PHASE USING(PHASE_ID)\nWHERE USECASE.USECASE_ID = @{pipeline().parameters.usecase_id}\n    AND PHASE_ID = @{pipeline().parameters.phase_id}\n    AND USECASE.IS_ACTIVE = TRUE\n    AND PROCESS.IS_ACTIVE = TRUE\nORDER BY PROCESS.SEQUENCE_ID ASC;",
+							"value": "SELECT DISTINCT \n    PROCESS.SEQUENCE_ID\nFROM META_RAW.USECASE\nLEFT JOIN META_RAW.PROCESS USING(USECASE_ID)\nLEFT JOIN META_RAW.PHASE USING(PHASE_ID)\nWHERE USECASE.USECASE_ID = @{pipeline().parameters.usecase_id}\n    AND PHASE_ID = @{pipeline().parameters.phase_id}\n    AND USECASE.IS_ACTIVE = TRUE\n    AND PROCESS.IS_ACTIVE = TRUE\nORDER BY PROCESS.SEQUENCE_ID ASC;",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -250,6 +259,9 @@
 							"name": "audit success",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -299,6 +311,9 @@
 							"name": "audit failure on loop",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {

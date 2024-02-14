@@ -78,6 +78,9 @@
 												"name": "SFTP ingestion",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
@@ -118,6 +121,9 @@
 												"name": "ADLS ingestion",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
@@ -158,10 +164,56 @@
 												"name": "SQL Server ingestion",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
 														"referenceName": "SQL Server",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "MDS",
+										"activities": [
+											{
+												"name": "MDS ingestion",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "MDS",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,
@@ -216,6 +268,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -270,6 +325,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -324,6 +382,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -378,6 +439,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
