@@ -1025,7 +1025,7 @@ create or replace view aspedw_access.edw_rpt_rg_travel_retail
 -- 	"gcch_primary_format",
 -- 	"gcch_distributor_attribute",
 -- 	"acct_hier_shrt_desc",
-	"qty",
-	"amt_lcy",
-	"amt_usd"
- from aspedw_integration.v_rpt_copa_ciw;
+	-- "qty",
+	-- "amt_lcy",
+	-- "amt_usd"
+ -- from aspedw_integration.v_rpt_copa_ciw;
