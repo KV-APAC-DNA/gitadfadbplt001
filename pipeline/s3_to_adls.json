@@ -168,7 +168,7 @@
 			}
 		],
 		"parameters": {
-			"Groupid": {
+			"Group_id": {
 				"type": "string"
 			}
 		},
