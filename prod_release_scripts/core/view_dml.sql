@@ -83,7 +83,7 @@ SELECT
   SUM(main.eq_qty) AS "eq_qty",
   SUM(main.ord_pc_qty) AS "ord_pc_qty",
   SUM(main.unspp_qty) AS "unspp_qty",
-  main."cust_num" AS "cust_num"
+  main.cust_num AS "cust_num"
 FROM (
   (
     (
@@ -1297,10 +1297,10 @@ FROM (
           invc.curr_key AS obj_crncy_co_obj,
           invc.matl_num,
           invc.co_cd,
-          invc."sls_org",
-          invc."dstr_chnl",
-          invc."div",
-          invc."cust_num",
+          invc.sls_org,
+          invc.dstr_chnl,
+          invc.div,
+          invc.cust_num,
           SUM(0) AS nts_usd,
           SUM(0) AS nts_lcy,
           SUM(0) AS gts_usd,
@@ -1393,10 +1393,10 @@ FROM (
           invc.curr_key,
           invc.matl_num,
           invc.co_cd,
-          invc."sls_org",
-          invc."dstr_chnl",
-          invc."div",
-          invc."cust_num"
+          invc.sls_org,
+          invc.dstr_chnl,
+          invc.div,
+          invc.cust_num
       ) AS main
       LEFT JOIN ASPEDW_INTEGRATION.edw_material_dim AS mat
         ON (
@@ -1427,14 +1427,14 @@ FROM (
           (
             (
               CAST((
-                main."sls_org"
+                main.sls_org
               ) AS TEXT) = CAST((
                 cus_sales_extn."sls_org"
               ) AS TEXT)
             )
             AND (
               CAST((
-                main."dstr_chnl"
+                main.dstr_chnl
               ) AS TEXT) = CAST((
                 cus_sales_extn."dstr_chnl"
               ) AS TEXT)
@@ -1442,7 +1442,7 @@ FROM (
           )
           AND (
             CAST((
-              main."div"
+              main.div
             ) AS TEXT) = CAST((
               cus_sales_extn."div"
             ) AS TEXT)
@@ -1450,7 +1450,7 @@ FROM (
         )
         AND (
           CAST((
-            main."cust_num"
+            main.cust_num
           ) AS TEXT) = CAST((
             cus_sales_extn."cust_num"
           ) AS TEXT)
@@ -1489,7 +1489,7 @@ GROUP BY
   cus_sales_extn."retail_env",
   main.from_crncy,
   main.to_crncy,
-  main."cust_num";
+  main.cust_num;
 ---------------------------------------
 create or replace view ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
 	"fisc_yr",
@@ -1551,7 +1551,7 @@ SELECT
                 (
                   LTRIM(
                     CAST((
-                      fact."cust_num"
+                      fact.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -1565,7 +1565,7 @@ SELECT
                 OR (
                   LTRIM(
                     CAST((
-                      fact."cust_num"
+                      fact.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -1580,7 +1580,7 @@ SELECT
               OR (
                 LTRIM(
                   CAST((
-                    fact."cust_num"
+                    fact.cust_num
                   ) AS TEXT),
                   CAST((
                     CAST((
@@ -1595,7 +1595,7 @@ SELECT
             OR (
               LTRIM(
                 CAST((
-                  fact."cust_num"
+                  fact.cust_num
                 ) AS TEXT),
                 CAST((
                   CAST((
@@ -1647,7 +1647,7 @@ SELECT
                 (
                   LTRIM(
                     CAST((
-                      fact."cust_num"
+                      fact.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -1661,7 +1661,7 @@ SELECT
                 OR (
                   LTRIM(
                     CAST((
-                      fact."cust_num"
+                      fact.cust_num
                     ) AS TEXT),
                     CAST((
                       CAST((
@@ -1676,7 +1676,7 @@ SELECT
               OR (
                 LTRIM(
                   CAST((
-                    fact."cust_num"
+                    fact.cust_num
                   ) AS TEXT),
                   CAST((
                     CAST((
@@ -1691,7 +1691,7 @@ SELECT
             OR (
               LTRIM(
                 CAST((
-                  fact."cust_num"
+                  fact.cust_num
                 ) AS TEXT),
                 CAST((
                   CAST((
@@ -1751,7 +1751,7 @@ SELECT
   mat.base_prod_desc AS "b3 base product",
   mat.varnt_desc AS "b4 variant",
   mat.put_up_desc AS "b5 put-up",
-  fact."cust_num" AS "cust_num",
+  fact.cust_num AS "cust_num",
   cus_sales_extn."parent customer",
   cus_sales_extn."banner" AS "banner",
   cus_sales_extn."banner format",
@@ -2495,14 +2495,14 @@ FROM (
               (
                 (
                   CAST((
-                    fact."sls_org"
+                    fact.sls_org
                   ) AS TEXT) = CAST((
                     cus_sales_extn."sls_org"
                   ) AS TEXT)
                 )
                 AND (
                   CAST((
-                    fact."dstr_chnl"
+                    fact.dstr_chnl
                   ) AS TEXT) = CAST((
                     cus_sales_extn."dstr_chnl"
                   ) AS TEXT)
@@ -2510,7 +2510,7 @@ FROM (
               )
               AND (
                 CAST((
-                  fact."div"
+                  fact.div
                 ) AS TEXT) = CAST((
                   cus_sales_extn."div"
                 ) AS TEXT)
@@ -2518,7 +2518,7 @@ FROM (
             )
             AND (
               CAST((
-                fact."cust_num"
+                fact.cust_num
               ) AS TEXT) = CAST((
                 cus_sales_extn."cust_num"
               ) AS TEXT)
@@ -2541,7 +2541,7 @@ FROM (
     ON (
       (
         CAST((
-          fact."cust_num"
+          fact.cust_num
         ) AS TEXT) = CAST((
           gch.customer
         ) AS TEXT)
@@ -2566,7 +2566,7 @@ GROUP BY
   mat.base_prod_desc,
   mat.varnt_desc,
   mat.put_up_desc,
-  fact."cust_num",
+  fact.cust_num,
   fact.acct_num,
   cus_sales_extn."parent customer",
   cus_sales_extn."banner",
