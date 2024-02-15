@@ -384,6 +384,8 @@
 						{
 							"name": "Sign In Tableau To Get Auth Token",
 							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Fetch Refresh Status Iteratively",
@@ -449,6 +451,8 @@
 						{
 							"name": "Read token and siteId",
 							"type": "Lookup",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Sign In Tableau To Get Auth Token",
@@ -492,6 +496,8 @@
 						{
 							"name": "Set token again",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Read token and siteId",
