@@ -196,7 +196,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-dev-pat?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-pat?api-version=7.0",
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
