@@ -645,6 +645,10 @@
 						"tableauPAT": {
 							"value": "@{activity('Fetch Credential from Vault').output.value}",
 							"type": "Expression"
+						},
+						"contentUrl": {
+							"value": "@{activity('read parameters').output.value[0].contentUrl}",
+							"type": "Expression"
 						}
 					}
 				}
