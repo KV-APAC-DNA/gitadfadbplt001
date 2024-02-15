@@ -58,14 +58,7 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Trigger Tableau Refresh Status",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -118,14 +111,7 @@
 			{
 				"name": "Audit_Finish_Fail",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Trigger Tableau Refresh Status",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -585,75 +571,6 @@
 				}
 			},
 			{
-				"name": "Trigger Tableau Refresh Status",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Read Refresh Initail Response",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "Tableau Refresh Status",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": false,
-					"parameters": {
-						"SiteId": {
-							"value": "@{activity('Read token and siteId').output.value[0].credentials.site.id}",
-							"type": "Expression"
-						},
-						"JobId": {
-							"value": "@{activity('Read Refresh Initail Response').output.value[0].job.id}",
-							"type": "Expression"
-						},
-						"token": {
-							"value": "@activity('Read token and siteId').output.value[0].credentials.token",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"sequence_id": {
-							"value": "@pipeline().parameters.sequence_id",
-							"type": "Expression"
-						},
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"waitTime": {
-							"value": "@{activity('read parameters').output.value[0].waitTime}",
-							"type": "Expression"
-						},
-						"tableauPAT": {
-							"value": "@{activity('Fetch Credential from Vault').output.value}",
-							"type": "Expression"
-						},
-						"contentUrl": {
-							"value": "@{activity('read parameters').output.value[0].contentUrl}",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "error Fetching PAT from Vault",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -1055,14 +972,7 @@
 			{
 				"name": "error triggering tab refresh status",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Trigger Tableau Refresh Status",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -1561,7 +1471,7 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 6
+				"defaultValue": 16
 			},
 			"phase_id": {
 				"type": "int",
@@ -1569,11 +1479,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 5
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 19
+				"defaultValue": 39
 			}
 		},
 		"variables": {
