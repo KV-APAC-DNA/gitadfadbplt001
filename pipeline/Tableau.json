@@ -233,7 +233,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "<tsRequest><credentials personalAccessTokenName=\"kv-kenvue-pat\" personalAccessTokenSecret=\"@{activity('Fetch Credential from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
+							"value": "<tsRequest><credentials personalAccessTokenName=\"cervello-migration\" personalAccessTokenSecret=\"@{activity('Fetch Credential from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
 							"type": "Expression"
 						},
 						"paginationRules": {
