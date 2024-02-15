@@ -196,7 +196,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-dev-pat?api-version=7.0",
+					"url": {
+						"value": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-@{pipeline().globalParameters.environment}-pat?api-version=7.0",
+						"type": "Expression"
+					},
 					"connectVia": {
 						"referenceName": "AutoResolveIntegrationRuntime",
 						"type": "IntegrationRuntimeReference"
