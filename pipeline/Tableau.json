@@ -5,6 +5,8 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -233,7 +235,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "<tsRequest><credentials personalAccessTokenName=\"cervello-migration\" personalAccessTokenSecret=\"@{activity('Fetch Credential from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
+							"value": "<tsRequest><credentials personalAccessTokenName=\"kv-tableau-pat\" personalAccessTokenSecret=\"@{activity('Fetch Credential from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
 							"type": "Expression"
 						},
 						"paginationRules": {

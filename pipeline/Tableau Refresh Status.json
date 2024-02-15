@@ -407,7 +407,7 @@
 									"requestInterval": "00.00:00:00.010",
 									"requestMethod": "POST",
 									"requestBody": {
-										"value": "<tsRequest><credentials personalAccessTokenName=\"cervello-migration\" personalAccessTokenSecret=\"@{pipeline().parameters.tableauPAT}\"><site contentUrl=\"@{pipeline().parameters.contentUrl}\"/></credentials></tsRequest>",
+										"value": "<tsRequest><credentials personalAccessTokenName=\"kv-tableau-pat\" personalAccessTokenSecret=\"@{pipeline().parameters.tableauPAT}\"><site contentUrl=\"@{pipeline().parameters.contentUrl}\"/></credentials></tsRequest>",
 										"type": "Expression"
 									},
 									"paginationRules": {
