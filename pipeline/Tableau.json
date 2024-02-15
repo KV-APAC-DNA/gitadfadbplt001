@@ -469,6 +469,8 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -544,6 +546,8 @@
 			{
 				"name": "Read Refresh Initail Response",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -1487,6 +1491,8 @@
 			{
 				"name": "Trigger Tableau Refresh Status",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
