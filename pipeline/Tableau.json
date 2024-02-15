@@ -641,6 +641,10 @@
 						"waitTime": {
 							"value": "@{activity('read parameters').output.value[0].waitTime}",
 							"type": "Expression"
+						},
+						"tableauPAT": {
+							"value": "@{activity('Fetch Credential from Vault').output.value}",
+							"type": "Expression"
 						}
 					}
 				}
