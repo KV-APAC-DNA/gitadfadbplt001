@@ -1,5 +1,5 @@
 {
-	"name": "rg_travel_retail_mds_refresh_trigger",
+	"name": "rg_travel_retail_refresh_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
