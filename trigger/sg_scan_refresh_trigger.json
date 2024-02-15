@@ -1,0 +1,35 @@
+{
+	"name": "sg_scan_refresh_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "SINGAPORE_TRANSACTIONAL"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-02-15T13:43:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						3
+					]
+				}
+			}
+		}
+	}
+}
