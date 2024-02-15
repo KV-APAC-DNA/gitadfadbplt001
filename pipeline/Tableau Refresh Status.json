@@ -5,6 +5,8 @@
 			{
 				"name": "Fetch Refresh Status",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token",
@@ -405,6 +407,8 @@
 			{
 				"name": "Set progress",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Status",
@@ -429,6 +433,8 @@
 			{
 				"name": "Read Refresh Status",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch Refresh Status",
@@ -1034,6 +1040,8 @@
 			{
 				"name": "Read token",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -1106,7 +1114,8 @@
 				"type": "String"
 			},
 			"progress": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "0"
 			},
 			"finishCode": {
 				"type": "String",
