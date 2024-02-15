@@ -1,5 +1,5 @@
 {
-	"name": "sg_mds_to_dna_refresh_trigger",
+	"name": "sg_scan_refresh_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
