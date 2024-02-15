@@ -1,7 +1,9 @@
 USE DATABASE PROD_DNA_LOAD;
 USE SCHEMA META_RAW;
 
-create table if not exists META_RAW.GIT_RUN_METADATA (
+DROP TABLE META_RAW.GIT_RUN_METADATA;
+
+create table if not exists META_RAW.PROD_RUN_METADATA (
 	PROCESS_ID NUMBER(38,0) autoincrement start 1 increment 1 order,
 	DB VARCHAR(50),
 	VERSION NUMBER(38,0),
@@ -10,6 +12,6 @@ create table if not exists META_RAW.GIT_RUN_METADATA (
 	TIMESTAMP TIMESTAMP_NTZ(9)
 );
 
-INSERT INTO META_RAW.GIT_RUN_METADATA(db,version,file_name,status,timestamp) values
+INSERT INTO META_RAW.PROD_RUN_METADATA(db,version,file_name,status,timestamp) values
 ('load',0,null,null,current_timestamp),
 ('core',0,null,null,current_timestamp);
