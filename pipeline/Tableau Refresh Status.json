@@ -1169,6 +1169,9 @@
 			"waitTime": {
 				"type": "string",
 				"defaultValue": "60"
+			},
+			"tableauPAT": {
+				"type": "string"
 			}
 		},
 		"variables": {
