@@ -1204,40 +1204,28 @@
 		],
 		"parameters": {
 			"SiteId": {
-				"type": "string",
-				"defaultValue": "e97b3d15-44f8-471e-b460-31d169ffb51f"
+				"type": "string"
 			},
 			"JobId": {
-				"type": "string",
-				"defaultValue": "5034d2ce-0290-4122-8568-57f5bd4f2521"
-			},
-			"token": {
-				"type": "string",
-				"defaultValue": "G55EwzjJQVKXGG8NsVAvgw|riph9HmXfzX191qCh3CnO9UaTAyjLXym|e97b3d15-44f8-471e-b460-31d169ffb51f"
+				"type": "string"
 			},
 			"category": {
-				"type": "string",
-				"defaultValue": "REGIONAL_REFRESH"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "string",
-				"defaultValue": "3"
+				"type": "string"
 			},
 			"phase_id": {
-				"type": "string",
-				"defaultValue": "3"
+				"type": "string"
 			},
 			"sequence_id": {
-				"type": "string",
-				"defaultValue": "1"
+				"type": "string"
 			},
 			"process_id": {
-				"type": "string",
-				"defaultValue": "9"
+				"type": "string"
 			},
 			"waitTime": {
-				"type": "string",
-				"defaultValue": "60"
+				"type": "string"
 			}
 		},
 		"variables": {
