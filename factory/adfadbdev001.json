@@ -1,6 +1,12 @@
 {
 	"name": "adfadbdev001",
 	"properties": {
+		"globalParameters": {
+			"environment": {
+				"type": "string",
+				"value": "dev"
+			}
+		},
 		"globalConfigurations": {
 			"PipelineBillingEnabled": "true",
 			"factoryStagingLSReferenceName": "adfadbplt001lsdlsadbplt001",
