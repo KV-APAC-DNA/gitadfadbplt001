@@ -1,6 +1,7 @@
 USE DATABASE PROD_DNA_LOAD;
 USE SCHEMA META_RAW;
 
+truncate table META_RAW.PROD_RUN_METADATA;
 
 create or replace table META_RAW.PROD_RUN_METADATA (
 	PROCESS_ID NUMBER(38,0) autoincrement start 1 increment 1 order,
