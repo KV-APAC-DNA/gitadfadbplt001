@@ -270,7 +270,10 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "tableau",
-							"tempFileName": "tableauResponseSignIn.json"
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -420,7 +423,10 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": "tableau",
-							"tempFileName": "tableauResponseSignIn.json"
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
