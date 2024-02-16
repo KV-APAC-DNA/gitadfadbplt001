@@ -689,6 +689,9 @@
 			},
 			"waitTime": {
 				"type": "string"
+			},
+			"tableauSourceName": {
+				"type": "string"
 			}
 		},
 		"variables": {

@@ -1558,6 +1558,10 @@
 						"waitTime": {
 							"value": "@{activity('read parameters').output.value[0].waitTime}",
 							"type": "Expression"
+						},
+						"tableauSourceName": {
+							"value": "@{activity('read parameters').output.value[0].tableauSourceName}",
+							"type": "Expression"
 						}
 					}
 				}
