@@ -1,0 +1,25 @@
+{
+	"name": "SAP_BW_MATERIAL_UOM_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-02-18T12:40:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						23
+					]
+				}
+			}
+		}
+	}
+}
