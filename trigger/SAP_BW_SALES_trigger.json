@@ -1,5 +1,5 @@
 {
-	"name": "SAP_BW_SALES",
+	"name": "SAP_BW_SALES_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
