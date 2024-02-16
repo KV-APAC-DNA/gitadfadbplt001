@@ -1,0 +1,43 @@
+{
+	"name": "SAP_BW_MASTER_AND_ACCT_ATTR_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "SAP_BW_MASTER_AND_ACCT_ATTR"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-02-18T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						1
+					],
+					"weekDays": [
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday",
+						"Saturday"
+					]
+				}
+			}
+		}
+	}
+}

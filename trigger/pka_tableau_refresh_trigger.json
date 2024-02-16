@@ -1,0 +1,32 @@
+{
+	"name": "pka_tableau_refresh_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "REGIONAL PKA"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-02-19T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"hours": [
+						5
+					]
+				}
+			}
+		}
+	}
+}

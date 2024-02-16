@@ -1005,6 +1005,8 @@
 			{
 				"name": "error dbt run failed",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "SwitchBetweenType1",
@@ -1437,6 +1439,63 @@
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "error dbt run failed_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "fail pipeline",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "2002",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
