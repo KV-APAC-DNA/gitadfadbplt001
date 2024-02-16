@@ -1,0 +1,33 @@
+{
+	"name": "SAP_BW_INVOICE_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Week",
+				"interval": 1,
+				"startTime": "2024-02-18T12:45:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						2
+					],
+					"weekDays": [
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday",
+						"Saturday"
+					]
+				}
+			}
+		}
+	}
+}
