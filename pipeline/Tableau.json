@@ -201,7 +201,7 @@
 						"type": "Expression"
 					},
 					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
+						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
 					},
 					"authentication": {
