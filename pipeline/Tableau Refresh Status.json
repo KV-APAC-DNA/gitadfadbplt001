@@ -97,7 +97,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "tableau",
+										"tempDirectory": {
+											"value": "tableau/@{pipeline().globalParameters.environment}/@{pipeline().parameters.tableauSourceName}",
+											"type": "Expression"
+										},
 										"tempFileName": "tableauResponseRefreshStatusCurrent.json"
 									}
 								}
@@ -163,7 +166,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "tableau",
+										"tempDirectory": {
+											"value": "tableau/@{pipeline().globalParameters.environment}/@{pipeline().parameters.tableauSourceName}",
+											"type": "Expression"
+										},
 										"tempFileName": "tableauResponseRefreshStatusCurrent.json"
 									}
 								},
@@ -688,6 +694,9 @@
 				"type": "string"
 			},
 			"waitTime": {
+				"type": "string"
+			},
+			"tableauSourceName": {
 				"type": "string"
 			}
 		},

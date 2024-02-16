@@ -380,7 +380,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseDetails.json"
 						}
 					}
@@ -468,7 +471,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseDetails.json"
 						}
 					},
@@ -544,7 +550,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
 						}
 					}
@@ -586,7 +595,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
 						}
 					},
@@ -1545,6 +1557,10 @@
 						},
 						"waitTime": {
 							"value": "@{activity('read parameters').output.value[0].waitTime}",
+							"type": "Expression"
+						},
+						"tableauSourceName": {
+							"value": "@{activity('read parameters').output.value[0].tableauSourceName}",
 							"type": "Expression"
 						}
 					}

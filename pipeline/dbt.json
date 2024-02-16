@@ -105,7 +105,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/dbt",
+							"tempDirectory": {
+								"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"type": "Expression"
+							},
 							"tempFileName": "dbtResponseTrigger.json"
 						}
 					}
@@ -147,7 +150,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/dbt",
+							"tempDirectory": {
+								"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"type": "Expression"
+							},
 							"tempFileName": "dbtResponseTrigger.json"
 						}
 					},
@@ -354,7 +360,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "dev/dbt",
+										"tempDirectory": {
+											"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"type": "Expression"
+										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
 									}
 								}
@@ -396,7 +405,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "dev/dbt",
+										"tempDirectory": {
+											"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"type": "Expression"
+										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
 									}
 								},
