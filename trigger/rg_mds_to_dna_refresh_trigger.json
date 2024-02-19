@@ -2,7 +2,7 @@
 	"name": "rg_mds_to_dna_refresh_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
