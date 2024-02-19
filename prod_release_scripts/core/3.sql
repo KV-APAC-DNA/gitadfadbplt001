@@ -109,7 +109,7 @@ alter table aspitg_integration.ITG_COPA17_TRANS add column file_name varchar(255
 alter table aspitg_integration.itg_invc_sls add column file_name varchar(255);
 
 update aspitg_integration.itg_copa_trans set file_name='No file name in Legacy System' where file_name is null;
-update aspitg_integration.alter table aspitg_integration.itg_invnt add column file_name varchar(255); set file_name='No file name in Legacy System' where file_name is null;
+update aspitg_integration.itg_invnt set file_name='No file name in Legacy System' where file_name is null;
 update aspitg_integration.ITG_COPA17_TRANS set file_name='No file name in Legacy System' where file_name is null;
 update aspitg_integration.itg_invc_sls set file_name='No file name in Legacy System' where file_name is null;
 
