@@ -61,7 +61,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
+						"httpRequestTimeout": "00:03:00",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
@@ -109,7 +109,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
 								"type": "Expression"
 							},
 							"tempFileName": "dbtResponseTrigger.json"
@@ -154,7 +154,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
 								"type": "Expression"
 							},
 							"tempFileName": "dbtResponseTrigger.json"
@@ -210,7 +210,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"process_id": 0,
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
 						"status": "START",
 						"input_row_count": 0,
 						"output_row_count": 0,
@@ -321,7 +324,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "RestSource",
-									"httpRequestTimeout": "00:01:40",
+									"httpRequestTimeout": "00:03:00",
 									"requestInterval": "00.00:00:00.010",
 									"requestMethod": "GET",
 									"additionalHeaders": {
@@ -364,7 +367,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
 											"type": "Expression"
 										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
@@ -409,7 +412,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "@{pipeline().globalParameters.environment}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
 											"type": "Expression"
 										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
