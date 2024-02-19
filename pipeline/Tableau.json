@@ -269,7 +269,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau",
+								"type": "Expression"
+							},
 							"tempFileName": {
 								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
 								"type": "Expression"
@@ -283,7 +286,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Set parentFolder",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -381,7 +384,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseDetails.json"
@@ -425,7 +428,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau",
+								"type": "Expression"
+							},
 							"tempFileName": {
 								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
 								"type": "Expression"
@@ -472,7 +478,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseDetails.json"
@@ -551,7 +557,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
@@ -596,7 +602,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "tableau/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
@@ -1562,7 +1568,35 @@
 						"tableauSourceName": {
 							"value": "@{activity('read parameters').output.value[0].tableauSourceName}",
 							"type": "Expression"
+						},
+						"parentFolder": {
+							"value": "@variables('parentFolder')",
+							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "Set parentFolder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "parentFolder",
+					"value": {
+						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+						"type": "Expression"
 					}
 				}
 			}
@@ -1601,6 +1635,9 @@
 				"defaultValue": 0
 			},
 			"refreshType": {
+				"type": "String"
+			},
+			"parentFolder": {
 				"type": "String"
 			}
 		},
