@@ -128,8 +128,7 @@ update aspitg_integration.itg_invc_sls set file_name='No file name in Legacy Sys
 
 --==============================================================itg_sales_order_fact=====================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_SALES' as source_table_name,
     'vw_stg_sdl_sap_bw_sales' as source_view_name,
@@ -147,8 +146,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 --==============================================================sdl_raw_sap_bw_sales=====================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_SALES' as source_table_name,
     'vw_stg_sdl_sap_bw_sales' as source_view_name,
@@ -167,8 +165,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 --===================================================itg_delivery_fact=====================================================
 
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_DELIVERY' as source_table_name,
     'vw_stg_sdl_sap_bw_delivery' as source_view_name,
@@ -186,8 +183,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 --=============================================sdl_raw_sap_bw_delivery===================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_DELIVERY' as source_table_name,
     'vw_stg_sdl_sap_bw_delivery' as source_view_name,
@@ -205,8 +201,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 --=============================================itg_billing_fact===================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_BILLING' as source_table_name,
     'vw_stg_sdl_sap_bw_billing' as source_view_name,
@@ -224,8 +219,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 --=============================================sdl_raw_sap_bw_billing===================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_BILLING' as source_table_name,
     'vw_stg_sdl_sap_bw_billing' as source_view_name,
@@ -243,8 +237,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 --=============================================itg_copa_trans===================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_COPA10' as source_table_name,
     'vw_stg_sdl_sap_bw_cop10' as source_view_name,
@@ -264,8 +257,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_INVENTORY' as source_table_name,
     'vw_stg_sdl_sap_bw_inventory' as source_view_name,
@@ -286,8 +278,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_INVENTORY' as source_table_name,
     'vw_stg_sdl_sap_bw_inventory' as source_view_name,
@@ -307,8 +298,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 --=============================================itg_copa17_trans===================================
 -- BWA_COPA17 -> vw_stg_sdl_sap_bw_copa17 -> itg_copa17_trans
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_COPA17' as source_table_name,
     'vw_stg_sdl_sap_bw_copa17' as source_view_name,
@@ -328,8 +318,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 -- BWA_CDL_BILLING_COND _> vw_stg_sdl_sap_billing_condition -> itg_sap_billing_condition
 --                                                                 sdl_raw_sap_billing_condition
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_BILLING_COND' as source_table_name,
     'vw_stg_sdl_sap_billing_condition' as source_view_name,
@@ -347,8 +336,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 --=============================================sdl_raw_sap_billing_condition===================================
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
+insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES with table_ as (
 select 
     'BWA_CDL_BILLING_COND' as source_table_name,
     'vw_stg_sdl_sap_billing_condition' as source_view_name,
