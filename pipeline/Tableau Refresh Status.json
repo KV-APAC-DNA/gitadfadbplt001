@@ -98,7 +98,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "tableau/@{pipeline().globalParameters.environment}/@{pipeline().parameters.tableauSourceName}",
+											"value": "@{pipeline().parameters.parentFolder}/tableau/@{pipeline().parameters.tableauSourceName}",
 											"type": "Expression"
 										},
 										"tempFileName": "tableauResponseRefreshStatusCurrent.json"
@@ -167,7 +167,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "tableau/@{pipeline().globalParameters.environment}/@{pipeline().parameters.tableauSourceName}",
+											"value": "@{pipeline().parameters.parentFolder}/tableau/@{pipeline().parameters.tableauSourceName}",
 											"type": "Expression"
 										},
 										"tempFileName": "tableauResponseRefreshStatusCurrent.json"
@@ -328,7 +328,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "tableau",
+										"tempDirectory": {
+											"value": "@{pipeline().parameters.parentFolder}/tableau",
+											"type": "Expression"
+										},
 										"tempFileName": {
 											"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
 											"type": "Expression"
@@ -697,6 +700,9 @@
 				"type": "string"
 			},
 			"tableauSourceName": {
+				"type": "string"
+			},
+			"parentFolder": {
 				"type": "string"
 			}
 		},

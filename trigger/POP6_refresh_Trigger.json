@@ -1,7 +1,7 @@
 {
-	"name": "Pop6_Customer360_Tab_Refresh_Trigger",
+	"name": "POP6_refresh_Trigger",
 	"properties": {
-		"description": "Refresh Pop6 and Customer360 tableau datasources",
+		"description": "Refresh Pop6 tableau datasources",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -11,8 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "POP6_CUSTOMER360_refresh",
-					"force_rerun": false
+					"category": "POP6_refresh"
 				}
 			}
 		],
@@ -21,14 +20,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T15:55:00",
+				"startTime": "2024-02-19T00:36:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						16
+						10
 					]
 				}
 			}
