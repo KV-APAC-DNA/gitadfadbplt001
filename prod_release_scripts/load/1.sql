@@ -1,33 +1,98 @@
-use database PROD_DNA_LOAD;
-CREATE OR REPLACE TABLE meta_raw.s3_to_adls (
-    id             INTEGER,
-    group_id       INTEGER,
-    country        STRING,
-    s3_bucket      STRING,
-    s3_path        STRING,
-    s3_file        STRING,
-    adls_container STRING,
-    adls_path      STRING,
-    Isactive       BOOLEAN
-);
+CREATE OR REPLACE PROCEDURE ASPSDL_RAW.CDFG_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.8'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS '
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField,DecimalType
+from snowflake.snowpark.functions import col,lit,current_timestamp
+from datetime import datetime
 
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (1,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/','Shilla','asp','prd/transactional',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (2,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/','DFS','asp','prd/transactional',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (3,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/DFS/','Hainan_Vendor_Sales_Report_for_Asian','asp','prd/transactional/DFS',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (4,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/Dufry/','Dufry Hainan','asp','prd/transactional/Dufry',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (5,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/CNSC/','CNSC_DR.CILABO_SALES_REPORT','asp','prd/transactional/CNSC',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (6,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/Lagardere/','LSTR','asp','prd/transactional/Lagardere',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (7,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/','CDFG','asp','prd/transactional',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (8,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/amazon/','Amazon','sgp','prd/scan360/amazon',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (9,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/ntuc/','NTUC','sgp','prd/scan360/ntuc',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (10,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/scommerce/','Scommerce','sgp','prd/scan360/scommerce',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (11,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/redmart/','Redmart','sgp','prd/scan360/redmart',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (12,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/marketplace/','Marketplace','sgp','prd/scan360/marketplace',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (13,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/dfi/','DFI','sgp','prd/scan360/dfi',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (14,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/watsons/','SG_SCAN_DATA_WATSONS','sgp','prd/scan360/watsons',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (15,2,'SG','itx-arm-conapdna-singapore-prod','Certified_Data_Lake/scan360/guardian/','Guardian','sgp','prd/scan360/guardian',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (16,1,'RG','itx-arm-conapdna-aspac-prod','raw-data-lake/travel_retail/transaction_files/','SalesStock','asp','prd/transactional',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (17,3,'SG','itx-arm-conapdna-metadata-prod','ap_sg_metadata/master/sellout/','ciw_map','sgp','prd/master/sellout',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (18,3,'SG','itx-arm-conapdna-metadata-prod','ap_sg_metadata/master/sellout/','SG_Zuellig_Customer_Mapping','sgp','prd/master/sellout',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (19,3,'SG','itx-arm-conapdna-metadata-prod','ap_sg_metadata/master/sellout/','SG_Zuellig_Product_Mapping','sgp','prd/master/sellout',True);
-INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (20,3,'SG','itx-arm-conapdna-metadata-prod','ap_sg_metadata/transaction/sellout/','SG_Zuellig_Sell_Out','sgp','prd/transaction/sellout',True);
+
+def main(session: snowpark.Session,Param): 
+    # Your code goes here, inside the "main" handler
+    #Param=[''CDFG_202301.xlsx'',''ASPSDL_RAW.PROD_LOAD_STAGE_ADLS'',''prd/transactional'',''sdl_rg_travel_retail_cdfg'']
+
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        db_name         = stage_name.split(''.'')[0]
+        target_table    = db_name+"."+Param[3]
+        year_month    = file_name.split(''.'')[0][-6:]  ## Folder expected is in YYYYMM format.
+        target_raw_table= target_table+"_raw"
+        final_df = None
+        #session.use_schema(db_name)
+    
+        cdfg_df_schema=StructType([
+            StructField("dcl_code",StringType()),
+            StructField("barcode",StringType()),
+            StructField("description",StringType()),
+            StructField("sls_qty",StringType()),
+            StructField("stock_qty",StringType())
+            ])
+        
+        
+        
+            #---------------------------Transformation logic ------------------------------
+        # Create a list of location names
+        sheetlist = ["MEMBERS", "HAIKOU_BUGOU", "HTB", "Cambodia_Downtown", "XHG", "BEIJING_AIRPORT"]
+        
+        for sheet in sheetlist:
+            stage_path="@{0}/{1}/{2}.csv".format(stage_name,temp_stage_path,sheet)
+        
+            
+            cdfg_df = session.read\\
+            .schema(cdfg_df_schema)\\
+            .option("skip_header",3)\\
+            .option("field_delimiter", "\\u0001")\\
+            .option("field_optionally_enclosed_by", "\\"") \\
+            .csv(stage_path)
+        
+        
+        
+        
+            cdfg_df=cdfg_df.withColumn(''location_name'',lit(sheet))\\
+                           .withColumn(''retailer_name'',lit(file_name.split(''_'')[0]))\\
+                           .withColumn(''year_month'',lit(year_month))\\
+                           .withColumn(''filename'',lit(file_name))
+        
+            if not final_df:
+                final_df = cdfg_df
+            else:
+                final_df = final_df.unionByName(cdfg_df)
+          
+        final_df=final_df.filter(col("barcode") != "")
+        
+        if final_df.count()==0 :
+            return "No Data in file"
+                    
+        final_df=final_df[["location_name","retailer_name","year_month","dcl_code","barcode"\\
+                         ,"description","sls_qty","stock_qty","filename"]]
+                        
+
+        #writing on target
+
+        file_name=file_name+''_''+datetime.now().strftime("%Y%m%d%H%M%S")
+        
+        # write to target table
+        final_df.write.mode("append").saveAsTable(target_table)
+        
+        final_df.write.mode("append").saveAsTable(target_raw_table)
+        
+        #move to success
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
+                     
+        return ''Success''
+    except Exception as e:
+        # Handle exceptions here
+        error_message = f"Error: {str(e)}"
+        return error_message
+
+
+
+#call ASPSDL_RAW.CDFG_PREPROCESSING([''CDFG_202301.xlsx'',''ASPSDL_RAW.PROD_LOAD_STAGE_ADLS'',
+#''prd/transactional'',''sdl_rg_travel_retail_cdfg'']);';
