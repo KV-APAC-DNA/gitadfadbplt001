@@ -1089,7 +1089,7 @@
 				"typeProperties": {
 					"variableName": "refreshType",
 					"value": {
-						"value": "@{activity('read parameters').output.value[0].refreshType}",
+						"value": "@{activity('read parameters').output.value[0].transformationType}",
 						"type": "Expression"
 					}
 				}
