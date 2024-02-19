@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "audit start",
+						"activity": "Set parentFolder",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -109,7 +109,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
+								"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
 								"type": "Expression"
 							},
 							"tempFileName": "dbtResponseTrigger.json"
@@ -154,7 +154,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
+								"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
 								"type": "Expression"
 							},
 							"tempFileName": "dbtResponseTrigger.json"
@@ -367,7 +367,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
+											"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
 											"type": "Expression"
 										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
@@ -412,7 +412,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "dbt/@{pipeline().globalParameters.environment}/@{activity('read parameters').output.value[0].jobId}",
+											"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
 											"type": "Expression"
 										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
@@ -1506,6 +1506,30 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Set parentFolder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "audit start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "parentFolder",
+					"value": {
+						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1553,6 +1577,9 @@
 				"type": "String"
 			},
 			"sp_params": {
+				"type": "String"
+			},
+			"parentFolder": {
 				"type": "String"
 			}
 		},
