@@ -1,7 +1,7 @@
 --For PROD RUN FOR MAHIMA:
 
 
-============================================DQ Framework =======================================================
+--============================================DQ Framework =======================================================
 create or replace view core_integration.vw_failed_tests_on_models as (
 with failed_tests_models as (
 select replace(replace(split(split(node_id,'.')[2],'__')[0],'TRATBL_'),'"') as model_name,* from core_integration.test_executions where status='fail'
@@ -77,7 +77,7 @@ res := (execute immediate :final_query);
 RETURN TABLE(res);
 END;
 
--============================================Transactional tables logic =======================================================
+--============================================Transactional tables logic =======================================================
 
 create  table if not exists  aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES (
     source_table_name varchar(200),
@@ -89,11 +89,11 @@ create  table if not exists  aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILE
 );
 
 
--==============================================Travel retail sellout=============================================================
+--==============================================Travel retail sellout=============================================================
 
 --Already added till now.
-alter table aspitg_integration.itg_rg_travel_retail_sellout
-add column hash_key varchar(32);
+-- alter table aspitg_integration.itg_rg_travel_retail_sellout
+-- add column hash_key varchar(32);
 
 update aspitg_integration.itg_rg_travel_retail_sellout
 set hash_key=md5(concat(coalesce(year_month::varchar,''),'_',coalesce(upper(retailer_name),''),'_',coalesce(upper(ctry_cd),''))) where ctry_cd in ('CN','SG','CM','HK');
@@ -101,7 +101,7 @@ set hash_key=md5(concat(coalesce(year_month::varchar,''),'_',coalesce(upper(reta
 update aspitg_integration.itg_rg_travel_retail_sellout
 set hash_key=md5(concat(coalesce(year_month::varchar,''),'_',coalesce(upper(door_name),''),'_',coalesce(upper(ctry_cd),''))) where ctry_cd in('KR');
 
--=============================================Transactional tables column addition====================================================================
+--=============================================Transactional tables column addition====================================================================
 
 alter table aspitg_integration.itg_copa_trans add column file_name varchar(255);
 alter table aspitg_integration.itg_invnt add column file_name varchar(255);
@@ -126,7 +126,7 @@ update aspitg_integration.itg_invc_sls set file_name='No file name in Legacy Sys
 --                                                                 sdl_raw_sap_billing_condition
 -- BWA_ZC_SD -> vw_stg_sdl_sap_bw_zc_sd -> itg_invc_sls
 
-==============================================================itg_sales_order_fact=====================================
+--==============================================================itg_sales_order_fact=====================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -146,7 +146,7 @@ where target_table_name='itg_sales_order_fact'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-==============================================================sdl_raw_sap_bw_sales=====================================
+--==============================================================sdl_raw_sap_bw_sales=====================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -166,7 +166,7 @@ where target_table_name='sdl_raw_sap_bw_sales'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-===================================================itg_delivery_fact=====================================================
+--===================================================itg_delivery_fact=====================================================
 
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
@@ -187,7 +187,7 @@ where target_table_name='itg_delivery_fact'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================sdl_raw_sap_bw_delivery===================================
+--=============================================sdl_raw_sap_bw_delivery===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -207,7 +207,7 @@ where target_table_name='sdl_raw_sap_bw_delivery'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================itg_billing_fact===================================
+--=============================================itg_billing_fact===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -227,7 +227,7 @@ where target_table_name='itg_billing_fact'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================sdl_raw_sap_bw_billing===================================
+--=============================================sdl_raw_sap_bw_billing===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -247,7 +247,7 @@ where target_table_name='sdl_raw_sap_bw_billing'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================itg_copa_trans===================================
+--=============================================itg_copa_trans===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -267,7 +267,7 @@ where target_table_name='itg_copa_trans'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================itg_invnt===================================
+--=============================================itg_invnt===================================
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
@@ -290,7 +290,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 
-=============================================itg_invnt===================================
+--=============================================itg_invnt===================================
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
@@ -313,7 +313,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 
-=============================================itg_copa17_trans===================================
+--=============================================itg_copa17_trans===================================
 -- BWA_COPA17 -> vw_stg_sdl_sap_bw_copa17 -> itg_copa17_trans
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
@@ -334,7 +334,7 @@ where target_table_name='itg_copa17_trans'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================itg_sap_billing_condition===================================
+--=============================================itg_sap_billing_condition===================================
 -- BWA_CDL_BILLING_COND _> vw_stg_sdl_sap_billing_condition -> itg_sap_billing_condition
 --                                                                 sdl_raw_sap_billing_condition
 
@@ -356,7 +356,7 @@ where target_table_name='itg_sap_billing_condition'
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
 where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
-=============================================sdl_raw_sap_billing_condition===================================
+--=============================================sdl_raw_sap_billing_condition===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
