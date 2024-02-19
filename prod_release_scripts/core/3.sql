@@ -143,8 +143,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_sales_order_fact'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --==============================================================sdl_raw_sap_bw_sales=====================================
 
@@ -163,8 +162,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='sdl_raw_sap_bw_sales'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --===================================================itg_delivery_fact=====================================================
 
@@ -184,8 +182,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_delivery_fact'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================sdl_raw_sap_bw_delivery===================================
 
@@ -204,8 +201,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='sdl_raw_sap_bw_delivery'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================itg_billing_fact===================================
 
@@ -224,8 +220,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_billing_fact'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================sdl_raw_sap_bw_billing===================================
 
@@ -244,8 +239,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='sdl_raw_sap_bw_billing'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================itg_copa_trans===================================
 
@@ -264,8 +258,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_copa_trans'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================itg_invnt===================================
 
@@ -286,8 +279,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_invnt'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 
 --=============================================itg_invnt===================================
@@ -309,8 +301,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_invnt'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 
 --=============================================itg_copa17_trans===================================
@@ -331,8 +322,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_copa17_trans'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================itg_sap_billing_condition===================================
 -- BWA_CDL_BILLING_COND _> vw_stg_sdl_sap_billing_condition -> itg_sap_billing_condition
@@ -353,8 +343,7 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='itg_sap_billing_condition'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
 
 --=============================================sdl_raw_sap_billing_condition===================================
 
@@ -373,5 +362,4 @@ select source_table_name,source_view_name,target_table_name,act_file_name, 'Fals
 from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
 where target_table_name='sdl_raw_sap_billing_condition'
 )
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t
-where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
+select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t where not exists (select act_file_name from processed_files pf where pf.act_file_name=t.act_file_name) 
