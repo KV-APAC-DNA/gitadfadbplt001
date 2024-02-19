@@ -727,77 +727,144 @@ CREATE OR REPLACE TABLE ASPITG_INTEGRATION.SDL_RG_TRAVEL_RETAIL_SHILLA_RAW		--//
 		--// DISTSTYLE EVEN
 ;
 
-CREATE TABLE ASPEDW_INTEGRATION.EDW_PERFECT_STORE_REBASE_WT (		--// CREATE TABLE ASPEDW_INTEGRATION.edw_perfect_store_rebase_wt (
-    hashkey varchar(32),		--//  ENCODE zstd // character varying
-    hash_row numeric(38,0),		--//  ENCODE zstd // bigint
-    dataset varchar(49),		--//  ENCODE zstd // character varying
-    customerid varchar(255),		--//  ENCODE zstd // character varying
-    salespersonid varchar(255),		--//  ENCODE zstd // character varying
-    visitid varchar(255),		--//  ENCODE zstd // character varying
-    questiontext varchar(512),		--//  ENCODE zstd // character varying
-    productid varchar(255),		--//  ENCODE zstd // character varying
-    kpi varchar(67),		--//  ENCODE zstd // character varying
-    scheduleddate date,		--//  ENCODE az64
-    latestdate date,		--//  ENCODE az64
-    fisc_yr numeric(18,0),		--//  ENCODE az64 // integer
-    fisc_per numeric(18,0),		--//  ENCODE az64 // integer
-    merchandiser_name varchar(512),		--//  ENCODE zstd // character varying
-    customername varchar(500),		--//  ENCODE zstd // character varying
-    country varchar(200),		--//  ENCODE zstd // character varying
-    state varchar(256),		--//  ENCODE zstd // character varying
-    parent_customer varchar(255),		--//  ENCODE zstd // character varying
-    retail_environment varchar(256),		--//  ENCODE zstd // character varying
-    channel varchar(255),		--//  ENCODE zstd // character varying
-    retailer varchar(331),		--//  ENCODE zstd // character varying
-    business_unit varchar(200),		--//  ENCODE zstd // character varying
-    eannumber varchar(150),		--//  ENCODE zstd // character varying
-    matl_num varchar(100),		--//  ENCODE zstd // character varying
-    prod_hier_l1 varchar(500),		--//  ENCODE zstd // character varying
-    prod_hier_l2 varchar(500),		--//  ENCODE zstd // character varying
-    prod_hier_l3 varchar(510),		--//  ENCODE zstd // character varying
-    prod_hier_l4 varchar(510),		--//  ENCODE zstd // character varying
-    prod_hier_l5 varchar(2000),		--//  ENCODE zstd // character varying
-    prod_hier_l6 varchar(500),		--//  ENCODE zstd // character varying
-    prod_hier_l7 varchar(500),		--//  ENCODE zstd // character varying
-    prod_hier_l8 varchar(500),		--//  ENCODE zstd // character varying
-    prod_hier_l9 varchar(1000),		--//  ENCODE zstd // character varying
-    ques_type varchar(112),		--//  ENCODE zstd // character varying
-    "y/n_flag" varchar(150),		--//  ENCODE zstd // character varying
-    priority_store_flag varchar(10),		--//  ENCODE zstd // character varying
-    add_info varchar(65535),		--//  ENCODE zstd // character varying
-    response varchar(65535),		--//  ENCODE zstd // character varying
-    response_score varchar(65535),		--//  ENCODE zstd // character varying
-    kpi_chnl_wt double precision,		--//  ENCODE zstd
-    channel_weightage double precision,		--//  ENCODE zstd
-    weight_msl numeric(38,37),		--//  ENCODE az64
-    weight_oos numeric(38,37),		--//  ENCODE az64
-    weight_soa numeric(38,37),		--//  ENCODE az64
-    weight_sos numeric(38,37),		--//  ENCODE az64
-    weight_promo numeric(38,37),		--//  ENCODE az64
-    weight_planogram numeric(38,37),		--//  ENCODE az64
-    weight_display numeric(38,37),		--//  ENCODE az64
-    mkt_share double precision,		--//  ENCODE zstd
-    salience_val numeric(20,4),		--//  ENCODE az64
-    actual_value numeric(14,4),		--//  ENCODE az64
-    ref_value numeric(14,4),		--//  ENCODE az64
-    kpi_actual_wt_val numeric(14,4),		--//  ENCODE az64
-    kpi_ref_val numeric(14,4),		--//  ENCODE az64
-    kpi_ref_wt_val numeric(14,4),		--//  ENCODE az64
-    photo_url varchar(500),		--//  ENCODE zstd // character varying
-    compliance numeric(14,3),		--//  ENCODE az64
-    gap_to_target numeric(14,3),		--//  ENCODE az64
-    compliance_propogated numeric(14,3),		--//  ENCODE az64
-    gap_propagated numeric(14,3),		--//  ENCODE az64
-    full_opportunity_lcy numeric(14,4),		--//  ENCODE az64
-    weighted_opportunity_lcy numeric(14,4),		--//  ENCODE az64
-    full_opportunity_usd numeric(14,4),		--//  ENCODE az64
-    weighted_opportunity_usd numeric(14,4),		--//  ENCODE az64
-    sotp_lcy numeric(14,3),		--//  ENCODE az64
-    sotp_usd numeric(14,3),		--//  ENCODE az64
-    store_grade varchar(50)		--//  ENCODE zstd // character varying
-)
-		--// DISTSTYLE EVEN
-;		--// SORTKEY ( kpi );
+create or replace view PROD_DNA_CORE.ASPEDW_ACCESS.EDW_PERFECT_STORE_REBASE_WT(
+	"hashkey",
+	"hash_row",
+	"dataset",
+	"customerid",
+	"salespersonid",
+	"visitid",
+	"questiontext",
+	"productid",
+	"kpi",
+	"scheduleddate",
+	"latestdate",
+	"fisc_yr",
+	"fisc_per",
+	"merchandiser_name",
+	"customername",
+	"country",
+	"state",
+	"parent_customer",
+	"retail_environment",
+	"channel",
+	"retailer",
+	"business_unit",
+	"eannumber",
+	"matl_num",
+	"prod_hier_l1",
+	"prod_hier_l2",
+	"prod_hier_l3",
+	"prod_hier_l4",
+	"prod_hier_l5",
+	"prod_hier_l6",
+	"prod_hier_l7",
+	"prod_hier_l8",
+	"prod_hier_l9",
+	"ques_type",
+	"y/n_flag",
+	"priority_store_flag",
+	"add_info",
+	"response",
+	"response_score",
+	"kpi_chnl_wt",
+	"channel_weightage",
+	"weight_msl",
+	"weight_oos",
+	"weight_soa",
+	"weight_sos",
+	"weight_promo",
+	"weight_planogram",
+	"weight_display",
+	"mkt_share",
+	"salience_val",
+	"actual_value",
+	"ref_value",
+	"kpi_actual_wt_val",
+	"kpi_ref_val",
+	"kpi_ref_wt_val",
+	"photo_url",
+	"compliance",
+	"gap_to_target",
+	"compliance_propogated",
+	"gap_propagated",
+	"full_opportunity_lcy",
+	"weighted_opportunity_lcy",
+	"full_opportunity_usd",
+	"weighted_opportunity_usd",
+	"sotp_lcy",
+	"sotp_usd",
+	"store_grade"
+) as
+SELECT
+    hashkey AS "hashkey",
+    hash_row AS "hash_row",
+    dataset AS "dataset",
+    customerid AS "customerid",
+    salespersonid AS "salespersonid",
+    visitid AS "visitid",
+    questiontext AS "questiontext",
+    productid AS "productid",
+    kpi AS "kpi",
+    scheduleddate AS "scheduleddate",
+    latestdate AS "latestdate",
+    fisc_yr AS "fisc_yr",
+    fisc_per AS "fisc_per",
+    merchandiser_name AS "merchandiser_name",
+    customername AS "customername",
+    country AS "country",
+    state AS "state",
+    parent_customer AS "parent_customer",
+    retail_environment AS "retail_environment",
+    channel AS "channel",
+    retailer AS "retailer",
+    business_unit AS "business_unit",
+    eannumber AS "eannumber",
+    matl_num AS "matl_num",
+    prod_hier_l1 AS "prod_hier_l1",
+    prod_hier_l2 AS "prod_hier_l2",
+    prod_hier_l3 AS "prod_hier_l3",
+    prod_hier_l4 AS "prod_hier_l4",
+    prod_hier_l5 AS "prod_hier_l5",
+    prod_hier_l6 AS "prod_hier_l6",
+    prod_hier_l7 AS "prod_hier_l7",
+    prod_hier_l8 AS "prod_hier_l8",
+    prod_hier_l9 AS "prod_hier_l9",
+    ques_type AS "ques_type",
+    "y/n_flag" AS "y/n_flag",
+    priority_store_flag AS "priority_store_flag",
+    add_info AS "add_info",
+    response AS "response",
+    response_score AS "response_score",
+    kpi_chnl_wt AS "kpi_chnl_wt",
+    channel_weightage AS "channel_weightage",
+    weight_msl AS "weight_msl",
+    weight_oos AS "weight_oos",
+    weight_soa AS "weight_soa",
+    weight_sos AS "weight_sos",
+    weight_promo AS "weight_promo",
+    weight_planogram AS "weight_planogram",
+    weight_display AS "weight_display",
+    mkt_share AS "mkt_share",
+    salience_val AS "salience_val",
+    actual_value AS "actual_value",
+    ref_value AS "ref_value",
+    kpi_actual_wt_val AS "kpi_actual_wt_val",
+    kpi_ref_val AS "kpi_ref_val",
+    kpi_ref_wt_val AS "kpi_ref_wt_val",
+    photo_url AS "photo_url",
+    compliance AS "compliance",
+    gap_to_target AS "gap_to_target",
+    compliance_propogated AS "compliance_propogated",
+    gap_propagated AS "gap_propagated",
+    full_opportunity_lcy AS "full_opportunity_lcy",
+    weighted_opportunity_lcy AS "weighted_opportunity_lcy",
+    full_opportunity_usd AS "full_opportunity_usd",
+    weighted_opportunity_usd AS "weighted_opportunity_usd",
+    sotp_lcy AS "sotp_lcy",
+    sotp_usd AS "sotp_usd",
+    store_grade AS "store_grade"
+FROM PROD_DNA_CORE.ASPEDW_INTEGRATION.EDW_PERFECT_STORE_REBASE_WT;
 
 --DROP TABLE SGPITG_INTEGRATION.sdl_raw_sg_scan_data_amazon;
 CREATE OR REPLACE TABLE SGPITG_INTEGRATION.SDL_RAW_SG_SCAN_DATA_AMAZON		--// CREATE TABLE IF NOT EXISTS  // CREATE OR REPLACE TABLE SGPITG_INTEGRATION.sdl_raw_sg_scan_data_amazon
