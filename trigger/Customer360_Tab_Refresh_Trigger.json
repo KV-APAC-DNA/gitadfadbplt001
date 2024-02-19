@@ -11,7 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "POP6_CUSTOMER360_refresh",
+					"category": "CUSTOMER360_refresh",
 					"force_rerun": false
 				}
 			}
