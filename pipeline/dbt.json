@@ -183,7 +183,7 @@
 					"method": "GET",
 					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacore?api-version=7.0",
 					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
+						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
 					},
 					"authentication": {
