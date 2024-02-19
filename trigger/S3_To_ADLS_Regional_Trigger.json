@@ -2,7 +2,7 @@
 	"name": "S3_To_ADLS_Regional_Trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
