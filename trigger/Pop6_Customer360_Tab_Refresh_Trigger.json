@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Refresh Pop6 and Customer360 tableau datasources",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
