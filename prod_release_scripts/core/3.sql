@@ -125,9 +125,9 @@ set hash_key=md5(concat(coalesce(year_month::varchar,''),'_',coalesce(upper(door
 -- BWA_CDL_BILLING_COND _> vw_stg_sdl_sap_billing_condition -> itg_sap_billing_condition
 --                                                                 sdl_raw_sap_billing_condition
 -- BWA_ZC_SD -> vw_stg_sdl_sap_bw_zc_sd -> itg_invc_sls
-
+----------------------------------------------------
 truncate table aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES;
---==============================================================itg_sales_order_fact=====================================
+--==========================--====================================itg_sales_order_fact--=====================================
 delete from aspitg_integration.itg_ecc_standard_cost
 where crt_dttm= '2024-02-20 02:16:46.011';
 
@@ -138,12 +138,12 @@ select
     'vw_stg_sdl_sap_bw_sales' as source_view_name,
     'itg_sales_order_fact' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_sales_order_fact
+from aspitg_integration.vw_stg_sdl_sap_bw_sales
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
---==============================================================sdl_raw_sap_bw_sales=====================================
+--==========================--====================================sdl_raw_sap_bw_sales--=====================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -152,11 +152,11 @@ select
     'vw_stg_sdl_sap_bw_sales' as source_view_name,
     'sdl_raw_sap_bw_sales' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.sdl_raw_sap_bw_sales
+from aspitg_integration.vw_stg_sdl_sap_bw_sales
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
---===================================================itg_delivery_fact=====================================================
+--===================================================itg_delivery_fact--==========================--===========================
 
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
@@ -166,7 +166,7 @@ select
     'vw_stg_sdl_sap_bw_delivery' as source_view_name,
     'itg_delivery_fact' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_delivery_fact
+from aspitg_integration.vw_stg_sdl_sap_bw_delivery
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
@@ -174,7 +174,7 @@ select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_de
 
 
 
---=============================================sdl_raw_sap_bw_delivery===================================
+--=============================================sdl_raw_sap_bw_delivery--===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -183,12 +183,12 @@ select
     'vw_stg_sdl_sap_bw_delivery' as source_view_name,
     'sdl_raw_sap_bw_delivery' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.sdl_raw_sap_bw_delivery
+from aspitg_integration.vw_stg_sdl_sap_bw_delivery
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
---=============================================itg_billing_fact===================================
+--=============================================itg_billing_fact--===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -197,12 +197,12 @@ select
     'vw_stg_sdl_sap_bw_billing' as source_view_name,
     'itg_billing_fact' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_billing_fact
+from aspitg_integration.vw_stg_sdl_sap_bw_billing
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
---=============================================sdl_raw_sap_bw_billing===================================
+--=============================================sdl_raw_sap_bw_billing--===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -211,11 +211,11 @@ select
     'vw_stg_sdl_sap_bw_billing' as source_view_name,
     'sdl_raw_sap_bw_billing' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.sdl_raw_sap_bw_billing
+from aspitg_integration.vw_stg_sdl_sap_bw_billing
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
---=============================================itg_copa_trans===================================
+--=============================================itg_copa_trans--===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -224,11 +224,11 @@ select
     'vw_stg_sdl_sap_bw_cop10' as source_view_name,
     'itg_copa_trans' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_copa_trans
+from aspitg_integration.vw_stg_sdl_sap_bw_cop10
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
---=============================================itg_invnt===================================
+----=============================================itg_invnt--===================================
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
@@ -239,12 +239,12 @@ select
     'vw_stg_sdl_sap_bw_inventory' as source_view_name,
     'itg_invnt' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_invnt
+from aspitg_integration.vw_stg_sdl_sap_bw_inventory
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
---=============================================itg_invnt===================================
+----=============================================itg_invnt--===================================
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
@@ -255,26 +255,27 @@ select
     'vw_stg_sdl_sap_bw_inventory' as source_view_name,
     'itg_invnt' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_invnt
+from aspitg_integration.vw_stg_sdl_sap_bw_inventory
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
---=============================================itg_copa17_trans===================================
+----=============================================itg_copa17_trans--===================================
 -- BWA_COPA17 -> vw_stg_sdl_sap_bw_copa17 -> itg_copa17_trans
 
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
-select 
-    'BWA_COPA17' as source_table_name,
-    'vw_stg_sdl_sap_bw_copa17' as source_view_name,
-    'itg_copa17_trans' as target_table_name,
-    file_name as act_file_name
-from aspitg_integration.itg_copa17_trans
-group by act_file_name
-)
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
---=============================================itg_sap_billing_condition===================================
+-- insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
+-- with table_ as (
+-- select 
+--     'BWA_COPA17' as source_table_name,
+--     'vw_stg_sdl_sap_bw_copa17' as source_view_name,
+--     'itg_copa17_trans' as target_table_name,
+--     file_name as act_file_name
+-- from aspitg_integration.vw_stg_sdl_sap_bw_copa17
+-- group by act_file_name
+-- )
+-- select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
+
+----=============================================itg_sap_billing_condition--===================================
 -- BWA_CDL_BILLING_COND _> vw_stg_sdl_sap_billing_condition -> itg_sap_billing_condition
 --                                                                 sdl_raw_sap_billing_condition
 
@@ -285,11 +286,11 @@ select
     'vw_stg_sdl_sap_billing_condition' as source_view_name,
     'itg_sap_billing_condition' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.itg_sap_billing_condition
+from aspitg_integration.vw_stg_sdl_sap_billing_condition
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
---=============================================sdl_raw_sap_billing_condition===================================
+--=============================================sdl_raw_sap_billing_condition--===================================
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -298,11 +299,10 @@ select
     'vw_stg_sdl_sap_billing_condition' as source_view_name,
     'sdl_raw_sap_billing_condition' as target_table_name,
     file_name as act_file_name
-from aspitg_integration.sdl_raw_sap_billing_condition
+from aspitg_integration.vw_stg_sdl_sap_billing_condition
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
-
 -------------------------------------------------------------------------------------------
 truncate table core_integration.dbtjobs_test_cdc_metadata;
 
