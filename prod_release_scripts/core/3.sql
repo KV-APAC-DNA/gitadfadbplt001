@@ -182,7 +182,7 @@ select
     'BWA_CDL_DELIVERY' as source_table_name,
     'vw_stg_sdl_sap_bw_delivery' as source_view_name,
     'sdl_raw_sap_bw_delivery' as target_table_name,
-    file_name as act_file_name
+    filename as act_file_name
 from aspitg_integration.vw_stg_sdl_sap_bw_delivery
 group by act_file_name
 )
