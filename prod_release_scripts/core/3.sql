@@ -223,7 +223,7 @@ from aspitg_integration.itg_copa_trans
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
-=============================================itg_invnt===================================
+--=============================================itg_invnt===================================
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
