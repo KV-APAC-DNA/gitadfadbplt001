@@ -23,10 +23,10 @@ final as (
     (
   select
     cus_sales.clnt,
-    cus_sales.cust_num as "cust_num" ,
-    cus_sales.sls_org as "sls_org",
-    cus_sales.dstr_chnl as "dstr_chnl" ,
-    cus_sales.div as "div",
+    cus_sales.cust_num,
+    cus_sales.sls_org,
+    cus_sales.dstr_chnl,
+    cus_sales.div,
     cus_sales.obj_crt_prsn,
     cus_sales.rec_crt_dt,
     cus_sales.auth_grp,
@@ -118,7 +118,7 @@ final as (
     cddes_chnl.code_desc AS "channel",
     cddes_gtm.code_desc AS "go to model",
     cddes_subchnl.code_desc AS "sub channel",
-    subchnl_retail_env.retail_env as "retail_env" ,
+    subchnl_retail_env.retail_env,
     ecdm.code_desc
   FROM (
     (
@@ -502,9 +502,9 @@ final as (
     cus_sales.cust_set_4,
     cus_sales.cust_set_5,
     cddes_pck.code_desc AS "parent customer",
-    cddes_bnrkey.code_desc AS banner,
+    cddes_bnrkey.code_desc AS "banner",
     cddes_bnrfmt.code_desc AS "banner format",
-    cddes_chnl.code_desc AS channel,
+    cddes_chnl.code_desc AS "channel",
     cddes_gtm.code_desc AS "go to model",
     cddes_subchnl.code_desc AS "sub channel",
     subchnl_retail_env.retail_env,
@@ -804,9 +804,9 @@ SELECT
   cus_sales.cust_set_4,
   cus_sales.cust_set_5,
   cddes_pck.code_desc AS "parent customer",
-  cddes_bnrkey.code_desc AS banner,
+  cddes_bnrkey.code_desc AS "banner",
   cddes_bnrfmt.code_desc AS "banner format",
-  cddes_chnl.code_desc AS channel,
+  cddes_chnl.code_desc AS "channel",
   cddes_gtm.code_desc AS "go to model",
   cddes_subchnl.code_desc AS "sub channel",
   subchnl_retail_env.retail_env,
