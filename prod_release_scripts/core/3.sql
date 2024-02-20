@@ -299,6 +299,7 @@ group by act_file_name
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
 -------------------------------------------------------------------------------------------
+truncate table core_integration.dbtjobs_test_cdc_metadata;
 
 insert into core_integration.dbtjobs_test_cdc_metadata values('J_RG_Account_attr_CIW_Dim','1','(\'vw_stg_sdl_account_attr_ciw\')','0');
 insert into core_integration.dbtjobs_test_cdc_metadata values('J_RG_Account_attr_CIW_Dim','1','(\'vw_stg_sdl_account_attr_ciw\')','0');
@@ -328,7 +329,7 @@ values('sg_mds_to_dna_refresh','9','','0');
 --===============================
 --===============================
 
-
+truncate table CORE_INTEGRATION.DBTTEST_TABLES_METADATA;
 
 insert into CORE_INTEGRATION.DBTTEST_TABLES_METADATA values('vw_stg_sdl_sap_ecc_customer_sales','select * from aspwks_integration.TRATBL_vw_stg_sdl_sap_ecc_customer_sales__duplicate_test;');
 insert into CORE_INTEGRATION.DBTTEST_TABLES_METADATA values(' vw_stg_sdl_sap_ecc_material_text','select * from aspwks_integration.TRATBL_ vw_stg_sdl_sap_ecc_material_text__duplicate_test;');
