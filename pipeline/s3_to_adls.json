@@ -117,7 +117,7 @@
 							}
 						},
 						{
-							"name": "If Condition1",
+							"name": "if file exists",
 							"type": "IfCondition",
 							"dependsOn": [
 								{
