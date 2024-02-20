@@ -92,8 +92,8 @@ create  table if not exists  aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILE
 --==============================================Travel retail sellout=============================================================
 
 --Already added till now.
-alter table aspitg_integration.itg_rg_travel_retail_sellout
-add column hash_key varchar(32);
+--alter table aspitg_integration.itg_rg_travel_retail_sellout
+--add column hash_key varchar(32);
 
 update aspitg_integration.itg_rg_travel_retail_sellout
 set hash_key=md5(concat(coalesce(year_month::varchar,''),'_',coalesce(upper(retailer_name),''),'_',coalesce(upper(ctry_cd),''))) where ctry_cd in ('CN','SG','CM','HK');
