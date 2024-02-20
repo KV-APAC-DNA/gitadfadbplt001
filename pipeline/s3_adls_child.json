@@ -1,0 +1,183 @@
+{
+	"name": "s3_adls_child",
+	"properties": {
+		"activities": [
+			{
+				"name": "ForEach2",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.s3_file",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "if_file_exists",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "s3_source_binary1",
+									"type": "DatasetReference",
+									"parameters": {
+										"bucket": {
+											"value": "@pipeline().parameters.s3_bucket",
+											"type": "Expression"
+										},
+										"path": {
+											"value": "@pipeline().parameters.s3_path",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@item().name",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AmazonS3ReadSettings",
+									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@pipeline().parameters.last_modified",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "if_file_exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@activity('if_file_exists').output.exists",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "s3_to_adls",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "BinarySource",
+												"storeSettings": {
+													"type": "AmazonS3ReadSettings",
+													"recursive": true
+												},
+												"formatSettings": {
+													"type": "BinaryReadSettings"
+												}
+											},
+											"sink": {
+												"type": "BinarySink",
+												"storeSettings": {
+													"type": "AzureBlobFSWriteSettings"
+												}
+											},
+											"enableStaging": false
+										},
+										"inputs": [
+											{
+												"referenceName": "s3_source_binary1",
+												"type": "DatasetReference",
+												"parameters": {
+													"bucket": {
+														"value": "@pipeline().parameters.s3_bucket",
+														"type": "Expression"
+													},
+													"path": {
+														"value": "@pipeline().parameters.s3_path",
+														"type": "Expression"
+													},
+													"file": {
+														"value": "@item().name",
+														"type": "Expression"
+													}
+												}
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "adls_sink_binary1",
+												"type": "DatasetReference",
+												"parameters": {
+													"adls_container": {
+														"value": "@pipeline().parameters.adls_container",
+														"type": "Expression"
+													},
+													"adls_path": {
+														"value": "@pipeline().parameters.adls_path",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"s3_bucket": {
+				"type": "string"
+			},
+			"s3_path": {
+				"type": "string"
+			},
+			"s3_file": {
+				"type": "array"
+			},
+			"adls_container": {
+				"type": "string"
+			},
+			"adls_path": {
+				"type": "string"
+			},
+			"last_modified": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/s3_to_adls"
+		},
+		"annotations": []
+	}
+}
