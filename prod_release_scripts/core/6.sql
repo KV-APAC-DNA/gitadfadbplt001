@@ -265,7 +265,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
         )
       )
       THEN CAST('China' AS VARCHAR)
-      ELSE fact."cluster"
+      ELSE fact.cluster
     END AS "cluster",
     fact.obj_crncy_co_obj AS "obj_crncy_co_obj",
     fact.from_crncy AS "from_crncy",
