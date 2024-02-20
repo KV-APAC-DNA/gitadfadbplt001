@@ -1087,7 +1087,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
     fact.fisc_yr_per,
     fact.fisc_day,
     fact.ctry_group,
-    fact."cluster",
+    fact.cluster,
     fact.obj_crncy_co_obj,
     fact.from_crncy,
     ciw.acct_nm,
@@ -1220,7 +1220,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
     derived_table1.fisc_yr_per AS "fisc_yr_per",
     derived_table1.fisc_day AS "fisc_day",
     derived_table1.ctry_nm AS "ctry_nm",
-    derived_table1."cluster" as "cluster",
+    derived_table1.cluster as "cluster",
     derived_table1.obj_crncy_co_obj AS "obj_crncy_co_obj",
     derived_table1."b1 mega-brand" as "b1 mega-brand",
     derived_table1."b2 brand" as "b2 brand",
@@ -2447,7 +2447,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
     derived_table1.fisc_yr_per,
     derived_table1.fisc_day,
     derived_table1.ctry_nm,
-    derived_table1."cluster",
+    derived_table1.cluster,
     derived_table1.obj_crncy_co_obj,
     derived_table1."b1 mega-brand",
     derived_table1."b2 brand",
@@ -2501,4 +2501,3 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
   )
   select * from transformed
 );
-
