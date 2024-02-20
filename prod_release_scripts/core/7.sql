@@ -118,7 +118,7 @@ final as (
     cddes_chnl.code_desc AS "channel",
     cddes_gtm.code_desc AS "go to model",
     cddes_subchnl.code_desc AS "sub channel",
-    subchnl_retail_env.retail_env,
+    subchnl_retail_env.retail_env AS "retail_env",
     ecdm.code_desc
   FROM (
     (
@@ -507,7 +507,7 @@ final as (
     cddes_chnl.code_desc AS "channel",
     cddes_gtm.code_desc AS "go to model",
     cddes_subchnl.code_desc AS "sub channel",
-    subchnl_retail_env.retail_env,
+    subchnl_retail_env.retail_env AS "retail_env",
     replace(NULL ,'UNKNOWN') AS code_desc
   FROM (
     (
@@ -809,7 +809,7 @@ SELECT
   cddes_chnl.code_desc AS "channel",
   cddes_gtm.code_desc AS "go to model",
   cddes_subchnl.code_desc AS "sub channel",
-  subchnl_retail_env.retail_env,
+  subchnl_retail_env.retail_env AS "retail_env",
   replace(NULL ,'UNKNOWN') AS code_desc
 FROM (
   (
