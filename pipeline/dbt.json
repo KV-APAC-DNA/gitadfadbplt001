@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "audit start",
+						"activity": "Set parentFolder",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -61,10 +61,13 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
+						"httpRequestTimeout": "00:03:00",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
-						"requestBody": "{\n  \"cause\": \"Triggered via ADF transformation pipeline\"\n}",
+						"requestBody": {
+							"value": "{\n  \"cause\": \"Triggered via ADF transformation pipeline in @{pipeline().globalParameters.environment}\"\n}",
+							"type": "Expression"
+						},
 						"additionalHeaders": {
 							"Content-Type": "application/json",
 							"Authorization": {
@@ -105,7 +108,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/dbt",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"type": "Expression"
+							},
 							"tempFileName": "dbtResponseTrigger.json"
 						}
 					}
@@ -147,7 +153,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "dev/dbt",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"type": "Expression"
+							},
 							"tempFileName": "dbtResponseTrigger.json"
 						}
 					},
@@ -177,7 +186,7 @@
 					"method": "GET",
 					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacore?api-version=7.0",
 					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
+						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
 					},
 					"authentication": {
@@ -201,7 +210,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"process_id": 0,
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
 						"status": "START",
 						"input_row_count": 0,
 						"output_row_count": 0,
@@ -312,7 +324,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "RestSource",
-									"httpRequestTimeout": "00:01:40",
+									"httpRequestTimeout": "00:03:00",
 									"requestInterval": "00.00:00:00.010",
 									"requestMethod": "GET",
 									"additionalHeaders": {
@@ -354,7 +366,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "dev/dbt",
+										"tempDirectory": {
+											"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"type": "Expression"
+										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
 									}
 								}
@@ -396,7 +411,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"tempContainer": "asp",
-										"tempDirectory": "dev/dbt",
+										"tempDirectory": {
+											"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"type": "Expression"
+										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
 									}
 								},
@@ -453,7 +471,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"process_id": 0,
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
 						"status": "FINISH",
 						"input_row_count": 0,
 						"output_row_count": 0,
@@ -544,7 +565,10 @@
 					},
 					"waitOnCompletion": true,
 					"parameters": {
-						"process_id": 0,
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
 						"status": "FAIL",
 						"input_row_count": 0,
 						"output_row_count": 0,
@@ -993,6 +1017,8 @@
 			{
 				"name": "error dbt run failed",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "SwitchBetweenType1",
@@ -1066,7 +1092,7 @@
 				"typeProperties": {
 					"variableName": "refreshType",
 					"value": {
-						"value": "@{activity('read parameters').output.value[0].refreshType}",
+						"value": "@{activity('read parameters').output.value[0].transformationType}",
 						"type": "Expression"
 					}
 				}
@@ -1096,7 +1122,7 @@
 					},
 					"cases": [
 						{
-							"value": "Transformation",
+							"value": "transformation",
 							"activities": [
 								{
 									"name": "Wait",
@@ -1110,7 +1136,7 @@
 							]
 						},
 						{
-							"value": "Ingestion",
+							"value": "ingestion",
 							"activities": [
 								{
 									"name": "Script1",
@@ -1426,6 +1452,87 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "error dbt run failed_copy1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "fail pipeline",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "2002",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Set parentFolder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "audit start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "parentFolder",
+					"value": {
+						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1473,6 +1580,9 @@
 				"type": "String"
 			},
 			"sp_params": {
+				"type": "String"
+			},
+			"parentFolder": {
 				"type": "String"
 			}
 		},

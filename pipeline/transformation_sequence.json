@@ -73,7 +73,7 @@
 									"referenceName": "dbt",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": false,
+								"waitOnCompletion": true,
 								"parameters": {
 									"category": {
 										"value": "@pipeline().parameters.category",

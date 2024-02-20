@@ -1,17 +1,17 @@
 {
-	"name": "Historical_Trigger",
+	"name": "POP6_refresh_Trigger",
 	"properties": {
-		"description": "For historical load - Regional",
+		"description": "Refresh Pop6 tableau datasources",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD"
+					"category": "POP6_refresh"
 				}
 			}
 		],
@@ -20,15 +20,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T13:55:00",
+				"startTime": "2024-02-19T00:36:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						9,
-						12
+						10
 					]
 				}
 			}

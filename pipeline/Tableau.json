@@ -201,7 +201,7 @@
 						"type": "Expression"
 					},
 					"connectVia": {
-						"referenceName": "AutoResolveIntegrationRuntime",
+						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
 					},
 					"authentication": {
@@ -232,7 +232,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "RestSource",
-						"httpRequestTimeout": "00:01:40",
+						"httpRequestTimeout": "00:05:00",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
@@ -269,8 +269,14 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
-							"tempFileName": "tableauResponseSignIn.json"
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -280,7 +286,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Set parentFolder",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -377,7 +383,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseDetails.json"
 						}
 					}
@@ -419,8 +428,14 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
-							"tempFileName": "tableauResponseSignIn.json"
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
@@ -462,7 +477,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseDetails.json"
 						}
 					},
@@ -538,7 +556,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
 						}
 					}
@@ -580,7 +601,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"tempContainer": "asp",
-							"tempDirectory": "tableau",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"type": "Expression"
+							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
 						}
 					},
@@ -1540,7 +1564,39 @@
 						"waitTime": {
 							"value": "@{activity('read parameters').output.value[0].waitTime}",
 							"type": "Expression"
+						},
+						"tableauSourceName": {
+							"value": "@{activity('read parameters').output.value[0].tableauSourceName}",
+							"type": "Expression"
+						},
+						"parentFolder": {
+							"value": "@variables('parentFolder')",
+							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "Set parentFolder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "parentFolder",
+					"value": {
+						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+						"type": "Expression"
 					}
 				}
 			}
@@ -1579,6 +1635,9 @@
 				"defaultValue": 0
 			},
 			"refreshType": {
+				"type": "String"
+			},
+			"parentFolder": {
 				"type": "String"
 			}
 		},

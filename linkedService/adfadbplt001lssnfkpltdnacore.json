@@ -1,6 +1,5 @@
 {
 	"name": "adfadbplt001lssnfkpltdnacore",
-	"type": "Microsoft.DataFactory/factories/linkedservices",
 	"properties": {
 		"description": "Linked Service to Kenvue APAC DNA BASE Snowflake L1 and L2",
 		"annotations": [],
@@ -13,13 +12,13 @@
 					"referenceName": "adfadbplt001lsakvadbplt001",
 					"type": "LinkedServiceReference"
 				},
-				"secretName": "adfadbplt001lssnfkdevdnacore",
-				"secretVersion": "9eb83ee9bbc44fbbbde25faca62d1e20"
+				"secretName": "adfadbplt001lssnfkdevdnacore"
 			}
 		},
 		"connectVia": {
 			"referenceName": "adfiradbplt001",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }

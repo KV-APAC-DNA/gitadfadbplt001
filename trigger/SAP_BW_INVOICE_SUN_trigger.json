@@ -1,34 +1,35 @@
 {
-	"name": "Historical_Trigger",
+	"name": "SAP_BW_INVOICE_SUN_trigger",
 	"properties": {
-		"description": "For historical load - Regional",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD"
+					"category": "SAP_BW_INVOICE"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Week",
 				"interval": 1,
-				"startTime": "2024-02-14T13:55:00",
+				"startTime": "2024-02-19T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						9,
-						12
+						6
+					],
+					"weekDays": [
+						"Sunday"
 					]
 				}
 			}
