@@ -23,10 +23,10 @@ final as (
     (
   select
     cus_sales.clnt,
-    cus_sales.cust_num,
-    cus_sales.sls_org,
-    cus_sales.dstr_chnl,
-    cus_sales.div,
+    cus_sales.cust_num as "cust_num",
+    cus_sales.sls_org as "sls_org" ,
+    cus_sales.dstr_chnl as "dstr_chnl",
+    cus_sales.div as "div" ,
     cus_sales.obj_crt_prsn,
     cus_sales.rec_crt_dt,
     cus_sales.auth_grp,
@@ -412,10 +412,10 @@ final as (
   UNION ALL
   SELECT
     cus_sales.clnt,
-    cus_sales.cust_num,
-    '100A' AS sls_org,
-    '15' AS dstr_chnl,
-    cus_sales.div,
+    cus_sales.cust_num as "cust_num" ,
+    '100A' AS "sls_org",
+    '15' AS "dstr_chnl",
+    cus_sales.div as "div",
     cus_sales.obj_crt_prsn,
     cus_sales.rec_crt_dt,
     cus_sales.auth_grp,
@@ -714,10 +714,10 @@ final as (
 UNION ALL
 SELECT
   cus_sales.clnt,
-  cus_sales.cust_num,
-  '100A' AS sls_org,
-  '19' AS dstr_chnl,
-  cus_sales.div,
+  cus_sales.cust_num as "cust_num" ,
+  '100A' AS "sls_org",
+  '19' AS "dstr_chnl",
+  cus_sales.div as "div",
   cus_sales.obj_crt_prsn,
   cus_sales.rec_crt_dt,
   cus_sales.auth_grp,
