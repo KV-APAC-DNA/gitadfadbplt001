@@ -265,7 +265,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
         )
       )
       THEN CAST('China' AS VARCHAR)
-      ELSE fact.cluster
+      ELSE fact."cluster"
     END AS "cluster",
     fact.obj_crncy_co_obj AS "obj_crncy_co_obj",
     fact.from_crncy AS "from_crncy",
@@ -342,7 +342,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
                     ) AS TEXT)
                   ) AS fisc_day,
                   company.ctry_group,
-                  COMPANY.cluster,
+                  COMPANY."cluster",
                   copa.acct_num,
                   copa.obj_crncy_co_obj,
                   copa.matl_num,
@@ -861,7 +861,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
                   )
                 GROUP BY
                   company.ctry_group,
-                  COMPANY.cluster,
+                  COMPANY."cluster",
                   copa.fisc_yr,
                   copa.fisc_yr_per,
                   copa.obj_crncy_co_obj,
@@ -1087,7 +1087,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_CIW(
     fact.fisc_yr_per,
     fact.fisc_day,
     fact.ctry_group,
-    fact.cluster,
+    fact."cluster",
     fact.obj_crncy_co_obj,
     fact.from_crncy,
     ciw.acct_nm,
@@ -1220,7 +1220,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
     derived_table1.fisc_yr_per AS "fisc_yr_per",
     derived_table1.fisc_day AS "fisc_day",
     derived_table1.ctry_nm AS "ctry_nm",
-    derived_table1.cluster as "cluster",
+    derived_table1."cluster" as "cluster",
     derived_table1.obj_crncy_co_obj AS "obj_crncy_co_obj",
     derived_table1."b1 mega-brand" as "b1 mega-brand",
     derived_table1."b2 brand" as "b2 brand",
@@ -1476,7 +1476,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
           )
         )
         THEN CAST('China' AS VARCHAR)
-        ELSE cmp.cluster
+        ELSE cmp."cluster"
       END AS "cluster",
       CASE
         WHEN (
@@ -2370,7 +2370,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
       copa.cust_num,
       copa.acct_num,
       cmp.ctry_group,
-      cmp.cluster,
+      cmp."cluster",
       mat.mega_brnd_desc,
       mat.brnd_desc,
       mat.varnt_desc,
@@ -2447,7 +2447,7 @@ create or replace view PROD_DNA_CORE.ASPEDW_INTEGRATION.V_RPT_COPA_SKU(
     derived_table1.fisc_yr_per,
     derived_table1.fisc_day,
     derived_table1.ctry_nm,
-    derived_table1.cluster,
+    derived_table1."cluster",
     derived_table1.obj_crncy_co_obj,
     derived_table1."b1 mega-brand",
     derived_table1."b2 brand",
