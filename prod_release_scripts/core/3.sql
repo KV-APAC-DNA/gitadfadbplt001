@@ -103,15 +103,15 @@ set hash_key=md5(concat(coalesce(year_month::varchar,''),'_',coalesce(upper(door
 
 --=============================================Transactional tables column addition====================================================================
 
-alter table aspitg_integration.itg_copa_trans add column file_name varchar(255);
-alter table aspitg_integration.itg_invnt add column file_name varchar(255);
-alter table aspitg_integration.ITG_COPA17_TRANS add column file_name varchar(255);
-alter table aspitg_integration.itg_invc_sls add column file_name varchar(255);
+--alter table aspitg_integration.itg_copa_trans add column file_name varchar(255);
+--alter table aspitg_integration.itg_invnt add column file_name varchar(255);
+--alter table aspitg_integration.ITG_COPA17_TRANS add column file_name varchar(255);
+--alter table aspitg_integration.itg_invc_sls add column file_name varchar(255);
 
-update aspitg_integration.itg_copa_trans set file_name='No file name in Legacy System' where file_name is null;
-update aspitg_integration.itg_invnt set file_name='No file name in Legacy System' where file_name is null;
-update aspitg_integration.ITG_COPA17_TRANS set file_name='No file name in Legacy System' where file_name is null;
-update aspitg_integration.itg_invc_sls set file_name='No file name in Legacy System' where file_name is null;
+--update aspitg_integration.itg_copa_trans set file_name='No file name in Legacy System' where file_name is null;
+--update aspitg_integration.itg_invnt set file_name='No file name in Legacy System' where file_name is null;
+--update aspitg_integration.ITG_COPA17_TRANS set file_name='No file name in Legacy System' where file_name is null;
+--update aspitg_integration.itg_invc_sls set file_name='No file name in Legacy System' where file_name is null;
 
 -- BWA_CDL_SALES -> vw_stg_sdl_sap_bw_sales -> itg_sales_order_fact
 --                                             sdl_raw_sap_bw_sales
@@ -128,6 +128,8 @@ update aspitg_integration.itg_invc_sls set file_name='No file name in Legacy Sys
 
 truncate table aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES;
 --==============================================================itg_sales_order_fact=====================================
+delete from aspitg_integration.itg_ecc_standard_cost
+where crt_dttm= '2024-02-20 02:16:46.011';
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
 with table_ as (
@@ -168,6 +170,9 @@ from aspitg_integration.itg_delivery_fact
 group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
+
+
+
 
 --=============================================sdl_raw_sap_bw_delivery===================================
 
@@ -239,7 +244,7 @@ group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
---============================================itg_invnt===================================
+--=============================================itg_invnt===================================
 
 -- BWA_INVENTORY -> vw_stg_sdl_sap_bw_inventory -> itg_invnt
 
