@@ -2,7 +2,7 @@
 	"name": "rg_travel_retail_refresh_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
