@@ -315,7 +315,7 @@ insert into core_integration.dbtjobs_test_cdc_metadata values('sap_ecc_master_et
 
 insert into core_integration.dbtjobs_test_cdc_metadata values('rg_greenlight_mds','5','(\'sdl_mds_ap_greenlight_skus\')','0');
 
-insert into core_integration.dbtjobs_test_cdc_metadata values('rg_travel_retail_files','8','(\'sdl_mds_apac_dcl_customers\',','0');
+
 insert into core_integration.dbtjobs_test_cdc_metadata values('rg_travel_retail_files','8','(\'sdl_mds_apac_dcl_customers\',
 \'sdl_mds_apac_dcl_products\',
 \'sdl_mds_apac_dcl_targets\',\'sdl_mds_apac_dcl_products
