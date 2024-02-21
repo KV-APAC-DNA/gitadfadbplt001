@@ -560,7 +560,7 @@
 										"type": "Expression"
 									},
 									"error_message": {
-										"value": "@activity('Read Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes",
+										"value": "Refresh Failed : @{activity('Read Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes}",
 										"type": "Expression"
 									},
 									"run_id": {
@@ -583,6 +583,29 @@
 										"value": "@pipeline()?.TriggeredByPipelineRunId",
 										"type": "Expression"
 									}
+								}
+							}
+						},
+						{
+							"name": "Fail tableau refresh",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "error response after refresh",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Refresh Failed : @{activity('Read Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes}",
+									"type": "Expression"
+								},
+								"errorCode": {
+									"value": "@variables('finishCode')",
+									"type": "Expression"
 								}
 							}
 						}
