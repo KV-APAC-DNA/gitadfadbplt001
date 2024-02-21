@@ -133,7 +133,7 @@ select
     'BWA_CDL_BILLING_COND' as source_table_name,
     'vw_stg_sdl_sap_billing_condition' as source_view_name,
     'itg_sap_billing_condition' as target_table_name,
-    file_name as act_file_name
+    source_file_name as act_file_name
 from aspitg_integration.vw_stg_sdl_sap_billing_condition
 group by act_file_name
 )
@@ -146,7 +146,7 @@ select
     'BWA_CDL_BILLING_COND' as source_table_name,
     'vw_stg_sdl_sap_billing_condition' as source_view_name,
     'sdl_raw_sap_billing_condition' as target_table_name,
-    file_name as act_file_name
+    source_file_name as act_file_name
 from aspitg_integration.vw_stg_sdl_sap_billing_condition
 group by act_file_name
 )
