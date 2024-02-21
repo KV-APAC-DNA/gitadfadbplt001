@@ -492,7 +492,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Read Details",
+						"activity": "Read token and siteId again",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -519,7 +519,7 @@
 						"additionalHeaders": {
 							"Content-Type": "application/xml",
 							"x-tableau-auth": {
-								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+								"value": "@activity('Read token and siteId again').output.value[0].credentials.token",
 								"type": "Expression"
 							}
 						},
@@ -1598,6 +1598,55 @@
 						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Read token and siteId again",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Read Details",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
