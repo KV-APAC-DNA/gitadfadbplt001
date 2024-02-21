@@ -2,7 +2,7 @@
 	"name": "SAP_BW_INVOICE_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
