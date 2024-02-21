@@ -152,3 +152,7 @@ group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
+delete from aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES
+where act_file_name='SAP_BW_CDL_BILLING_COND_20240221_182620.csv';
+
+
