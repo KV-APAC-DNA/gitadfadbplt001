@@ -2,7 +2,7 @@
 	"name": "SAP_BW_DELIVERY_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
