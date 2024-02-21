@@ -130,7 +130,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@greater(activity('Filter Only File').output.FilteredItemsCount,1)",
+									"value": "@greater(activity('Filter Only File').output.FilteredItemsCount,0)",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
