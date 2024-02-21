@@ -11,7 +11,8 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD"
+					"Environment": "PROD",
+					"process_id": "552,553"
 				}
 			}
 		],
