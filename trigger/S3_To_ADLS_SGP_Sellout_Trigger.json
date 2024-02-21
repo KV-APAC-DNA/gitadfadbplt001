@@ -2,8 +2,18 @@
 	"name": "S3_To_ADLS_SGP_Sellout_Trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
-		"pipelines": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "s3_to_adls",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Group_id": "2"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
