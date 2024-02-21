@@ -727,6 +727,8 @@
 			{
 				"name": "Insert Status in Metadata as Error_Sf",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If target is DNA_LOAD or DNA_CORE",
