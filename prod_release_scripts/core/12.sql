@@ -125,20 +125,6 @@ group by act_file_name
 )
 select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
-----=============================================itg_invnt--===================================
-
-
-insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
-with table_ as (
-select 
-    'BWA_INVENTORY' as source_table_name,
-    'vw_stg_sdl_sap_bw_inventory' as source_view_name,
-    'itg_invnt' as target_table_name,
-    file_name as act_file_name
-from aspitg_integration.vw_stg_sdl_sap_bw_inventory
-group by act_file_name
-)
-select t.*,current_timestamp()::timestamp_ntz(9) as inserted_on,'False' as is_deleted from table_ t;
 
 
 insert into aspwks_integration.SAP_TRANSACTIONAL_PROCESSED_FILES 
