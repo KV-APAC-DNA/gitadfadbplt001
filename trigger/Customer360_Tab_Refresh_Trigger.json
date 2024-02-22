@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Refresh Customer360 tableau datasources",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
