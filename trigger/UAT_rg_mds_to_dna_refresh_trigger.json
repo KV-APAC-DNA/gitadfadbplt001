@@ -2,7 +2,7 @@
 	"name": "UAT_rg_mds_to_dna_refresh_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
