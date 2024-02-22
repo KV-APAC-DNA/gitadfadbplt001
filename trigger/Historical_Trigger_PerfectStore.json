@@ -1,5 +1,5 @@
 {
-	"name": "Historical_Trigger",
+	"name": "Historical_Trigger_PerfectStore",
 	"properties": {
 		"description": "For historical load - Regional",
 		"annotations": [],
@@ -29,7 +29,7 @@
 					],
 					"hours": [
 						9,
-						12
+						11
 					]
 				}
 			}
