@@ -204,7 +204,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "USE WAREHOUSE @{toUpper(pipeline().globalParameters.environment)}_DNA_LOAD_APP2_WH;\n@{variables('snowflakeQuery')}",
+													"value": "USE WAREHOUSE @{toUpper(pipeline().globalParameters.environment)}_DNA_LOAD_APP2_WH; @{variables('snowflakeQuery')}",
 													"type": "Expression"
 												}
 											}
@@ -433,7 +433,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "USE WAREHOUSE @{toUpper(pipeline().globalParameters.environment)}_DNA_LOAD_APP2_WH;\n@{variables('snowflakeQuery')}",
+													"value": "USE WAREHOUSE @{toUpper(pipeline().globalParameters.environment)}_DNA_CORE_APP2_WH;\n@{variables('snowflakeQuery')}",
 													"type": "Expression"
 												}
 											}
