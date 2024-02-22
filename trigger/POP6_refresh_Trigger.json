@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Refresh Pop6 tableau datasources",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
