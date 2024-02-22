@@ -12,7 +12,7 @@
 				},
 				"parameters": {
 					"Environment": "PROD",
-					"process_id": "552,553"
+					"process_id": "552"
 				}
 			}
 		],
