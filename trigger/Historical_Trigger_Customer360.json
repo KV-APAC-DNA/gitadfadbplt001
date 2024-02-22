@@ -2,7 +2,7 @@
 	"name": "Historical_Trigger_Customer360",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
