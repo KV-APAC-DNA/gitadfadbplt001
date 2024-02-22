@@ -204,7 +204,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@variables('snowflakeQuery')",
+													"value": "USE WAREHOUSE @{pipeline().parameters.Environment}_DNA_LOAD_APP2_WH; @{variables('snowflakeQuery')}",
 													"type": "Expression"
 												}
 											}
@@ -382,6 +382,23 @@
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
 									}
+								},
+								{
+									"name": "Fail Pipeline 1",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Insert Status in Metadata as Error_Sf_copy1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": "Error while loading data",
+										"errorCode": "1001"
+									}
 								}
 							]
 						},
@@ -416,7 +433,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@variables('snowflakeQuery')",
+													"value": "USE WAREHOUSE @{pipeline().parameters.Environment}_DNA_CORE_APP2_WH;\n@{variables('snowflakeQuery')}",
 													"type": "Expression"
 												}
 											}
@@ -595,6 +612,23 @@
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
 									}
+								},
+								{
+									"name": "Fail Pipeline 2",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Insert Status in Metadata as Error SF DNA CORE",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": "Error while loading data",
+										"errorCode": "1001"
+									}
 								}
 							]
 						}
@@ -717,44 +751,6 @@
 							"type": "Query",
 							"text": {
 								"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error RD'',''',replace(activity('Unload from Redshift')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')\n",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "Insert Status in Metadata as Error_Sf",
-				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "If target is DNA_LOAD or DNA_CORE",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "@concat('INSERT INTO META_RAW.HISTORICAL_OBJ_LOGS (ID, STATUS, MESSAGE,PIPELINE_DETAILS, LOAD_TIMESTAMP) VALUES (',string(pipeline().parameters.Id),', ''Error SF'',''',replace(activity('If target is DNA_LOAD or DNA_CORE')?.error?.message,'''','\"'),''',''',pipeline().RunId, ''',current_timestamp); ')",
 								"type": "Expression"
 							}
 						}

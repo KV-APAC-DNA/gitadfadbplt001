@@ -1,18 +1,16 @@
 {
-	"name": "Historical_Trigger",
+	"name": "UAT_SAP_BW_LISTPRICE_trigger",
 	"properties": {
-		"description": "For historical load - Regional",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD",
-					"process_id": "552,553"
+					"category": "SAP_BW_LISTPRICE"
 				}
 			}
 		],
@@ -21,15 +19,16 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T13:55:00",
+				"startTime": "2024-02-22T16:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
-					"minutes": [
-						0
-					],
 					"hours": [
-						9,
-						12
+						2,
+						6,
+						10,
+						14,
+						18,
+						22
 					]
 				}
 			}
