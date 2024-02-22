@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "For historical load - Regional",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
