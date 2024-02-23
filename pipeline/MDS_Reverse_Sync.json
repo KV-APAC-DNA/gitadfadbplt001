@@ -1074,8 +1074,6 @@
 			{
 				"name": "set list_of_sdl_table",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -1116,7 +1114,7 @@
 				"typeProperties": {
 					"variableName": "list_of_sdl_table",
 					"value": {
-						"value": "@if(and(equals(variables('is_truncate'),'Y' ),not(or(equals(activity('read_status').output.value[0].Status, 'FAILED'),contains(activity('read_status').output.value[0].Result ,'Failure')))),activity('read parameters').output.value[0].list_of_sdl_table ,[])",
+						"value": "@if (\n    and(\n        equals(variables('is_truncate'), 'Y'),\n        not(\n            or(\n                equals(activity('read_status').output.value[0].Status, 'FAILED'),\n                contains(activity('read_status').output.value[0].Result, 'Failure')\n            )\n        )\n    ),\n    variables('list_of_sdl_table'),\n    []\n)",
 						"type": "Expression"
 					}
 				}
@@ -1156,11 +1154,11 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "REGIONAL_MDS"
+				"defaultValue": "my_gt_sales_dna_to_mds"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 8
+				"defaultValue": 43
 			},
 			"sequence_id": {
 				"type": "int",
@@ -1168,7 +1166,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 22
+				"defaultValue": 116
 			},
 			"phase_id": {
 				"type": "int",
