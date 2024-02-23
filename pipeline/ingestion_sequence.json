@@ -247,7 +247,7 @@
 										"value": "Snowflake",
 										"activities": [
 											{
-												"name": "snowflake",
+												"name": "MDS_reverse_sync",
 												"type": "ExecutePipeline",
 												"dependsOn": [],
 												"policy": {
