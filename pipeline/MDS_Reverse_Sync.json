@@ -1112,9 +1112,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "test",
+					"variableName": "iterator",
 					"value": {
-						"value": "@if (\n    and(\n        equals(variables('is_truncate'), 'Y'),\n        not(\n            or(\n                equals(activity('read_status').output.value[0].Status, 'FAILED'),\n                contains(activity('read_status').output.value[0].Result, 'Failure')\n            )\n        )\n    ),\n    variables('list_of_sdl_table'),\n    variables('temp')\n)",
+						"value": "@if(and(\n        equals(variables('is_truncate'), 'Y'),\n        not(\n            or(\n                equals(activity('read_status').output.value[0].Status, 'FAILED'),\n                contains(activity('read_status').output.value[0].Result, 'Failure')\n            )\n        )\n    ), split(variables('list_of_sdl_table'),'|'),variables('emptyArray'))",
 						"type": "Expression"
 					}
 				}
@@ -1133,7 +1133,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@split(variables('list_of_sdl_table'),'|')",
+						"value": "@variables('iterator')",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -1192,12 +1192,11 @@
 			"list_of_sdl_table": {
 				"type": "String"
 			},
-			"temp": {
-				"type": "String",
-				"defaultValue": "''"
+			"emptyArray": {
+				"type": "Array"
 			},
-			"test": {
-				"type": "String"
+			"iterator": {
+				"type": "Array"
 			}
 		},
 		"folder": {
