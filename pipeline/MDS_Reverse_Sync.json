@@ -1112,7 +1112,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "list_of_sdl_table",
+					"variableName": "test",
 					"value": {
 						"value": "@if (\n    and(\n        equals(variables('is_truncate'), 'Y'),\n        not(\n            or(\n                equals(activity('read_status').output.value[0].Status, 'FAILED'),\n                contains(activity('read_status').output.value[0].Result, 'Failure')\n            )\n        )\n    ),\n    variables('list_of_sdl_table'),\n    variables('temp')\n)",
 						"type": "Expression"
@@ -1193,8 +1193,11 @@
 				"type": "String"
 			},
 			"temp": {
-				"type": "Array",
-				"defaultValue": []
+				"type": "String",
+				"defaultValue": "''"
+			},
+			"test": {
+				"type": "String"
 			}
 		},
 		"folder": {
