@@ -1074,6 +1074,8 @@
 			{
 				"name": "set list_of_sdl_table",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -1094,6 +1096,43 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "set list_of_sdl_table_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read_status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "list_of_sdl_table",
+					"value": {
+						"value": "@if(and(equals(variables('is_truncate'),'Y' ),not(or(equals(activity('read_status').output.value[0].Status, 'FAILED'),contains(activity('read_status').output.value[0].Result ,'Failure')))),activity('read parameters').output.value[0].list_of_sdl_table ,[])",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "set list_of_sdl_table_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"parameters": {
