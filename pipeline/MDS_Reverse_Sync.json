@@ -1159,7 +1159,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@concat('Truncate table ',item().iterator.Value)",
+											"value": "@concat('Truncate table ',item())",
 											"type": "Expression"
 										}
 									}
