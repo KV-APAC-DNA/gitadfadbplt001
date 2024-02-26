@@ -2,7 +2,7 @@
 	"name": "UAT_SAP_BW_MATERIAL_UOM_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
