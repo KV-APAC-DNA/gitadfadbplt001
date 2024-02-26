@@ -1141,8 +1141,6 @@
 						{
 							"name": "Script1",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -1161,7 +1159,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "TRUNCATE TABLE @{item()}",
+											"value": "@concat('Truncate table ',item().iterator.Value)",
 											"type": "Expression"
 										}
 									}
