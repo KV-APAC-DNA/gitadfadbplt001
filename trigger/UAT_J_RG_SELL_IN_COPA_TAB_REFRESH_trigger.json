@@ -1,0 +1,27 @@
+{
+	"name": "UAT_J_RG_SELL_IN_COPA_TAB_REFRESH_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-02-26T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"hours": [
+						3,
+						7,
+						11,
+						15,
+						19,
+						23
+					]
+				}
+			}
+		}
+	}
+}
