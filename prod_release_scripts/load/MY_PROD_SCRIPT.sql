@@ -4,7 +4,7 @@ Create or replace FILE FORMAT PROD_DNA_LOAD.META_RAW.PROD_CORE_CSV_FILEFORMAT
   skip_header = 1 
   compression=gzip 
   NULL_IF=('\\N')
-  empty_field_as_null = false
+  empty_field_as_null = false;
 
   create or replace stage META_RAW.PROD_CORE_STAGE_S3
  storage_integration = itx_arm_snowflake_external_stage_storage_integration 
