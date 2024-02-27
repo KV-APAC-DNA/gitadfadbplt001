@@ -1,10 +1,10 @@
 CREATE OR REPLACE PROCEDURE ASPSDL_RAW.test_SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
-RUNTIME_VERSION = '3.8'
+RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
-EXECUTE AS CALLER
+EXECUTE AS OWNER
 AS '
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField
