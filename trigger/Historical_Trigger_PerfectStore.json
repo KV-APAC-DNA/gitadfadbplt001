@@ -1,16 +1,18 @@
 {
-	"name": "J_RG_SELL_IN_COPA_TAB_REFRESH_trigger",
+	"name": "Historical_Trigger_PerfectStore",
 	"properties": {
+		"description": "For historical load - Regional",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "master",
+					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "REGIONAL REFRESH"
+					"Environment": "PROD",
+					"process_id": "552"
 				}
 			}
 		],
@@ -19,11 +21,15 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-19T00:00:00",
+				"startTime": "2024-02-14T13:55:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						0
+					],
 					"hours": [
-						5
+						9,
+						11
 					]
 				}
 			}

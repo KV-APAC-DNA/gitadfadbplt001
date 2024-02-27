@@ -2,7 +2,7 @@
 	"name": "SAP_BW_BILLING_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -24,8 +24,7 @@
 				"schedule": {
 					"hours": [
 						1,
-						9,
-						17
+						9
 					]
 				}
 			}

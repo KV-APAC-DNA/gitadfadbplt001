@@ -2,7 +2,7 @@
 	"name": "pka_tableau_refresh_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -22,8 +22,11 @@
 				"startTime": "2024-02-19T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						30
+					],
 					"hours": [
-						5
+						9
 					]
 				}
 			}

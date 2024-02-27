@@ -22,7 +22,10 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "select * from META_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE'  Order By PRIORITY DESC;"
+							"text": {
+								"value": "select * from META_RAW.HISTORICAL_OBJ_METADATA where ISACTIVE='TRUE' @{if(equals(pipeline().parameters.process_id,'ALL' ), '', concat(' and id in (',pipeline().parameters.process_id,')'))} Order By PRIORITY DESC;",
+								"type": "Expression"
+							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -46,12 +49,15 @@
 						"type": "Expression"
 					},
 					"isSequential": false,
-					"batchCount": 4,
+					"batchCount": 5,
 					"activities": [
 						{
 							"name": "Execute Child Pipeline",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -115,6 +121,10 @@
 			"Environment": {
 				"type": "string",
 				"defaultValue": "DEV"
+			},
+			"process_id": {
+				"type": "string",
+				"defaultValue": "ALL"
 			}
 		},
 		"variables": {

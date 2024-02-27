@@ -2,7 +2,7 @@
 	"name": "SAP_BW_SALES_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -27,8 +27,7 @@
 					],
 					"hours": [
 						1,
-						9,
-						17
+						9
 					]
 				}
 			}

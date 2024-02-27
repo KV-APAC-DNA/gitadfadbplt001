@@ -161,20 +161,10 @@
 				"defaultValue": "DDL_DML_Scripts"
 			},
 			"load_fileNames": {
-				"type": "array",
-				"defaultValue": [
-					"load_regional.sql",
-					"load_sg_my.sql",
-					"clone_script_load.sql"
-				]
+				"type": "array"
 			},
 			"core_fileNames": {
-				"type": "array",
-				"defaultValue": [
-					"core_regional.sql",
-					"core_sg_my.sql",
-					"clone_script_core.sql"
-				]
+				"type": "array"
 			},
 			"core_folderName": {
 				"type": "string",
