@@ -2,6 +2,17 @@
 	"name": "adfadbplt001lsdlsadbplt001",
 	"properties": {
 		"description": "Linked Service to Kenvue APAC DNA BASE ADLS Container for Landing zone",
+		"parameters": {
+			"src_container": {
+				"type": "string"
+			},
+			"src_path": {
+				"type": "string"
+			},
+			"src_filename": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "AzureBlobFS",
 		"typeProperties": {
