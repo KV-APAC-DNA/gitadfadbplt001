@@ -1,4 +1,4 @@
-CREATE TABLE OS_WKS.WKS_MY_AS_WATSONS_INVENTORY (		--// CREATE TABLE os_wks.wks_my_as_watsons_inventory (
+CREATE TABLE MYSWKS_INTEGRATION.WKS_MY_AS_WATSONS_INVENTORY (		--// CREATE TABLE os_wks.wks_my_as_watsons_inventory (
     customer_code varchar(255),		--//  ENCODE lzo // character varying
     store_code varchar(255),		--//  ENCODE lzo // character varying
     year varchar(255),		--//  ENCODE lzo // character varying
