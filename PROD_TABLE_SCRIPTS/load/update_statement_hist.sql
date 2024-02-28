@@ -20,3 +20,16 @@ set ISACTIVE = TRUE;
 -- update META_RAW.HISTORICAL_OBJ_METADATA
 -- set ISACTIVE = FALSE
 -- WHERE ID IN (308,325,555,552,553);
+
+
+USE DATABASE PROD_DNA_LOAD;
+
+update meta_raw.usecase
+set USECASE_NAME='POP6_refresh' ,CATEGORY='POP6_refresh', USECASE_DESCRIPTION='Tableau Refresh Adhoc FOR POP6'
+where usecase_id=13;
+
+INSERT INTO meta_raw.USECASE (USECASE_ID, USECASE_NAME,CATEGORY,USECASE_DESCRIPTION,IS_ACTIVE,SEQUENCE_ID) VALUES (39,'CUSTOMER360_refresh','CUSTOMER360_refresh','Tableau Refresh Adhoc FOR CUSTOMER360','TRUE',1);
+
+update meta_raw.process
+set USECASE_ID=39
+where process_id=31;
