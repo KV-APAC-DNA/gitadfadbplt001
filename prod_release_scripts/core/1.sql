@@ -1,0 +1,2 @@
+create view mysedw_access.SDL_VW_MY_MONTHLY_SELLOUT_SALES_FACT_MDS_SYNC as select * from mysitg_integration.SDL_MY_MONTHLY_SELLOUT_SALES_FACT_MDS_SYNC;
+create view mysedw_access.sdl_vw_my_daily_sellout_sales_fact_mds_sync as select * from mysitg_integration.sdl_my_daily_sellout_sales_fact_mds_sync;
