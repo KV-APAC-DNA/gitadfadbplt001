@@ -1,4 +1,4 @@
-CREATE OR REPLACE TABLE MYSDL_RAW.SDL_MDS_MY_PS_MSL (		--// CREATE TABLE os_sdl.sdl_mds_my_ps_msl (
+CREATE OR REPLACE TABLE MYSSDL_RAW.SDL_MDS_MY_PS_MSL (		--// CREATE TABLE os_sdl.sdl_mds_my_ps_msl (
     id numeric(18,0),		--//  ENCODE az64 // integer
     muid varchar(36),		--//  ENCODE lzo // character varying
     versionname varchar(100),		--//  ENCODE lzo // character varying
