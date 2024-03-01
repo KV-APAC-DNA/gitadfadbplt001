@@ -579,8 +579,11 @@ def main(session: snowpark.Session,Param):
 
         # If the source is of xlsx type, then splitting based on \\x01 delimiter
         
+        header_pipe_split = header[0].split(''|'')
         if val_file_extn==''xlsx'':
             result_list = header[0].split(''\\x01'')
+        elif len(header_pipe_split)>1:
+            result_list = header_pipe_split
         else:
             result_list = header
         result_list=list(filter(None,result_list))
