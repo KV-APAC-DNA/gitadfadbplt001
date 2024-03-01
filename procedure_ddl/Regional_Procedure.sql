@@ -514,6 +514,9 @@ import math
 
 def main(session: snowpark.Session,Param): 
 
+    # Example input
+    # Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'']
+
     # Your code goes here, inside the "main" handler.
     # Return value will appear in the Results tab
     #Shilla_202201 Without2ndColumnHeaders SC8
@@ -572,6 +575,7 @@ def main(session: snowpark.Session,Param):
         # Extracting the Header from the file
 	
         file_name= CURRENT_FILE.replace("xlsx","csv")
+        file_name = file_name.replace("(", "").replace(")", "").replace(" ",''_'')
         df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
         
         df_pandas=df.to_pandas()
@@ -579,10 +583,10 @@ def main(session: snowpark.Session,Param):
 
         # If the source is of xlsx type, then splitting based on \\x01 delimiter
         
-        header_pipe_split = header[0].split(''|'')
+header_pipe_split = header[0].split(''|'')
         if val_file_extn==''xlsx'':
             result_list = header[0].split(''\\x01'')
-        elif len(header_pipe_split)>1:
+elif len(header_pipe_split)>1:
             result_list = header_pipe_split
         else:
             result_list = header
@@ -683,25 +687,54 @@ def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
 def file_header_validation(counter,final_val_header,file_header):
 
         # Compare the header from file and the header from metadata
-        # Adding the counter flag as a double check to the comparision
+        # Get the count of both
+        # Perform index matching and return output based on the checks
         # Moving the failed header to a list and displaying it as part of Error message
-    
+        
+        file_header_rejected_list=[]
+        val_rejected_list=[]
+        index=[]
+        extra_columns=[]
+
+        file_header=[x.lower() for x in file_header]
         val_header_count=len(final_val_header)
-        file_header_count=0
-        l3=[]
-        l2=[x.lower() for x in final_val_header]
-        for i in file_header:
-            if i.lower() in l2:
-                file_header_count+=1
-            else:
-                l3.append(i)
-        if file_header_count == val_header_count and not l3:
+        file_header_count=len(file_header)
+    
+        
+        for i in range(max(file_header_count, val_header_count)):
+            if i < file_header_count and i < val_header_count:
+                if file_header[i] != final_val_header[i]:
+                    index.append(i+1)
+                    file_header_rejected_list.append(file_header[i])
+
+            elif i < file_header_count:
+                extra_columns.append(file_header[i])
+            elif i < val_header_count:
+                val_rejected_list.append(final_val_header[i])
+            
+            # Check if count matches and no value in rejected list
+    
+        if file_header_count==val_header_count and not file_header_rejected_list:
             file_header_validation_status="Success"
             print("file_header_validation_status is successful")
-        else:
-            file_header_validation_status="Header validation Failed"+" and the unmatched columns are "+ str(l3)
+
+            # Return Fail message if value found in Rejected list and not in extra columns list
+        elif len(file_header_rejected_list)!=0 and not extra_columns:
+            file_header_validation_status="Header validation Failed"+" , unmatched columns found in index "+ str(index) +" and columns are" + str(file_header_rejected_list)
             print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
+
+            # Return Fail message if values found in extra columns list
+        elif len(extra_columns)!=0:
+            file_header_validation_status="Header validation Failed, unmatched columns found in index " + str(index) + " and columns are " + str(file_header_rejected_list) + " ; extra columns found in file header! " + str(extra_columns)
+            print("file_header_validation_status",file_header_validation_status)
+            counter = counter+4
+
+        else:
+            file_header_validation_status="Header validation Failed, columns missing from file header!" + str(val_rejected_list)
+            counter = counter+4
+        
+            
         return file_header_validation_status,counter
 
 
