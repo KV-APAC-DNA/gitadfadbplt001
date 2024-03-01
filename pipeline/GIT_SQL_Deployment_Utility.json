@@ -431,11 +431,11 @@
 			},
 			"BranchName": {
 				"type": "string",
-				"defaultValue": "Feature_ADF_Sprint5_tshekar"
+				"defaultValue": "DDL_DML_Scripts"
 			},
 			"FolderName": {
 				"type": "string",
-				"defaultValue": "demo"
+				"defaultValue": "prod_release_scripts"
 			}
 		},
 		"variables": {

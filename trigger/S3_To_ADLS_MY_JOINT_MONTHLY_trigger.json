@@ -1,0 +1,46 @@
+{
+	"name": "S3_To_ADLS_MY_JOINT_MONTHLY_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "s3_to_adls",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Group_id": "7"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-02-29T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						20
+					],
+					"hours": [
+						12,
+						13,
+						14,
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21,
+						22,
+						23
+					]
+				}
+			}
+		}
+	}
+}
