@@ -1584,6 +1584,10 @@
 						"parentFolder": {
 							"value": "@variables('parentFolder')",
 							"type": "Expression"
+						},
+						"container": {
+							"value": "@{activity('read parameters').output.value[0].container}",
+							"type": "Expression"
 						}
 					}
 				}
