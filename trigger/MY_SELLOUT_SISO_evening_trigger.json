@@ -22,11 +22,8 @@
 				"startTime": "2024-02-28T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
-					"minutes": [
-						30
-					],
 					"hours": [
-						5
+						7
 					]
 				}
 			}
