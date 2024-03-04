@@ -304,7 +304,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauSourceName'\" AS tableauSourceName,\n\"'waitTime'\" AS waitTime,\n\"'refreshType'\" AS refreshType\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauSourceName',\n'waitTime',\n'refreshType'\n));",
+							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauSourceName'\" AS tableauSourceName,\n\"'waitTime'\" AS waitTime,\n\"'refreshType'\" AS refreshType,\n\"'container'\" AS container\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauSourceName',\n'waitTime',\n'refreshType',\n'container'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -382,7 +382,10 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": "asp",
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
 							"tempDirectory": {
 								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
@@ -476,7 +479,10 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": "asp",
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
 							"tempDirectory": {
 								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
@@ -555,7 +561,10 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": "asp",
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
 							"tempDirectory": {
 								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
@@ -600,7 +609,10 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": "asp",
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
 							"tempDirectory": {
 								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
