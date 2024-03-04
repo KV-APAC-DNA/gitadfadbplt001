@@ -215,7 +215,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Fetch Credential from Vault",
+						"activity": "WaitRandom1_60",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1663,6 +1663,25 @@
 						}
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "WaitRandom1_60",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Fetch Credential from Vault",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@rand(1,60)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
