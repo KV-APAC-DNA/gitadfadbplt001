@@ -1809,7 +1809,7 @@
 							"typeProperties": {
 								"variableName": "lastModTimePlus4Hours",
 								"value": {
-									"value": "@addminutes(activity('Get LastModifiedTokenTime').output.lastModified,4)",
+									"value": "@addhours(activity('Get LastModifiedTokenTime').output.lastModified,4)",
 									"type": "Expression"
 								}
 							}
@@ -1819,7 +1819,13 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set variable1",
+									"activity": "Set current UTC time",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set 4hoursBuffer",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1833,17 +1839,17 @@
 							"typeProperties": {
 								"variableName": "generateToken",
 								"value": {
-									"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
+									"value": "@if(greaterOrEquals(variables('utcNow'),variables('lastModTimePlus4Hours')),true,false)",
 									"type": "Expression"
 								}
 							}
 						},
 						{
-							"name": "Set variable1",
+							"name": "Set current UTC time",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set 4hoursBuffer",
+									"activity": "Get LastModifiedTokenTime",
 									"dependencyConditions": [
 										"Succeeded"
 									]
