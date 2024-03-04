@@ -5,6 +5,8 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -390,6 +392,8 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
@@ -1186,6 +1190,8 @@
 			{
 				"name": "Trigger Tableau Refresh Status",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1330,7 +1336,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set generateToken bool",
+						"activity": "If oldTokenExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1680,7 +1686,7 @@
 				}
 			},
 			{
-				"name": "Get LastModifiedTokenTime",
+				"name": "Get LastModifiedTokenFile",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
@@ -1715,7 +1721,7 @@
 						}
 					},
 					"fieldList": [
-						"lastModified"
+						"exists"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
@@ -1727,51 +1733,136 @@
 				}
 			},
 			{
-				"name": "Set 4hoursBuffer",
-				"type": "SetVariable",
+				"name": "If oldTokenExists",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get LastModifiedTokenTime",
+						"activity": "Get LastModifiedTokenFile",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "lastModTimePlus4Hours",
-					"value": {
-						"value": "@addhours(activity('Get LastModifiedTokenTime').output.lastModified,4)",
+					"expression": {
+						"value": "@activity('Get LastModifiedTokenFile').output.exists",
 						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set generateToken bool",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set 4hoursBuffer",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "generateToken",
-					"value": {
-						"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
-						"type": "Expression"
-					}
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Get LastModifiedTokenTime",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "TableauJsonResponse",
+									"type": "DatasetReference",
+									"parameters": {
+										"tempContainer": "asp",
+										"tempDirectory": {
+											"value": "@{variables('parentFolder')}/tableau",
+											"type": "Expression"
+										},
+										"tempFileName": {
+											"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Set 4hoursBuffer",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get LastModifiedTokenTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "lastModTimePlus4Hours",
+								"value": {
+									"value": "@addminutes(activity('Get LastModifiedTokenTime').output.lastModified,2)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set generateToken bool",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set variable1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "generateToken",
+								"value": {
+									"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set 4hoursBuffer",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "utcNow",
+								"value": {
+									"value": "@utcnow()",
+									"type": "Expression"
+								}
+							}
+						}
+					]
 				}
 			}
 		],
@@ -1819,6 +1910,9 @@
 				"defaultValue": true
 			},
 			"lastModTimePlus4Hours": {
+				"type": "String"
+			},
+			"utcNow": {
 				"type": "String"
 			}
 		},
