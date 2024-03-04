@@ -1809,7 +1809,7 @@
 							"typeProperties": {
 								"variableName": "lastModTimePlus4Hours",
 								"value": {
-									"value": "@addminutes(activity('Get LastModifiedTokenTime').output.lastModified,2)",
+									"value": "@addminutes(activity('Get LastModifiedTokenTime').output.lastModified,4)",
 									"type": "Expression"
 								}
 							}
