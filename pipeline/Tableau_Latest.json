@@ -392,7 +392,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "Read token and siteId again",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1686,35 +1686,11 @@
 				}
 			},
 			{
-				"name": "Set variable1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Read token and siteId again",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test",
-					"value": {
-						"value": "@if(equals(variables('refreshType'),'datasource'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].datasources.datasource[0].id,'/refresh'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].workbooks.workbook[0].id,'/refresh'))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Get LastModifiedTokenFile",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Wait1_60",
+						"activity": "Wait_random",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1898,7 +1874,7 @@
 				}
 			},
 			{
-				"name": "Wait1_60",
+				"name": "Wait_random",
 				"type": "Wait",
 				"dependsOn": [
 					{
@@ -1911,7 +1887,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": {
-						"value": "@rand(1,60)",
+						"value": "@mul(rand(3,10),rand(10,15))",
 						"type": "Expression"
 					}
 				}
@@ -1963,11 +1939,12 @@
 			"lastModTimePlus4Hours": {
 				"type": "String"
 			},
-			"test": {
-				"type": "String"
-			},
 			"utcnow": {
 				"type": "String"
+			},
+			"isCritical": {
+				"type": "Boolean",
+				"defaultValue": true
 			}
 		},
 		"folder": {
