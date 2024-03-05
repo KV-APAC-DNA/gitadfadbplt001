@@ -110,8 +110,6 @@
 			{
 				"name": "converttocsv sheetwise",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -156,10 +154,11 @@
 						"referenceName": "adls_srcexcel_sheetname",
 						"type": "DatasetReference",
 						"parameters": {
-							"src_path": "dev/transactional/DFS",
-							"src_filename": "Hainan Vendor Sales Report for Asian.xlsx",
-							"src_sheetname": "Hainan Vendor Sales Report for ",
-							"src_container": "asp"
+							"src_path": "dev/cert_data_lake/TH_MT/TH_MT_price_data",
+							"src_filename": "Yimian-JNJ_URL_Daily_Report_2023-03-22.xlsx",
+							"src_sheetname": "7_Eleven",
+							"src_container": "tha",
+							"src_startRange": "A1"
 						}
 					}
 				],
@@ -168,9 +167,9 @@
 						"referenceName": "csv",
 						"type": "DatasetReference",
 						"parameters": {
-							"target_path": "dev/transactional/DFS",
-							"target_filename": "Hainan Vendor Sales Report for Asian.xlsx",
-							"target_container": "asp"
+							"target_path": "dev/cert_data_lake/TH_MT/TH_MT_price_data",
+							"target_filename": "7_Eleven.csv",
+							"target_container": "tha"
 						}
 					}
 				]
