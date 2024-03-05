@@ -210,6 +210,7 @@ def main(session: snowpark.Session, Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .option("truncatecolumns",True) \\
+        .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         
@@ -352,6 +353,7 @@ def main(session: snowpark.Session, Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .option("truncatecolumns",True) \\
+        .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         
@@ -466,6 +468,7 @@ def main(session: snowpark.Session, Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .option("truncatecolumns",True) \\
+        .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         filespec,filecode,fileuploadeddate,filedate = file_name.split("_")
@@ -578,6 +581,7 @@ def main(session: snowpark.Session, Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .option("truncatecolumns",True) \\
+        .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         filespec,filecode,uploadeddate,filedate = file_name.split("_")
@@ -692,6 +696,7 @@ def main(session: snowpark.Session, Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .option("truncatecolumns",True) \\
+        .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         
