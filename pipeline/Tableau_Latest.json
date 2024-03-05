@@ -180,7 +180,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set parentFolder",
+						"activity": "Audit_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -392,7 +392,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Read token and siteId again",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1164,6 +1164,12 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
+						"activity": "Set parentFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
@@ -1760,6 +1766,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "Set utcnow",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -1770,7 +1782,55 @@
 				"typeProperties": {
 					"variableName": "generateToken",
 					"value": {
-						"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
+						"value": "@if(greaterOrEquals(variables('utcnow'),variables('lastModTimePlus4Hours')),true,false)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Read token and siteId again",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@if(equals(variables('refreshType'),'datasource'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].datasources.datasource[0].id,'/refresh'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].workbooks.workbook[0].id,'/refresh'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set utcnow",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Get LastModifiedTokenTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "utcnow",
+					"value": {
+						"value": "@utcnow()",
 						"type": "Expression"
 					}
 				}
@@ -1779,11 +1839,11 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "REGIONAL REFRESH"
+				"defaultValue": "test REFRESH"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 49
+				"defaultValue": 7
 			},
 			"phase_id": {
 				"type": "int",
@@ -1795,7 +1855,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 39
+				"defaultValue": 179
 			}
 		},
 		"variables": {
@@ -1820,6 +1880,12 @@
 				"defaultValue": true
 			},
 			"lastModTimePlus4Hours": {
+				"type": "String"
+			},
+			"test": {
+				"type": "String"
+			},
+			"utcnow": {
 				"type": "String"
 			}
 		},
