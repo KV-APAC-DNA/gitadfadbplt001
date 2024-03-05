@@ -180,7 +180,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Wait_random_short",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1263,7 +1263,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Audit_Start",
+						"activity": "Wait_random_short",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1690,7 +1690,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Wait_random",
+						"activity": "Wait_random_long",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1874,7 +1874,7 @@
 				}
 			},
 			{
-				"name": "Wait_random",
+				"name": "Wait_random_long",
 				"type": "Wait",
 				"dependsOn": [
 					{
@@ -1888,6 +1888,25 @@
 				"typeProperties": {
 					"waitTimeInSeconds": {
 						"value": "@mul(rand(3,10),rand(10,15))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Wait_random_short",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@mul(rand(2,5),rand(2,5))",
 						"type": "Expression"
 					}
 				}
