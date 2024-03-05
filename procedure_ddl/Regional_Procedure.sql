@@ -513,123 +513,127 @@ from snowflake.snowpark.functions import col
 import math
 
 def main(session: snowpark.Session,Param): 
+    try:
+        # Example input
+        # Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'']
 
-    # Example input
-    # Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'']
+        # Your code goes here, inside the "main" handler.
+        # Return value will appear in the Results tab
+        #Shilla_202201 Without2ndColumnHeaders SC8
+        # ********   Variable  we need from ETL table : 
+        # CURRENT_FILE , index , validation, val_file_name,val_file_extn
 
-    # Your code goes here, inside the "main" handler.
-    # Return value will appear in the Results tab
-    #Shilla_202201 Without2ndColumnHeaders SC8
-    # ********   Variable  we need from ETL table : 
-    # CURRENT_FILE , index , validation, val_file_name,val_file_extn
+        CURRENT_FILE        =  Param[0]
+        index               =  Param[1]
+        validation          =  Param[2]
+        val_file_name       =  Param[3]
+        val_file_extn       =  Param[4]
+        val_header          =  Param[5]
+        file_header_row_num	=  Param[6]
+        stage_name     		=  Param[7]
+        temp_stage_path		=  Param[8]
 
-    CURRENT_FILE        =  Param[0]
-    index               =  Param[1]
-    validation          =  Param[2]
-    val_file_name       =  Param[3]
-    val_file_extn       =  Param[4]
-    val_header          =  Param[5]
-    file_header_row_num	=  Param[6]
-    stage_name     		=  Param[7]
-    temp_stage_path		=  Param[8]
+        FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
+        counter             =  0 
 
-    FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
-    counter             =  0 
+        # If the File belongs to Regional, then it enters the function
 
-    # If the File belongs to Regional, then it enters the function
+        if stage_name.split(".")[0]=="ASPSDL_RAW":
+            CURRENT_FILE=rg_travel_validation(CURRENT_FILE)
 
-    if stage_name.split(".")[0]=="ASPSDL_RAW":
-        CURRENT_FILE=rg_travel_validation(CURRENT_FILE)
+        #Extracting the filename based on index variable
+            
+        if index.lower() == "last":
+            extracted_filename = CURRENT_FILE.rsplit("_", 1)[0]
+        elif index.lower() == "first":
+            extracted_filename = CURRENT_FILE.split("_")[0]
+        elif index.lower() == "full":
+            extracted_filename = CURRENT_FILE.rsplit(".", 1)[0]
 
-    #Extracting the filename based on index variable
+
+        # Check for File name Validation
         
-    if index.lower() == "last":
-        extracted_filename = CURRENT_FILE.rsplit("_", 1)[0]
-    elif index.lower() == "first":
-        extracted_filename = CURRENT_FILE.split("_")[0]
-    elif index.lower() == "full":
-        extracted_filename = CURRENT_FILE.rsplit(".", 1)[0]
+        if FileNameValidation=="1":
+            file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name)
+        else :
+            print("File Name Validation not required")
 
 
-    # Check for File name Validation
-    
-    if FileNameValidation=="1":
-        file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name)
-    else :
-        print("File Name Validation not required")
+        # Check for  File extension validation
 
-
-    # Check for  File extension validation
-
-    if FileExtnValidation == "1":
-        file_ext_validation_status,counter=file_extn_validation(counter,CURRENT_FILE,val_file_extn)
-    else:
-        print("File extension Validation not required")
-
-
-    # Check for File Header Validation
-    
-    if FileHeaderValidation == "1":
-
-        # Converting the extension from xlsx to csv
-        # Extracting the Header from the file
-	
-        file_name= CURRENT_FILE.replace("xlsx","csv")
-        file_name = file_name.replace("(", "").replace(")", "").replace(" ",''_'')
-        df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-        
-        df_pandas=df.to_pandas()
-        header=df_pandas.iloc[int(file_header_row_num)].tolist()
-
-        # If the source is of xlsx type, then splitting based on \\x01 delimiter
-        
-        header_pipe_split = header[0].split(''|'')
-        if val_file_extn==''xlsx'':
-            result_list = header[0].split(''\\x01'')
-        elif len(header_pipe_split)>1:
-            result_list = header_pipe_split
+        if FileExtnValidation == "1":
+            file_ext_validation_status,counter=file_extn_validation(counter,CURRENT_FILE,val_file_extn)
         else:
-            result_list = header
-        result_list=list(filter(None,result_list))
-        filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
-        file_header= [item.replace(" ", "_").replace(".", "_") for item in filtered_list]
-        val_header= val_header.lower()
+            print("File extension Validation not required")
 
-        # If the Header from Metadata is of comma separated or | separated then split accordingly
+
+        # Check for File Header Validation
         
-        comma_split = val_header.split('','')
-        if len(comma_split) > 1:
-            final_val_header=comma_split
+        if FileHeaderValidation == "1":
 
-        pipe_split = val_header.split(''|'')
-        if len(pipe_split) > 1:
-            final_val_header=pipe_split
+            # Converting the extension from xlsx to csv
+            # Extracting the Header from the file
         
-        file_header_validation_status,counter=file_header_validation(counter,final_val_header,file_header)
+            file_name= CURRENT_FILE.replace("xlsx","csv")
+            file_name = file_name.replace("(", "").replace(")", "").replace(" ",''_'')
+            df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+            
+            df_pandas=df.to_pandas()
+            header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            # If the source is of xlsx type, then splitting based on \\x01 delimiter
+            
+            header_pipe_split = header[0].split(''|'')
+            if val_file_extn==''xlsx'':
+                result_list = header[0].split(''\\x01'')
+            elif len(header_pipe_split)>1:
+                result_list = header_pipe_split
+            else:
+                result_list = header
+            result_list=list(filter(None,result_list))
+            filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+            file_header= [item.replace(" ", "_").replace(".", "_") for item in filtered_list]
+            val_header= val_header.lower()
+
+            # If the Header from Metadata is of comma separated or | separated then split accordingly
+            
+            comma_split = val_header.split('','')
+            if len(comma_split) > 1:
+                final_val_header=comma_split
+
+            pipe_split = val_header.split(''|'')
+            if len(pipe_split) > 1:
+                final_val_header=pipe_split
+            
+            file_header_validation_status,counter=file_header_validation(counter,final_val_header,file_header)
+            
+        else:
+            print("File Header Validation not required")
+
+
+        if counter == 0 :
+                validation_status = "SUCCESS: File validation passed" 
+        elif counter == 1 :
+                validation_status = "FAILED: {0}".format(file_name_validation_status)
+        elif counter == 2 :
+                validation_status = "FAILED: {0}".format(file_ext_validation_status)
+        elif counter == 3 :
+                validation_status = "FAILED: {0};{1}".format(file_name_validation_status,file_ext_validation_status)
+        elif counter == 4 :
+                validation_status = "FAILED: {0}".format(file_header_validation_status)
+        elif counter == 5:
+                validation_status = "FAILED: {0},{1}".format(file_name_validation_status,file_header_validation_status)
+        elif counter == 6:
+                validation_status = "FAILED: {0},{1}".format(file_ext_validation_status,file_header_validation_status)
+        else :
+                validation_status = "FAILED: {0};{1};{2}".format(file_name_validation_status,file_ext_validation_status,file_header_validation_status)
         
-    else:
-        print("File Header Validation not required")
-
-
-    if counter == 0 :
-            validation_status = "SUCCESS: File validation passed" 
-    elif counter == 1 :
-            validation_status = "FAILED: {0}".format(file_name_validation_status)
-    elif counter == 2 :
-            validation_status = "FAILED: {0}".format(file_ext_validation_status)
-    elif counter == 3 :
-            validation_status = "FAILED: {0};{1}".format(file_name_validation_status,file_ext_validation_status)
-    elif counter == 4 :
-            validation_status = "FAILED: {0}".format(file_header_validation_status)
-    elif counter == 5:
-            validation_status = "FAILED: {0},{1}".format(file_name_validation_status,file_header_validation_status)
-    elif counter == 6:
-            validation_status = "FAILED: {0},{1}".format(file_ext_validation_status,file_header_validation_status)
-    else :
-            validation_status = "FAILED: {0};{1};{2}".format(file_name_validation_status,file_ext_validation_status,file_header_validation_status)
-    
-    return validation_status
-
+        return validation_status
+    except Exception as e:
+            # Handle exceptions here
+            error_message = f"FAILED: {str(e)}"
+            return error_message
+            
 
 def rg_travel_validation(CURRENT_FILE):
     #assigning the value to varibale file
