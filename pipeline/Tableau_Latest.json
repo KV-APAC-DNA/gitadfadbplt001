@@ -1714,7 +1714,7 @@
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Wait1_60",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1895,6 +1895,25 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Wait1_60",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Set refreshType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@rand(1,60)",
+						"type": "Expression"
+					}
 				}
 			}
 		],
