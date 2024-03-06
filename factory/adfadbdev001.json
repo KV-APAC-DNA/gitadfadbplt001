@@ -5,6 +5,10 @@
 			"environment": {
 				"type": "string",
 				"value": "prod"
+			},
+			"featureflag": {
+				"type": "string",
+				"value": "false"
 			}
 		},
 		"globalConfigurations": {
