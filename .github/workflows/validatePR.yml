@@ -50,7 +50,7 @@ jobs:
         name: ExportedArmTemplate # (5) Artifact name 
         
     - name: Upgrade Az PowerShell module
-      run: Update-PSResource Az -Force
+      run: Install-Module -Name Az -AllowClobber -Scope CurrentUser -Force -Confirm:$false
       shell: pwsh
 
     - name: Login via Az module
