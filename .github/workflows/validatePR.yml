@@ -43,6 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+    - name: Install latest az
+      uses: Azure/cli@v1.0.9  # Replace with the desired version (e.g., v1.0.9)
+      with:
+        inputs:
+          azure-cli-version: '2.x'  # Optional: Specify a major version range (e.g., for 2.x.y)
+
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.2
