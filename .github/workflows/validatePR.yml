@@ -63,7 +63,7 @@ jobs:
     - name: Run Pre-deployment script adfadbdev001-live
       uses: Azure/powershell@v1.4.0
       with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
         azPSVersion: "latest"
 
     - name: Run ARM deploy adfadbdev001-live
@@ -76,5 +76,5 @@ jobs:
     - name: Run Post-deployment script adfadbdev001-live
       uses: Azure/powershell@v1.4.0
       with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
         azPSVersion: "latest"
