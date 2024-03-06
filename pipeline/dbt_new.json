@@ -1054,13 +1054,13 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Set tempId",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Set tempId",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1069,7 +1069,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(variables('refreshType'),'ingestion'),1,2),0)",
+						"value": "@if(greater(variables('run_status'),10),if(equals(variables('refreshType'),'ingestion'),'1','2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -1538,6 +1538,30 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set refreshType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@if(greater(variables('run_status'),10),if(equals(variables('refreshType'),'ingestion'),'1','2'),'0')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
