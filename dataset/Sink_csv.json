@@ -8,6 +8,12 @@
 		"parameters": {
 			"filename": {
 				"type": "string"
+			},
+			"container": {
+				"type": "string"
+			},
+			"directory": {
+				"type": "string"
 			}
 		},
 		"folder": {
@@ -22,8 +28,14 @@
 					"value": "@dataset().filename",
 					"type": "Expression"
 				},
-				"folderPath": "dev/cdata/",
-				"fileSystem": "asp"
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
