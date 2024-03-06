@@ -64,5 +64,6 @@ jobs:
         dataFactoryName: adfadbdev001
         armTemplateFile: ARMTemplateForFactory.json
         armTemplateParametersFile: ARMTemplateParametersForFactory.json
+        skipAzModuleInstallation: true
         additionalParameters:
           factoryName=${{ vars.ADF_DEV_FACTORYNAME }}
