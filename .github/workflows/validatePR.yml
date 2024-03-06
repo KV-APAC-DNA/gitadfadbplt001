@@ -53,6 +53,9 @@ jobs:
       run: Install-Module -Name Az -AllowClobber -Scope CurrentUser -Force -Confirm:$false
       shell: pwsh
 
+    - name: Upgrade Az DF PowerShell module
+      run: Update-PSResource Az.DataFactory -Force
+
     - name: Login via Az module
       uses: azure/login@v1
       with:
