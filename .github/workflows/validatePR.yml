@@ -48,14 +48,6 @@ jobs:
       uses: actions/download-artifact@v3.0.2
       with:
         name: ExportedArmTemplate # (5) Artifact name 
-        
-    - name: Install Az PowerShell module
-      run: Install-Module -Name Az -Repository PSGallery -Force -AllowClobber -Scope CurrentUser 
-      shell: pwsh
-
-    - name: Install Az.Datafactory PowerShell module
-      run: Install-Module -Name Az.DataFactory -RequiredVersion 1.18.2 -Force -Scope CurrentUser -AllowClobber
-      shell: pwsh
 
     - name: Login via Az module
       uses: azure/login@v1
@@ -64,16 +56,17 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
-
+      
     - name: Run Pre-deployment script adfadbdev001-live
-      run: |
-        ./scripts/PrePostDeploymentScript.Ver2.ps1 `
+      uses: azure/powershell@v1
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.Ver2.ps1 `
           -armTemplate "ARMTemplateForFactory.json" `
           -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
           -DataFactoryName "adfadbdev001" `
           -predeployment $true `
           -deleteDeployment $false
-      shell: pwsh
+        azPSVersion: "latest"
 
     - name: Run ARM deploy adfadbdev001-live
       uses: azure/arm-deploy@v1
@@ -82,12 +75,13 @@ jobs:
         template: ARMTemplateForFactory.json
         parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
-    - name: Run Post-deployment script
-      run: |
-        ./scripts/PrePostDeploymentScript.Ver2.ps1 `
+    - name: Run Post-deployment script adfadbdev001-live
+      uses: azure/powershell@v1
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.Ver2.ps1 `
           -armTemplate "ARMTemplateForFactory.json" `
           -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
           -DataFactoryName 'adfadbdev001' `
           -predeployment $false `
           -deleteDeployment $true
-      shell: pwsh
+        azPSVersion: "latest"
