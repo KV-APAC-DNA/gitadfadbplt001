@@ -55,6 +55,7 @@ jobs:
 
     - name: Upgrade Az DF PowerShell module
       run: Update-PSResource Az.DataFactory -Force
+      shell: pwsh
 
     - name: Login via Az module
       uses: azure/login@v1
