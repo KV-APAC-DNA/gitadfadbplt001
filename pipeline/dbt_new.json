@@ -1139,13 +1139,13 @@
 									"type": "Script",
 									"dependsOn": [
 										{
-											"activity": "audit failure of dbt status_copy1",
+											"activity": "audit failure of dbt status ing",
 											"dependencyConditions": [
 												"Succeeded"
 											]
 										},
 										{
-											"activity": "error dbt run failed_copy1_copy1",
+											"activity": "error dbt run failed ing",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -1261,7 +1261,7 @@
 									}
 								},
 								{
-									"name": "audit failure of dbt status_copy1",
+									"name": "audit failure of dbt status ing",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"policy": {
@@ -1314,7 +1314,7 @@
 									}
 								},
 								{
-									"name": "error dbt run failed_copy1_copy1",
+									"name": "error dbt run failed ing",
 									"type": "ExecutePipeline",
 									"dependsOn": [],
 									"policy": {
