@@ -96,7 +96,10 @@
 									"referenceName": "TableauJsonResponse",
 									"type": "DatasetReference",
 									"parameters": {
-										"tempContainer": "asp",
+										"tempContainer": {
+											"value": "@pipeline().parameters.container",
+											"type": "Expression"
+										},
 										"tempDirectory": {
 											"value": "@{pipeline().parameters.parentFolder}/tableau/@{pipeline().parameters.tableauSourceName}",
 											"type": "Expression"
@@ -165,7 +168,10 @@
 									"referenceName": "TableauJsonResponse",
 									"type": "DatasetReference",
 									"parameters": {
-										"tempContainer": "asp",
+										"tempContainer": {
+											"value": "@pipeline().parameters.container",
+											"type": "Expression"
+										},
 										"tempDirectory": {
 											"value": "@{pipeline().parameters.parentFolder}/tableau/@{pipeline().parameters.tableauSourceName}",
 											"type": "Expression"
@@ -726,6 +732,9 @@
 				"type": "string"
 			},
 			"parentFolder": {
+				"type": "string"
+			},
+			"container": {
 				"type": "string"
 			}
 		},

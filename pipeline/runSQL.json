@@ -150,7 +150,7 @@
 		"parameters": {
 			"load_folderName": {
 				"type": "string",
-				"defaultValue": "prod_release_scripts/load"
+				"defaultValue": "PROD_TABLE_SCRIPTS/load"
 			},
 			"RepoName": {
 				"type": "string",
@@ -168,7 +168,7 @@
 			},
 			"core_folderName": {
 				"type": "string",
-				"defaultValue": "prod_release_scripts/core"
+				"defaultValue": "PROD_TABLE_SCRIPTS/core"
 			}
 		},
 		"folder": {

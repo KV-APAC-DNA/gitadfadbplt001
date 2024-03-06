@@ -280,7 +280,7 @@
 				"typeProperties": {
 					"variableName": "fileName",
 					"value": {
-						"value": "@replace(replace(pipeline().parameters.sourceFileName,' ' , '_'),'.xlsx' ,'.csv' )",
+						"value": "@replace(replace(replace(replace(pipeline().parameters.sourceFileName,'(',''),')' ,''),' ','_' ),'.xlsx' ,'.csv' )",
 						"type": "Expression"
 					}
 				}
