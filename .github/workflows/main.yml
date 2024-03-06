@@ -45,6 +45,9 @@ jobs:
     runs-on: windows-latest
     steps:
 
+    - name: Check Out
+      uses: actions/checkout@v3
+
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.2
