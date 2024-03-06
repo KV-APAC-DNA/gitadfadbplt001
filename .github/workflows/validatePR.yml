@@ -8,7 +8,7 @@ permissions:
       contents: read
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
 
     - uses: actions/checkout@v3
@@ -40,8 +40,11 @@ jobs:
 
   release:
     needs: build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
+
+    - name: Install Azure CLI
+        run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
