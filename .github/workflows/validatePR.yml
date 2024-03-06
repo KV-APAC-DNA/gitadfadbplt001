@@ -49,8 +49,9 @@ jobs:
       with:
         name: ExportedArmTemplate # (5) Artifact name 
         
-    - name: Install Azure CLI (latest)
-      uses: Azure/cli@v1  # Use the latest version (v1 implies major version)
+    - name: Upgrade Az PowerShell module
+      run: Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+      shell: pwsh
 
     - name: Login via Az module
       uses: azure/login@v1
