@@ -54,7 +54,7 @@ jobs:
       shell: pwsh
 
     - name: Install Az.Datafactory PowerShell module
-      run: Install-Module -Name Az.DataFactory -RequiredVersion 1.18.1
+      run: Install-Module -Name Az.DataFactory -RequiredVersion 1.18.1 -Force -Scope CurrentUser
       shell: pwsh
 
     - name: Login via Az module
