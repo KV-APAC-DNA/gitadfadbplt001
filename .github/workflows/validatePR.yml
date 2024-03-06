@@ -50,11 +50,11 @@ jobs:
         name: ExportedArmTemplate # (5) Artifact name 
         
     - name: Install Az PowerShell module
-      run: Install-Module -Name Az -Repository PSGallery -Force -AllowClobber
+      run: Install-Module -Name Az -Repository PSGallery -Force -AllowClobber -Scope CurrentUser 
       shell: pwsh
 
     - name: Install Az.Datafactory PowerShell module
-      run: Install-Module -Name Az.DataFactory -RequiredVersion 1.18.1 -Force -Scope CurrentUser
+      run: Install-Module -Name Az.DataFactory -RequiredVersion 1.18.2 -Force -Scope CurrentUser -AllowClobber
       shell: pwsh
 
     - name: Login via Az module
@@ -65,13 +65,29 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
 
-    - name: data-factory-deploy-dev-live
-      uses: Azure/data-factory-deploy-action@v1.2.0
+    - name: Run Pre-deployment script adfadbdev001-live
+      run: |
+        ${{ github.action_path }}/PrePostDeploymentScript.Ver2.ps1 `
+          -armTemplate "ARMTemplateForFactory.json" `
+          -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
+          -DataFactoryName "adfadbdev001" `
+          -predeployment $true `
+          -deleteDeployment $false
+      shell: pwsh
+
+    - name: Run ARM deploy adfadbdev001-live
+      uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        dataFactoryName: adfadbdev001
-        armTemplateFile: ARMTemplateForFactory.json
-        armTemplateParametersFile: ARMTemplateParametersForFactory.json
-        skipAzModuleInstallation: true
-        additionalParameters:
-          factoryName=${{ vars.ADF_DEV_FACTORYNAME }}
+        template: ARMTemplateForFactory.json
+        parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        
+    - name: Run Post-deployment script
+      run: |
+        ${{ github.action_path }}/PrePostDeploymentScript.Ver2.ps1 `
+          -armTemplate "ARMTemplateForFactory.json" `
+          -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
+          -DataFactoryName 'adfadbdev001' `
+          -predeployment $false `
+          -deleteDeployment $true
+      shell: pwsh
