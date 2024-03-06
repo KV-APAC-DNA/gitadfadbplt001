@@ -67,7 +67,7 @@ jobs:
 
     - name: Run Pre-deployment script adfadbdev001-live
       run: |
-        ${{ github.action_path }}/PrePostDeploymentScript.Ver2.ps1 `
+        ${{ github.workspace }}/.github/workflows/PrePostDeploymentScript.Ver2.ps1 `
           -armTemplate "ARMTemplateForFactory.json" `
           -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
           -DataFactoryName "adfadbdev001" `
@@ -84,7 +84,7 @@ jobs:
         
     - name: Run Post-deployment script
       run: |
-        ${{ github.action_path }}/PrePostDeploymentScript.Ver2.ps1 `
+        ${{ github.workspace }}/.github/workflows/PrePostDeploymentScript.Ver2.ps1 `
           -armTemplate "ARMTemplateForFactory.json" `
           -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
           -DataFactoryName 'adfadbdev001' `
