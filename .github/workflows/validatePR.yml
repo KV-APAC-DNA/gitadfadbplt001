@@ -42,6 +42,9 @@ jobs:
     needs: build
     runs-on: windows-latest
     steps:
+
+    - name: Check Out
+      uses: actions/checkout@v3
     
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
@@ -58,7 +61,7 @@ jobs:
         enable-AzPSSession: true 
       
     - name: Run Pre-deployment script adfadbdev001-live
-      uses: azure/powershell@v1
+      uses: Azure/powershell@v1.4.0
       with:
         inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
         azPSVersion: "latest"
@@ -71,7 +74,7 @@ jobs:
         parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
     - name: Run Post-deployment script adfadbdev001-live
-      uses: azure/powershell@v1
+      uses: Azure/powershell@v1.4.0
       with:
         inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
         azPSVersion: "latest"
