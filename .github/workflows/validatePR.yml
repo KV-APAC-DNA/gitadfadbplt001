@@ -50,7 +50,7 @@ jobs:
         name: ExportedArmTemplate # (5) Artifact name 
         
     - name: Upgrade Az CLI
-      run: Update-PSResource Az
+      run: az upgrade --yes
       shell: pwsh
 
     - name: Upgrade Az PowerShell module
