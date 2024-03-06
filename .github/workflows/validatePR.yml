@@ -8,7 +8,7 @@ permissions:
       contents: read
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
 
     - uses: actions/checkout@v3
@@ -40,9 +40,12 @@ jobs:
 
   release:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
 
+    - name: Check Out
+      uses: actions/checkout@v3
+    
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
       uses: actions/download-artifact@v3.0.2
@@ -56,13 +59,22 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
+      
+    - name: Run Pre-deployment script adfadbdev001-live
+      uses: Azure/powershell@v1.4.0
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+        azPSVersion: "latest"
 
-    - name: data-factory-deploy-dev-live
-      uses: Azure/data-factory-deploy-action@v1.2.0
+    - name: Run ARM deploy adfadbdev001-live
+      uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        dataFactoryName: adfadbdev001
-        armTemplateFile: ARMTemplateForFactory.json
-        armTemplateParametersFile: ARMTemplateParametersForFactory.json
-        additionalParameters:
-          factoryName=${{ vars.ADF_DEV_FACTORYNAME }}
+        template: ARMTemplateForFactory.json
+        parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        
+    - name: Run Post-deployment script adfadbdev001-live
+      uses: Azure/powershell@v1.4.0
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
+        azPSVersion: "latest"
