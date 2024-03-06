@@ -49,8 +49,12 @@ jobs:
       with:
         name: ExportedArmTemplate # (5) Artifact name 
         
-    - name: Upgrade Az PowerShell module
-      run: Update-Module -Name Az -Force
+    - name: Install Az PowerShell module
+      run: Install-Module -Name Az -Repository PSGallery -Force
+      shell: pwsh
+
+    - name: Install Az.Datafactory PowerShell module
+      run: Install-Module -Name Az.DataFactory -RequiredVersion 1.18.1
       shell: pwsh
 
     - name: Login via Az module
