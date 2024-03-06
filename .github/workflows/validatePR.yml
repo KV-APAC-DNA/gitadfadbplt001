@@ -49,12 +49,8 @@ jobs:
       with:
         name: ExportedArmTemplate # (5) Artifact name 
         
-    - name: Upgrade Az CLI
-      run: az upgrade --yes
-      shell: pwsh
-
     - name: Upgrade Az PowerShell module
-      run: Install-Module -Name Az -Scope CurrentUser -Repository PSGallery -Force
+      run: Update-PSResource Az -Force
       shell: pwsh
 
     - name: Login via Az module
