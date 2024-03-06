@@ -4,7 +4,7 @@ LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
-EXECUTE AS OWNER
+EXECUTE AS CALLER
 AS '
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField
