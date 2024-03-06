@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
 
     - uses: actions/checkout@v3
@@ -42,7 +42,7 @@ jobs:
 
   release:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
 
  # Download the previously uploaded artifact to leverage it later in the release job     
@@ -59,27 +59,40 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
 
-    - name: data-factory-deploy-dev-live
-      uses: Azure/data-factory-deploy-action@v1.2.0
+    - name: Run Pre-deployment script adfadbdev001-live
+      uses: Azure/powershell@v1.4.0
       with:
-        resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        dataFactoryName: adfadbdev001
-        armTemplateFile: ARMTemplateForFactory.json
-        armTemplateParametersFile: ARMTemplateParametersForFactory.json
-        additionalParameters:
-          factoryName=${{ vars.ADF_DEV_FACTORYNAME }}
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+        azPSVersion: "latest"
 
-    - name: data-factory-deploy-prod-live
-      uses: Azure/data-factory-deploy-action@v1.2.0
+    - name: Run ARM deploy adfadbdev001-live
+      uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        dataFactoryName: adfadbprd001
-        armTemplateFile: ARMTemplateForFactory.json
-        armTemplateParametersFile: ARMTemplateParametersForFactory.json
-        additionalParameters:
-          factoryName=${{ vars.ADF_PROD_FACTORYNAME }}
-          adfadbplt001lssnfkpltdnacore_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE }}
-          adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD }}
-          adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003 }}
-          adfadbsbx001lsazrweksgpw0003_properties_typeProperties_authHeaders_x-cdata-authtoken_secretName=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003TOKEN }}
-          adfadbplt001lspltbitabap_properties_typeProperties_url=${{ vars.ADFADBPLT001LSPLTBITABAP }}
+        template: ARMTemplateForFactory.json
+        parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        
+    - name: Run Post-deployment script adfadbdev001-live
+      uses: Azure/powershell@v1.4.0
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
+        azPSVersion: "latest"
+
+    - name: Run Pre-deployment script adfadbprd001-live
+      uses: Azure/powershell@v1.4.0
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbprd001" -predeployment $true -deleteDeployment $false
+        azPSVersion: "latest"
+
+    - name: Run ARM deploy adfadbprd001-live
+      uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
+        template: ARMTemplateForFactory.json
+        parameters: ARMTemplateParametersForFactory.json factoryName=${{ vars.ADF_PROD_FACTORYNAME }} adfadbplt001lssnfkpltdnacore_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE }} adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD }} adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003 }} adfadbsbx001lsazrweksgpw0003_properties_typeProperties_authHeaders_x-cdata-authtoken_secretName=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003TOKEN }} adfadbplt001lspltbitabap_properties_typeProperties_url=${{ vars.ADFADBPLT001LSPLTBITABAP }}
+        
+    - name: Run Post-deployment script adfadbprd001-live
+      uses: Azure/powershell@v1.4.0
+      with:
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbprd001' -predeployment $false -deleteDeployment $true
+        azPSVersion: "latest"
