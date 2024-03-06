@@ -8,7 +8,7 @@ permissions:
       contents: read
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
 
     - uses: actions/checkout@v3
@@ -40,7 +40,7 @@ jobs:
 
   release:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     
  # Download the previously uploaded artifact to leverage it later in the release job     
@@ -50,11 +50,7 @@ jobs:
         name: ExportedArmTemplate # (5) Artifact name 
         
     - name: Upgrade Az PowerShell module
-      run: Install-Module -Name Az -AllowClobber -Scope CurrentUser -Force -Confirm:$false
-      shell: pwsh
-
-    - name: Upgrade Az DF PowerShell module
-      run: Update-PSResource Az.DataFactory -Force
+      run: Update-Module -Name Az -Force
       shell: pwsh
 
     - name: Login via Az module
@@ -72,5 +68,6 @@ jobs:
         dataFactoryName: adfadbdev001
         armTemplateFile: ARMTemplateForFactory.json
         armTemplateParametersFile: ARMTemplateParametersForFactory.json
+        skipAzModuleInstallation: true
         additionalParameters:
           factoryName=${{ vars.ADF_DEV_FACTORYNAME }}
