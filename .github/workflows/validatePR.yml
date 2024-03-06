@@ -50,7 +50,7 @@ jobs:
         name: ExportedArmTemplate # (5) Artifact name 
         
     - name: Install Az PowerShell module
-      run: Install-Module -Name Az -Repository PSGallery -Force
+      run: Install-Module -Name Az -Repository PSGallery -Force -AllowClobber
       shell: pwsh
 
     - name: Install Az.Datafactory PowerShell module
