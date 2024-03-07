@@ -390,8 +390,6 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
@@ -1861,7 +1859,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set variable1",
+									"activity": "Set utcnow",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1881,7 +1879,7 @@
 							}
 						},
 						{
-							"name": "Set variable1",
+							"name": "Set utcnow",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
