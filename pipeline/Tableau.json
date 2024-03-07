@@ -276,7 +276,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseSignIn.json"
@@ -438,7 +438,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseSignIn.json"
