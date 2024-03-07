@@ -15,13 +15,7 @@ from snowflake.snowpark import Row
 
 def main(session: snowpark.Session,Param): 
     
-	# SP call and parameters to pass.
-	# CALL ASPSDL_RAW.SALESSTOCK_PREPROCESSING
-    #Param=[''SalesStock_2021.xlsx'',''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional'',''sdl_rg_travel_retail_sales_stock'']
-	
     try:
-        # Extracting parameters from the input
-
         file_name       = Param[0]
         stage_name      = Param[1]
         temp_stage_path = Param[2]
@@ -46,7 +40,6 @@ def main(session: snowpark.Session,Param):
         final_df = None
         
 
-        # Define the schema for the DataFrame
         df_schema=StructType([
             StructField("temp_col",StringType()),
             StructField("dcl_code",StringType()),
@@ -88,8 +81,7 @@ def main(session: snowpark.Session,Param):
             StructField("dec_sls",StringType()),
             StructField("dec_stock",StringType())
             ])
-        # Set the current session schema
-        
+
         session.use_schema(stage_name.split(''.'')[0])
 
         
@@ -97,7 +89,7 @@ def main(session: snowpark.Session,Param):
             ''HDC'': ''HDC'', ''SGM'': ''SHINSEGAE MAIN'',''SGB'':''SHINSEGAE BUSAN'' ,''HYUNDAI_DDM'': ''HYUNDAI DDM'',\\
             ''HYUNDAI_COEX'': ''HYUNDAI COEX'', ''DONGWHA'': ''DONGWHA''}
                     
-        # Looping thorugh each sheet 
+
         
         for retailer_name,location_name in sheet_dict.items():
             stage_path="@{0}/{1}/{2}.csv".format(stage_name,temp_stage_path,retailer_name)
@@ -116,10 +108,8 @@ def main(session: snowpark.Session,Param):
             except Exception as e:
                 error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
                 
-            #df_filter=df.filter(col("rsp") != "")
-            df_filter=[1,2,3,4,5]
+            df_filter=df.filter(col("rsp") != "")
 
-            # Looping to get header to check if all months data is present
             for i in range(1,4):
                 header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\\\u0001").csv(stage_path)
                 header_pandas=header_df.to_pandas()
@@ -128,19 +118,17 @@ def main(session: snowpark.Session,Param):
                 header_dict[h_key]=h_val
                 
 
-            # Checking if all months data is present 
             all_present = all(element in header_dict[''header_2''] for element in all_months)
-            #Start processing only when all month data is present.
+            
             if all_present:
-                for  row in df_filter:
+                for  row in df_filter.collect():
                     for month,value in sls_stk_mth.items():
-                        #print(month,''........'',value)
+
                         new_row = row.as_dict()
                         new_row["month"] = month
                         new_row["sls_qty"] = row[value[0]]
                         new_row["stock_qty"] = row[value[1]]
-                            
-                        # Add retailer_name, year_month, and file_name
+
                         new_row["location_name"] = location_name
                         new_row["retailer_name"] = retailer_name
                         new_row["year"] = file_name.split(''_'')[1].split(''.'')[0]
@@ -148,7 +136,7 @@ def main(session: snowpark.Session,Param):
     
                         final_row=Row(**new_row)
                             
-                        # Append the transformed row to the list
+
                         transformed_rows.append(final_row)
       
                 transformed_df = session.createDataFrame(transformed_rows)
@@ -179,12 +167,11 @@ def main(session: snowpark.Session,Param):
                 if final_df.count() == 0 :
                     raise Exception("The excel data file is empty ! . Please place a valid file!")
                 else :
-                    # Truncate and append in main table (table is truncated in ADF pipeline)
+
                     final_df.write.mode("append").saveAsTable(target_table)  
             
-                    # Adding the current time to DF before appending into the raw table.
                     final_raw_df=final_df.withColumn(''crt_dttm'',lit(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
-                    final_raw_df.write.mode("append").saveAsTable(target_raw_table)  # Append only raw table        
+                    final_raw_df.write.mode("append").saveAsTable(target_raw_table)      
 
                     final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
             else:
@@ -193,12 +180,12 @@ def main(session: snowpark.Session,Param):
         return "Success"
 
     except KeyError as key_error:
-        # Handle KeyError (missing columns) here
+
         error_message = f"KeyError: {str(key_error)}"
         return error_message
 
     
     except Exception as e:
-        # Handle exceptions here
+
         error_message = f"Error: {str(e)}"
         return error_message';
