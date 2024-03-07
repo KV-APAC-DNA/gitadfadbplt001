@@ -94,7 +94,7 @@
 												"storeSettings": {
 													"type": "AmazonS3ReadSettings",
 													"recursive": true,
-													"deleteFilesAfterCompletion": true
+													"deleteFilesAfterCompletion": false
 												},
 												"formatSettings": {
 													"type": "BinaryReadSettings"
