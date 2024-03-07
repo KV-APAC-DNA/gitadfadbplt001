@@ -70,7 +70,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "dbt_new",
+									"referenceName": "dbt",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
