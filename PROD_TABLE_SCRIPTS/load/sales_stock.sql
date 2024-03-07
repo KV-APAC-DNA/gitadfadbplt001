@@ -1,97 +1,206 @@
-CREATE OR REPLACE PROCEDURE ASPSDL_RAW.test_HAINAN_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FIX_SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
-EXECUTE AS OWNER
-AS 'import snowflake.snowpark as snowpark
-from snowflake import snowpark
-from snowflake.snowpark.functions import col,lit,current_timestamp,to_date,year,month,to_timestamp
-from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField,DecimalType
+EXECUTE AS CALLER
+AS 
+$$
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField
+from snowflake.snowpark.functions import col,lit,current_timestamp
 import pandas as pd
 from datetime import datetime
+from snowflake.snowpark import Row 
 
-    
 def main(session: snowpark.Session,Param): 
-    # Your code goes here, inside the "main" handler.
-    #Param=[''Hainan_Vendor_Sales_Report_for_Asian.csv'',''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/dfs'',''sdl_rg_travel_retail_dfS_hainan'']
+    
+    # SP call and parameters to pass.
+    # CALL ASPSDL_RAW.SALESSTOCK_PREPROCESSING
+    #Param=['SalesStock_2021.xlsx','ASPSDL_RAW.DEV_LOAD_STAGE_ADLS','dev/transactional','sdl_rg_travel_retail_sales_stock']
+    
     try:
         # Extracting parameters from the input
+
         file_name       = Param[0]
         stage_name      = Param[1]
-        adls_path       = Param[2]
-        db_name         = stage_name.split(".")[0]
+        temp_stage_path = Param[2]
+        db_name         = stage_name.split('.')[0]
         target_table    = db_name+"."+Param[3]
+        target_raw_table= target_table+"_raw"
+        all_months      = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"] 
+        sls_stk_mth     = {"01":["JAN_SLS","JAN_STOCK"],
+                           "02":["FEB_SLS","FEB_STOCK"],
+                           "03":["MAR_SLS","MAR_STOCK"],
+                           "04":["APR_SLS","APR_STOCK"],
+                           "05":["MAY_SLS","MAY_STOCK"],
+                           "06":["JUN_SLS","JUN_STOCK"],
+                           "07":["JUL_SLS","JUL_STOCK"],
+                           "08":["AUG_SLS","AUG_STOCK"],
+                           "09":["SEP_SLS","SEP_STOCK"],
+                           "10":["OCT_SLS","OCT_STOCK"],
+                           "11":["NOV_SLS","NOV_STOCK"],
+                           "12":["DEC_SLS","DEC_STOCK"]}
+        header_dict     = {}
+        transformed_rows = []
+        final_df = None
+        
 
         # Define the schema for the DataFrame
         df_schema=StructType([
-            StructField("product_department_desc",StringType()),
-            StructField("product_department_code",StringType()),
-            StructField("brand",StringType()),
-            StructField("product_class_desc",StringType()),
-            StructField("product_class_code",StringType()),
-            StructField("product_subclass_desc",StringType()),
-            StructField("product_subclass_code",StringType()),
-            StructField("brand_collection",StringType()),
-            StructField("reatiler_product_code",StringType()),
-            StructField("reatiler_product_description",StringType()),
+            StructField("temp_col",StringType()),
             StructField("dcl_code",StringType()),
-            StructField("ean",StringType()),
-            StructField("style_type_code",StringType()),
-            StructField("month",StringType()),
-            StructField("door_name",StringType()),
-            StructField("sls_mtd_qty",DecimalType(precision=18, scale=0)),
-            StructField("sls_mtd_amt",DecimalType(precision=38, scale=18)),
-            StructField("sls_ytd_qty",DecimalType(precision=18, scale=0)),
-            StructField("sls_ytd_amt",DecimalType(precision=38, scale=18))
+            StructField("sap_code",StringType()),
+            StructField("reference",StringType()),
+            StructField("product_desc",StringType()),
+            StructField("size",StringType()),
+            StructField("rsp",StringType()),
+            StructField("c_sls_qty",StringType()),
+            StructField("c_sls_amt",StringType()),
+            StructField("c_stock_qty",StringType()),
+            StructField("c_stock_amt",StringType()),
+            StructField("buffer",StringType()),
+            StructField("mix",StringType()),
+            StructField("r_3m",StringType()),
+            StructField("comparison",StringType()),
+            StructField("jan_sls",StringType()),
+            StructField("jan_stock",StringType()),
+            StructField("feb_sls",StringType()),
+            StructField("feb_stock",StringType()),
+            StructField("mar_sls",StringType()),
+            StructField("mar_stock",StringType()),
+            StructField("apr_sls",StringType()),
+            StructField("apr_stock",StringType()),
+            StructField("may_sls",StringType()),
+            StructField("may_stock",StringType()),
+            StructField("jun_sls",StringType()),
+            StructField("jun_stock",StringType()),
+            StructField("jul_sls",StringType()),
+            StructField("jul_stock",StringType()),
+            StructField("aug_sls",StringType()),
+            StructField("aug_stock",StringType()),
+            StructField("sep_sls",StringType()),
+            StructField("sep_stock",StringType()),
+            StructField("oct_sls",StringType()),
+            StructField("oct_stock",StringType()),
+            StructField("nov_sls",StringType()),
+            StructField("nov_stock",StringType()),
+            StructField("dec_sls",StringType()),
+            StructField("dec_stock",StringType())
             ])
+        # Set the current session schema
         
-        # Read the CSV file into a DataFrame
-        df = session.read \\
-            .schema(df_schema) \\
-            .option("skip_header", 2) \\
-            .option("field_delimiter", "\\u0001") \\
-            .option("field_optionally_enclosed_by", "\\"") \\
-            .csv("@" + Param[1] + "/" + Param[2] + "/" + file_name)
+        session.use_schema(stage_name.split('.')[0])
 
-        # Add retailer_name, crttd, and file_name,yearmo,year,mon
-        df = df.with_column("Retailer_name",lit("DFS HAINAN"))
-        df = df.with_column("filename",lit(file_name.split(".")[0].replace("_"," ")+".xlsx"))
-        df = df.withColumn("crttd", lit(to_timestamp(current_timestamp())))
-        df = df.withColumn("yearmo", to_date(col("month"), ''Mon yy''))
-        df = df.withColumn("year", year(col("yearmo")))
-        df = df.withColumn("mon", month(col("yearmo")))
         
-        snowdf=df.select("year","mon","yearmo","Retailer_name","product_department_desc","product_department_code","brand","product_class_desc",
-                  "product_class_code","product_subclass_desc","product_subclass_code","brand_collection","reatiler_product_code","reatiler_product_description",
-                  "dcl_code","ean","style_type_code","month","door_name","sls_mtd_qty","sls_mtd_amt","sls_ytd_qty","sls_ytd_amt","filename","crttd")
+        sheet_dict={'LTM': 'LOTTE MAIN','LTJ': 'LOTTE JEJU', 'SLM': 'SHILLA MAIN', 'SLJ': 'SHILLA JEJU',\
+            'HDC': 'HDC', 'SGM': 'SHINSEGAE MAIN','SGB':'SHINSEGAE BUSAN' ,'HYUNDAI_DDM': 'HYUNDAI DDM',\
+            'HYUNDAI_COEX': 'HYUNDAI COEX', 'DONGWHA': 'DONGWHA'}
+                    
+        # Looping thorugh each sheet 
         
-        snowdf = snowdf[snowdf["reatiler_product_code"].isNotNull()]
-        if snowdf.count()==0 :
-            return "No Data in file" 
-        # Create a Snowflake DataFrame and write to success folder
-        
-        # for DFS HAINAN, we dont have truncate and load into sdl table. we have append logic  
-        
-        snowdf.write.mode("append").saveAsTable(target_table)
+        for retailer_name,location_name in sheet_dict.items():
+            stage_path="@{0}/{1}/{2}.csv".format(stage_name,temp_stage_path,retailer_name)
+            print('stage_path printing....',stage_path)
+            transformed_rows.clear()
+            final_df = None
+            df=None
+            transformed_df =None
 
-        file_name=file_name.split(".")[0]+''_''+datetime.now().strftime("%Y%m%d%H%M%S")
-        snowdf.write.copy_into_location("@"+stage_name+"/"+adls_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
+            try :
+                df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",3)\
+                .option("field_delimiter", "\u0001")\
+                .csv(stage_path)
+            except Exception as e:
+                error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
+                
+            df_filter=df.filter(col("rsp") != "")
+
+            # Looping to get header to check if all months data is present
+            for i in range(1,4):
+                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\u0001").csv(stage_path)
+                header_pandas=header_df.to_pandas()
+                h_key="header_"+str(i)
+                h_val=header_pandas.iloc[int(i)].tolist()
+                header_dict[h_key]=h_val
+                
+
+            # Checking if all months data is present 
+            all_present = all(element in header_dict['header_2'] for element in all_months)
+            #Start processing only when all month data is present.
+            if all_present:
+                for  row in df_filter.collect():
+                    for month,value in sls_stk_mth.items():
+                        #print(month,'........',value)
+                        new_row = row.as_dict()
+                        new_row["month"] = month
+                        new_row["sls_qty"] = row[value[0]]
+                        new_row["stock_qty"] = row[value[1]]
+                            
+                        # Add retailer_name, year_month, and file_name
+                        new_row["location_name"] = location_name
+                        new_row["retailer_name"] = retailer_name
+                        new_row["year"] = file_name.split('_')[1].split('.')[0]
+                        new_row["file_name"] = file_name
     
+                        final_row=Row(**new_row)
+                            
+                        # Append the transformed row to the list
+                        transformed_rows.append(final_row)
+      
+                transformed_df = session.createDataFrame(transformed_rows)
+                print('Transformed df created count is : ',transformed_df.count())
+                if transformed_df.count() == 0:
+                    raise Exception("The excel data file is empty for sheet : ",retailer_name,". Please place a valid file!")
+                else :
+                     pass
+
+
+                main_df=transformed_df.select('location_name','retailer_name','year','month','dcl_code','sap_code',\
+                                                  'reference','product_desc','size','rsp','c_sls_qty','c_sls_amt',\
+                                                  'c_stock_qty','c_stock_amt','buffer','mix','r_3m','comparison',\
+                                                  'sls_qty','stock_qty','file_name')
+
+
+                if not final_df:
+                    final_df = main_df
+                else:
+                    final_df = final_df.unionByName(main_df)  
+
+
+                print('Cummulative count of final df in each iteration ',final_df.count())
+
+                final_df= final_df.filter(final_df["dcl_code"].isNotNull())
+
+
+                if final_df.count() == 0 :
+                    raise Exception("The excel data file is empty ! . Please place a valid file!")
+                else :
+                    # Truncate and append in main table (table is truncated in ADF pipeline)
+                    final_df.write.mode("append").saveAsTable(target_table)  
+            
+                    # Adding the current time to DF before appending into the raw table.
+                    final_raw_df=final_df.withColumn('crt_dttm',lit(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
+                    final_raw_df.write.mode("append").saveAsTable(target_raw_table)  # Append only raw table        
+
+                    final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
+            else:
+                raise Exception("Please check if we have all months data in excel")                 
+
         return "Success"
 
     except KeyError as key_error:
-            # Handle KeyError (missing columns) here
-            error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
-            return error_message
-            
-    except pd.errors.MergeError as merge_error:
-            # Handle DataFrame merging error
-            error_message = f"DataFrame merging error: {str(merge_error)}"
-            return error_message
+        # Handle KeyError (missing columns) here
+        error_message = f"KeyError: {str(key_error)}"
+        return error_message
+
     
     except Exception as e:
-            # Handle exceptions here
-            error_message = f"Error: {str(e)}"
-            return error_message';
+        # Handle exceptions here
+        error_message = f"Error: {str(e)}"
+        return error_message
+$$;
