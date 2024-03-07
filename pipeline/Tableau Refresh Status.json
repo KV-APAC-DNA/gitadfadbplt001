@@ -676,12 +676,11 @@
 						"httpRequestTimeout": "00:05:00",
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
-						"requestBody": {
-							"value": "<tsRequest><credentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
-							"type": "Expression"
-						},
-						"paginationRules": {
-							"supportRFC5988": "true"
+						"additionalHeaders": {
+							"x-tableau-auth": {
+								"value": "@pipeline().parameters.token",
+								"type": "Expression"
+							}
 						}
 					},
 					"sink": {
@@ -700,7 +699,7 @@
 						"referenceName": "TableauRestAPI",
 						"type": "DatasetReference",
 						"parameters": {
-							"relativeURL": "auth/signin"
+							"relativeURL": "auth/signout"
 						}
 					}
 				],
