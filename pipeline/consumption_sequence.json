@@ -84,7 +84,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
-														"referenceName": "Tableau_backup",
+														"referenceName": "Tableau",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,
