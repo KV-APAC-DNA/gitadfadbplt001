@@ -7,7 +7,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set parentFolder",
+						"activity": "audit start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -109,7 +109,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/dbt/@{activity('read parameters').output.value[0].jobId}",
 								"type": "Expression"
 							},
 							"tempFileName": "dbtResponseTrigger.json"
@@ -154,7 +154,7 @@
 						"parameters": {
 							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/dbt/@{activity('read parameters').output.value[0].jobId}",
 								"type": "Expression"
 							},
 							"tempFileName": "dbtResponseTrigger.json"
@@ -450,105 +450,11 @@
 				}
 			},
 			{
-				"name": "audit success",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "fail pipeline",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FINISH",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "fail pipeline",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "wait until job is complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@greater(variables('run_status'),10)",
-						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "fail this job",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": {
-									"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
-									"type": "Expression"
-								},
-								"errorCode": "2002"
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "audit failure of dbt status",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "fail pipeline",
+						"activity": "Switch success or failure",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -781,66 +687,6 @@
 				}
 			},
 			{
-				"name": "Audit_Finish_Fail_3",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Read response",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "Audit_Finish_Fail_4",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -958,72 +804,61 @@
 				}
 			},
 			{
-				"name": "error reading DBT response",
-				"type": "ExecutePipeline",
+				"name": "Set refreshType",
+				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Read response",
+						"activity": "wait until job is complete",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
 				"policy": {
+					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_error_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"job_name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"error_message": {
-							"value": "@activity('Read response').error?.message",
-							"type": "Expression"
-						},
-						"run_id": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"error_code": {
-							"value": "@activity('Read response').error?.errorCode",
-							"type": "Expression"
-						},
-						"job_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						}
+					"variableName": "refreshType",
+					"value": {
+						"value": "@{activity('read parameters').output.value[0].transformationType}",
+						"type": "Expression"
 					}
 				}
 			},
 			{
-				"name": "error dbt run failed",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
+				"name": "Set tempId",
+				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "SwitchBetweenType1",
+						"activity": "wait until job is complete",
 						"dependencyConditions": [
 							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "temp_id",
+					"value": {
+						"value": "@{activity('read parameters').output.value[0].tempId}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "error dbt run failed_1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Switch success or failure",
+						"dependencyConditions": [
+							"Failed"
 						]
 					}
 				],
@@ -1074,41 +909,17 @@
 				}
 			},
 			{
-				"name": "Set refreshType",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "fail pipeline",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "refreshType",
-					"value": {
-						"value": "@{activity('read parameters').output.value[0].transformationType}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "SwitchBetweenType",
+				"name": "Switch success or failure",
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Set tempId",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "Set tempId",
+						"activity": "Set refreshType",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1117,26 +928,70 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@variables('refreshType')",
+						"value": "@if(greater(variables('run_status'),10),if(equals(variables('refreshType'),'ingestion'),'1','2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
 						{
-							"value": "transformation",
+							"value": "0",
 							"activities": [
 								{
-									"name": "Wait",
-									"type": "Wait",
+									"name": "audit success",
+									"type": "ExecutePipeline",
 									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
 									"userProperties": [],
 									"typeProperties": {
-										"waitTimeInSeconds": 1
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FINISH",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"message": {
+												"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
 									}
 								}
 							]
 						},
 						{
-							"value": "ingestion",
+							"value": "1",
 							"activities": [
 								{
 									"name": "Script1",
@@ -1204,7 +1059,7 @@
 									}
 								},
 								{
-									"name": "ModelName Array",
+									"name": "ResultSet Array",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
@@ -1220,9 +1075,9 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "modelNameArray",
+										"variableName": "resultSet",
 										"value": {
-											"value": "@activity('Script2').output.resultSets[0].rows",
+											"value": "@activity('Script2').output.resultSets",
 											"type": "Expression"
 										}
 									}
@@ -1252,32 +1107,26 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "2",
+							"activities": [
+								{
+									"name": "fail this job",
+									"type": "Fail",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
+											"type": "Expression"
+										},
+										"errorCode": "2002"
+									}
+								}
+							]
 						}
 					]
-				}
-			},
-			{
-				"name": "Set tempId",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "fail pipeline",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "temp_id",
-					"value": {
-						"value": "@{activity('read parameters').output.value[0].tempId}",
-						"type": "Expression"
-					}
 				}
 			},
 			{
@@ -1285,7 +1134,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "SwitchBetweenType",
+						"activity": "If ResultSet empty",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1385,8 +1234,8 @@
 				}
 			},
 			{
-				"name": "SwitchBetweenType1",
-				"type": "Switch",
+				"name": "If Ingestion Error",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "ForEveryModel",
@@ -1397,141 +1246,191 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"on": {
-						"value": "@variables('refreshType')",
+					"expression": {
+						"value": "@and(and(greater(variables('run_status'),10),equals(variables('refreshType'),'ingestion')),not(empty(variables('resultSet'))))",
 						"type": "Expression"
 					},
-					"cases": [
+					"ifTrueActivities": [
 						{
-							"value": "transformation",
-							"activities": [
-								{
-									"name": "Wait1",
-									"type": "Wait",
-									"dependsOn": [],
-									"userProperties": [],
-									"typeProperties": {
-										"waitTimeInSeconds": 1
+							"name": "Script5",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "call core_integration.SP_updatecdc_failed_tests_models('@{variables('temp_id')}',@{variables('sp_params')});",
+											"type": "Expression"
+										}
 									}
-								}
-							]
-						},
-						{
-							"value": "ingestion",
-							"activities": [
-								{
-									"name": "Script5",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnacore",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "call core_integration.SP_updatecdc_failed_tests_models('@{variables('temp_id')}',@{variables('sp_params')});",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								}
-							]
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
 						}
 					]
 				}
 			},
 			{
-				"name": "error dbt run failed_copy1",
-				"type": "ExecutePipeline",
+				"name": "If ResultSet empty",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "fail pipeline",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_error_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"job_name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"error_message": {
-							"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
-							"type": "Expression"
-						},
-						"run_id": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"error_code": {
-							"value": "2002",
-							"type": "Expression"
-						},
-						"job_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Set parentFolder",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "audit start",
+						"activity": "Switch success or failure",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "parentFolder",
-					"value": {
-						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+					"expression": {
+						"value": "@empty(variables('resultSet'))",
 						"type": "Expression"
-					}
+					},
+					"ifFalseActivities": [
+						{
+							"name": "ModelName Array",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "modelNameArray",
+								"value": {
+									"value": "@variables('resultSet')[0].rows",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "audit failure of dbt status ing",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"status": "FAIL : DQ Check",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": {
+										"value": "@pipeline().parameters.usecase_id",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "error dbt run failed ing",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "audit failure of dbt status ing",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "dbt job failed due to DQ check, check on run_id @{variables('run_id')} and retry",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "2002",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
 				}
 			}
 		],
@@ -1542,15 +1441,15 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 7
+				"defaultValue": 8
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 2
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 20
+				"defaultValue": 57
 			},
 			"phase_id": {
 				"type": "int",
@@ -1584,6 +1483,10 @@
 			},
 			"parentFolder": {
 				"type": "String"
+			},
+			"resultSet": {
+				"type": "Array",
+				"defaultValue": []
 			}
 		},
 		"folder": {

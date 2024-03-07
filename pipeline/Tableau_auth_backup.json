@@ -1,5 +1,5 @@
 {
-	"name": "Tableau_Latest",
+	"name": "Tableau_auth_backup",
 	"properties": {
 		"activities": [
 			{
@@ -30,66 +30,6 @@
 						},
 						"message": {
 							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Audit_Finish_Success",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Trigger Tableau Refresh Status",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "REFRESH STARTED SEPARATELY",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category), '. Check status from Tableau Refresh Status pipeline.')",
 							"type": "Expression"
 						},
 						"runid": {
@@ -180,7 +120,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set parentFolder",
+						"activity": "Audit_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -393,6 +333,12 @@
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Read Details",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1164,6 +1110,12 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
+						"activity": "Set parentFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
@@ -1281,7 +1233,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Read Details",
+						"activity": "Fetch id",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1330,7 +1282,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set generateToken bool",
+						"activity": "If oldTokenExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1680,11 +1632,30 @@
 				}
 			},
 			{
-				"name": "Get LastModifiedTokenTime",
+				"name": "Wait2",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@mul(rand(3,10),rand(10,15))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Get LastModifiedTokenFile",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Wait2",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1715,7 +1686,7 @@
 						}
 					},
 					"fieldList": [
-						"lastModified"
+						"exists"
 					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
@@ -1728,49 +1699,214 @@
 				}
 			},
 			{
-				"name": "Set 4hoursBuffer",
-				"type": "SetVariable",
+				"name": "If oldTokenExists",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Get LastModifiedTokenTime",
+						"activity": "Get LastModifiedTokenFile",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@activity('Get LastModifiedTokenFile').output.exists",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Get LastModifiedTokenTime",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "TableauJsonResponse",
+									"type": "DatasetReference",
+									"parameters": {
+										"tempContainer": "asp",
+										"tempDirectory": {
+											"value": "@{variables('parentFolder')}/tableau",
+											"type": "Expression"
+										},
+										"tempFileName": {
+											"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"lastModified"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "JsonReadSettings"
+								}
+							}
+						},
+						{
+							"name": "Set 4hoursBuffer",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get LastModifiedTokenTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "lastModTimePlus4Hours",
+								"value": {
+									"value": "@addhours(activity('Get LastModifiedTokenTime').output.lastModified,4)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set generateToken bool",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get LastModifiedTokenTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "generateToken",
+								"value": {
+									"value": "@if(greaterOrEquals(utcnow(),addhours(activity('Get LastModifiedTokenTime').output.lastModified,4)),true,false)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set utcnow",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Get LastModifiedTokenTime",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "utcNow",
+								"value": {
+									"value": "@utcnow()",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Audit_Finish_Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Trigger Tableau Refresh Status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
 				"policy": {
-					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "lastModTimePlus4Hours",
-					"value": {
-						"value": "@addhours(activity('Get LastModifiedTokenTime').output.lastModified,4)",
-						"type": "Expression"
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "REFRESH STARTED SEPARATELY",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category), '. Check status from Tableau Refresh Status pipeline.')",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
 					}
 				}
 			},
 			{
-				"name": "Set generateToken bool",
-				"type": "SetVariable",
+				"name": "Wait1",
+				"type": "Wait",
 				"dependsOn": [
 					{
-						"activity": "Set 4hoursBuffer",
+						"activity": "Set refreshType",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "generateToken",
-					"value": {
-						"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
+					"waitTimeInSeconds": {
+						"value": "@mul(mul(rand(2,7),rand(1,5)),rand(1,4))",
 						"type": "Expression"
 					}
 				}
@@ -1820,6 +1956,9 @@
 				"defaultValue": true
 			},
 			"lastModTimePlus4Hours": {
+				"type": "String"
+			},
+			"utcNow": {
 				"type": "String"
 			}
 		},
