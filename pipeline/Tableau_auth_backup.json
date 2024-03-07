@@ -1152,7 +1152,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Tableau Refresh Status",
+						"referenceName": "Tableau Refresh Status_backup",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": false,
