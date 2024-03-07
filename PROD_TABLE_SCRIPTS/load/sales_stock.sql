@@ -116,8 +116,8 @@ def main(session: snowpark.Session,Param):
             except Exception as e:
                 error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
                 
-            df_filter=df.filter(col("rsp") != "")
-
+            #df_filter=df.filter(col("rsp") != "")
+            df_filter=[1,2,3,4]
             # Looping to get header to check if all months data is present
             for i in range(1,4):
                 header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\\\u0001").csv(stage_path)
@@ -131,10 +131,10 @@ def main(session: snowpark.Session,Param):
             all_present = all(element in header_dict[''header_2''] for element in all_months)
             #Start processing only when all month data is present.
             if all_present:
-                for  row in df_filter.collect():
+                for  row in df_filter:
                     for month,value in sls_stk_mth.items():
                         #print(month,''........'',value)
-                        new_row = {a:b}
+                        new_row = row.as_dict()
                         new_row["month"] = month
                         new_row["sls_qty"] = row[value[0]]
                         new_row["stock_qty"] = row[value[1]]
