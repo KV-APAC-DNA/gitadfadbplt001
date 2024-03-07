@@ -1,0 +1,3 @@
+delete from aspwks_integration.sap_transactional_processed_files
+where act_file_name='SAP_BW_CDL_BILLING_COND_20240306_182435.csv'
+and target_table_name='sdl_raw_sap_billing_condition';
