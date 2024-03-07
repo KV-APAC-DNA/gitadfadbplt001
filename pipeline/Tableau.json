@@ -5,8 +5,6 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -60,8 +58,6 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger Tableau Refresh Status",
@@ -122,8 +118,6 @@
 			{
 				"name": "Audit_Finish_Fail",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger Tableau Refresh Status",
@@ -277,7 +271,10 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": "asp",
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
 							"tempDirectory": {
 								"value": "@{variables('parentFolder')}/tableau",
 								"type": "Expression"
@@ -330,8 +327,6 @@
 			{
 				"name": "Fetch id",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -409,8 +404,6 @@
 			{
 				"name": "Read token and siteId",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -443,7 +436,10 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": "asp",
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
 							"tempDirectory": {
 								"value": "@{variables('parentFolder')}/tableau",
 								"type": "Expression"
@@ -460,8 +456,6 @@
 			{
 				"name": "Read Details",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch id",
@@ -511,8 +505,6 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
@@ -594,8 +586,6 @@
 			{
 				"name": "Read Refresh Initail Response",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -645,8 +635,6 @@
 			{
 				"name": "error Fetching uid from Vault",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch uid from Vault",
@@ -704,8 +692,6 @@
 			{
 				"name": "error Fetching Auth Token",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -763,8 +749,6 @@
 			{
 				"name": "error Reading Auth Token",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -822,8 +806,6 @@
 			{
 				"name": "error Fetching datasource id",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch id",
@@ -881,8 +863,6 @@
 			{
 				"name": "error Reading Datasource details",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -940,8 +920,6 @@
 			{
 				"name": "error triggering Refresh",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -999,8 +977,6 @@
 			{
 				"name": "error reading refresh initial resp",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1058,8 +1034,6 @@
 			{
 				"name": "error triggering tab refresh status",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger Tableau Refresh Status",
@@ -1117,8 +1091,6 @@
 			{
 				"name": "Audit_Finish_Fail_7",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1179,8 +1151,6 @@
 			{
 				"name": "Audit_Finish_Fail_6",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -1241,8 +1211,6 @@
 			{
 				"name": "Audit_Finish_Fail_5",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -1303,8 +1271,6 @@
 			{
 				"name": "Audit_Finish_Fail_4",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch id",
@@ -1365,8 +1331,6 @@
 			{
 				"name": "Audit_Finish_Fail_3",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -1427,8 +1391,6 @@
 			{
 				"name": "Audit_Finish_Fail_2",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -1489,8 +1451,6 @@
 			{
 				"name": "Audit_Finish_Fail_1",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch uid from Vault",
@@ -1575,8 +1535,6 @@
 			{
 				"name": "Trigger Tableau Refresh Status",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1670,8 +1628,6 @@
 			{
 				"name": "Read token and siteId again",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -1753,8 +1709,6 @@
 			{
 				"name": "error Fetching pwd from Vault",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch pwd from Vault",
@@ -1812,8 +1766,6 @@
 			{
 				"name": "Audit_Finish_Fail_0",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch pwd from Vault",
