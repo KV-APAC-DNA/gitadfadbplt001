@@ -279,10 +279,7 @@
 								"value": "@{variables('parentFolder')}/tableau",
 								"type": "Expression"
 							},
-							"tempFileName": {
-								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
-								"type": "Expression"
-							}
+							"tempFileName": "tableauResponseSignIn.json"
 						}
 					}
 				]
@@ -444,10 +441,7 @@
 								"value": "@{variables('parentFolder')}/tableau",
 								"type": "Expression"
 							},
-							"tempFileName": {
-								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
-								"type": "Expression"
-							}
+							"tempFileName": "tableauResponseSignIn.json"
 						}
 					},
 					"firstRowOnly": false

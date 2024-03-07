@@ -37,7 +37,7 @@
 							"type": "Copy",
 							"dependsOn": [
 								{
-									"activity": "Read token latest",
+									"activity": "Wait",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -60,7 +60,7 @@
 									"additionalHeaders": {
 										"Content-Type": "application/xml",
 										"x-tableau-auth": {
-											"value": "@activity('Read token latest').output.value[0].credentials.token",
+											"value": "@pipeline().parameters.token",
 											"type": "Expression"
 										}
 									},
@@ -185,8 +185,6 @@
 						{
 							"name": "Error Fetching Refresh Status Iteratively",
 							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Fetch Refresh Status Iteratively",
@@ -296,55 +294,6 @@
 										"type": "Expression"
 									}
 								}
-							}
-						},
-						{
-							"name": "Read token latest",
-							"type": "Lookup",
-							"dependsOn": [
-								{
-									"activity": "Wait",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "JsonSource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "JsonReadSettings"
-									}
-								},
-								"dataset": {
-									"referenceName": "TableauJsonResponse",
-									"type": "DatasetReference",
-									"parameters": {
-										"tempContainer": "asp",
-										"tempDirectory": {
-											"value": "@{pipeline().parameters.parentFolder}/tableau",
-											"type": "Expression"
-										},
-										"tempFileName": {
-											"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
-											"type": "Expression"
-										}
-									}
-								},
-								"firstRowOnly": false
 							}
 						}
 					],
@@ -529,7 +478,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set finishCode",
+						"activity": "Sign Out",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -701,6 +650,80 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "Sign Out",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Set finishCode",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:05:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"requestBody": {
+							"value": "<tsRequest><credentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
+							"type": "Expression"
+						},
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "auth/signin"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": {
+								"value": "@pipeline().parameters.container",
+								"type": "Expression"
+							},
+							"tempDirectory": {
+								"value": "@{pipeline().parameters.parentFolder}/tableau/@{pipeline().parameters.tableauSourceName}",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "tableauResponseSignOut.json",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
