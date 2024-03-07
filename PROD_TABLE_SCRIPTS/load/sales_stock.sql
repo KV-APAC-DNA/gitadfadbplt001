@@ -111,7 +111,7 @@ def main(session: snowpark.Session,Param):
                 df = session.read\\
                 .schema(df_schema)\\
                 .option("skip_header",3)\\
-                .option("field_delimiter", "\u0001")\\
+                .option("field_delimiter", "\\\\u0001")\\
                 .csv(stage_path)
             except Exception as e:
                 error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
@@ -120,7 +120,7 @@ def main(session: snowpark.Session,Param):
 
             # Looping to get header to check if all months data is present
             for i in range(1,4):
-                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\u0001").csv(stage_path)
+                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\\\u0001").csv(stage_path)
                 header_pandas=header_df.to_pandas()
                 h_key="header_"+str(i)
                 h_val=header_pandas.iloc[int(i)].tolist()
@@ -134,7 +134,7 @@ def main(session: snowpark.Session,Param):
                 for  row in df_filter.collect():
                     for month,value in sls_stk_mth.items():
                         #print(month,''........'',value)
-                        new_row = row.as_dict()
+                        new_row = {a:b}
                         new_row["month"] = month
                         new_row["sls_qty"] = row[value[0]]
                         new_row["stock_qty"] = row[value[1]]
