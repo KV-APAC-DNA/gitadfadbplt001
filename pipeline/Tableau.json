@@ -5,6 +5,8 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
@@ -58,6 +60,8 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger Tableau Refresh Status",
@@ -118,6 +122,8 @@
 			{
 				"name": "Audit_Finish_Fail",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger Tableau Refresh Status",
@@ -176,7 +182,7 @@
 				}
 			},
 			{
-				"name": "Fetch Credential from Vault",
+				"name": "Fetch uid from Vault",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
@@ -196,10 +202,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": {
-						"value": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-@{pipeline().globalParameters.environment}-pat?api-version=7.0",
-						"type": "Expression"
-					},
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-uid?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
@@ -213,9 +216,17 @@
 			{
 				"name": "Sign In Tableau To Get Auth Token",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Fetch Credential from Vault",
+						"activity": "Fetch uid from Vault",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Fetch pwd from Vault",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -321,6 +332,8 @@
 			{
 				"name": "Fetch id",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -398,6 +411,8 @@
 			{
 				"name": "Read token and siteId",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -447,6 +462,8 @@
 			{
 				"name": "Read Details",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch id",
@@ -496,6 +513,8 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
@@ -577,6 +596,8 @@
 			{
 				"name": "Read Refresh Initail Response",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -624,11 +645,13 @@
 				}
 			},
 			{
-				"name": "error Fetching PAT from Vault",
+				"name": "error Fetching uid from Vault",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Fetch Credential from Vault",
+						"activity": "Fetch uid from Vault",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -654,7 +677,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Fetch Credential from Vault').error?.message",
+							"value": "@activity('Fetch uid from Vault').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -670,7 +693,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Fetch Credential from Vault').error?.errorCode",
+							"value": "@activity('Fetch uid from Vault').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -683,6 +706,8 @@
 			{
 				"name": "error Fetching Auth Token",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -740,6 +765,8 @@
 			{
 				"name": "error Reading Auth Token",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -797,6 +824,8 @@
 			{
 				"name": "error Fetching datasource id",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch id",
@@ -854,6 +883,8 @@
 			{
 				"name": "error Reading Datasource details",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -911,6 +942,8 @@
 			{
 				"name": "error triggering Refresh",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -968,6 +1001,8 @@
 			{
 				"name": "error reading refresh initial resp",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1025,6 +1060,8 @@
 			{
 				"name": "error triggering tab refresh status",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger Tableau Refresh Status",
@@ -1082,6 +1119,8 @@
 			{
 				"name": "Audit_Finish_Fail_7",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1142,6 +1181,8 @@
 			{
 				"name": "Audit_Finish_Fail_6",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Hit Refresh",
@@ -1202,6 +1243,8 @@
 			{
 				"name": "Audit_Finish_Fail_5",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -1262,6 +1305,8 @@
 			{
 				"name": "Audit_Finish_Fail_4",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Fetch id",
@@ -1322,6 +1367,8 @@
 			{
 				"name": "Audit_Finish_Fail_3",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId",
@@ -1382,6 +1429,8 @@
 			{
 				"name": "Audit_Finish_Fail_2",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Sign In Tableau To Get Auth Token",
@@ -1442,9 +1491,11 @@
 			{
 				"name": "Audit_Finish_Fail_1",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Fetch Credential from Vault",
+						"activity": "Fetch uid from Vault",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1526,6 +1577,8 @@
 			{
 				"name": "Trigger Tableau Refresh Status",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Refresh Initail Response",
@@ -1619,6 +1672,8 @@
 			{
 				"name": "Read token and siteId again",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read Details",
@@ -1663,6 +1718,159 @@
 						}
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Fetch pwd from Vault",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set refreshType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-pwd?api-version=7.0",
+					"connectVia": {
+						"referenceName": "adfiradbplt002",
+						"type": "IntegrationRuntimeReference"
+					},
+					"authentication": {
+						"type": "MSI",
+						"resource": "https://vault.azure.net"
+					}
+				}
+			},
+			{
+				"name": "error Fetching pwd from Vault",
+				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Fetch pwd from Vault",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('Fetch pwd from Vault').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('Fetch pwd from Vault').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Fail_0",
+				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Fetch pwd from Vault",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],
