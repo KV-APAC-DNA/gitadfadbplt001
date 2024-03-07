@@ -736,6 +736,9 @@
 			},
 			"container": {
 				"type": "string"
+			},
+			"token": {
+				"type": "string"
 			}
 		},
 		"variables": {
