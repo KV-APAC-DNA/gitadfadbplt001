@@ -93,7 +93,8 @@
 												"type": "BinarySource",
 												"storeSettings": {
 													"type": "AmazonS3ReadSettings",
-													"recursive": true
+													"recursive": true,
+													"deleteFilesAfterCompletion": true
 												},
 												"formatSettings": {
 													"type": "BinaryReadSettings"
