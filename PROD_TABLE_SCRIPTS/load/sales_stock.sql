@@ -5,7 +5,8 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS CALLER
-AS '
+AS 
+$$
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField
 from snowflake.snowpark.functions import col,lit,current_timestamp
@@ -15,17 +16,17 @@ from snowflake.snowpark import Row
 
 def main(session: snowpark.Session,Param): 
     
-	# SP call and parameters to pass.
-	# CALL ASPSDL_RAW.SALESSTOCK_PREPROCESSING
-    #Param=[''SalesStock_2021.xlsx'',''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional'',''sdl_rg_travel_retail_sales_stock'']
-	
+    # SP call and parameters to pass.
+    # CALL ASPSDL_RAW.SALESSTOCK_PREPROCESSING
+    #Param=['SalesStock_2021.xlsx','ASPSDL_RAW.DEV_LOAD_STAGE_ADLS','dev/transactional','sdl_rg_travel_retail_sales_stock']
+    
     try:
         # Extracting parameters from the input
 
         file_name       = Param[0]
         stage_name      = Param[1]
         temp_stage_path = Param[2]
-        db_name         = stage_name.split(''.'')[0]
+        db_name         = stage_name.split('.')[0]
         target_table    = db_name+"."+Param[3]
         target_raw_table= target_table+"_raw"
         all_months      = ["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"] 
@@ -90,37 +91,37 @@ def main(session: snowpark.Session,Param):
             ])
         # Set the current session schema
         
-        session.use_schema(stage_name.split(''.'')[0])
+        session.use_schema(stage_name.split('.')[0])
 
         
-        sheet_dict={''LTM'': ''LOTTE MAIN'',''LTJ'': ''LOTTE JEJU'', ''SLM'': ''SHILLA MAIN'', ''SLJ'': ''SHILLA JEJU'',\\
-            ''HDC'': ''HDC'', ''SGM'': ''SHINSEGAE MAIN'',''SGB'':''SHINSEGAE BUSAN'' ,''HYUNDAI_DDM'': ''HYUNDAI DDM'',\\
-            ''HYUNDAI_COEX'': ''HYUNDAI COEX'', ''DONGWHA'': ''DONGWHA''}
+        sheet_dict={'LTM': 'LOTTE MAIN','LTJ': 'LOTTE JEJU', 'SLM': 'SHILLA MAIN', 'SLJ': 'SHILLA JEJU',\
+            'HDC': 'HDC', 'SGM': 'SHINSEGAE MAIN','SGB':'SHINSEGAE BUSAN' ,'HYUNDAI_DDM': 'HYUNDAI DDM',\
+            'HYUNDAI_COEX': 'HYUNDAI COEX', 'DONGWHA': 'DONGWHA'}
                     
         # Looping thorugh each sheet 
         
         for retailer_name,location_name in sheet_dict.items():
             stage_path="@{0}/{1}/{2}.csv".format(stage_name,temp_stage_path,retailer_name)
-            print(''stage_path printing....'',stage_path)
+            print('stage_path printing....',stage_path)
             transformed_rows.clear()
             final_df = None
             df=None
             transformed_df =None
 
             try :
-                df = session.read\\
-                .schema(df_schema)\\
-                .option("skip_header",3)\\
-                .option("field_delimiter", "\\\\u0001")\\
+                df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",3)\
+                .option("field_delimiter", "\u0001")\
                 .csv(stage_path)
             except Exception as e:
                 error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
                 
-            #df_filter=df.filter(col("rsp") != "")
-            df_filter=[1,2,3,4]
+            df_filter=df.filter(col("rsp") != "")
+
             # Looping to get header to check if all months data is present
             for i in range(1,4):
-                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\\\u0001").csv(stage_path)
+                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\u0001").csv(stage_path)
                 header_pandas=header_df.to_pandas()
                 h_key="header_"+str(i)
                 h_val=header_pandas.iloc[int(i)].tolist()
@@ -128,12 +129,12 @@ def main(session: snowpark.Session,Param):
                 
 
             # Checking if all months data is present 
-            all_present = all(element in header_dict[''header_2''] for element in all_months)
+            all_present = all(element in header_dict['header_2'] for element in all_months)
             #Start processing only when all month data is present.
             if all_present:
-                for  row in df_filter:
+                for  row in df_filter.collect():
                     for month,value in sls_stk_mth.items():
-                        #print(month,''........'',value)
+                        #print(month,'........',value)
                         new_row = row.as_dict()
                         new_row["month"] = month
                         new_row["sls_qty"] = row[value[0]]
@@ -142,7 +143,7 @@ def main(session: snowpark.Session,Param):
                         # Add retailer_name, year_month, and file_name
                         new_row["location_name"] = location_name
                         new_row["retailer_name"] = retailer_name
-                        new_row["year"] = file_name.split(''_'')[1].split(''.'')[0]
+                        new_row["year"] = file_name.split('_')[1].split('.')[0]
                         new_row["file_name"] = file_name
     
                         final_row=Row(**new_row)
@@ -151,17 +152,17 @@ def main(session: snowpark.Session,Param):
                         transformed_rows.append(final_row)
       
                 transformed_df = session.createDataFrame(transformed_rows)
-                print(''Transformed df created count is : '',transformed_df.count())
+                print('Transformed df created count is : ',transformed_df.count())
                 if transformed_df.count() == 0:
                     raise Exception("The excel data file is empty for sheet : ",retailer_name,". Please place a valid file!")
                 else :
                      pass
 
 
-                main_df=transformed_df.select(''location_name'',''retailer_name'',''year'',''month'',''dcl_code'',''sap_code'',\\
-                                                  ''reference'',''product_desc'',''size'',''rsp'',''c_sls_qty'',''c_sls_amt'',\\
-                                                  ''c_stock_qty'',''c_stock_amt'',''buffer'',''mix'',''r_3m'',''comparison'',\\
-                                                  ''sls_qty'',''stock_qty'',''file_name'')
+                main_df=transformed_df.select('location_name','retailer_name','year','month','dcl_code','sap_code',\
+                                                  'reference','product_desc','size','rsp','c_sls_qty','c_sls_amt',\
+                                                  'c_stock_qty','c_stock_amt','buffer','mix','r_3m','comparison',\
+                                                  'sls_qty','stock_qty','file_name')
 
 
                 if not final_df:
@@ -170,7 +171,7 @@ def main(session: snowpark.Session,Param):
                     final_df = final_df.unionByName(main_df)  
 
 
-                print(''Cummulative count of final df in each iteration '',final_df.count())
+                print('Cummulative count of final df in each iteration ',final_df.count())
 
                 final_df= final_df.filter(final_df["dcl_code"].isNotNull())
 
@@ -182,7 +183,7 @@ def main(session: snowpark.Session,Param):
                     final_df.write.mode("append").saveAsTable(target_table)  
             
                     # Adding the current time to DF before appending into the raw table.
-                    final_raw_df=final_df.withColumn(''crt_dttm'',lit(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
+                    final_raw_df=final_df.withColumn('crt_dttm',lit(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
                     final_raw_df.write.mode("append").saveAsTable(target_raw_table)  # Append only raw table        
 
                     final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
@@ -200,4 +201,5 @@ def main(session: snowpark.Session,Param):
     except Exception as e:
         # Handle exceptions here
         error_message = f"Error: {str(e)}"
-        return error_message';
+        return error_message
+$$;
