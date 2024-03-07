@@ -120,7 +120,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Audit_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -333,6 +333,12 @@
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Read Details",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1203,7 +1209,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Audit_Start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1227,7 +1233,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Read Details",
+						"activity": "Fetch id",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1626,30 +1632,11 @@
 				}
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "Audit_Start",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": {
-						"value": "@mul(mul(rand(2,7),rand(1,5)),rand(1,4))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Wait2",
 				"type": "Wait",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Wait1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1799,7 +1786,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set utcnow",
+									"activity": "Get LastModifiedTokenTime",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1813,7 +1800,7 @@
 							"typeProperties": {
 								"variableName": "generateToken",
 								"value": {
-									"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
+									"value": "@if(greaterOrEquals(utcnow(),addhours(activity('Get LastModifiedTokenTime').output.lastModified,4)),true,false)",
 									"type": "Expression"
 								}
 							}
@@ -1823,7 +1810,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set 4hoursBuffer",
+									"activity": "Get LastModifiedTokenTime",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1902,6 +1889,25 @@
 							"value": "@pipeline().parameters.phase_id",
 							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Set refreshType",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": {
+						"value": "@mul(mul(rand(2,7),rand(1,5)),rand(1,4))",
+						"type": "Expression"
 					}
 				}
 			}
