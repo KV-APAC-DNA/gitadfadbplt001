@@ -390,6 +390,8 @@
 			{
 				"name": "Hit Refresh",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Read token and siteId again",
@@ -1859,7 +1861,7 @@
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Set 4hoursBuffer",
+									"activity": "Set variable1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1874,6 +1876,30 @@
 								"variableName": "generateToken",
 								"value": {
 									"value": "@if(greaterOrEquals(utcnow(),variables('lastModTimePlus4Hours')),true,false)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set variable1",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set 4hoursBuffer",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "utcNow",
+								"value": {
+									"value": "@utcnow()",
 									"type": "Expression"
 								}
 							}
@@ -1926,6 +1952,9 @@
 				"defaultValue": true
 			},
 			"lastModTimePlus4Hours": {
+				"type": "String"
+			},
+			"utcNow": {
 				"type": "String"
 			}
 		},
