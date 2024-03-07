@@ -1,10 +1,10 @@
-CREATE OR REPLACE PROCEDURE ASPSDL_RAW.test_SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.DEV_SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
-EXECUTE AS OWNER
+EXECUTE AS CALLER
 AS '
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField
@@ -16,7 +16,8 @@ from snowflake.snowpark import Row
 def main(session: snowpark.Session,Param): 
     
 	# SP call and parameters to pass.
-	# CALL ASPSDL_RAW.SALESSTOCK_PREPROCESSING([''SalesStock_2022.xlsx'',''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional'',''sdl_rg_travel_retail_sales_stock''])
+	# CALL ASPSDL_RAW.SALESSTOCK_PREPROCESSING
+    #Param=[''SalesStock_2021.xlsx'',''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional'',''sdl_rg_travel_retail_sales_stock'']
 	
     try:
         # Extracting parameters from the input
@@ -105,6 +106,7 @@ def main(session: snowpark.Session,Param):
             final_df = None
             df=None
             transformed_df =None
+
             try :
                 df = session.read\\
                 .schema(df_schema)\\
@@ -127,31 +129,27 @@ def main(session: snowpark.Session,Param):
 
             # Checking if all months data is present 
             all_present = all(element in header_dict[''header_2''] for element in all_months)
-            
             #Start processing only when all month data is present.
-            
             if all_present:
                 for  row in df_filter.collect():
                     for month,value in sls_stk_mth.items():
                         #print(month,''........'',value)
-                        
                         new_row = row.as_dict()
                         new_row["month"] = month
                         new_row["sls_qty"] = row[value[0]]
                         new_row["stock_qty"] = row[value[1]]
-                        
+                            
                         # Add retailer_name, year_month, and file_name
                         new_row["location_name"] = location_name
                         new_row["retailer_name"] = retailer_name
                         new_row["year"] = file_name.split(''_'')[1].split(''.'')[0]
                         new_row["file_name"] = file_name
-
+    
                         final_row=Row(**new_row)
-                         
+                            
                         # Append the transformed row to the list
                         transformed_rows.append(final_row)
-                        
-                
+      
                 transformed_df = session.createDataFrame(transformed_rows)
                 print(''Transformed df created count is : '',transformed_df.count())
                 if transformed_df.count() == 0:
@@ -191,7 +189,7 @@ def main(session: snowpark.Session,Param):
             else:
                 raise Exception("Please check if we have all months data in excel")                 
 
-        return ''Success''
+        return "Success"
 
     except KeyError as key_error:
         # Handle KeyError (missing columns) here
@@ -202,5 +200,4 @@ def main(session: snowpark.Session,Param):
     except Exception as e:
         # Handle exceptions here
         error_message = f"Error: {str(e)}"
-        return error_message
-';
+        return error_message';
