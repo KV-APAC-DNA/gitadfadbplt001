@@ -185,6 +185,14 @@
 							"filename": {
 								"value": "@concat(variables('GET_STATUS_FILE'),'.csv')",
 								"type": "Expression"
+							},
+							"container": {
+								"value": "@variables('container')",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@variables('file_path')",
+								"type": "Expression"
 							}
 						}
 					}
@@ -227,6 +235,14 @@
 						"parameters": {
 							"filename": {
 								"value": "@concat(variables('GET_STATUS_FILE'),'.csv')",
+								"type": "Expression"
+							},
+							"container": {
+								"value": "@variables('container')",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@variables('file_path')",
 								"type": "Expression"
 							}
 						}
