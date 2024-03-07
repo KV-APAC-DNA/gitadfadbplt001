@@ -852,7 +852,7 @@
 				}
 			},
 			{
-				"name": "error dbt run failed_copy1",
+				"name": "error dbt run failed_1",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
