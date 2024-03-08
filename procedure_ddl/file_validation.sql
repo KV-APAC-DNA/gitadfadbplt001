@@ -191,7 +191,7 @@ def thailand_processing(CURRENT_FILE):
         split_name=CURRENT_FILE.split("_")
         file= ("_").join(split_name[0:4])+"."+CURRENT_FILE.split(".")[-1]
     else:
-        file = CURRENT_FILE
+        file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
 
     return file
