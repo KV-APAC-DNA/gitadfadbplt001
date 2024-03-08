@@ -1297,7 +1297,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@empty(variables('resultSet'))",
+						"value": "@and(and(empty(variables('resultSet')),greater(variables('run_status'),10)),equals(variables('refreshType'),'ingestion'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
