@@ -1180,6 +1180,8 @@
 						{
 							"name": "Fetch Failed Records",
 							"type": "Lookup",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Script3",
@@ -1217,6 +1219,8 @@
 						{
 							"name": "Email records",
 							"type": "Wait",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Fetch Failed Records",
@@ -1566,15 +1570,15 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 21
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 2
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 62
+				"defaultValue": 41
 			},
 			"phase_id": {
 				"type": "int",
