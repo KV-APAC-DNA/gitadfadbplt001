@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE ASPSDL_RAW.DEV_SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE ASPSDL_RAW.SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -16,8 +16,9 @@ from snowflake.snowpark import Row
 def main(session: snowpark.Session,Param): 
     
 
+	
     try:
- 
+
 
         file_name       = Param[0]
         stage_name      = Param[1]
@@ -42,6 +43,7 @@ def main(session: snowpark.Session,Param):
         transformed_rows = []
         final_df = None
         
+
 
         df_schema=StructType([
             StructField("temp_col",StringType()),
@@ -84,27 +86,30 @@ def main(session: snowpark.Session,Param):
             StructField("dec_sls",StringType()),
             StructField("dec_stock",StringType())
             ])
+
         
         session.use_schema(stage_name.split(''.'')[0])
 
         
-        sheet_dict={''LTM'': ''LOTTE MAIN'',''LTJ'': ''LOTTE JEJU'', ''SLM'': ''SHILLA MAIN'', ''SLJ'': ''SHILLA JEJU'',\
-            ''HDC'': ''HDC'', ''SGM'': ''SHINSEGAE MAIN'',''SGB'':''SHINSEGAE BUSAN'' ,''HYUNDAI_DDM'': ''HYUNDAI DDM'',\
+        sheet_dict={''LTM'': ''LOTTE MAIN'',''LTJ'': ''LOTTE JEJU'', ''SLM'': ''SHILLA MAIN'', ''SLJ'': ''SHILLA JEJU'',\\
+            ''HDC'': ''HDC'', ''SGM'': ''SHINSEGAE MAIN'',''SGB'':''SHINSEGAE BUSAN'' ,''HYUNDAI_DDM'': ''HYUNDAI DDM'',\\
             ''HYUNDAI_COEX'': ''HYUNDAI COEX'', ''DONGWHA'': ''DONGWHA''}
                     
+
         
         for retailer_name,location_name in sheet_dict.items():
             stage_path="@{0}/{1}/{2}.csv".format(stage_name,temp_stage_path,retailer_name)
+            print(''stage_path printing....'',stage_path)
             transformed_rows.clear()
             final_df = None
             df=None
             transformed_df =None
 
             try :
-                df = session.read\
-                .schema(df_schema)\
-                .option("skip_header",3)\
-                .option("field_delimiter", "\u0001")\
+                df = session.read\\
+                .schema(df_schema)\\
+                .option("skip_header",3)\\
+                .option("field_delimiter", "\\\\u0001")\\
                 .csv(stage_path)
             except Exception as e:
                 error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
@@ -113,18 +118,20 @@ def main(session: snowpark.Session,Param):
 
 
             for i in range(1,4):
-                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\u0001").csv(stage_path)
+                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\\\u0001").csv(stage_path)
                 header_pandas=header_df.to_pandas()
                 h_key="header_"+str(i)
                 h_val=header_pandas.iloc[int(i)].tolist()
                 header_dict[h_key]=h_val
                 
 
+
             all_present = all(element in header_dict[''header_2''] for element in all_months)
 
             if all_present:
                 for  row in df_filter.collect():
                     for month,value in sls_stk_mth.items():
+
                         new_row = row.as_dict()
                         new_row["month"] = month
                         new_row["sls_qty"] = row[value[0]]
@@ -149,9 +156,9 @@ def main(session: snowpark.Session,Param):
                      pass
 
 
-                main_df=transformed_df.select(''location_name'',''retailer_name'',''year'',''month'',''dcl_code'',''sap_code'',\
-                                                  ''reference'',''product_desc'',''size'',''rsp'',''c_sls_qty'',''c_sls_amt'',\
-                                                  ''c_stock_qty'',''c_stock_amt'',''buffer'',''mix'',''r_3m'',''comparison'',\
+                main_df=transformed_df.select(''location_name'',''retailer_name'',''year'',''month'',''dcl_code'',''sap_code'',\\
+                                                  ''reference'',''product_desc'',''size'',''rsp'',''c_sls_qty'',''c_sls_amt'',\\
+                                                  ''c_stock_qty'',''c_stock_amt'',''buffer'',''mix'',''r_3m'',''comparison'',\\
                                                   ''sls_qty'',''stock_qty'',''file_name'')
 
 
@@ -174,7 +181,7 @@ def main(session: snowpark.Session,Param):
             
 
                     final_raw_df=final_df.withColumn(''crt_dttm'',lit(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
-                    final_raw_df.write.mode("append").saveAsTable(target_raw_table)      
+                    final_raw_df.write.mode("append").saveAsTable(target_raw_table)        
 
                     final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
             else:
