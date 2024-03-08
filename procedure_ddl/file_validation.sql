@@ -43,6 +43,8 @@ def main(session: snowpark.Session,Param):
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
+
+        processed_file_name=CURRENT_FILE
     
         # If the File belongs to Regional, then it enters the function
     
@@ -52,6 +54,7 @@ def main(session: snowpark.Session,Param):
         # If the File belongs to Thailand, then it enters the function
         if stage_name.split(".")[0]=="THASDL_RAW":
            processed_file_name=thailand_processing(CURRENT_FILE)
+
     
         #Extracting the filename based on index variable
         
