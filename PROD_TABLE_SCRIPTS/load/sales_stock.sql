@@ -95,7 +95,6 @@ def main(session: snowpark.Session,Param):
         
         for retailer_name,location_name in sheet_dict.items():
             stage_path="@{0}/{1}/{2}.csv".format(stage_name,temp_stage_path,retailer_name)
-            print(''stage_path printing....'',stage_path)
             transformed_rows.clear()
             final_df = None
             df=None
@@ -143,7 +142,7 @@ def main(session: snowpark.Session,Param):
                         transformed_rows.append(final_row)
       
                 transformed_df = session.createDataFrame(transformed_rows)
-                print(''Transformed df created count is : '',transformed_df.count())
+
                 if transformed_df.count() == 0:
                     raise Exception("The excel data file is empty for sheet : ",retailer_name,". Please place a valid file!")
                 else :
@@ -162,7 +161,7 @@ def main(session: snowpark.Session,Param):
                     final_df = final_df.unionByName(main_df)  
 
 
-                print(''Cummulative count of final df in each iteration '',final_df.count())
+
 
                 final_df= final_df.filter(final_df["dcl_code"].isNotNull())
 
