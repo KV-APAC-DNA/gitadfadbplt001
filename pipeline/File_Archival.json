@@ -178,8 +178,6 @@
 			{
 				"name": "Move to Archive",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Is Error",
@@ -256,8 +254,6 @@
 			{
 				"name": "Is Error",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set temp path",
@@ -353,8 +349,6 @@
 			{
 				"name": "Is xlsx",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Move to Archive",
@@ -420,8 +414,6 @@
 			{
 				"name": "ForEachSheetFromXlsx",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Is xlsx",
