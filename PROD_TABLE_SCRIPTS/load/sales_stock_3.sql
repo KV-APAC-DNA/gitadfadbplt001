@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE ASPSDL_RAW.SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE ASPSDL_RAW.DEV_SALESSTOCK_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -91,8 +91,8 @@ def main(session: snowpark.Session,Param):
         session.use_schema(stage_name.split(''.'')[0])
 
         
-        sheet_dict={''LTM'': ''LOTTE MAIN'',''LTJ'': ''LOTTE JEJU'', ''SLM'': ''SHILLA MAIN'', ''SLJ'': ''SHILLA JEJU'',\\
-            ''HDC'': ''HDC'', ''SGM'': ''SHINSEGAE MAIN'',''SGB'':''SHINSEGAE BUSAN'' ,''HYUNDAI_DDM'': ''HYUNDAI DDM'',\\
+        sheet_dict={''LTM'': ''LOTTE MAIN'',''LTJ'': ''LOTTE JEJU'', ''SLM'': ''SHILLA MAIN'', ''SLJ'': ''SHILLA JEJU'',\
+            ''HDC'': ''HDC'', ''SGM'': ''SHINSEGAE MAIN'',''SGB'':''SHINSEGAE BUSAN'' ,''HYUNDAI_DDM'': ''HYUNDAI DDM'',\
             ''HYUNDAI_COEX'': ''HYUNDAI COEX'', ''DONGWHA'': ''DONGWHA''}
                     
 
@@ -106,10 +106,10 @@ def main(session: snowpark.Session,Param):
             transformed_df =None
 
             try :
-                df = session.read\\
-                .schema(df_schema)\\
-                .option("skip_header",3)\\
-                .option("field_delimiter", "\\\\u0001")\\
+                df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",3)\
+                .option("field_delimiter", "\u0001")\
                 .csv(stage_path)
             except Exception as e:
                 error_message = f"Error: Sheet {retailer_name} is missing in excel OR {str(e)}"
@@ -118,7 +118,7 @@ def main(session: snowpark.Session,Param):
 
 
             for i in range(1,4):
-                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\\\u0001").csv(stage_path)
+                header_df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\u0001").csv(stage_path)
                 header_pandas=header_df.to_pandas()
                 h_key="header_"+str(i)
                 h_val=header_pandas.iloc[int(i)].tolist()
@@ -156,9 +156,9 @@ def main(session: snowpark.Session,Param):
                      pass
 
 
-                main_df=transformed_df.select(''location_name'',''retailer_name'',''year'',''month'',''dcl_code'',''sap_code'',\\
-                                                  ''reference'',''product_desc'',''size'',''rsp'',''c_sls_qty'',''c_sls_amt'',\\
-                                                  ''c_stock_qty'',''c_stock_amt'',''buffer'',''mix'',''r_3m'',''comparison'',\\
+                main_df=transformed_df.select(''location_name'',''retailer_name'',''year'',''month'',''dcl_code'',''sap_code'',\
+                                                  ''reference'',''product_desc'',''size'',''rsp'',''c_sls_qty'',''c_sls_amt'',\
+                                                  ''c_stock_qty'',''c_stock_amt'',''buffer'',''mix'',''r_3m'',''comparison'',\
                                                   ''sls_qty'',''stock_qty'',''file_name'')
 
 
