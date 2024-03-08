@@ -181,7 +181,7 @@ def main(session: snowpark.Session,Param):
             
 
                     final_raw_df=final_df.withColumn(''crt_dttm'',lit(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))) 
-                    final_raw_df.write.mode("append").saveAsTable(target_raw_table)        
+                    #final_raw_df.write.mode("append").saveAsTable(target_raw_table)        
 
                     final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",header=True,OVERWRITE=True)
             else:
