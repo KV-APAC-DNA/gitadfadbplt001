@@ -2,14 +2,15 @@
 ---version History--------------------------------
 -- 02/02/24 	Thanish		Initial Version
 -- 01/03/24	Srihari		Added Header logic to Handle files with '|' Delimiter
--- 05/06/24	Srihari		Added Exception handling
+-- 05/03/24	Srihari		Added Exception handling
 -- 06/03/24	Thanish		Added file name logic to Handle Thailand files
+-- 09/03/24 Srihari     Added Logic to handle regular expressions in name and header
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('snowflake-snowpark-python')
+PACKAGES = ('snowflake-snowpark-python', 'regex')
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS '# The Snowpark package is required for Python Worksheets. 
@@ -18,6 +19,7 @@ AS '# The Snowpark package is required for Python Worksheets.
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col
 import math
+import regex
 
 def main(session: snowpark.Session,Param): 
     try:
@@ -40,11 +42,11 @@ def main(session: snowpark.Session,Param):
         file_header_row_num	=  Param[6]
         stage_name     		=  Param[7]
         temp_stage_path		=  Param[8]
+        header_reg          =  Param[9]
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
 
-        processed_file_name=CURRENT_FILE
     
         # If the File belongs to Regional, then it enters the function
     
@@ -52,8 +54,11 @@ def main(session: snowpark.Session,Param):
             processed_file_name=rg_travel_validation(CURRENT_FILE)
             
         # If the File belongs to Thailand, then it enters the function
-        if stage_name.split(".")[0]=="THASDL_RAW":
+        elif stage_name.split(".")[0]=="THASDL_RAW":
            processed_file_name=thailand_processing(CURRENT_FILE)
+
+        else:
+            processed_file_name=CURRENT_FILE
 
     
         #Extracting the filename based on index variable
@@ -120,8 +125,11 @@ def main(session: snowpark.Session,Param):
             pipe_split = val_header.split(''|'')
             if len(pipe_split) > 1:
                 final_val_header=pipe_split
-        
-            file_header_validation_status,counter=file_header_validation(counter,final_val_header,file_header)
+
+            header_reg = header_reg.lower()
+            regex_list = header_reg.split(''^'')
+            
+            file_header_validation_status,counter=file_header_validation(counter,final_val_header,file_header, regex_list)
         
         else:
             print("File Header Validation not required")
@@ -201,11 +209,14 @@ def thailand_processing(CURRENT_FILE):
 
 def file_validation(counter,extracted_filename,val_file_name):
 
-        if extracted_filename.upper() == val_file_name.upper():
+        if val_file_name.upper() == extracted_filename.upper():
             file_name_validation_status=""
             print("file_name_validation_status is successful")
+        elif regex.match(val_file_name.upper(), extracted_filename.upper()):
+            file_name_validation_status=""
+            print("file_name_validation_status is successful")       
         else:
-            file_name_validation_status="Invalid File Name"
+            file_name_validation_status="Invalid File Name, received  " + extracted_filename+" while expecting " +val_file_name
             print("file_name_validation_status",file_name_validation_status)
             counter = 1
         return file_name_validation_status,counter
@@ -225,7 +236,7 @@ def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
             counter = counter+2
         return file_ext_validation_status,counter
 
-def file_header_validation(counter,final_val_header,file_header):
+def file_header_validation(counter,final_val_header,file_header, hreg):
 
         # Compare the header from file and the header from metadata
         # Get the count of both
@@ -241,12 +252,19 @@ def file_header_validation(counter,final_val_header,file_header):
         val_header_count=len(final_val_header)
         file_header_count=len(file_header)
     
-        
+        rindex = 0
         for i in range(max(file_header_count, val_header_count)):
             if i < file_header_count and i < val_header_count:
-                if file_header[i] != final_val_header[i]:
+                if "{r}" in final_val_header[i]:
+                    final_val_header[i] = final_val_header[i].replace("{r}", hreg[rindex])
+                    if rindex < len(hreg)-1:
+                        rindex += 1
+                    if not regex.match(final_val_header[i],file_header[i]):
+                        index.append(i+1)
+                        file_header_rejected_list.append(file_header[i])
+                elif file_header[i] != final_val_header[i]:
                     index.append(i+1)
-                    file_header_rejected_list.append(file_header[i])
+                    file_header_rejected_list.append(file_header[i])               
 
             elif i < file_header_count:
                 extra_columns.append(file_header[i])
@@ -261,13 +279,13 @@ def file_header_validation(counter,final_val_header,file_header):
 
             # Return Fail message if value found in Rejected list and not in extra columns list
         elif len(file_header_rejected_list)!=0 and not extra_columns:
-            file_header_validation_status="Header validation Failed"+" , unmatched columns found in index "+ str(index) +" and columns are" + str(file_header_rejected_list)
+            file_header_validation_status="Header validation Failed"+" , unmatched columns found in index "+ str(index) +" and columns are" + str(file_header_rejected_list) + " expected "+str(final_val_header)+ " received " + str(file_header)
             print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
 
             # Return Fail message if values found in extra columns list
         elif len(extra_columns)!=0:
-            file_header_validation_status="Header validation Failed, unmatched columns found in index " + str(index) + " and columns are " + str(file_header_rejected_list) + " ; extra columns found in file header! " + str(extra_columns)
+            file_header_validation_status="Header validation Failed, unmatched columns found in index " + str(index) + " and columns are " + str(file_header_rejected_list) + " ; extra columns found in file header! " + str(extra_columns) 
             print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
 
@@ -277,15 +295,5 @@ def file_header_validation(counter,final_val_header,file_header):
         
             
         return file_header_validation_status,counter
-
-
-            
-
-
-
-
-
-    
-        
 
     ';
