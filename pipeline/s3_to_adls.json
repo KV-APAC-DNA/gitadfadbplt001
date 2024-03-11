@@ -19,7 +19,8 @@
 						"value": "@activity('get_metadata').output.value",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 10,
 					"activities": [
 						{
 							"name": "get file name",
@@ -231,7 +232,10 @@
 											"scripts": [
 												{
 													"type": "Query",
-													"text": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG\n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'SUCCESS'\n)"
+													"text": {
+														"value": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG\n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'SUCCESS'\n)",
+														"type": "Expression"
+													}
 												}
 											],
 											"scriptBlockExecutionTimeout": "02:00:00"
@@ -264,7 +268,10 @@
 											"scripts": [
 												{
 													"type": "Query",
-													"text": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG \n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'FAILED'\n)"
+													"text": {
+														"value": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG \n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'FAILED'\n)",
+														"type": "Expression"
+													}
 												}
 											],
 											"scriptBlockExecutionTimeout": "02:00:00"
