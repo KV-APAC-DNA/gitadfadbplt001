@@ -144,7 +144,14 @@
 								{
 									"name": "Load with SP",
 									"type": "Lookup",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set variable1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -157,7 +164,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('fileName')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.value[0].folder_path\n}','@{pipeline().parameters.parameters.value[0].target_table\n}']);\n",
+												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.value[0].folder_path\n}','@{pipeline().parameters.parameters.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -218,6 +225,23 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Set variable1",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "paramfilename",
+										"value": {
+											"value": "@if(\n    equals(toupper(pipeline().parameters.parameters.value[0].is_direct_load), 'Y'),\n     pipeline().parameters.sourceFileName,\n     variables('fileName') )",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -247,7 +271,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.value[0].folder_path\n}']);",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{pipeline().parameters.parameters.value[0].folder_path\n}','@{pipeline().parameters.parameters.value[0].header_regex\n}']);",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -1717,6 +1741,9 @@
 			},
 			"sheetNames": {
 				"type": "Array"
+			},
+			"paramfilename": {
+				"type": "String"
 			}
 		},
 		"folder": {
