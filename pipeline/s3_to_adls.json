@@ -196,6 +196,10 @@
 												"last_modified": {
 													"value": "@item().last_modified",
 													"type": "Expression"
+												},
+												"delete_from_source": {
+													"value": "@variables('delete_source_file')",
+													"type": "Expression"
 												}
 											}
 										}
