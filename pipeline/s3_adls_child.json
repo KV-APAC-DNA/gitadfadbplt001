@@ -167,6 +167,9 @@
 			},
 			"adls_path": {
 				"type": "string"
+			},
+			"last_modified": {
+				"type": "string"
 			}
 		},
 		"folder": {
