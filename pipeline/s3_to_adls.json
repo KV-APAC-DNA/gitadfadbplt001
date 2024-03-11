@@ -102,7 +102,14 @@
 						{
 							"name": "set last run time",
 							"type": "SetVariable",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "set delete_source_file",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"secureOutput": false,
 								"secureInput": false
@@ -250,6 +257,23 @@
 									}
 								]
 							}
+						},
+						{
+							"name": "set delete_source_file",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "delete_source_file",
+								"value": {
+									"value": "@item().delete_source_file",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
@@ -314,6 +338,9 @@
 			"last_modified": {
 				"type": "String",
 				"defaultValue": "2022-08-03T09:01:00Z"
+			},
+			"delete_source_file": {
+				"type": "String"
 			}
 		},
 		"folder": {
