@@ -65,6 +65,8 @@
 						{
 							"name": "If Condition1",
 							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "if_file_exists",
@@ -146,6 +148,175 @@
 														"type": "Expression"
 													}
 												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "Switch1",
+							"type": "Switch",
+							"dependsOn": [
+								{
+									"activity": "if_file_exists",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@if(\n    and(\n        equals(pipeline().parameters.delete_from_source, 'Y'),\n        equals(activity('if_file_exists').output.exists, true)\n    ),\n    'move_and_delete', \n    if(\n        and(\n            equals(pipeline().parameters.delete_from_source, 'N'),\n            equals(activity('if_file_exists').output.exists, true)\n        ),\n        'move_and_donot_delete',  \n        'DefaultResult'\n    )\n)",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "move_and_delete",
+										"activities": [
+											{
+												"name": "s3_to_adls_delete_source_file",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "BinarySource",
+														"storeSettings": {
+															"type": "AmazonS3ReadSettings",
+															"recursive": true,
+															"deleteFilesAfterCompletion": false
+														},
+														"formatSettings": {
+															"type": "BinaryReadSettings"
+														}
+													},
+													"sink": {
+														"type": "BinarySink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "s3_source_binary",
+														"type": "DatasetReference",
+														"parameters": {
+															"bucket": {
+																"value": "@pipeline().parameters.s3_bucket",
+																"type": "Expression"
+															},
+															"path": {
+																"value": "@pipeline().parameters.s3_path",
+																"type": "Expression"
+															},
+															"file": {
+																"value": "@item().name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "adls_sink_binary",
+														"type": "DatasetReference",
+														"parameters": {
+															"adls_container": {
+																"value": "@pipeline().parameters.adls_container",
+																"type": "Expression"
+															},
+															"adls_path": {
+																"value": "@pipeline().parameters.adls_path",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											}
+										]
+									},
+									{
+										"value": "move_and_donot_delete",
+										"activities": [
+											{
+												"name": "s3_to_adls_donot_delete_source_file",
+												"type": "Copy",
+												"dependsOn": [],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "BinarySource",
+														"storeSettings": {
+															"type": "AmazonS3ReadSettings",
+															"recursive": true,
+															"deleteFilesAfterCompletion": false
+														},
+														"formatSettings": {
+															"type": "BinaryReadSettings"
+														}
+													},
+													"sink": {
+														"type": "BinarySink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														}
+													},
+													"enableStaging": false
+												},
+												"inputs": [
+													{
+														"referenceName": "s3_source_binary",
+														"type": "DatasetReference",
+														"parameters": {
+															"bucket": {
+																"value": "@pipeline().parameters.s3_bucket",
+																"type": "Expression"
+															},
+															"path": {
+																"value": "@pipeline().parameters.s3_path",
+																"type": "Expression"
+															},
+															"file": {
+																"value": "@item().name",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "adls_sink_binary",
+														"type": "DatasetReference",
+														"parameters": {
+															"adls_container": {
+																"value": "@pipeline().parameters.adls_container",
+																"type": "Expression"
+															},
+															"adls_path": {
+																"value": "@pipeline().parameters.adls_path",
+																"type": "Expression"
+															}
+														}
+													}
+												]
 											}
 										]
 									}
