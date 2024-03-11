@@ -170,6 +170,10 @@
 		"parameters": {
 			"Group_id": {
 				"type": "string"
+			},
+			"re_run": {
+				"type": "bool",
+				"defaultValue": false
 			}
 		},
 		"variables": {
@@ -186,6 +190,12 @@
 				"type": "String"
 			},
 			"adls_path": {
+				"type": "String"
+			},
+			"last_modified": {
+				"type": "String"
+			},
+			"delete_source_file": {
 				"type": "String"
 			}
 		},
