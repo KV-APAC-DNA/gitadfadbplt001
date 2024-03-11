@@ -230,7 +230,7 @@
 										}
 									},
 									{
-										"name": "Script2",
+										"name": "log_failed_copy",
 										"type": "Script",
 										"dependsOn": [
 											{
@@ -255,7 +255,8 @@
 										"typeProperties": {
 											"scripts": [
 												{
-													"type": "Query"
+													"type": "Query",
+													"text": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG \n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'FAILED'\n)"
 												}
 											],
 											"scriptBlockExecutionTimeout": "02:00:00"
