@@ -5,6 +5,8 @@
 			{
 				"name": "ForEach1",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "get_metadata",
@@ -312,7 +314,7 @@
 		"parameters": {
 			"Group_id": {
 				"type": "string",
-				"defaultValue": "1"
+				"defaultValue": "23"
 			},
 			"re_run": {
 				"type": "bool",
