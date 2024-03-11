@@ -192,6 +192,10 @@
 												"adls_path": {
 													"value": "@item().ADLS_PATH",
 													"type": "Expression"
+												},
+												"last_modified": {
+													"value": "@item().last_modified",
+													"type": "Expression"
 												}
 											}
 										}
