@@ -338,8 +338,7 @@
 				"type": "String"
 			},
 			"last_modified": {
-				"type": "String",
-				"defaultValue": "2022-08-03T09:01:00Z"
+				"type": "String"
 			},
 			"delete_source_file": {
 				"type": "String"
