@@ -74,6 +74,9 @@
 										"name": "run consumption sequence",
 										"type": "ExecutePipeline",
 										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
 										"userProperties": [],
 										"typeProperties": {
 											"pipeline": {
@@ -132,6 +135,9 @@
 				"name": "audit start",
 				"type": "ExecutePipeline",
 				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -186,6 +192,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -240,6 +249,9 @@
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
@@ -305,6 +317,9 @@
 							"name": "audit success",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -354,6 +369,9 @@
 							"name": "audit fail children",
 							"type": "ExecutePipeline",
 							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
@@ -400,6 +418,8 @@
 						{
 							"name": "fail this pipeline",
 							"type": "Fail",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "audit fail children",

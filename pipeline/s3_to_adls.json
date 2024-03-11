@@ -19,12 +19,20 @@
 						"value": "@activity('get_metadata').output.value",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 10,
 					"activities": [
 						{
 							"name": "get file name",
 							"type": "GetMetadata",
-							"dependsOn": [],
+							"dependsOn": [
+								{
+									"activity": "Set last run time",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -58,6 +66,10 @@
 								"storeSettings": {
 									"type": "AmazonS3ReadSettings",
 									"recursive": true,
+									"modifiedDatetimeStart": {
+										"value": "@if(not(pipeline().parameters.re_run),\nvariables('last_modified'),'')",
+										"type": "Expression"
+									},
 									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
@@ -89,8 +101,49 @@
 							}
 						},
 						{
-							"name": "Execute Pipeline1",
-							"type": "ExecutePipeline",
+							"name": "Set delete_source_file",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "delete_source_file",
+								"value": {
+									"value": "@item().delete_source_file",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set last run time",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set delete_source_file",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "last_modified",
+								"value": {
+									"value": "@item().last_modified",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "If file exists",
+							"type": "IfCondition",
 							"dependsOn": [
 								{
 									"activity": "Filter Only File",
@@ -99,38 +152,132 @@
 									]
 								}
 							],
-							"policy": {
-								"secureInput": false
-							},
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "s3_adls_child",
-									"type": "PipelineReference"
+								"expression": {
+									"value": "@greater(activity('Filter Only File').output.FilteredItemsCount,0)",
+									"type": "Expression"
 								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"s3_bucket": {
-										"value": "@item().S3_BUCKET",
-										"type": "Expression"
+								"ifTrueActivities": [
+									{
+										"name": "Execute Pipeline1",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "s3_adls_child",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"s3_bucket": {
+													"value": "@item().S3_BUCKET",
+													"type": "Expression"
+												},
+												"s3_path": {
+													"value": "@item().S3_PATH",
+													"type": "Expression"
+												},
+												"s3_file": {
+													"value": "@activity('Filter Only File').output.value",
+													"type": "Expression"
+												},
+												"adls_container": {
+													"value": "@item().ADLS_CONTAINER",
+													"type": "Expression"
+												},
+												"adls_path": {
+													"value": "@item().ADLS_PATH",
+													"type": "Expression"
+												},
+												"last_modified": {
+													"value": "@item().last_modified",
+													"type": "Expression"
+												},
+												"delete_from_source": {
+													"value": "@variables('delete_source_file')",
+													"type": "Expression"
+												}
+											}
+										}
 									},
-									"s3_path": {
-										"value": "@item().S3_PATH",
-										"type": "Expression"
+									{
+										"name": "log_successful_copy",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Execute Pipeline1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "adfadbplt001lssnfkpltdnaload",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG\n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'SUCCESS'\n)",
+														"type": "Expression"
+													}
+												}
+											],
+											"scriptBlockExecutionTimeout": "02:00:00"
+										}
 									},
-									"s3_file": {
-										"value": "@activity('Filter Only File').output.value",
-										"type": "Expression"
-									},
-									"adls_container": {
-										"value": "@item().ADLS_CONTAINER",
-										"type": "Expression"
-									},
-									"adls_path": {
-										"value": "@item().ADLS_PATH",
-										"type": "Expression"
+									{
+										"name": "log_failed_copy",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Execute Pipeline1",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "adfadbplt001lssnfkpltdnaload",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "alter session set  timezone ='Asia/Singapore';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG \n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'FAILED'\n)",
+														"type": "Expression"
+													}
+												}
+											],
+											"scriptBlockExecutionTimeout": "02:00:00"
+										}
 									}
-								}
+								]
 							}
 						}
 					]
@@ -152,7 +299,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "@concat('select * from meta_raw.s3_to_adls where GROUP_ID=',pipeline().parameters.Group_id)",
+							"value": "@concat('SELECT AD.*,IFNULL(ADL.RUN_AT,''2000-01-01 01:00:00'') AS LAST_MODIFIED from meta_raw.s3_to_adls  AD\nLEFT JOIN \n(\nSELECT \n    MAX(RUN_AT) RUN_AT,\n    S3_TO_ADLS_ID\nFROM META_RAW.S3_TO_ADLS_AUDIT_LOG\nWHERE\n    STATUS = ''SUCCESS''\nGROUP BY S3_TO_ADLS_ID\n) ADL\nON AD.ID = ADL.S3_TO_ADLS_ID where AD.GROUP_ID=',pipeline().parameters.Group_id)",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -170,6 +317,10 @@
 		"parameters": {
 			"Group_id": {
 				"type": "string"
+			},
+			"re_run": {
+				"type": "bool",
+				"defaultValue": false
 			}
 		},
 		"variables": {
@@ -186,6 +337,12 @@
 				"type": "String"
 			},
 			"adls_path": {
+				"type": "String"
+			},
+			"last_modified": {
+				"type": "String"
+			},
+			"delete_source_file": {
 				"type": "String"
 			}
 		},
