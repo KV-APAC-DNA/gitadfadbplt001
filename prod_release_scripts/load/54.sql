@@ -119,10 +119,6 @@ def main(session: snowpark.Session,Param):
 
 
 
-update  parameters set parameter_value='CORE,OTC' where parameter_id=187
-update  parameters set parameter_name='sheet_names' where parameter_id=187
-
-
 CREATE OR REPLACE PROCEDURE ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
