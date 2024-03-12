@@ -82,4 +82,4 @@ FROM (
         GREATEST(MAX(year) - 2, MAX(univ_year) - 2) AS result
     FROM
         ASPEDW_INTEGRATION.EDW_RPT_REGIONAL_SELLOUT_OFFTAKE 
-)));
+))limit 100);
