@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE ASPSDL_RAW.FILE_VALIDATION_NTUC("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -31,12 +31,12 @@ def main(session: snowpark.Session,Param):
         counter             =  0 
 
     
-        # If the File belongs to Regional, then it enters the function
+        
     
         if stage_name.split(".")[0]=="ASPSDL_RAW":
             processed_file_name=rg_travel_validation(CURRENT_FILE)
             
-        # If the File belongs to Thailand, then it enters the function
+        
         elif stage_name.split(".")[0]=="THASDL_RAW":
            processed_file_name=thailand_processing(CURRENT_FILE)
 
@@ -44,7 +44,7 @@ def main(session: snowpark.Session,Param):
             processed_file_name=CURRENT_FILE
 
     
-        #Extracting the filename based on index variable
+        
         
         if index.lower() == "last":
             extracted_filename = processed_file_name.rsplit("_", 1)[0]
@@ -54,7 +54,7 @@ def main(session: snowpark.Session,Param):
             extracted_filename = processed_file_name.rsplit(".", 1)[0]
     
     
-        # Check for File name Validation
+        
     
         if FileNameValidation=="1":
             file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name)
@@ -62,7 +62,7 @@ def main(session: snowpark.Session,Param):
             print("File Name Validation not required")
     
     
-        # Check for  File extension validation
+        
     
         if FileExtnValidation == "1":
             file_ext_validation_status,counter=file_extn_validation(counter,CURRENT_FILE,val_file_extn)
@@ -70,14 +70,12 @@ def main(session: snowpark.Session,Param):
             print("File extension Validation not required")
     
     
-        # Check for File Header Validation
+        
     
         if FileHeaderValidation == "1":
 
-            # Converting the extension from xlsx to csv
-            # Extracting the Header from the file
+            
             if "NTUC" in CURRENT_FILE:
-                # if Core
                 file="CORE"
                 file_name=file +".csv"
                 data_core = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -157,13 +155,11 @@ def main(session: snowpark.Session,Param):
         return validation_status
 
     except Exception as e:
-            # Handle exceptions here
             error_message = f"FAILED: {str(e)}"
             return error_message
 
 
 def rg_travel_validation(CURRENT_FILE):
-    #assigning the value to varibale file
     
     if "CNSC" in CURRENT_FILE:
             fileA = CURRENT_FILE.replace(" ", "_")
@@ -207,7 +203,6 @@ def thailand_processing(CURRENT_FILE):
     return file
 
 
-# Function to Perform File name validation
 
 def file_validation(counter,extracted_filename,val_file_name):
 
@@ -224,7 +219,7 @@ def file_validation(counter,extracted_filename,val_file_name):
         return file_name_validation_status,counter
     
 
-# Function to perform file extension validation
+
 
 def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
     
@@ -240,11 +235,6 @@ def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
 
 def file_header_validation(counter,final_val_header,file_header, hreg):
 
-        # Compare the header from file and the header from metadata
-        # Get the count of both
-        # Perform index matching and return output based on the checks
-        # Moving the failed header to a list and displaying it as part of Error message
-        
         file_header_rejected_list=[]
         val_rejected_list=[]
         index=[]
@@ -273,19 +263,16 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
             elif i < val_header_count:
                 val_rejected_list.append(final_val_header[i])
             
-            # Check if count matches and no value in rejected list
     
         if file_header_count==val_header_count and not file_header_rejected_list:
             file_header_validation_status="Success"
             print("file_header_validation_status is successful")
 
-            # Return Fail message if value found in Rejected list and not in extra columns list
         elif len(file_header_rejected_list)!=0 and not extra_columns:
             file_header_validation_status="Header validation Failed"+" , unmatched columns found in index "+ str(index) +" and columns are" + str(file_header_rejected_list) + " expected "+str(final_val_header)+ " received " + str(file_header)
             print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
 
-            # Return Fail message if values found in extra columns list
         elif len(extra_columns)!=0:
             file_header_validation_status="Header validation Failed, unmatched columns found in index " + str(index) + " and columns are " + str(file_header_rejected_list) + " ; extra columns found in file header! " + str(extra_columns) 
             print("file_header_validation_status",file_header_validation_status)
