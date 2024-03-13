@@ -15,7 +15,6 @@ import math
 def main(session: snowpark.Session,Param): 
     try:
         # Example input
-        # Param=[''(JNJ Mer) - COP_1_202401.xlsx'',''last'',''1-1-1'',''(JNJ Mer) - COP_1'',''xlsx'',''Date|Emp_Address_PC|PC_Name|SURVEY_NAME|Emp_Address_Supervisor|Supervisor_Name|Activity|Category|Brand|Start_Date|End_Date|Area|Channel|Account|Store_ID|Store_Name|Compliance|Question|Answer'',''1'',''THASDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/perfect-store/transaction/'']
     
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
