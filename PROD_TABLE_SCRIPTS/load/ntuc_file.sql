@@ -2,7 +2,7 @@ CREATE OR REPLACE PROCEDURE ASPSDL_RAW.FILE_VALIDATION_NTUC("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('regex','snowflake-snowpark-python')
+PACKAGES = ('snowflake-snowpark-python','regex')
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS '# The Snowpark package is required for Python Worksheets. 
@@ -17,8 +17,11 @@ def main(session: snowpark.Session,Param):
     try:
 
         # Example input
+        # Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'']
+
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
+        #Shilla_202201 Without2ndColumnHeaders SC8
         # ********   Variable  we need from ETL table : 
         # CURRENT_FILE , index , validation, val_file_name,val_file_extn
 
@@ -82,34 +85,13 @@ def main(session: snowpark.Session,Param):
 
             # Converting the extension from xlsx to csv
             # Extracting the Header from the file
-            if "NTUC" in CURRENT_FILE:
-                # if Core
-                file="CORE"
-                file_name=file +".csv"
-                data_core = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-                df_core=data_core.to_pandas()
-                header_core=df_core.iloc[int(file_header_row_num)].tolist()
-
-                file="OTC"
-                file_name=file +".csv"
-                data_otc = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-                df_otc=data_otc.to_pandas()
-                header_otc=df_otc.iloc[int(file_header_row_num)].tolist()
-
-                if header_core!=header_otc:
-                    return "File Validation Failed; Columns from both the sheets are not matching"
-                else:
-                    header=header_core
-                
-            else:
-                file_name= CURRENT_FILE.replace("xlsx","csv")
-                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
-                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+    	
+            file_name= CURRENT_FILE.replace("xlsx","csv")
+            file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+            df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
             
-                df_pandas=df.to_pandas()
-                header=df_pandas.iloc[int(file_header_row_num)].tolist()
-                    
-                
+            df_pandas=df.to_pandas()
+            header=df_pandas.iloc[int(file_header_row_num)].tolist()
 
             # If the source is of xlsx type, then splitting based on \\x01 delimiter
 
@@ -306,4 +288,4 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
             
         return file_header_validation_status,counter
 
-';
+    ';
