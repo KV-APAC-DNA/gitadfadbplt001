@@ -2,7 +2,7 @@ CREATE OR REPLACE PROCEDURE ASPSDL_RAW.FILE_VALIDATION_NTUC("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('regex==2023.10.3','snowflake-snowpark-python==*')
+PACKAGES = ('regex','snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS '# The Snowpark package is required for Python Worksheets. 
