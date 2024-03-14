@@ -1539,7 +1539,7 @@ CREATE OR REPLACE TABLE VNMEDW_INTEGRATION.EDW_VN_SI_ST_SO_DETAILS		--// CREATE 
 
 
 
-CREATE TABLE VNMITG_INTEGRATION.ITG_SPIRAL_MTI_OFFTAKE (		--// CREATE TABLE os_itg.itg_spiral_mti_offtake (
+CREATE OR REPLACE TABLE VNMITG_INTEGRATION.ITG_SPIRAL_MTI_OFFTAKE (		--// CREATE TABLE os_itg.itg_spiral_mti_offtake (
     stt varchar(100),		--//  ENCODE lzo // character varying
     area varchar(100),		--//  ENCODE lzo // character varying
     channelname varchar(100),		--//  ENCODE lzo // character varying
