@@ -4948,10 +4948,10 @@ CREATE OR REPLACE TABLE THAWKS_INTEGRATION.WKS_CBD_GT_INVENTORY_REPORT_FACT		--/
 	,product_name VARCHAR(200)  		--//  ENCODE zstd
 	,baseuom VARCHAR(10)  		--//  ENCODE zstd
 	,expired VARCHAR(20)  		--//  ENCODE zstd
-	,1-90days VARCHAR(20)  		--//  ENCODE zstd
-	,91-180days VARCHAR(20)  		--//  ENCODE zstd
-	,181-365days VARCHAR(20)  		--//  ENCODE zstd
-	,>365days VARCHAR(20)  		--//  ENCODE zstd
+	,"1-90days" VARCHAR(20)  		--//  ENCODE zstd
+	,"91-180days" VARCHAR(20)  		--//  ENCODE zstd
+	,"181-365days" VARCHAR(20)  		--//  ENCODE zstd
+	,">365days" VARCHAR(20)  		--//  ENCODE zstd
 	,total_qty VARCHAR(20)  		--//  ENCODE zstd
 )
 		--// DISTSTYLE EVEN
