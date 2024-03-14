@@ -1684,42 +1684,38 @@ CREATE OR REPLACE TABLE VNMITG_INTEGRATION.ITG_VN_DMS_SALES_STOCK_FACT		--// CRE
 	,PRIMARY KEY (dstrbtr_id, wh_code, date, material_code, bat_number)
 )
 ;
---DROP TABLE VNMITG_INTEGRATION.itg_vn_dms_sellthrgh_sales_fact;
-CREATE OR REPLACE TABLE VNMITG_INTEGRATION.ITG_VN_DMS_SELLTHRGH_SALES_FACT		--// CREATE TABLE IF NOT EXISTS  // CREATE OR REPLACE TABLE VNMITG_INTEGRATION.itg_vn_dms_sellthrgh_sales_fact
-(
-	dstrbtr_id VARCHAR(30) NOT NULL 		--//  ENCODE zstd
-	,dstrbtr_type VARCHAR(30)  		--//  ENCODE zstd
-	,mapped_spk VARCHAR(30)  		--//  ENCODE zstd
-	,doc_number VARCHAR(30) NOT NULL 		--//  ENCODE zstd
-	,ref_number VARCHAR(30)  		--//  ENCODE zstd
-	,receipt_date DATE  		--//  ENCODE zstd
-	,order_type VARCHAR(2)  		--//  ENCODE zstd
-	,vat_invoice_number VARCHAR(30)  		--//  ENCODE zstd
-	,vat_invoice_note VARCHAR(30)  		--//  ENCODE zstd
-	,vat_invoice_date DATE  		--//  ENCODE zstd
-	,pon_number VARCHAR(40)  		--//  ENCODE zstd
-	,line_ref VARCHAR(10)  		--//  ENCODE zstd
-	,product_code VARCHAR(50) NOT NULL 		--//  ENCODE zstd
-	,unit VARCHAR(10)  		--//  ENCODE zstd
-	,quantity NUMERIC(14,2)  		--//  ENCODE zstd
-	,price NUMERIC(15,4)  		--//  ENCODE zstd
-	,amount NUMERIC(15,4)  		--//  ENCODE zstd
-	,tax_amount NUMERIC(15,4)  		--//  ENCODE zstd
-	,tax_id VARCHAR(10)  		--//  ENCODE zstd
-	,tax_rate NUMERIC(15,4)  		--//  ENCODE zstd
-	,values NUMERIC(15,4)  		--//  ENCODE zstd
-	,line_discount NUMERIC(15,4)  		--//  ENCODE zstd
-	,doc_discount NUMERIC(15,4)  		--//  ENCODE zstd
-	,status VARCHAR(1)  		--//  ENCODE zstd
-	,crtd_dttm TIMESTAMP WITHOUT TIME ZONE  		--//  ENCODE zstd
-	,updt_dttm TIMESTAMP WITHOUT TIME ZONE  		--//  ENCODE zstd
-	,run_id NUMERIC(14,0)  		--//  ENCODE zstd
-	,PRIMARY KEY (dstrbtr_id, doc_number, product_code)
-)
-		--// SORTKEY ( 
-		--// 	receipt_date
-		--// 	)
-;		--// ;
+create or replace TABLE DEV_DNA_CORE.SNAPOSEITG_INTEGRATION.ITG_VN_DMS_SELLTHRGH_SALES_FACT (
+	DSTRBTR_ID VARCHAR(30) NOT NULL,
+	DSTRBTR_TYPE VARCHAR(30),
+	MAPPED_SPK VARCHAR(30),
+	DOC_NUMBER VARCHAR(30) NOT NULL,
+	REF_NUMBER VARCHAR(30),
+	RECEIPT_DATE DATE,
+	ORDER_TYPE VARCHAR(2),
+	VAT_INVOICE_NUMBER VARCHAR(30),
+	VAT_INVOICE_NOTE VARCHAR(30),
+	VAT_INVOICE_DATE DATE,
+	PON_NUMBER VARCHAR(40),
+	LINE_REF VARCHAR(10),
+	PRODUCT_CODE VARCHAR(50) NOT NULL,
+	UNIT VARCHAR(10),
+	QUANTITY NUMBER(14,2),
+	PRICE NUMBER(15,4),
+	AMOUNT NUMBER(15,4),
+	TAX_AMOUNT NUMBER(15,4),
+	TAX_ID VARCHAR(10),
+	TAX_RATE NUMBER(15,4),
+	"values" NUMBER(15,4),
+	LINE_DISCOUNT NUMBER(15,4),
+	DOC_DISCOUNT NUMBER(15,4),
+	STATUS VARCHAR(1),
+	CRTD_DTTM TIMESTAMP_NTZ(9),
+	UPDT_DTTM TIMESTAMP_NTZ(9),
+	RUN_ID NUMBER(14,0),
+	primary key (DSTRBTR_ID, DOC_NUMBER, PRODUCT_CODE)
+);
+
+
 --DROP TABLE VNMITG_INTEGRATION.itg_vn_dms_yearly_target;
 CREATE OR REPLACE TABLE VNMITG_INTEGRATION.ITG_VN_DMS_YEARLY_TARGET		--// CREATE TABLE IF NOT EXISTS  // CREATE OR REPLACE TABLE VNMITG_INTEGRATION.itg_vn_dms_yearly_target
 (
