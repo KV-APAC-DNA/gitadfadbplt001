@@ -260,8 +260,8 @@ CREATE OR REPLACE TABLE VNMSDL_RAW.SDL_MDS_VN_GT_GTS_RATIO		--// CREATE TABLE IF
 	,code VARCHAR(500)  		--//  ENCODE lzo
 	,changetrackingmask numeric(18,0)		--//  ENCODE az64 // INTEGER  
 	,distributor VARCHAR(200)  		--//  ENCODE lzo
-	,from month NUMERIC(31,0)  		--//  ENCODE az64
-	,to month NUMERIC(31,0)  		--//  ENCODE az64
+	,"from month" NUMERIC(31,0)  		--//  ENCODE az64
+	,"to month" NUMERIC(31,0)  		--//  ENCODE az64
 	,percentage NUMERIC(31,2)  		--//  ENCODE az64
 	,enterdatetime TIMESTAMP WITHOUT TIME ZONE  		--//  ENCODE az64
 	,enterusername VARCHAR(200)  		--//  ENCODE lzo
