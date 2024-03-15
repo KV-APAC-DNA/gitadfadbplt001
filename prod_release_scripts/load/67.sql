@@ -989,7 +989,7 @@ CREATE OR REPLACE TABLE VNMSDL_RAW.SDL_VN_DMS_SELLTHRGH_SALES_FACT		--// CREATE 
 	,tax_amount VARCHAR(30)  		--//  ENCODE zstd
 	,tax_id VARCHAR(30)  		--//  ENCODE zstd
 	,tax_rate VARCHAR(30)  		--//  ENCODE zstd
-	,values VARCHAR(30)  		--//  ENCODE zstd
+	,"values" VARCHAR(30)  		--//  ENCODE zstd
 	,line_discount VARCHAR(30)  		--//  ENCODE zstd
 	,doc_discount VARCHAR(100)  		--//  ENCODE zstd
 	,status VARCHAR(1)  		--//  ENCODE zstd
