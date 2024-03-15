@@ -244,7 +244,7 @@
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@{variables('tempPath')}/processed/archive@{split(pipeline().parameters.directory, variables('tempPath'))[1]}",
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.directory}/processed/archive/@{variables('tempPath')}",
 								"type": "Expression"
 							}
 						}
@@ -334,7 +334,7 @@
 													"type": "Expression"
 												},
 												"directory": {
-													"value": "@{variables('tempPath')}/processed/error@{split(pipeline().parameters.directory, variables('tempPath'))[1]}",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.directory}/processed/error/@{variables('tempPath')}",
 													"type": "Expression"
 												}
 											}
@@ -491,7 +491,7 @@
 				"typeProperties": {
 					"variableName": "tempPath",
 					"value": {
-						"value": "year/month",
+						"value": "@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
 						"type": "Expression"
 					}
 				}
