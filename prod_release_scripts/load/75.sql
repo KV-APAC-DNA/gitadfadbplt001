@@ -1,39 +1,39 @@
-CREATE OR REPLACE TABLE PCFSDL_RAW.sdl_chw_ecomm_data (
-    pfc character varying(20) ENCODE zstd,
-    skuname character varying(100) ENCODE zstd,
-    nec1_desc character varying(100) ENCODE zstd,
-    nec2_desc character varying(100) ENCODE zstd,
-    nec3_desc character varying(100) ENCODE zstd,
-    brand character varying(50) ENCODE zstd,
-    owner character varying(20) ENCODE zstd,
-    manufacturer character varying(50) ENCODE zstd,
-    category character varying(50) ENCODE zstd,
-    mat_year character varying(10) ENCODE zstd,
-    periodid character varying(10) ENCODE zstd,
-    sales_online character varying(10) ENCODE zstd,
-    unit_online character varying(10) ENCODE zstd,
-    week_end character varying(20) ENCODE zstd,
-    file_name character varying(50) ENCODE zstd,
-    crt_dttm timestamp without time zone DEFAULT ('now'::text)::timestamp without time zone ENCODE az64
+CREATE OR REPLACE TABLE PCFSDL_RAW.SDL_CHW_ECOMM_DATA (		--// CREATE OR REPLACE TABLE PCFSDL_RAW.sdl_chw_ecomm_data (
+    pfc varchar(20),		--//  ENCODE zstd // character varying
+    skuname varchar(100),		--//  ENCODE zstd // character varying
+    nec1_desc varchar(100),		--//  ENCODE zstd // character varying
+    nec2_desc varchar(100),		--//  ENCODE zstd // character varying
+    nec3_desc varchar(100),		--//  ENCODE zstd // character varying
+    brand varchar(50),		--//  ENCODE zstd // character varying
+	owner character varying(20) ENCODE zstd,
+    manufacturer varchar(50),		--//  ENCODE zstd // character varying
+    category varchar(50),		--//  ENCODE zstd // character varying
+    mat_year varchar(10),		--//  ENCODE zstd // character varying
+    periodid varchar(10),		--//  ENCODE zstd // character varying
+    sales_online varchar(10),		--//  ENCODE zstd // character varying
+    unit_online varchar(10),		--//  ENCODE zstd // character varying
+    week_end varchar(20),		--//  ENCODE zstd // character varying
+    file_name varchar(50),		--//  ENCODE zstd // character varying
+    crt_dttm timestamp without time zone DEFAULT ('CURRENT_TIMESTAMP()'::text)::timestamp without time zone		--//     crt_dttm timestamp without time zone DEFAULT ('now'::text)::timestamp without time zone ENCODE az64 //  ENCODE az64
 )
-DISTSTYLE AUTO;
+;		--// DISTSTYLE AUTO;
 
-CREATE OR REPLACE TABLE PCFSDL_RAW.sdl_national_ecomm_data (
-    pfc character varying(20) ENCODE zstd,
-    skuname character varying(100) ENCODE zstd,
-    nec1_desc character varying(100) ENCODE zstd,
-    nec2_desc character varying(100) ENCODE zstd,
-    nec3_desc character varying(100) ENCODE zstd,
-    brand character varying(50) ENCODE zstd,
-    owner character varying(20) ENCODE zstd,
-    manufacturer character varying(50) ENCODE zstd,
-    category character varying(50) ENCODE zstd,
-    mat_year character varying(10) ENCODE zstd,
-    periodid character varying(10) ENCODE zstd,
-    sales_online character varying(10) ENCODE zstd,
-    unit_online character varying(10) ENCODE zstd,
-    week_end character varying(20) ENCODE zstd,
-    file_name character varying(50) ENCODE zstd,
-    crt_dttm timestamp without time zone DEFAULT ('now'::text)::timestamp without time zone ENCODE az64
+CREATE OR REPLACE TABLE PCFSDL_RAW.SDL_NATIONAL_ECOMM_DATA (		--// CREATE OR REPLACE TABLE PCFSDL_RAW.sdl_national_ecomm_data (
+    pfc varchar(20),		--//  ENCODE zstd // character varying
+    skuname varchar(100),		--//  ENCODE zstd // character varying
+    nec1_desc varchar(100),		--//  ENCODE zstd // character varying
+    nec2_desc varchar(100),		--//  ENCODE zstd // character varying
+    nec3_desc varchar(100),		--//  ENCODE zstd // character varying
+    brand varchar(50),		--//  ENCODE zstd // character varying
+	owner character varying(20) ENCODE zstd,
+    manufacturer varchar(50),		--//  ENCODE zstd // character varying
+    category varchar(50),		--//  ENCODE zstd // character varying
+    mat_year varchar(10),		--//  ENCODE zstd // character varying
+    periodid varchar(10),		--//  ENCODE zstd // character varying
+    sales_online varchar(10),		--//  ENCODE zstd // character varying
+    unit_online varchar(10),		--//  ENCODE zstd // character varying
+    week_end varchar(20),		--//  ENCODE zstd // character varying
+    file_name varchar(50),		--//  ENCODE zstd // character varying
+    crt_dttm timestamp without time zone DEFAULT ('CURRENT_TIMESTAMP()'::text)::timestamp without time zone		--//     crt_dttm timestamp without time zone DEFAULT ('now'::text)::timestamp without time zone ENCODE az64 //  ENCODE az64
 )
-DISTSTYLE AUTO;
+;		--// DISTSTYLE AUTO;
