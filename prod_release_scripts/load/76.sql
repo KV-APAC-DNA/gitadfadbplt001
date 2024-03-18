@@ -5,7 +5,7 @@ CREATE OR REPLACE TABLE PCFSDL_RAW.SDL_CHW_ECOMM_DATA (		--// CREATE OR REPLACE 
     nec2_desc varchar(100),		--//  ENCODE zstd // character varying
     nec3_desc varchar(100),		--//  ENCODE zstd // character varying
     brand varchar(50),		--//  ENCODE zstd // character varying
-	owner character varying(20) ENCODE zstd,
+    owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE zstd // character varying
     category varchar(50),		--//  ENCODE zstd // character varying
     mat_year varchar(10),		--//  ENCODE zstd // character varying
@@ -25,7 +25,7 @@ CREATE OR REPLACE TABLE PCFSDL_RAW.SDL_NATIONAL_ECOMM_DATA (		--// CREATE OR REP
     nec2_desc varchar(100),		--//  ENCODE zstd // character varying
     nec3_desc varchar(100),		--//  ENCODE zstd // character varying
     brand varchar(50),		--//  ENCODE zstd // character varying
-	owner character varying(20) ENCODE zstd,
+    owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE zstd // character varying
     category varchar(50),		--//  ENCODE zstd // character varying
     mat_year varchar(10),		--//  ENCODE zstd // character varying
