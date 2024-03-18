@@ -7,7 +7,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Error Encountered during load",
+						"activity": "Execute Archival Success",
 						"dependencyConditions": [
 							"Succeeded"
 						]
