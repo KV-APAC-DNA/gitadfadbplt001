@@ -1,3 +1,133 @@
+create or replace view PCFEDW_INTEGRATION.VW_SAP_STD_COST(
+	MATNR,
+	CMP_NO,
+	LAEPR,
+	PEINH,
+	STPRS,
+	STD_COST,
+	EXCHNG_RATE,
+	BWKEY,
+	STD_COST_AUD
+) as
+
+SELECT derived_table1.matnr,
+    derived_table1.cmp_no,
+    derived_table1.laepr,
+    derived_table1.peinh,
+    derived_table1.stprs,
+    derived_table1.std_cost,
+    derived_table1.exchng_rate,
+    derived_table1.bwkey,
+    (
+        derived_table1.std_cost * derived_table1.exchng_rate
+    ) AS std_cost_aud
+FROM (
+        SELECT DISTINCT edw_ecc_standard_cost.matnr,
+            edw_ecc_standard_cost.bwkey,
+            CASE
+                WHEN (
+                    (edw_ecc_standard_cost.bwkey)::text = ('3300')::text
+                ) THEN '7470'
+                WHEN (
+                    (edw_ecc_standard_cost.bwkey)::text = ('330A')::text
+                ) THEN '7470'
+                WHEN (
+                    (edw_ecc_standard_cost.bwkey)::text = ('3410')::text
+                ) THEN '8361'
+                WHEN (
+                    (edw_ecc_standard_cost.bwkey)::text = ('341A')::text
+                ) THEN '8361'
+                ELSE NULL
+            END AS cmp_no,
+            edw_ecc_standard_cost.laepr,
+            edw_ecc_standard_cost.peinh,
+            edw_ecc_standard_cost.stprs,
+            (
+                edw_ecc_standard_cost.stprs / edw_ecc_standard_cost.peinh
+            ) AS std_cost,
+            (
+                SELECT vw_curr_exch_dim.exch_rate
+                FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                WHERE (
+                        (
+                            (
+                                (
+                                    (vw_curr_exch_dim.rate_type)::text = ('DWBP')::text
+                                )
+                                AND (
+                                    (vw_curr_exch_dim.from_ccy)::text = ('SGD')::text
+                                )
+                            )
+                            AND (
+                                (vw_curr_exch_dim.to_ccy)::text = ('AUD')::text
+                            )
+                        )
+                        AND (
+                            vw_curr_exch_dim.valid_date = (
+                                SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
+                                FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                WHERE (
+                                        (
+                                            (
+                                                (
+                                                    (vw_curr_exch_dim.rate_type)::text = ('DWBP')::text
+                                                )
+                                                AND (
+                                                    (vw_curr_exch_dim.from_ccy)::text = ('SGD')::text
+                                                )
+                                            )
+                                            AND (
+                                                (vw_curr_exch_dim.to_ccy)::text = ('AUD')::text
+                                            )
+                                        )
+                                        AND (
+                                            vw_curr_exch_dim.valid_date <= (
+                                                (
+                                                    (
+                                                        to_char(
+                                                            current_timestamp()::timestamp_ntz(9),
+                                                            ('YYYYMMDD')::text
+                                                        )
+                                                    )::integer
+                                                )::numeric
+                                            )::numeric(18, 0)
+                                        )
+                                    )
+                            )
+                        )
+                    )
+            ) AS exchng_rate
+        FROM aspEDW_INTEGRATION.edw_ecc_standard_cost
+        WHERE (
+                (
+                    (
+                        (
+                            (
+                                (
+                                    (edw_ecc_standard_cost.bwkey)::text = ('3330')::text
+                                )
+                                OR (
+                                    (edw_ecc_standard_cost.bwkey)::text = ('330A')::text
+                                )
+                            )
+                            OR (
+                                (edw_ecc_standard_cost.bwkey)::text = ('3410')::text
+                            )
+                        )
+                        OR (
+                            (edw_ecc_standard_cost.bwkey)::text = ('341A')::text
+                        )
+                    )
+                    AND (
+                        (edw_ecc_standard_cost.matnr)::text LIKE ('00%')::text
+                    )
+                )
+                AND (
+                    (edw_ecc_standard_cost.bwkey)::text LIKE ('%A')::text
+                )
+            )
+    ) derived_table1;
+
 create or replace view PCFEDW_INTEGRATION.VW_SAPBW_FACT(
 	CMP_ID,
 	CAL_MONTH_ID,
