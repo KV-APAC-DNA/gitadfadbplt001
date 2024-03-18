@@ -1,3 +1,265 @@
+USE SCHEMA PCFEDW_INTEGRATION;
+create or replace view VW_JJBR_CURR_EXCH_DIM(
+	RATE_TYPE,
+	FROM_CCY,
+	TO_CCY,
+	JJ_MNTH_ID,
+	EXCH_RATE
+) as
+
+(
+    SELECT jjbr_curr_exchng_nzd_aud.rate_type,
+        jjbr_curr_exchng_nzd_aud.from_ccy,
+        jjbr_curr_exchng_nzd_aud.to_ccy,
+        jjbr_curr_exchng_nzd_aud.jj_mnth_id,
+        jjbr_curr_exchng_nzd_aud.exch_rate
+    FROM (
+            SELECT DISTINCT COALESCE(a.rate_type, 'JJBR'::character varying) AS rate_type,
+                COALESCE(a.from_ccy, 'NZD'::character varying) AS from_ccy,
+                COALESCE(a.to_ccy, 'AUD'::character varying) AS to_ccy,
+                b.jj_mnth_id,
+                COALESCE(a.exch_rate, c.exch_rate) AS exch_rate
+            FROM (
+                    SELECT "max"(vw_curr_exch_dim.exch_rate) AS exch_rate
+                    FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                    WHERE (
+                            (
+                                (
+                                    (
+                                        (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                    )
+                                    AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                )
+                                AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                            )
+                            AND (
+                                vw_curr_exch_dim.valid_date = (
+                                    SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
+                                    FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                    WHERE (
+                                            (
+                                                (
+                                                    (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                                )
+                                                AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                            )
+                                            AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                        )
+                                )
+                            )
+                        )
+                ) c,
+                (
+                    (
+                        SELECT DISTINCT edw_time_dim.jj_mnth_id
+                        FROM PCFEDW_INTEGRATION.edw_time_dim
+                    ) b
+                    LEFT JOIN (
+                        SELECT t1.rate_type,
+                            t1.from_ccy,
+                            t1.to_ccy,
+                            t2.jj_mnth_id,
+                            "max"(t1.exch_rate) AS exch_rate
+                        FROM (
+                                SELECT vw_curr_exch_dim.rate_type,
+                                    vw_curr_exch_dim.from_ccy,
+                                    vw_curr_exch_dim.to_ccy,
+                                    vw_curr_exch_dim.valid_date,
+                                    vw_curr_exch_dim.exch_rate
+                                FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                WHERE (
+                                        (
+                                            (
+                                                (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                            )
+                                            AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                        )
+                                        AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                    )
+                            ) t1,
+                            PCFEDW_INTEGRATION.edw_time_dim t2
+                        WHERE (t2.time_id = t1.valid_date)
+                        GROUP BY t1.rate_type,
+                            t1.from_ccy,
+                            t1.to_ccy,
+                            t2.jj_mnth_id
+                    ) a ON (((a.jj_mnth_id = b.jj_mnth_id)))
+                )
+        ) jjbr_curr_exchng_nzd_aud
+    UNION ALL
+    SELECT jjbr_curr_exchng_aud_aud.rate_type,
+        jjbr_curr_exchng_aud_aud.from_ccy,
+        jjbr_curr_exchng_aud_aud.to_ccy,
+        jjbr_curr_exchng_aud_aud.jj_mnth_id,
+        jjbr_curr_exchng_aud_aud.exch_rate
+    FROM (
+            SELECT jjbr_curr_exchng_nzd_aud.rate_type,
+                jjbr_curr_exchng_nzd_aud.to_ccy AS from_ccy,
+                jjbr_curr_exchng_nzd_aud.to_ccy,
+                jjbr_curr_exchng_nzd_aud.jj_mnth_id,
+                1 AS exch_rate
+            FROM (
+                    SELECT DISTINCT COALESCE(a.rate_type, 'JJBR'::character varying) AS rate_type,
+                        COALESCE(a.from_ccy, 'NZD'::character varying) AS from_ccy,
+                        COALESCE(a.to_ccy, 'AUD'::character varying) AS to_ccy,
+                        b.jj_mnth_id,
+                        COALESCE(a.exch_rate, c.exch_rate) AS exch_rate
+                    FROM (
+                            SELECT "max"(vw_curr_exch_dim.exch_rate) AS exch_rate
+                            FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                            WHERE (
+                                    (
+                                        (
+                                            (
+                                                (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                            )
+                                            AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                        )
+                                        AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                    )
+                                    AND (
+                                        vw_curr_exch_dim.valid_date = (
+                                            SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
+                                            FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                            WHERE (
+                                                    (
+                                                        (
+                                                            (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                                        )
+                                                        AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                                    )
+                                                    AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                                )
+                                        )
+                                    )
+                                )
+                        ) c,
+                        (
+                            (
+                                SELECT DISTINCT edw_time_dim.jj_mnth_id
+                                FROM PCFEDW_INTEGRATION.edw_time_dim
+                            ) b
+                            LEFT JOIN (
+                                SELECT t1.rate_type,
+                                    t1.from_ccy,
+                                    t1.to_ccy,
+                                    t2.jj_mnth_id,
+                                    "max"(t1.exch_rate) AS exch_rate
+                                FROM (
+                                        SELECT vw_curr_exch_dim.rate_type,
+                                            vw_curr_exch_dim.from_ccy,
+                                            vw_curr_exch_dim.to_ccy,
+                                            vw_curr_exch_dim.valid_date,
+                                            vw_curr_exch_dim.exch_rate
+                                        FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                        WHERE (
+                                                (
+                                                    (
+                                                        (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                                    )
+                                                    AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                                )
+                                                AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                            )
+                                    ) t1,
+                                    PCFEDW_INTEGRATION.edw_time_dim t2
+                                WHERE (t2.time_id = t1.valid_date)
+                                GROUP BY t1.rate_type,
+                                    t1.from_ccy,
+                                    t1.to_ccy,
+                                    t2.jj_mnth_id
+                            ) a ON (((a.jj_mnth_id = b.jj_mnth_id)))
+                        )
+                ) jjbr_curr_exchng_nzd_aud
+        ) jjbr_curr_exchng_aud_aud
+)
+UNION ALL
+SELECT jjbr_curr_exchng_nzd_nzd.rate_type,
+    jjbr_curr_exchng_nzd_nzd.from_ccy,
+    jjbr_curr_exchng_nzd_nzd.to_ccy,
+    jjbr_curr_exchng_nzd_nzd.jj_mnth_id,
+    jjbr_curr_exchng_nzd_nzd.exch_rate
+FROM (
+        SELECT jjbr_curr_exchng_nzd_aud.rate_type,
+            jjbr_curr_exchng_nzd_aud.from_ccy,
+            jjbr_curr_exchng_nzd_aud.from_ccy AS to_ccy,
+            jjbr_curr_exchng_nzd_aud.jj_mnth_id,
+            1 AS exch_rate
+        FROM (
+                SELECT DISTINCT COALESCE(a.rate_type, 'JJBR'::character varying) AS rate_type,
+                    COALESCE(a.from_ccy, 'NZD'::character varying) AS from_ccy,
+                    COALESCE(a.to_ccy, 'AUD'::character varying) AS to_ccy,
+                    b.jj_mnth_id,
+                    COALESCE(a.exch_rate, c.exch_rate) AS exch_rate
+                FROM (
+                        SELECT "max"(vw_curr_exch_dim.exch_rate) AS exch_rate
+                        FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                        WHERE (
+                                (
+                                    (
+                                        (
+                                            (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                        )
+                                        AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                    )
+                                    AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                )
+                                AND (
+                                    vw_curr_exch_dim.valid_date = (
+                                        SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
+                                        FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                        WHERE (
+                                                (
+                                                    (
+                                                        (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                                    )
+                                                    AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                                )
+                                                AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                            )
+                                    )
+                                )
+                            )
+                    ) c,
+                    (
+                        (
+                            SELECT DISTINCT edw_time_dim.jj_mnth_id
+                            FROM PCFEDW_INTEGRATION.edw_time_dim
+                        ) b
+                        LEFT JOIN (
+                            SELECT t1.rate_type,
+                                t1.from_ccy,
+                                t1.to_ccy,
+                                t2.jj_mnth_id,
+                                "max"(t1.exch_rate) AS exch_rate
+                            FROM (
+                                    SELECT vw_curr_exch_dim.rate_type,
+                                        vw_curr_exch_dim.from_ccy,
+                                        vw_curr_exch_dim.to_ccy,
+                                        vw_curr_exch_dim.valid_date,
+                                        vw_curr_exch_dim.exch_rate
+                                    FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
+                                    WHERE (
+                                            (
+                                                (
+                                                    (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
+                                                )
+                                                AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
+                                            )
+                                            AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
+                                        )
+                                ) t1,
+                                PCFEDW_INTEGRATION.edw_time_dim t2
+                            WHERE (t2.time_id = t1.valid_date)
+                            GROUP BY t1.rate_type,
+                                t1.from_ccy,
+                                t1.to_ccy,
+                                t2.jj_mnth_id
+                        ) a ON (((a.jj_mnth_id = b.jj_mnth_id)))
+                    )
+            ) jjbr_curr_exchng_nzd_aud
+    ) jjbr_curr_exchng_nzd_nzd;
+
 create or replace view PROD_DNA_CORE.ASPEDW_ACCESS.EDW_REG_INVENTORY_HEALTH_ANALYSIS_PROPAGATION(
 	"year",
 	"year_quarter",
@@ -170,10 +432,6 @@ final as (
     from source
 )
 select * from final;
-
-
-insert into THAITG_INTEGRATION.ITG_TH_DMS_INVENTORY_FACT VALUES('2022-09-30 00:00:00.0','WEL','JJ900','79620830',120.000000,13440.000000,'16082022B2','0001-01-01 00:00:00.0','2022-10-11','20221010114649');
-insert into THAITG_INTEGRATION.ITG_TH_DMS_INVENTORY_FACT VALUES('2022-09-30 00:00:00.0','WEL','JJ900','79620567',40.000000,7600.000000,'18072022B2','0001-01-01 00:00:00.0','2022-10-11','20221010114649');
 
 
 
@@ -5612,266 +5870,7 @@ FROM (
             )
         )
     );
-create or replace view VW_JJBR_CURR_EXCH_DIM(
-	RATE_TYPE,
-	FROM_CCY,
-	TO_CCY,
-	JJ_MNTH_ID,
-	EXCH_RATE
-) as
 
-(
-    SELECT jjbr_curr_exchng_nzd_aud.rate_type,
-        jjbr_curr_exchng_nzd_aud.from_ccy,
-        jjbr_curr_exchng_nzd_aud.to_ccy,
-        jjbr_curr_exchng_nzd_aud.jj_mnth_id,
-        jjbr_curr_exchng_nzd_aud.exch_rate
-    FROM (
-            SELECT DISTINCT COALESCE(a.rate_type, 'JJBR'::character varying) AS rate_type,
-                COALESCE(a.from_ccy, 'NZD'::character varying) AS from_ccy,
-                COALESCE(a.to_ccy, 'AUD'::character varying) AS to_ccy,
-                b.jj_mnth_id,
-                COALESCE(a.exch_rate, c.exch_rate) AS exch_rate
-            FROM (
-                    SELECT "max"(vw_curr_exch_dim.exch_rate) AS exch_rate
-                    FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                    WHERE (
-                            (
-                                (
-                                    (
-                                        (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                    )
-                                    AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                )
-                                AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                            )
-                            AND (
-                                vw_curr_exch_dim.valid_date = (
-                                    SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
-                                    FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                                    WHERE (
-                                            (
-                                                (
-                                                    (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                                )
-                                                AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                            )
-                                            AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                        )
-                                )
-                            )
-                        )
-                ) c,
-                (
-                    (
-                        SELECT DISTINCT edw_time_dim.jj_mnth_id
-                        FROM PCFEDW_INTEGRATION.edw_time_dim
-                    ) b
-                    LEFT JOIN (
-                        SELECT t1.rate_type,
-                            t1.from_ccy,
-                            t1.to_ccy,
-                            t2.jj_mnth_id,
-                            "max"(t1.exch_rate) AS exch_rate
-                        FROM (
-                                SELECT vw_curr_exch_dim.rate_type,
-                                    vw_curr_exch_dim.from_ccy,
-                                    vw_curr_exch_dim.to_ccy,
-                                    vw_curr_exch_dim.valid_date,
-                                    vw_curr_exch_dim.exch_rate
-                                FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                                WHERE (
-                                        (
-                                            (
-                                                (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                            )
-                                            AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                        )
-                                        AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                    )
-                            ) t1,
-                            PCFEDW_INTEGRATION.edw_time_dim t2
-                        WHERE (t2.time_id = t1.valid_date)
-                        GROUP BY t1.rate_type,
-                            t1.from_ccy,
-                            t1.to_ccy,
-                            t2.jj_mnth_id
-                    ) a ON (((a.jj_mnth_id = b.jj_mnth_id)))
-                )
-        ) jjbr_curr_exchng_nzd_aud
-    UNION ALL
-    SELECT jjbr_curr_exchng_aud_aud.rate_type,
-        jjbr_curr_exchng_aud_aud.from_ccy,
-        jjbr_curr_exchng_aud_aud.to_ccy,
-        jjbr_curr_exchng_aud_aud.jj_mnth_id,
-        jjbr_curr_exchng_aud_aud.exch_rate
-    FROM (
-            SELECT jjbr_curr_exchng_nzd_aud.rate_type,
-                jjbr_curr_exchng_nzd_aud.to_ccy AS from_ccy,
-                jjbr_curr_exchng_nzd_aud.to_ccy,
-                jjbr_curr_exchng_nzd_aud.jj_mnth_id,
-                1 AS exch_rate
-            FROM (
-                    SELECT DISTINCT COALESCE(a.rate_type, 'JJBR'::character varying) AS rate_type,
-                        COALESCE(a.from_ccy, 'NZD'::character varying) AS from_ccy,
-                        COALESCE(a.to_ccy, 'AUD'::character varying) AS to_ccy,
-                        b.jj_mnth_id,
-                        COALESCE(a.exch_rate, c.exch_rate) AS exch_rate
-                    FROM (
-                            SELECT "max"(vw_curr_exch_dim.exch_rate) AS exch_rate
-                            FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                            WHERE (
-                                    (
-                                        (
-                                            (
-                                                (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                            )
-                                            AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                        )
-                                        AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                    )
-                                    AND (
-                                        vw_curr_exch_dim.valid_date = (
-                                            SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
-                                            FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                                            WHERE (
-                                                    (
-                                                        (
-                                                            (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                                        )
-                                                        AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                                    )
-                                                    AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                                )
-                                        )
-                                    )
-                                )
-                        ) c,
-                        (
-                            (
-                                SELECT DISTINCT edw_time_dim.jj_mnth_id
-                                FROM PCFEDW_INTEGRATION.edw_time_dim
-                            ) b
-                            LEFT JOIN (
-                                SELECT t1.rate_type,
-                                    t1.from_ccy,
-                                    t1.to_ccy,
-                                    t2.jj_mnth_id,
-                                    "max"(t1.exch_rate) AS exch_rate
-                                FROM (
-                                        SELECT vw_curr_exch_dim.rate_type,
-                                            vw_curr_exch_dim.from_ccy,
-                                            vw_curr_exch_dim.to_ccy,
-                                            vw_curr_exch_dim.valid_date,
-                                            vw_curr_exch_dim.exch_rate
-                                        FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                                        WHERE (
-                                                (
-                                                    (
-                                                        (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                                    )
-                                                    AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                                )
-                                                AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                            )
-                                    ) t1,
-                                    PCFEDW_INTEGRATION.edw_time_dim t2
-                                WHERE (t2.time_id = t1.valid_date)
-                                GROUP BY t1.rate_type,
-                                    t1.from_ccy,
-                                    t1.to_ccy,
-                                    t2.jj_mnth_id
-                            ) a ON (((a.jj_mnth_id = b.jj_mnth_id)))
-                        )
-                ) jjbr_curr_exchng_nzd_aud
-        ) jjbr_curr_exchng_aud_aud
-)
-UNION ALL
-SELECT jjbr_curr_exchng_nzd_nzd.rate_type,
-    jjbr_curr_exchng_nzd_nzd.from_ccy,
-    jjbr_curr_exchng_nzd_nzd.to_ccy,
-    jjbr_curr_exchng_nzd_nzd.jj_mnth_id,
-    jjbr_curr_exchng_nzd_nzd.exch_rate
-FROM (
-        SELECT jjbr_curr_exchng_nzd_aud.rate_type,
-            jjbr_curr_exchng_nzd_aud.from_ccy,
-            jjbr_curr_exchng_nzd_aud.from_ccy AS to_ccy,
-            jjbr_curr_exchng_nzd_aud.jj_mnth_id,
-            1 AS exch_rate
-        FROM (
-                SELECT DISTINCT COALESCE(a.rate_type, 'JJBR'::character varying) AS rate_type,
-                    COALESCE(a.from_ccy, 'NZD'::character varying) AS from_ccy,
-                    COALESCE(a.to_ccy, 'AUD'::character varying) AS to_ccy,
-                    b.jj_mnth_id,
-                    COALESCE(a.exch_rate, c.exch_rate) AS exch_rate
-                FROM (
-                        SELECT "max"(vw_curr_exch_dim.exch_rate) AS exch_rate
-                        FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                        WHERE (
-                                (
-                                    (
-                                        (
-                                            (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                        )
-                                        AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                    )
-                                    AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                )
-                                AND (
-                                    vw_curr_exch_dim.valid_date = (
-                                        SELECT "max"(vw_curr_exch_dim.valid_date) AS "max"
-                                        FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                                        WHERE (
-                                                (
-                                                    (
-                                                        (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                                    )
-                                                    AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                                )
-                                                AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                            )
-                                    )
-                                )
-                            )
-                    ) c,
-                    (
-                        (
-                            SELECT DISTINCT edw_time_dim.jj_mnth_id
-                            FROM PCFEDW_INTEGRATION.edw_time_dim
-                        ) b
-                        LEFT JOIN (
-                            SELECT t1.rate_type,
-                                t1.from_ccy,
-                                t1.to_ccy,
-                                t2.jj_mnth_id,
-                                "max"(t1.exch_rate) AS exch_rate
-                            FROM (
-                                    SELECT vw_curr_exch_dim.rate_type,
-                                        vw_curr_exch_dim.from_ccy,
-                                        vw_curr_exch_dim.to_ccy,
-                                        vw_curr_exch_dim.valid_date,
-                                        vw_curr_exch_dim.exch_rate
-                                    FROM PCFEDW_INTEGRATION.vw_curr_exch_dim
-                                    WHERE (
-                                            (
-                                                (
-                                                    (vw_curr_exch_dim.rate_type)::text = 'JJBR'::text
-                                                )
-                                                AND ((vw_curr_exch_dim.from_ccy)::text = 'NZD'::text)
-                                            )
-                                            AND ((vw_curr_exch_dim.to_ccy)::text = 'AUD'::text)
-                                        )
-                                ) t1,
-                                PCFEDW_INTEGRATION.edw_time_dim t2
-                            WHERE (t2.time_id = t1.valid_date)
-                            GROUP BY t1.rate_type,
-                                t1.from_ccy,
-                                t1.to_ccy,
-                                t2.jj_mnth_id
-                        ) a ON (((a.jj_mnth_id = b.jj_mnth_id)))
-                    )
-            ) jjbr_curr_exchng_nzd_aud
-    ) jjbr_curr_exchng_nzd_nzd;
 create or replace view VW_MATERIAL_DIM(
 	MATL_ID,
 	MATL_DESC,
