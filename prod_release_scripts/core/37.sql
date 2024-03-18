@@ -6,7 +6,7 @@ CREATE OR REPLACE TABLE PCFITG_INTEGRATION.ITG_CHW_ECOMM_DATA (		--// CREATE OR 
     nec3_desc varchar(100),		--//  ENCODE zstd // character varying
     brand varchar(50),		--//  ENCODE zstd // character varying
     category varchar(50),		--//  ENCODE zstd // character varying
-		owner character varying(20) ENCODE zstd,
+		owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE zstd // character varying
     mat_year varchar(10),		--//  ENCODE zstd // character varying
     time_period varchar(10),		--//  ENCODE zstd // character varying
@@ -66,7 +66,7 @@ CREATE OR REPLACE TABLE PCFEDW_INTEGRATION.EDW_PHARMACY_ECOMMERCE_ANALYSIS (		--
     gcph_subsegment varchar(100),		--//  ENCODE lzo // character varying
     cust_group varchar(10),		--//  ENCODE lzo // character varying
     ecomm_cust varchar(17),		--//  ENCODE lzo // character varying
-		owner character varying(20) ENCODE lzo,
+		owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE lzo // character varying
     unit_online numeric(10,2),		--//  ENCODE az64
     aud_sales_online numeric(10,2),		--//  ENCODE az64
@@ -84,7 +84,7 @@ CREATE OR REPLACE TABLE PCFEDW_INTEGRATION.EDW_AU_PHARM_ECOMM_FACT (		--// CREAT
     nec3_desc varchar(100),		--//  ENCODE zstd // character varying
     brand varchar(50),		--//  ENCODE zstd // character varying
     category varchar(50),		--//  ENCODE zstd // character varying
-		owner character varying(20) ENCODE zstd,
+		owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE zstd // character varying
     mat_year varchar(10),		--//  ENCODE zstd // character varying
     time_period varchar(10),		--//  ENCODE zstd // character varying
@@ -104,7 +104,7 @@ CREATE OR REPLACE TABLE PCFWKS_INTEGRATION.WKS_CHW_ECOMM_DATA (		--// CREATE OR 
     nec2_desc varchar(100),		--//  ENCODE zstd // character varying
     nec3_desc varchar(100),		--//  ENCODE zstd // character varying
     brand varchar(50),		--//  ENCODE zstd // character varying
-	  owner character varying(20) ENCODE zstd,
+	  owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE zstd // character varying
     category varchar(50),		--//  ENCODE zstd // character varying
     mat_year varchar(10),		--//  ENCODE zstd // character varying
@@ -124,7 +124,7 @@ CREATE OR REPLACE TABLE PCFITG_INTEGRATION.ITG_NATIONAL_ECOMM_DATA (		--// CREAT
     nec3_desc varchar(100),		--//  ENCODE zstd // character varying
     brand varchar(50),		--//  ENCODE zstd // character varying
     category varchar(50),		--//  ENCODE zstd // character varying
-		owner character varying(20) ENCODE zstd,
+		owner varchar(20),
     manufacturer varchar(50),		--//  ENCODE zstd // character varying
     mat_year varchar(10),		--//  ENCODE zstd // character varying
     time_period varchar(10),		--//  ENCODE zstd // character varying
