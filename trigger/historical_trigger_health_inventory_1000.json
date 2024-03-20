@@ -3,7 +3,18 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Environment": "PROD",
+					"process_id": "1534,1536,1537,1541"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
