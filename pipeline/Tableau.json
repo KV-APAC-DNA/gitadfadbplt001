@@ -198,7 +198,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azur e.net/secrets/kv-tableau-prod-uid?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-uid?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
@@ -241,7 +241,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "<tsRequest><credentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
+							"value": "<tsRequest><ccredentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
 							"type": "Expression"
 						},
 						"paginationRules": {
@@ -376,7 +376,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}s?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}s?f ilter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							}
 						}
@@ -1917,7 +1917,7 @@
 							"type": "Expression"
 						},
 						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
+							"value": "@pipeline().Pipeline",
 							"type": "Expression"
 						},
 						"triggerTime": {
@@ -1971,7 +1971,7 @@
 							"type": "Expression"
 						},
 						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
+							"value": "@pipeline().Pipeline",
 							"type": "Expression"
 						},
 						"triggerTime": {
@@ -2025,7 +2025,7 @@
 							"type": "Expression"
 						},
 						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
+							"value": "@pipeline().Pipeline",
 							"type": "Expression"
 						},
 						"triggerTime": {
