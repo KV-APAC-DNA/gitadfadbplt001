@@ -805,8 +805,7 @@
 				"defaultValue": "DEV"
 			},
 			"where": {
-				"type": "array",
-				"defaultValue": "where"
+				"type": "array"
 			}
 		},
 		"variables": {
