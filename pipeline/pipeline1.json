@@ -38,7 +38,12 @@
 							"type": "Expression"
 						},
 						"status": "FAIL",
-						"message": "Testing message card"
+						"message": "Testing message card",
+						"executionEndTime": {
+							"value": "@utcnow()",
+							"type": "Expression"
+						},
+						"runDuration": "60"
 					}
 				}
 			}
