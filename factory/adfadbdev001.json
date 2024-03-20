@@ -25,6 +25,10 @@
 			"prod_subscription_id": {
 				"type": "string",
 				"value": "s"
+			},
+			"prod_datafactory": {
+				"type": "string",
+				"value": "s"
 			}
 		},
 		"globalConfigurations": {
