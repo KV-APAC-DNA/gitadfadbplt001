@@ -53,53 +53,64 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": []
 			}
 		],
 		"parameters": {
 			"subscription": {
-				"type": "string",
-				"defaultValue": "Specify subscription id for the pipeline"
+				"type": "string"
 			},
 			"resourceGroup": {
-				"type": "string",
-				"defaultValue": "Specify resource group name for the pipeline"
+				"type": "string"
 			},
 			"runId": {
-				"type": "string",
-				"defaultValue": "@activity('Specify name of the calling pipeline').output['pipelineRunId']"
+				"type": "string"
 			},
 			"name": {
-				"type": "string",
-				"defaultValue": "@activity('Specify name of the calling pipeline').output['pipelineName']"
+				"type": "string"
 			},
 			"triggerTime": {
-				"type": "string",
-				"defaultValue": "@activity('Specify name of the calling pipeline').ExecutionStartTime"
+				"type": "string"
 			},
 			"status": {
-				"type": "string",
-				"defaultValue": "@activity('Specify name of the calling pipeline').Status"
+				"type": "string"
 			},
-			"message": {
+			"supportMessage": {
 				"type": "string",
 				"defaultValue": "testing pipeline"
 			},
-			"executionEndTime": {
-				"type": "string",
-				"defaultValue": "@activity('Specify name of the calling pipeline').ExecutionEndTime"
-			},
-			"runDuration": {
-				"type": "string",
-				"defaultValue": "@activity('Specify name of the calling pipeline').Duration"
-			},
-			"teamWebhookUrl": {
+			"teamWebhookUrlSupport": {
 				"type": "string",
 				"defaultValue": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac"
+			},
+			"isBusinessNotification": {
+				"type": "string",
+				"defaultValue": "No"
+			},
+			"isSupport": {
+				"type": "string",
+				"defaultValue": "Yes"
+			},
+			"teamWebhookUrlBusiness": {
+				"type": "string"
+			},
+			"businessMessage": {
+				"type": "string",
+				"defaultValue": "testing pipeline"
 			}
 		},
 		"variables": {
 			"messageCard": {
 				"type": "String"
+			},
+			"test": {
+				"type": "String",
+				"defaultValue": "abc"
 			}
 		},
 		"folder": {
