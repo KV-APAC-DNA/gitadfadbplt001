@@ -108,7 +108,7 @@
 				"defaultValue": "true"
 			},
 			"test1": {
-				"type": "Boolean"
+				"type": "String"
 			},
 			"arr": {
 				"type": "Array"
