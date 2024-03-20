@@ -1180,8 +1180,6 @@
 						{
 							"name": "Fetch Failed Records",
 							"type": "Lookup",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Script3",
@@ -1238,7 +1236,7 @@
 				}
 			},
 			{
-				"name": "If Ingestion Error",
+				"name": "If not Ingestion Error",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -1258,6 +1256,8 @@
 						{
 							"name": "Script5",
 							"type": "Script",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -1316,7 +1316,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "If Ingestion Error",
+						"activity": "If not Ingestion Error",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1570,15 +1570,15 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 21
+				"defaultValue": 2
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 1
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 41
+				"defaultValue": 62
 			},
 			"phase_id": {
 				"type": "int",
