@@ -1242,7 +1242,17 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": true,
+								"stagingSettings": {
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lsdlsadbplt001",
+										"type": "LinkedServiceReference"
+									},
+									"path": {
+										"value": "dataops/DQ Check Failures/asp/",
+										"type": "Expression"
+									}
+								}
 							},
 							"inputs": [
 								{
