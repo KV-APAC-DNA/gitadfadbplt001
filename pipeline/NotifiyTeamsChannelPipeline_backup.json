@@ -1,0 +1,113 @@
+{
+	"name": "NotifiyTeamsChannelPipeline_backup",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set JSON Schema",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "messageCard",
+					"value": {
+						"value": "{\n    \"@type\": \"MessageCard\",\n    \"@context\": \"http://schema.org/extensions\",\n    \"themeColor\": \"0076D7\",\n    \"summary\": \"Pipeline status alert message​​​​\",\n    \"sections\": [\n        {\n            \"activityTitle\": \"Pipeline execution alert​​​​\",\n            \"facts\": [\n                {\n                    \"name\": \"Subscription Id:\",\n                    \"value\": \"@{pipeline().parameters.subscription}\"\n                },\n                {\n                    \"name\": \"Resource Group:\",\n                    \"value\": \"@{pipeline().parameters.resourceGroup}\"\n                },\n                {\n                    \"name\": \"Data Factory Name:\",\n                    \"value\": \"@{pipeline().DataFactory}\"\n                },\n                {\n                    \"name\": \"Pipeline RunId:\",\n                    \"value\": \"@{pipeline().parameters.runId}\"\n                },\n                {\n                    \"name\": \"Pipline Name:\",\n                    \"value\": \"@{pipeline().parameters.name}\"\n                },\n                {\n                    \"name\": \"Pipeline Status:\",\n                    \"value\": \"@{pipeline().parameters.status}\"\n                },\n                {\n                    \"name\": \"Execution Start Time (UTC):\",\n                    \"value\": \"@{pipeline().parameters.triggerTime}\"\n                },\n                {\n                    \"name\": \"Execution Finish Time (UTC):\",\n                    \"value\": \"@{pipeline().parameters.executionEndTime}\"\n                },\n                {\n                    \"name\": \"Execution Duration (s):\",\n                    \"value\": \"@{pipeline().parameters.runDuration}\"\n                },\n                {\n                    \"name\": \"Message:\",\n                    \"value\": \"@{pipeline().parameters.message}\"\n                },\n                {\n                    \"name\": \"Notification Time (UTC):\",\n                    \"value\": \"@{utcnow()}\"\n                }\n            ],\n            \"markdown\": true\n        }\n    ],\n    \"potentialAction\": [\n        {\n            \"@type\": \"OpenUri\",\n            \"name\": \"View pipeline run\",\n            \"targets\": [\n                {\n                    \"os\": \"default\",\n                    \"uri\": \"@{concat('https://synapse.azure.com/monitoring/pipelineruns/',pipeline().parameters.runId,'?factory=/subscriptions/',pipeline().parameters.subscription,'/resourceGroups/',pipeline().parameters.resourceGroup,'/providers/Microsoft.DataFactory/factories/',pipeline().DataFactory)}\"\n                }\n            ]\n        }\n    ]\n}",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Invoke Teams Webhook URL",
+				"type": "WebActivity",
+				"dependsOn": [
+					{
+						"activity": "Set JSON Schema",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "POST",
+					"url": {
+						"value": "@pipeline().parameters.teamWebhookUrl",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "adfiradbplt001",
+						"type": "IntegrationRuntimeReference"
+					},
+					"body": {
+						"value": "@json(variables('messageCard'))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"subscription": {
+				"type": "string",
+				"defaultValue": "Specify subscription id for the pipeline"
+			},
+			"resourceGroup": {
+				"type": "string",
+				"defaultValue": "Specify resource group name for the pipeline"
+			},
+			"runId": {
+				"type": "string",
+				"defaultValue": "@activity('Specify name of the calling pipeline').output['pipelineRunId']"
+			},
+			"name": {
+				"type": "string",
+				"defaultValue": "@activity('Specify name of the calling pipeline').output['pipelineName']"
+			},
+			"triggerTime": {
+				"type": "string",
+				"defaultValue": "@activity('Specify name of the calling pipeline').ExecutionStartTime"
+			},
+			"status": {
+				"type": "string",
+				"defaultValue": "@activity('Specify name of the calling pipeline').Status"
+			},
+			"message": {
+				"type": "string",
+				"defaultValue": "testing pipeline"
+			},
+			"executionEndTime": {
+				"type": "string",
+				"defaultValue": "@activity('Specify name of the calling pipeline').ExecutionEndTime"
+			},
+			"runDuration": {
+				"type": "string",
+				"defaultValue": "@activity('Specify name of the calling pipeline').Duration"
+			},
+			"teamWebhookUrl": {
+				"type": "string",
+				"defaultValue": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac"
+			}
+		},
+		"variables": {
+			"messageCard": {
+				"type": "String"
+			},
+			"test": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "MS Teams Notification"
+		},
+		"annotations": []
+	}
+}
