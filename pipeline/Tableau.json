@@ -376,7 +376,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}s?f ilter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}s?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
 								"type": "Expression"
 							}
 						}
