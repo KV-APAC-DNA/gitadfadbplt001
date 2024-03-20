@@ -241,7 +241,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "<tsRequest><ccredentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
+							"value": "<tsRequest><credentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
 							"type": "Expression"
 						},
 						"paginationRules": {
