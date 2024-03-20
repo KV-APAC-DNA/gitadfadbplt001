@@ -1644,7 +1644,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-pwd?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-pw?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
