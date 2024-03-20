@@ -58,10 +58,9 @@
 							"policy": {
 								"secureInput": false
 							},
-							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "PIPE_hist_data_migration_redshift_snowflake_child",
+									"referenceName": "PIPE_hist_data_migration_redshift_snowflake_child_with_clause",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": false,
@@ -109,6 +108,10 @@
 									"Environment": {
 										"value": "@pipeline().parameters.Environment",
 										"type": "Expression"
+									},
+									"where": {
+										"value": "@pipeline().parameters.where",
+										"type": "Expression"
 									}
 								}
 							}
@@ -125,6 +128,10 @@
 			"process_id": {
 				"type": "string",
 				"defaultValue": "ALL"
+			},
+			"where": {
+				"type": "string",
+				"defaultValue": "where "
 			}
 		},
 		"variables": {
