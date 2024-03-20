@@ -130,8 +130,7 @@
 				"defaultValue": "ALL"
 			},
 			"where": {
-				"type": "array",
-				"defaultValue": "where "
+				"type": "string"
 			}
 		},
 		"variables": {
