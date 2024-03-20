@@ -5,14 +5,9 @@
 			{
 				"name": "Send Error notification 1",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Execute Pipeline1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -33,7 +28,7 @@
 							"type": "Expression"
 						},
 						"runId": {
-							"value": "@activity('pipeline1').output['pipelineRunId']",
+							"value": "@pipeline().RunId",
 							"type": "Expression"
 						},
 						"name": {
@@ -57,14 +52,9 @@
 			{
 				"name": "Send Error notification 1_copy1",
 				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Execute Pipeline1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
 				"policy": {
 					"secureInput": false
 				},
@@ -107,22 +97,6 @@
 							"type": "Expression"
 						}
 					}
-				}
-			},
-			{
-				"name": "Execute Pipeline1",
-				"type": "ExecutePipeline",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "pipeline2",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true
 				}
 			}
 		],
