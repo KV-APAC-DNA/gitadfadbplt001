@@ -1252,18 +1252,15 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "adls_src",
+									"referenceName": "csv",
 									"type": "DatasetReference",
 									"parameters": {
-										"src_path": {
-											"value": "DQ Check Failures/asp",
-											"type": "Expression"
-										},
-										"src_container": "dataops",
-										"src_filename": {
+										"target_path": "DQ Check Failures/asp",
+										"target_filename": {
 											"value": "@{item().model_name}_@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')}.csv",
 											"type": "Expression"
-										}
+										},
+										"target_container": "dataops"
 									}
 								}
 							]
