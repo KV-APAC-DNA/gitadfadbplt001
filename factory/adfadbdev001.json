@@ -21,6 +21,10 @@
 			"prod_resource_group": {
 				"type": "string",
 				"value": "d"
+			},
+			"prod_subscription_id": {
+				"type": "string",
+				"value": "s"
 			}
 		},
 		"globalConfigurations": {
