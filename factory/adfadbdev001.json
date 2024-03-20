@@ -14,10 +14,6 @@
 				"type": "string",
 				"value": "AZR-WEK"
 			},
-			"dev_datafactory": {
-				"type": "string",
-				"value": "adfadbdev001"
-			},
 			"prod_resource_group": {
 				"type": "string",
 				"value": "AZR-WEK-rg-adf-adb-001"
@@ -25,10 +21,6 @@
 			"prod_subscription_id": {
 				"type": "string",
 				"value": "AZR-WEK"
-			},
-			"prod_datafactory": {
-				"type": "string",
-				"value": "adfadbdev001"
 			}
 		},
 		"globalConfigurations": {
