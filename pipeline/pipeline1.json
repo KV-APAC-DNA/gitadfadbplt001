@@ -39,13 +39,7 @@
 							"value": "@pipeline().TriggerTime",
 							"type": "Expression"
 						},
-						"status": "FAIL",
-						"message": "Testing message card",
-						"executionEndTime": {
-							"value": "@utcnow()",
-							"type": "Expression"
-						},
-						"runDuration": "60"
+						"status": "FAIL"
 					}
 				}
 			},
@@ -86,26 +80,22 @@
 							"value": "@pipeline().TriggerTime",
 							"type": "Expression"
 						},
-						"status": "FAIL",
-						"message": "Testing message card",
-						"executionEndTime": {
-							"value": "@activity('Execute Pipeline1').ExecutionEndTime",
-							"type": "Expression"
-						},
-						"runDuration": {
-							"value": "@activity('Execute Pipeline1').Duration",
-							"type": "Expression"
-						}
+						"status": "FAIL"
 					}
 				}
 			}
 		],
 		"variables": {
 			"test": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "abc"
 			},
 			"test1": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "def"
+			},
+			"arr": {
+				"type": "Array"
 			}
 		},
 		"folder": {
