@@ -1198,8 +1198,6 @@
 						{
 							"name": "Create attachment",
 							"type": "Copy",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Script3",
@@ -1263,7 +1261,7 @@
 										},
 										"src_container": "dataops",
 										"src_filename": {
-											"value": "@{item().model_name}.csv",
+											"value": "@{item().model_name}_@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')}.csv",
 											"type": "Expression"
 										}
 									}
