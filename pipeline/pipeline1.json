@@ -96,31 +96,7 @@
 				"typeProperties": {
 					"variableName": "test1",
 					"value": {
-						"value": "@formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_hhmmss')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set variable1_copy1",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "Set variable1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test1",
-					"value": {
-						"value": "@convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')",
+						"value": "@formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')",
 						"type": "Expression"
 					}
 				}
