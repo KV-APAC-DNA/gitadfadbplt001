@@ -9,6 +9,10 @@
 			"dev_resource_group": {
 				"type": "string",
 				"value": "AZR-WEK-rg-adf-adb-001"
+			},
+			"dev_subscription_id": {
+				"type": "string",
+				"value": " AZR-WEK"
 			}
 		},
 		"globalConfigurations": {
