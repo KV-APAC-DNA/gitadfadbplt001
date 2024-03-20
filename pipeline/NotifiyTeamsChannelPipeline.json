@@ -201,8 +201,8 @@
 				"defaultValue": "testing pipeline"
 			},
 			"isError": {
-				"type": "bool",
-				"defaultValue": true
+				"type": "string",
+				"defaultValue": "Yes"
 			}
 		},
 		"variables": {
