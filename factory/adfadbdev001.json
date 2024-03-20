@@ -13,6 +13,10 @@
 			"dev_subscription_id": {
 				"type": "string",
 				"value": " AZR-WEK"
+			},
+			"dev_datafactory": {
+				"type": "string",
+				"value": "adfadbdev001"
 			}
 		},
 		"globalConfigurations": {
