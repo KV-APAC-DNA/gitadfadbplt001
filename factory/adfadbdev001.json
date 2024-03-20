@@ -17,6 +17,10 @@
 			"dev_datafactory": {
 				"type": "string",
 				"value": "adfadbdev001"
+			},
+			"prod_resource_group": {
+				"type": "string",
+				"value": "d"
 			}
 		},
 		"globalConfigurations": {
