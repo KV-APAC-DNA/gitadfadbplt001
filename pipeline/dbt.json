@@ -1184,7 +1184,7 @@
 							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
-									"activity": "Script3",
+									"activity": "Create attachment",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1232,6 +1232,98 @@
 							"userProperties": [],
 							"typeProperties": {
 								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "Create attachment",
+							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [
+								{
+									"activity": "Script3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set current time",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SnowflakeSource",
+									"query": {
+										"value": "@activity('Script3').output.resultSets[0].rows[0].QUERY",
+										"type": "Expression"
+									},
+									"exportSettings": {
+										"type": "SnowflakeExportCopyCommand"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DNA_CORE_Dataset",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adls_src",
+									"type": "DatasetReference",
+									"parameters": {
+										"src_path": {
+											"value": "DQ Check Failures/@{variables('currentTime')}",
+											"type": "Expression"
+										},
+										"src_container": "dataops",
+										"src_filename": {
+											"value": "@{item().model_name}.csv",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Set current time",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "currentTime",
+								"value": {
+									"value": "@utcnow()",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -1622,6 +1714,9 @@
 			"emptyArray": {
 				"type": "Array",
 				"defaultValue": []
+			},
+			"currentTime": {
+				"type": "String"
 			}
 		},
 		"folder": {
