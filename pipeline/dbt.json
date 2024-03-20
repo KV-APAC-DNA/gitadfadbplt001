@@ -1178,52 +1178,13 @@
 							}
 						},
 						{
-							"name": "Fetch Failed Records",
-							"type": "Lookup",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
-							"dependsOn": [
-								{
-									"activity": "Create attachment",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "SnowflakeSource",
-									"query": {
-										"value": "@activity('Script3').output.resultSets[0].rows[0].QUERY",
-										"type": "Expression"
-									},
-									"exportSettings": {
-										"type": "SnowflakeExportCopyCommand"
-									}
-								},
-								"dataset": {
-									"referenceName": "DNA_CORE_Dataset",
-									"type": "DatasetReference"
-								},
-								"firstRowOnly": false
-							}
-						},
-						{
 							"name": "Email records",
 							"type": "Wait",
 							"state": "Inactive",
 							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
-									"activity": "Fetch Failed Records",
+									"activity": "Create attachment",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -1297,7 +1258,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"src_path": {
-											"value": "DQ Check Failures/@{variables('currentTime')}",
+											"value": "DQ Check Failures/asp",
 											"type": "Expression"
 										},
 										"src_container": "dataops",
