@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(pipeline().parameters.isBusinessNotification, true), equals(pipeline().parameters.isError, true))",
+						"value": "@and(equals(pipeline().parameters.isBusinessNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -89,7 +89,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(pipeline().parameters.isSupportNotification, true), equals(pipeline().parameters.isError, true))",
+						"value": "@and(equals(pipeline().parameters.isSupportNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
