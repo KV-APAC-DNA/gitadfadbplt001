@@ -103,6 +103,9 @@
 		"variables": {
 			"test": {
 				"type": "String"
+			},
+			"test1": {
+				"type": "String"
 			}
 		},
 		"folder": {
