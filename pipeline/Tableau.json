@@ -1807,7 +1807,7 @@
 							"type": "Expression"
 						},
 						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
+							"value": "@pipeline().Pipeline",
 							"type": "Expression"
 						},
 						"triggerTime": {
@@ -1861,7 +1861,7 @@
 							"type": "Expression"
 						},
 						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
+							"value": "@pipeline().Pipeline",
 							"type": "Expression"
 						},
 						"triggerTime": {
