@@ -1180,6 +1180,8 @@
 						{
 							"name": "Fetch Failed Records",
 							"type": "Lookup",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Script3",
