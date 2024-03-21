@@ -744,7 +744,7 @@
 				}
 			},
 			{
-				"name": "Send Error notification fetching id",
+				"name": "Send Error notification triggering dbt",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
