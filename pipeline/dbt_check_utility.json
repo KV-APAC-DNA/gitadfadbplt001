@@ -126,7 +126,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(activity('read parameters').output.value[0].transformationType,'ingestion'),'1','2'),'0')",
+						"value": "@if(greater(variables('run_status'),10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),'1','2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -507,7 +507,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(and(greater(variables('run_status'),10),equals(activity('read parameters').output.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
+						"value": "@and(and(greater(variables('run_status'),10),equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -583,7 +583,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(activity('read parameters').output.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
+						"value": "@if(greater(variables('run_status'),10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -844,6 +844,12 @@
 			},
 			"parameters": {
 				"type": "object"
+			},
+			"run_id": {
+				"type": "int"
+			},
+			"run_status": {
+				"type": "int"
 			}
 		},
 		"variables": {
