@@ -850,6 +850,14 @@
 						"run_status": {
 							"value": "@variables('run_status')",
 							"type": "Expression"
+						},
+						"parent_seq_run_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"dbt_runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
 						}
 					}
 				}
