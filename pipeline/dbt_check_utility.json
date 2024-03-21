@@ -161,11 +161,11 @@
 												"type": "Expression"
 											},
 											"runid": {
-												"value": "@pipeline().RunId",
+												"value": "@pipeline().parameters.dbt_runid",
 												"type": "Expression"
 											},
 											"pipeline_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"value": "@pipeline().parameters.parent_seq_run_id",
 												"type": "Expression"
 											},
 											"category": {
