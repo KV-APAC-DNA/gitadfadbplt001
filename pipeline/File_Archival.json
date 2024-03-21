@@ -246,6 +246,10 @@
 							"directory": {
 								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.directory}/processed/archive/@{variables('tempPath')}",
 								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@replace(pipeline().parameters.sourceFile,'.',concat('_',formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.'))",
+								"type": "Expression"
 							}
 						}
 					}
@@ -335,6 +339,10 @@
 												},
 												"directory": {
 													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.directory}/processed/error/@{variables('tempPath')}",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@replace(pipeline().parameters.sourceFile,'.',concat('_',formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.'))",
 													"type": "Expression"
 												}
 											}
