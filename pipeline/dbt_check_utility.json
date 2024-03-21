@@ -313,7 +313,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"message": {
-											"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
+											"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
 											"type": "Expression"
 										},
 										"errorCode": "2002"
