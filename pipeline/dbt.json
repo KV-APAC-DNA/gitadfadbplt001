@@ -842,6 +842,14 @@
 						"parameters": {
 							"value": "@activity('Read response').output",
 							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@variables('run_id')",
+							"type": "Expression"
+						},
+						"run_status": {
+							"value": "@variables('run_status')",
+							"type": "Expression"
 						}
 					}
 				}
