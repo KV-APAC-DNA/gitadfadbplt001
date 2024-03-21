@@ -184,7 +184,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacoree?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacore?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
