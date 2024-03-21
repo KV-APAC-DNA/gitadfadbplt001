@@ -165,8 +165,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col,lit
@@ -184,7 +183,7 @@ def main(session: snowpark.Session,Param):
         stage_name      = Param[1]
         temp_stage_path = Param[2]
         target_table    = Param[3]
-        # Define the schema for the DataFrame
+       
         df_schema =  StructType([
                     StructField("oyb_account_id", StringType()),
                     StructField("job_id", StringType()),
@@ -270,8 +269,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col,lit
@@ -291,7 +289,7 @@ def main(session: snowpark.Session,Param):
         stage_name      = Param[1]
         temp_stage_path = Param[2]
         target_table    = Param[3]
-        # Define the schema for the DataFrame
+        
         df_schema = StructType([
                 StructField("oyb_account_id", StringType()),
                 StructField("job_id", StringType()),
@@ -365,8 +363,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col,lit
@@ -474,7 +471,7 @@ def main(session: snowpark.Session,Param):
     try:
 
         
-        # Extracting parameters from the input
+        
         file_name       = Param[0]
         stage_name      = Param[1]
         temp_stage_path = Param[2]
@@ -564,8 +561,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake import snowpark
@@ -580,14 +576,14 @@ def main(session: snowpark.Session,Param):
 
         
 
-        # Extracting parameters from the input
+       
         file_name       = Param[0]
         stage_name      = Param[1]
         temp_stage_path = Param[2]
         target_table    = Param[3]
         
 
-        # Define the schema for the DataFrame
+        
         df_schema=StructType([
             StructField("OYB_ACCOUNT_ID",StringType()),
             StructField("JOB_ID",StringType()),
@@ -665,8 +661,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col,lit,trim,when
@@ -845,7 +840,7 @@ def main(session: snowpark.Session,Param):
             print("File extension Validation not required")
     
     
-        # Check for File Header Validation
+       
     
         if FileHeaderValidation == "1":
 
