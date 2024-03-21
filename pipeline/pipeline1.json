@@ -3,88 +3,6 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Send Error notification 1",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "NotifiyTeamsChannelPipeline",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"subscription": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-							"type": "Expression"
-						},
-						"resourceGroup": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-							"type": "Expression"
-						},
-						"runId": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
-							"type": "Expression"
-						},
-						"triggerTime": {
-							"value": "@pipeline().TriggerTime",
-							"type": "Expression"
-						},
-						"status": "FAIL"
-					}
-				}
-			},
-			{
-				"name": "Send Error notification 1_copy1",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "NotifiyTeamsChannelPipeline",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"subscription": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-							"type": "Expression"
-						},
-						"resourceGroup": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-							"type": "Expression"
-						},
-						"runId": {
-							"value": "@activity('Execute Pipeline1').output['pipelineRunId']",
-							"type": "Expression"
-						},
-						"name": {
-							"value": "@pipeline()?.TriggeredByPipelineName",
-							"type": "Expression"
-						},
-						"triggerTime": {
-							"value": "@pipeline().TriggerTime",
-							"type": "Expression"
-						},
-						"status": "FAIL"
-					}
-				}
-			},
-			{
 				"name": "Set variable1",
 				"type": "SetVariable",
 				"dependsOn": [],
@@ -94,11 +12,8 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "test1",
-					"value": {
-						"value": "@formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')",
-						"type": "Expression"
-					}
+					"variableName": "pipelineReturnValue",
+					"setSystemVariable": true
 				}
 			}
 		],
