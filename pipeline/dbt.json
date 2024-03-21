@@ -928,7 +928,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(variables('refreshType'),'ingestion'),'1','2'),'0')",
+						"value": "@if(greater(variables('run_status'),10),if(equals(activity('read parameters').output.value[0].transformationType,'ingestion'),'1','2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -1014,7 +1014,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "select * from core_integration.dbtjobs_test_cdc_metadata where tempid='@{variables('temp_id')}';\n",
+													"value": "select * from core_integration.dbtjobs_test_cdc_metadata where tempid='@{activity('read parameters').output.value[0].tempId}';\n",
 													"type": "Expression"
 												}
 											}
@@ -1050,7 +1050,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "call core_integration.SP_failed_tests_models('@{variables('temp_id')}',@{variables('sp_params')});",
+													"value": "call core_integration.SP_failed_tests_models('@{activity('read parameters').output.value[0].tempId}',@{variables('sp_params')});",
 													"type": "Expression"
 												}
 											}
