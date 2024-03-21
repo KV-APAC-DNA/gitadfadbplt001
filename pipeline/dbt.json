@@ -746,8 +746,6 @@
 			{
 				"name": "Send Error notification fetching id",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Trigger DBT Job",
