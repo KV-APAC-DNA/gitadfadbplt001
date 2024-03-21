@@ -498,7 +498,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(and(greater(variables('run_status'),10),equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
+						"value": "@and(and(greater(pipeline().parameters.run_status,10),equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -525,7 +525,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "call core_integration.SP_updatecdc_failed_tests_models('@{activity('read parameters').output.value[0].tempId}',@{variables('sp_params')});",
+											"value": "call core_integration.SP_updatecdc_failed_tests_models('@{pipeline().parameters.parameters.value[0].tempId}',@{variables('sp_params')});",
 											"type": "Expression"
 										}
 									}
@@ -574,7 +574,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
+						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -603,20 +603,17 @@
 											"status": "FAIL",
 											"input_row_count": 0,
 											"output_row_count": 0,
-											"jobname": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
+											"jobname": "dbt",
 											"message": {
-												"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
 												"type": "Expression"
 											},
 											"runid": {
-												"value": "@pipeline().RunId",
+												"value": "@pipeline().parameters.dbt_runid",
 												"type": "Expression"
 											},
 											"pipeline_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"value": "@pipeline().parameters.parent_seq_run_id",
 												"type": "Expression"
 											},
 											"category": {
@@ -660,16 +657,13 @@
 												"value": "@pipeline().parameters.process_id",
 												"type": "Expression"
 											},
-											"job_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
+											"job_name": "dbt",
 											"error_message": {
-												"value": "dbt job failed, check on run_id @{variables('run_id')} and retry",
+												"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
 												"type": "Expression"
 											},
 											"run_id": {
-												"value": "@pipeline().RunId",
+												"value": "@pipeline().parameters.dbt_runid",
 												"type": "Expression"
 											},
 											"category": {
@@ -685,7 +679,7 @@
 												"type": "Expression"
 											},
 											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"value": "@pipeline().parameters.parent_seq_run_id",
 												"type": "Expression"
 											}
 										}
@@ -718,20 +712,17 @@
 											"status": "FAIL : DQ Check",
 											"input_row_count": 0,
 											"output_row_count": 0,
-											"jobname": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
+											"jobname": "dbt",
 											"message": {
-												"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
 												"type": "Expression"
 											},
 											"runid": {
-												"value": "@pipeline().RunId",
+												"value": "@pipeline().parameters.dbt_runid",
 												"type": "Expression"
 											},
 											"pipeline_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"value": "@pipeline().parameters.parent_seq_run_id",
 												"type": "Expression"
 											},
 											"category": {
@@ -780,11 +771,11 @@
 												"type": "Expression"
 											},
 											"error_message": {
-												"value": "dbt job failed due to DQ check, check on run_id @{variables('run_id')} and retry",
+												"value": "dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry",
 												"type": "Expression"
 											},
 											"run_id": {
-												"value": "@pipeline().RunId",
+												"value": "@pipeline().parameters.dbt_runid",
 												"type": "Expression"
 											},
 											"category": {
@@ -800,7 +791,7 @@
 												"type": "Expression"
 											},
 											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"value": "@pipeline().parameters.parent_seq_run_id",
 												"type": "Expression"
 											}
 										}
