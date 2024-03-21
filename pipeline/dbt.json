@@ -96,7 +96,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"url": {
-								"value": "api/v2/accounts/@{activity('read parameters').output.value[0].accountId}/jobs/6176/run/",
+								"value": "api/v2/accounts/@{activity('read parameters').output.value[0].accountId}/jobs/@{activity('read parameters').output.value[0].jobId}/run/",
 								"type": "Expression"
 							}
 						}
@@ -184,7 +184,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacore?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/adfadbplt001lsdbtclouddnacoree?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
