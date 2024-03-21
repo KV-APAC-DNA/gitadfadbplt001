@@ -912,7 +912,7 @@
 			}
 		},
 		"folder": {
-			"name": "Transformation/dbt"
+			"name": "Transformation/dbt/utilities"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-11-28T12:20:59Z"
