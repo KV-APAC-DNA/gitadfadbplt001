@@ -817,7 +817,33 @@
 						"referenceName": "dbt_check_utility",
 						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true
+					"waitOnCompletion": true,
+					"parameters": {
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"sequence_id": {
+							"value": "@pipeline().parameters.sequence_id",
+							"type": "Expression"
+						},
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"parameters": {
+							"value": "@activity('Read response').output",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

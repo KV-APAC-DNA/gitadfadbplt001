@@ -841,6 +841,9 @@
 			"phase_id": {
 				"type": "int",
 				"defaultValue": 2
+			},
+			"parameters": {
+				"type": "object"
 			}
 		},
 		"variables": {
