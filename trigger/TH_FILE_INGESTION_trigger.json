@@ -1,0 +1,32 @@
+{
+	"name": "TH_FILE_INGESTION_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "TH_FILE_INGESTION"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-03-21T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"hours": [
+						4
+					]
+				}
+			}
+		}
+	}
+}

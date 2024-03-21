@@ -1,0 +1,35 @@
+{
+	"name": "TH_CUSTOMER360_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "TH_CUSTOMER360"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-03-21T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						9
+					]
+				}
+			}
+		}
+	}
+}
