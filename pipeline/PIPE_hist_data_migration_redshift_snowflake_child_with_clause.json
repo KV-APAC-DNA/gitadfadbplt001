@@ -469,7 +469,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,' where ',pipeline().parameters.where, ';')",
+													"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
 													"type": "Expression"
 												}
 											}
@@ -711,7 +711,7 @@
 					"source": {
 						"type": "AmazonRedshiftSource",
 						"query": {
-							"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table)",
+							"value": "@concat('Select count(*) from ', pipeline().parameters.Source_Schema,'.',pipeline().parameters.Source_Table,' where ',pipeline().parameters.where,';')",
 							"type": "Expression"
 						}
 					},
