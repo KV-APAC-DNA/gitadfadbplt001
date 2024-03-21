@@ -367,7 +367,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/dbt/@{activity('read parameters').output.value[0].jobId}",
 											"type": "Expression"
 										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
@@ -412,7 +412,7 @@
 									"parameters": {
 										"tempContainer": "asp",
 										"tempDirectory": {
-											"value": "@{variables('parentFolder')}/dbt/@{activity('read parameters').output.value[0].jobId}",
+											"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/dbt/@{activity('read parameters').output.value[0].jobId}",
 											"type": "Expression"
 										},
 										"tempFileName": "dbtResponseCurrentJobStatus.json"
