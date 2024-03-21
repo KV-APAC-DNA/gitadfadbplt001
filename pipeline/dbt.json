@@ -1198,6 +1198,8 @@
 						{
 							"name": "Create attachment",
 							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Script3",
