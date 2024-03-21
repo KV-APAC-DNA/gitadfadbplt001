@@ -891,38 +891,6 @@
 			},
 			"run_status": {
 				"type": "Integer"
-			},
-			"modelNameArray": {
-				"type": "Array",
-				"defaultValue": []
-			},
-			"temp_id": {
-				"type": "String",
-				"defaultValue": "1"
-			},
-			"refreshType": {
-				"type": "String",
-				"defaultValue": "Ingestion"
-			},
-			"test": {
-				"type": "String"
-			},
-			"sp_params": {
-				"type": "String"
-			},
-			"parentFolder": {
-				"type": "String"
-			},
-			"resultSet": {
-				"type": "Array",
-				"defaultValue": []
-			},
-			"emptyArray": {
-				"type": "Array",
-				"defaultValue": []
-			},
-			"currentTime": {
-				"type": "String"
 			}
 		},
 		"folder": {
