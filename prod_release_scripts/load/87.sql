@@ -1,0 +1,15 @@
+update META_RAW.USECASE 
+set SEQUENCE_ID = 2
+where  USECASE_ID = 6;
+
+update META_RAW.USECASE 
+set SEQUENCE_ID = 3
+where  USECASE_ID = 3;
+
+update META_RAW.USECASE 
+set SEQUENCE_ID = 4
+where  USECASE_ID = 37;
+
+update META_RAW.USECASE 
+set CATEGORY = 'REGIONAL REFRESH'
+where  USECASE_ID = 29;
