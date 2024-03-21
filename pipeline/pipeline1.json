@@ -5,8 +5,6 @@
 			{
 				"name": "Set variable1",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
@@ -14,13 +12,15 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "pipelineReturnValue",
-					"setSystemVariable": true
+					"variableName": "test",
+					"value": "abc.xlsx"
 				}
 			},
 			{
 				"name": "Copy data1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -66,14 +66,34 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"adls_container": "dataops",
-							"adls_path": "DQ Check Failures",
-							"file_name": {
-								"value": "tempFile_@{formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')}.xlsx",
-								"type": "Expression"
-							}
+							"adls_path": "DQ Check Failures"
 						}
 					}
 				]
+			},
+			{
+				"name": "Set variable1_copy1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test1",
+					"value": {
+						"value": "@replace(variables('test'),'.',concat('_',formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
