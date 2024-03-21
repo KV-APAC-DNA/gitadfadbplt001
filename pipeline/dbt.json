@@ -804,7 +804,7 @@
 				}
 			},
 			{
-				"name": "Set refreshType",
+				"name": "Set transformationType",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -919,7 +919,7 @@
 						]
 					},
 					{
-						"activity": "Set refreshType",
+						"activity": "Set transformationType",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1180,8 +1180,6 @@
 						{
 							"name": "Email records",
 							"type": "Wait",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Create attachment",
@@ -1318,8 +1316,6 @@
 						{
 							"name": "Script5",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
