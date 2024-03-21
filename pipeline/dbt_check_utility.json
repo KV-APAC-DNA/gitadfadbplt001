@@ -1,5 +1,5 @@
 {
-	"name": "dbt_dq_check_utility",
+	"name": "dbt_check_utility",
 	"properties": {
 		"activities": [
 			{
