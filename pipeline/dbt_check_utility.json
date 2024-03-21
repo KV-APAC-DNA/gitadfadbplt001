@@ -126,7 +126,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),'1','2'),'0')",
+						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),'1','2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -155,10 +155,7 @@
 											"status": "FINISH",
 											"input_row_count": 0,
 											"output_row_count": 0,
-											"jobname": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
+											"jobname": "dbt",
 											"message": {
 												"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
 												"type": "Expression"
@@ -850,34 +847,20 @@
 			},
 			"run_status": {
 				"type": "int"
+			},
+			"parent_seq_run_id": {
+				"type": "string"
+			},
+			"dbt_runid": {
+				"type": "string"
 			}
 		},
 		"variables": {
-			"run_id": {
-				"type": "Integer"
-			},
-			"run_status": {
-				"type": "Integer"
-			},
 			"modelNameArray": {
 				"type": "Array",
 				"defaultValue": []
 			},
-			"temp_id": {
-				"type": "String",
-				"defaultValue": "1"
-			},
-			"refreshType": {
-				"type": "String",
-				"defaultValue": "Ingestion"
-			},
-			"test": {
-				"type": "String"
-			},
 			"sp_params": {
-				"type": "String"
-			},
-			"parentFolder": {
 				"type": "String"
 			},
 			"resultSet": {
