@@ -804,54 +804,6 @@
 				}
 			},
 			{
-				"name": "Set transformationType",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "wait until job is complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "refreshType",
-					"value": {
-						"value": "@{activity('read parameters').output.value[0].transformationType}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set tempId",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "wait until job is complete",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "temp_id",
-					"value": {
-						"value": "@{activity('read parameters').output.value[0].tempId}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "error dbt run failed_1",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -913,13 +865,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Set tempId",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set transformationType",
+						"activity": "wait until job is complete",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1309,7 +1255,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(and(greater(variables('run_status'),10),equals(variables('refreshType'),'ingestion')),not(empty(variables('resultSet'))))",
+						"value": "@and(and(greater(variables('run_status'),10),equals(activity('read parameters').output.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -1334,7 +1280,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "call core_integration.SP_updatecdc_failed_tests_models('@{variables('temp_id')}',@{variables('sp_params')});",
+											"value": "call core_integration.SP_updatecdc_failed_tests_models('@{activity('read parameters').output.value[0].tempId}',@{variables('sp_params')});",
 											"type": "Expression"
 										}
 									}
@@ -1383,7 +1329,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('run_status'),10),if(equals(variables('refreshType'),'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
+						"value": "@if(greater(variables('run_status'),10),if(equals(activity('read parameters').output.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
