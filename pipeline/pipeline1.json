@@ -90,7 +90,7 @@
 				"typeProperties": {
 					"variableName": "test1",
 					"value": {
-						"value": "@replace(variables('test'),'.',concat('_',formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')))",
+						"value": "@replace(variables('test'),'.',concat('_',formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.'))",
 						"type": "Expression"
 					}
 				}
