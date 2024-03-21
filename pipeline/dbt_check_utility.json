@@ -684,6 +684,57 @@
 											}
 										}
 									}
+								},
+								{
+									"name": "Send Error notification dbt ing build fail",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "audit failure of dbt status ing build",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"name": "dbt",
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
+												"type": "Expression"
+											},
+											"teamWebhookUrlSupport": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac",
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
 								}
 							]
 						},
@@ -794,6 +845,57 @@
 												"value": "@pipeline().parameters.parent_seq_run_id",
 												"type": "Expression"
 											}
+										}
+									}
+								},
+								{
+									"name": "Send Error notification dbt ing build fail_copy1",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "audit failure of dbt status ing",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"name": "dbt",
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry.",
+												"type": "Expression"
+											},
+											"teamWebhookUrlSupport": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac",
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
 										}
 									}
 								}
