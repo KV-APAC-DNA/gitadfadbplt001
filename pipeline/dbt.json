@@ -840,7 +840,7 @@
 							"type": "Expression"
 						},
 						"parameters": {
-							"value": "@activity('Read response').output",
+							"value": "@activity('read parameters').output",
 							"type": "Expression"
 						},
 						"run_id": {
