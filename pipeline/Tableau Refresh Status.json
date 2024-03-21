@@ -610,7 +610,6 @@
 										"value": "Refresh failed for tableau source (@{pipeline().parameters.tableauSourceName}): @{activity('Read Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes}\n",
 										"type": "Expression"
 									},
-									"teamWebhookUrlSupport": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac",
 									"isBusinessNotification": "No",
 									"isSupportNotification": "Yes",
 									"isError": "Yes"
