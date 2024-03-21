@@ -469,7 +469,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,';')",
+													"value": "@concat('Select count(*) as count from ',pipeline().parameters.Target_Schema,'.',pipeline().parameters.Target_Table,' where ',pipeline().parameters.where, ';')",
 													"type": "Expression"
 												}
 											}
@@ -805,7 +805,8 @@
 				"defaultValue": "DEV"
 			},
 			"where": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "waers = 'TWD'"
 			}
 		},
 		"variables": {
