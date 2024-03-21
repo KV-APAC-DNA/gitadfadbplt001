@@ -96,7 +96,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"url": {
-								"value": "api/v2/accounts/@{activity('read parameters').output.value[0].accountId}/jobs/@{activity('read parameters').output.value[0].jobId}/run/",
+								"value": "api/v2/accounts/@{activity('read parameters').output.value[0].accountId}/jobs/6176/run/",
 								"type": "Expression"
 							}
 						}
