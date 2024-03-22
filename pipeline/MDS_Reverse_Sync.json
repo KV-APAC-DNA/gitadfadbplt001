@@ -471,7 +471,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Execute_job').error?.message",
+							"value": "@activity('execute_job').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -865,7 +865,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Execute_job').error?.message",
+							"value": "@activity('Get_the_status').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
