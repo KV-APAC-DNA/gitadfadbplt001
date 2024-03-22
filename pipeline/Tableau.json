@@ -2047,7 +2047,7 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "TEST REFRESH"
+				"defaultValue": "TEST VNM REFRESH"
 			},
 			"usecase_id": {
 				"type": "int",
@@ -2063,7 +2063,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 181
+				"defaultValue": 294
 			}
 		},
 		"variables": {
