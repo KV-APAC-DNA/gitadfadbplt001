@@ -1,3 +1,7 @@
+create or replace stage THASDL_RAW.PROD_LOAD_STAGE_ADLS
+ storage_integration = PROD_DNA_LOAD_AZURE34_SI
+ url = 'azure://dlsadbplt001.blob.core.windows.net/tha/';
+
 CREATE OR REPLACE PROCEDURE THASDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
