@@ -317,7 +317,98 @@ def main(session: snowpark.Session,Param):
         error_message = f"Error: {str(e)}"
         return error_message
         ';
-CREATE OR REPLACE PROCEDURE TH_GT_MSLD_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_DMS_INVENTORY_FACT_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType
+import snowflake.snowpark
+import pandas as pd
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+import pandas as pd
+
+def main(session: snowpark.Session,Param): 
+    #Param=["I_KCS2402282300.txt","THASDL_RAW.DEV_LOAD_STAGE_ADLS","dev/GT_Intervention/DnA_VMR","SDL_TH_DMS_INVENTORY_FACT"]
+    try:
+       file_name       = Param[0]
+       stage_name      = Param[1]
+       temp_stage_path = Param[2]
+       target_table    = Param[3]
+       
+       df_schema = StructType([
+        StructField("recdate", StringType(), nullable=True),
+        StructField("distributorid", StringType(), nullable=True),
+        StructField("whcode", StringType(), nullable=True),
+        StructField("productcode", StringType(), nullable=True),
+        StructField("qty", StringType(), nullable=True),
+        StructField("amount", StringType(), nullable=True),
+        StructField("batchno", StringType(), nullable=True),
+        StructField("expirydate", StringType(), nullable=True)
+        ])
+       df = session.read\\
+                    .schema(df_schema)\\
+                    .option("skip_header",0)\\
+                    .option("field_delimiter", "\\t")\\
+                    .option("field_optionally_enclosed_by", "\\"") \\
+                    .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+      
+       
+       df= df.with_column("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S"))) 
+       df=df.with_column("file_name",lit(file_name))
+       df=df.with_column("crt_dttm",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+
+       snowdf=df.select(     "recdate",
+                            "distributorid",
+                            "whcode",
+                            "productcode",
+                            "qty",
+                            "amount",
+                            "batchno",
+                            "expirydate",
+                            "crt_dttm",
+                            "run_id",
+                            "file_name")
+            
+       snowdf= snowdf.filter(snowdf["distributorid"].isNotNull())
+    
+       if snowdf.count()==0 :
+                return "No Data in table"
+                
+            
+            #move file into success folder
+       file_name=file_name.split(".")[0]+"_"+datetime.now().strftime("%Y%m%d%H%M%S")
+       snowdf.write.copy_into_location("@"+Param[1]+"/"+Param[2]+"/success/"+file_name,header=True,OVERWRITE=True)
+    
+            #write on sdl layer
+        
+       snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0]+"."+target_table)
+            
+       return "Success"
+    except KeyError as key_error:
+            # Handle KeyError (missing columns) here
+            error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+            return error_message
+    
+    except pd.errors.MergeError as merge_error:
+            # Handle DataFrame merging error
+            error_message = f"DataFrame merging error: {str(merge_error)}"
+            return error_message
+        
+    except Exception as e:
+            # Handle exceptions here
+            error_message = f"Error: {str(e)}"
+            return error_message
+            
+            
+       ';
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_GT_MSLD_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.8'
@@ -380,10 +471,6 @@ def main(session: snowpark.Session, Param):
         .option("truncatecolumns",True) \\
         .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-		df=df.na.drop("all")
-		if df.count()==0:
-            return "No Data in file"
 
         
         #convertin time stamp into sg timezone
@@ -406,7 +493,8 @@ def main(session: snowpark.Session, Param):
             "NoDistribution", "OSA", "OOS", "OOSReason", \\
             "FILE_NAME", "RUN_ID", "CRT_DTTM" ).alias("final_df")
 
-        
+        if final_df.count()==0:
+            return "No Data in file"
         
         # Load Data to the target table
         final_df.write.mode("append").saveAsTable(target_table)
@@ -434,7 +522,8 @@ def main(session: snowpark.Session, Param):
         error_message = f"Error: {str(e)}"
         return error_message
 ';
-CREATE OR REPLACE PROCEDURE TH_GT_ROUTE_DTL_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_GT_ROUTE_DTL_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.8'
@@ -488,10 +577,6 @@ def main(session: snowpark.Session, Param):
         .option("truncatecolumns",True) \\
         .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-		df=df.na.drop("all")
-		if df.count()==0:
-            return "No Data in file"
 
         filespec,filecode,fileuploadeddate,filedate = file_name.split("_")
         
@@ -523,7 +608,8 @@ def main(session: snowpark.Session, Param):
             "routeNo", "saleunit", trim("SHIP_TO").as_("SHIP_TO"), trim("CONTACT_PERSON").as_("CONTACT_PERSON"), \\
              "Created_date", "FILE_NAME", "FILE_UPLOADED_DATE", "RUN_ID", "CRT_DTTM" )
 
-        
+        if final_df.count()==0:
+            return "No Data in file"
         
         # Load Data to the target table
         final_df.write.mode("append").saveAsTable(target_table)
@@ -550,7 +636,8 @@ def main(session: snowpark.Session, Param):
         error_message = f"Error: {str(e)}"
         return error_message
 ';
-CREATE OR REPLACE PROCEDURE TH_GT_ROUTE_HDR_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_GT_ROUTE_HDR_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.8'
@@ -606,10 +693,6 @@ def main(session: snowpark.Session, Param):
         .option("truncatecolumns",True) \\
         .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-		df=df.na.drop("all")
-		if df.count()==0:
-            return "No Data in file"
 
         filespec,filecode,uploadeddate,filedate = file_name.split("_")
         
@@ -635,8 +718,9 @@ def main(session: snowpark.Session, Param):
         final_df = df.select("HASH_KEY", "CNTRY_CD", "CRNCY_CD", "id", "name", "desc", \\
             "is_active", "routesale", "saleunit", "route_code", "description", to_date("Last_Updated_date", lit("YYYYMMDD")).as_("Last_Updated_date"), \\
             "FILE_NAME", "FILE_UPLOADED_DATE", "RUN_ID", "CRT_DTTM" ).alias("final_df")
-		
 
+        if final_df.count()==0:
+            return "No Data in file"
         
         # Load Data to the target table
         final_df.write.mode("append").saveAsTable(target_table)
@@ -664,7 +748,8 @@ def main(session: snowpark.Session, Param):
         error_message = f"Error: {str(e)}"
         return error_message
 ';
-CREATE OR REPLACE PROCEDURE TH_GT_SALES_ORDER_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_GT_SALES_ORDER_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.8'
@@ -769,10 +854,6 @@ def main(session: snowpark.Session, Param):
         .option("truncatecolumns",True) \\
         .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-		df=df.na.drop("all")
-		if df.count()==0:
-            return "No Data in file"
 
         
         #convertin time stamp into sg timezone
@@ -807,6 +888,9 @@ def main(session: snowpark.Session, Param):
             to_date("DELIVERYDATE", lit("YYYYMMDD")).as_("DELIVERYDATE"), "OrderTime", "SHIPTO", "BILLTO", \\
             "DeliveryRouteID", to_date("APPROVED_DATE", lit("YYYYMMDD")).as_("APPROVED_DATE"), "APPROVED_TIME", \\
             "REF_15", "PaymentType", "FILE_NAME", "RUN_ID", "CRT_DTTM" ).alias("final_df")
+
+        if final_df.count()==0:
+            return "No Data in file"
         
         # Load Data to the target table
         final_df.write.mode("append").saveAsTable(target_table)
@@ -834,7 +918,8 @@ def main(session: snowpark.Session, Param):
         error_message = f"Error: {str(e)}"
         return error_message
 ';
-CREATE OR REPLACE PROCEDURE TH_GT_SCHEDULE_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_GT_SCHEDULE_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.8'
@@ -886,10 +971,6 @@ def main(session: snowpark.Session, Param):
         .option("truncatecolumns",True) \\
         .option("skip_blank_lines", True) \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-		df=df.na.drop("all")
-		if df.count()==0:
-            return "No Data in file"
 
         
         #convertin time stamp into sg timezone
@@ -901,8 +982,9 @@ def main(session: snowpark.Session, Param):
         
         # Creating copy of the Dataframe
         final_df = df.select("CNTRY_CD", "CRNCY_CD", "employeeid", "routeid", to_date("date", lit("YYYYMMDD")).as_("date"), "approved", "saleunit", "FILE_NAME", "RUN_ID", "CRT_DTTM").alias("final_df")
-		
-		
+
+        if final_df.count()==0:
+            return "No Data in file"
         
         # Load Data to the target table
         final_df.write.mode("append").saveAsTable(target_table)
@@ -930,7 +1012,8 @@ def main(session: snowpark.Session, Param):
         error_message = f"Error: {str(e)}"
         return error_message
 ';
-CREATE OR REPLACE PROCEDURE TH_GT_VISIT_PREPROCESSING("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_GT_VISIT_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -999,11 +1082,12 @@ def main(session: snowpark.Session,Param):
         
         #Check if the Dataframe is having Data
         
+
+        if df.count()==0:
+            return "No Data in file"
         
 
-        df=df.na.drop("all")
-		if df.count()==0:
-            return "No Data in file"
+        df= df.filter(df["date_plan"].isNotNull())
         
 
         #transform columns
@@ -1066,6 +1150,7 @@ def main(session: snowpark.Session,Param):
         # Handle exceptions here
         error_message = f"Error: {str(e)}"
         return error_message';
+
 CREATE OR REPLACE PROCEDURE TH_MBOX_CUSTOMER_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
