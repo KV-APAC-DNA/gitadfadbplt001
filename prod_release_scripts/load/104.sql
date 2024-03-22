@@ -402,7 +402,7 @@ def main(session: snowpark.Session,Param):
         error_message = f"Error: {str(e)}"
         return error_message';
 
-CREATE OR REPLACE PROCEDURE TH_ACTION_UNSUBSCRIBE_PREPROCESSING("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE THASDL_RAW.TH_ACTION_UNSUBSCRIBE_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -462,8 +462,6 @@ def main(session: snowpark.Session,Param):
         
         # Handle null values or empty rows
         dataframe=dataframe.na.drop("all")
-		if dataframe.count()==0:
-            return "No Data in file"
 
          # Add FILE_NAME and CRTD_DTTM to the dataframe
         new_file_name=file_name[0:30] +".csv"
@@ -475,7 +473,8 @@ def main(session: snowpark.Session,Param):
         # Creating copy of the Dataframe
         final_df = dataframe.alias("final_df")
 
-        
+        if final_df.count()==0:
+            return "No Data in file"
 
        
 
@@ -503,6 +502,7 @@ def main(session: snowpark.Session,Param):
         # Handle exceptions here
         error_message = f"Error: {str(e)}"
         return error_message';
+
 CREATE OR REPLACE PROCEDURE TH_CRM_CHILDREN_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
