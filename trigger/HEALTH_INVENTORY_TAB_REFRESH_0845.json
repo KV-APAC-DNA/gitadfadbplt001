@@ -1,18 +1,16 @@
 {
-	"name": "Historical_Trigger_PerfectStore",
+	"name": "HEALTH_INVENTORY_TAB_REFRESH_0845",
 	"properties": {
-		"description": "For historical load - Regional",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD",
-					"process_id": "552"
+					"category": "HEALTH_INVENTORY_TAB_REFRESH"
 				}
 			}
 		],
@@ -21,15 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T13:55:00",
+				"startTime": "2024-03-20T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						45
 					],
 					"hours": [
-						8,
-						11
+						8
 					]
 				}
 			}

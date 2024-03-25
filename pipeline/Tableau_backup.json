@@ -1,5 +1,5 @@
 {
-	"name": "Tableau",
+	"name": "Tableau_backup",
 	"properties": {
 		"activities": [
 			{
@@ -176,7 +176,7 @@
 				}
 			},
 			{
-				"name": "Fetch uid from Vault",
+				"name": "Fetch Credential from Vault",
 				"type": "WebActivity",
 				"dependsOn": [
 					{
@@ -196,7 +196,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-uid?api-version=7.0",
+					"url": {
+						"value": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-@{pipeline().globalParameters.environment}-pat?api-version=7.0",
+						"type": "Expression"
+					},
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
@@ -212,13 +215,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Fetch uid from Vault",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Fetch pwd from Vault",
+						"activity": "Fetch Credential from Vault",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -239,7 +236,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "<tsRequest><credentials name=\"@{activity('Fetch uid from Vault').output.value}\" password=\"@{activity('Fetch pwd from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
+							"value": "<tsRequest><credentials personalAccessTokenName=\"kv-tableau-pat\" personalAccessTokenSecret=\"@{activity('Fetch Credential from Vault').output.value}\"><site contentUrl=\"@{activity('read parameters').output.value[0].contentUrl}\"/></credentials></tsRequest>",
 							"type": "Expression"
 						},
 						"paginationRules": {
@@ -271,15 +268,15 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": {
-								"value": "@{activity('read parameters').output.value[0].container}",
-								"type": "Expression"
-							},
+							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau",
 								"type": "Expression"
 							},
-							"tempFileName": "tableauResponseSignIn.json"
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -433,15 +430,15 @@
 						"referenceName": "TableauJsonResponse",
 						"type": "DatasetReference",
 						"parameters": {
-							"tempContainer": {
-								"value": "@{activity('read parameters').output.value[0].container}",
-								"type": "Expression"
-							},
+							"tempContainer": "asp",
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau",
 								"type": "Expression"
 							},
-							"tempFileName": "tableauResponseSignIn.json"
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
 					},
 					"firstRowOnly": false
@@ -501,7 +498,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Read Details",
+						"activity": "Read token and siteId again",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -528,7 +525,7 @@
 						"additionalHeaders": {
 							"Content-Type": "application/xml",
 							"x-tableau-auth": {
-								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+								"value": "@activity('Read token and siteId again').output.value[0].credentials.token",
 								"type": "Expression"
 							}
 						},
@@ -627,11 +624,11 @@
 				}
 			},
 			{
-				"name": "error Fetching uid from Vault",
+				"name": "error Fetching PAT from Vault",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Fetch uid from Vault",
+						"activity": "Fetch Credential from Vault",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -657,7 +654,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Fetch uid from Vault').error?.message",
+							"value": "@activity('Fetch Credential from Vault').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -673,7 +670,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Fetch uid from Vault').error?.errorCode",
+							"value": "@activity('Fetch Credential from Vault').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1447,7 +1444,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Fetch uid from Vault",
+						"activity": "Fetch Credential from Vault",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1591,10 +1588,6 @@
 						"container": {
 							"value": "@{activity('read parameters').output.value[0].container}",
 							"type": "Expression"
-						},
-						"token": {
-							"value": "@activity('Read token and siteId').output.value[0].credentials.token",
-							"type": "Expression"
 						}
 					}
 				}
@@ -1624,11 +1617,11 @@
 				}
 			},
 			{
-				"name": "Fetch pwd from Vault",
-				"type": "WebActivity",
+				"name": "Read token and siteId again",
+				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "Read Details",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1643,144 +1636,44 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-pwd?api-version=7.0",
-					"connectVia": {
-						"referenceName": "adfiradbplt002",
-						"type": "IntegrationRuntimeReference"
-					},
-					"authentication": {
-						"type": "MSI",
-						"resource": "https://vault.azure.net"
-					}
-				}
-			},
-			{
-				"name": "error Fetching pwd from Vault",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Fetch pwd from Vault",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_error_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
 						},
-						"job_name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"error_message": {
-							"value": "@activity('Fetch pwd from Vault').error?.message",
-							"type": "Expression"
-						},
-						"run_id": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"error_code": {
-							"value": "@activity('Fetch pwd from Vault').error?.errorCode",
-							"type": "Expression"
-						},
-						"job_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
+						"formatSettings": {
+							"type": "JsonReadSettings"
 						}
-					}
-				}
-			},
-			{
-				"name": "Audit_Finish_Fail_0",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Fetch pwd from Vault",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
+					"dataset": {
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": "asp",
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "@{pipeline().globalParameters.environment}_tableauResponseSignIn.json",
+								"type": "Expression"
+							}
 						}
-					}
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "TEST REFRESH"
+				"defaultValue": "REGIONAL REFRESH"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 7
+				"defaultValue": 16
 			},
 			"phase_id": {
 				"type": "int",
@@ -1788,11 +1681,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 5
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 181
+				"defaultValue": 39
 			}
 		},
 		"variables": {

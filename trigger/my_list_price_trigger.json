@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_LISTPRICE"
+					"category": "MY_LIST_PRICE"
 				}
 			}
 		],

@@ -1,7 +1,6 @@
 {
-	"name": "Historical_Trigger_PerfectStore",
+	"name": "historical_trigger_health_inventory_1000",
 	"properties": {
-		"description": "For historical load - Regional",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -12,7 +11,7 @@
 				},
 				"parameters": {
 					"Environment": "PROD",
-					"process_id": "552"
+					"process_id": "1534,1536,1537,1541"
 				}
 			}
 		],
@@ -21,15 +20,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T13:55:00",
+				"startTime": "2024-03-20T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						8,
-						11
+						10
 					]
 				}
 			}
