@@ -1,0 +1,25 @@
+{
+	"name": "S3_TO_ADLS_TH_CRM_SFMC_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-03-26T20:40:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						16
+					]
+				}
+			}
+		}
+	}
+}
