@@ -9,7 +9,7 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-03-26T20:40:00",
+				"startTime": "2024-03-25T20:40:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
