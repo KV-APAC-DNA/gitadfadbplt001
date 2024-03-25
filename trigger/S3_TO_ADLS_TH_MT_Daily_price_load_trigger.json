@@ -10,8 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "12",
-					"re_run": false
+					"Group_id": "12"
 				}
 			}
 		],
