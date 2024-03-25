@@ -1,0 +1,25 @@
+{
+	"name": "TH_PERFECTSTORE_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-03-25T21:11:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}
