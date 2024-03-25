@@ -6,6 +6,7 @@
 -- 06/03/24	Thanish		Added file name logic to Handle Thailand files
 -- 09/03/24 Srihari     Added Logic to handle regular expressions in name and header
 -- 12/03/24 Thanish		Added Logic to Handle NTUC Multi xlsx file header
+-- 22/03/24 Thanish		Added Header Logic to handle CRM files (Thailand) 
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -26,7 +27,7 @@ def main(session: snowpark.Session,Param):
     try:
 
         # Example input
-        #Param=[''NTUC_202402.xlsx'',''last'',''1-1-1'',''NTUC'',''xlsx'',''Vendor_Code|Vendor_Name|Dept_Code|Dept_Description|Class_No_|Class_Description|Sub_Class_Description|MCH|SKU_No_|Article_Description|Brand|Sales_UOM|Pack_Size|Store_Code|Store_Name|Store_Format|Attribute_1|Attribute_2|Attribute_3|Value'',0,''SGPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/scan360/ntuc'','''']
+        # Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
@@ -92,6 +93,11 @@ def main(session: snowpark.Session,Param):
 
             # Converting the extension from xlsx to csv
             # Extracting the Header from the file
+            if "CRM_Children" in CURRENT_FILE or "TH_CRM_Consumer" in CURRENT_FILE:
+                utf_encoding= ''UTF-16''
+            else:
+                utf_encoding= ''UTF-8''
+            
             if "NTUC" in CURRENT_FILE:
                 # if Core
                 file="CORE"
@@ -114,7 +120,7 @@ def main(session: snowpark.Session,Param):
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
-                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("encoding",utf_encoding).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
             
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
@@ -215,9 +221,9 @@ def thailand_processing(CURRENT_FILE):
     elif "OSA" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",4)
         print("FileName : ", file)
-    elif "TH_Action" in CURRENT_FILE:
-        split_name=CURRENT_FILE.split("_")
-        file= ("_").join(split_name[0:4])+"."+CURRENT_FILE.split(".")[-1]
+    elif "LAO" in CURRENT_FILE or "Schedule" in CURRENT_FILE or "Visit" in CURRENT_FILE:
+        file=CURRENT_FILE.rsplit("_",1)[0]
+        print("FileName : ", file)
     else:
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
