@@ -1,0 +1,25 @@
+{
+	"name": "S3_TO_ADLS_TH_PERFECTSTORE_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-03-25T20:43:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						20
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}
