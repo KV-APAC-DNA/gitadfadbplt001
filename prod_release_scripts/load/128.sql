@@ -171,10 +171,7 @@ def main(session:snowpark.Session, Param):
     
         df = session.create_dataframe(excel_data)
 
-        # Calculate FILE_NAME from file_name
-        # Assuming "Makro_202108_20211117200459.xls" is the file format,
-        # and we want to extract "202108" for the CRTD_DTM
-        file_date_part = file_name[6:12]  # This will extract "202108"
+        file_date_part = file_name[6:12]
         df = df.with_column("TRANSACTION_DATE", lit(datetime.strptime(file_date_part, "%Y%m"))) \\
                .with_column("FILE_NAME", lit(file_name)) \\
                .with_column("CRTD_DTM", lit(datetime.now().strftime("%Y%m%d%H%M%S")))
@@ -279,7 +276,6 @@ from snowflake.snowpark.files import SnowflakeFile
 
 def main(session:snowpark.Session, Param):
     try:
-        ###### EXCEPTION - CHANGING CSV TO XLSX ######
         file_name       = Param[0].replace(".csv", ".xlsx")
         stage_name      = Param[1]
         temp_stage_path = Param[2]
@@ -410,155 +406,4 @@ def main(session:snowpark.Session, Param):
         return error_message
 ';
 
-CREATE OR REPLACE PROCEDURE THASDL_RAW.SDL_TH_TESCO_TRANSDATA("PARAM" ARRAY)
-RETURNS VARCHAR(16777216)
-LANGUAGE PYTHON
-RUNTIME_VERSION = '3.11'
-PACKAGES = ('snowflake-snowpark-python')
-HANDLER = 'main'
-EXECUTE AS OWNER
-AS '
 
-import snowflake.snowpark as snowpark
-from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType
-from snowflake.snowpark.functions import col,lit,date_format,current_timestamp,to_timestamp, xmlget, flatten, get, when, substring, row_number
-from snowflake.snowpark import Window
-import pandas as pd
-from datetime import datetime
-import pytz
-
-def get_xml_element(
-        column:str,
-        element:str,
-        datatype:str,
-        with_alias:bool = True
-):
-    new_element = (
-        get(
-            xmlget(
-                col(column),
-                lit(element),
-            ),
-            lit(''$'')
-        )
-        .cast("string")
-    )
-
-    new_element = when(new_element=='''', None).otherwise(new_element).cast(datatype)
-
-    # alias needs to be optional
-    return (
-        new_element.alias(element) if with_alias else new_element
-    )
-    
-
-
-
-def main(session:snowpark.Session, Param):
-
-    try:
-        file_name       = Param[0]
-        stage_name      = Param[1]
-        temp_stage_path = Param[2]
-        target_table    = Param[3]
-
-        df = session.read\\
-        .option("STRIP_OUTER_ELEMENT", False) \\
-        .xml("@" + stage_name + "/" + temp_stage_path + "/" + file_name) \\
-        .select(
-            xmlget(col("$1"), lit("invrptth")).alias("invrptth"),
-            xmlget(xmlget(col("$1"), lit("invrptth")), lit("ir_header")).alias("ir_header"),
-            xmlget(xmlget(col("$1"), lit("invrptth")), lit("ir_items")).alias("ir_items"),
-
-            get_xml_element("ir_header", "creation_date", "string"),
-            get_xml_element("ir_header", "supplier_ID", "string"),
-            get_xml_element("ir_header", "supplier_name", "string"),
-            get_xml_element("ir_header", "warehouse", "string"),
-            get_xml_element("ir_header", "delivery_point_name", "string"),
-            get_xml_element("ir_header", "IR_date", "string")
-        ) \\
-        .select(
-            "creation_date",
-            "supplier_ID",
-            "supplier_name",
-            "warehouse",
-            "delivery_point_name",
-            "IR_date",
-            flatten(col("ir_items"), "$")
-        ) \\
-        .select (
-            "creation_date",
-            "supplier_ID",
-            "supplier_name",
-            "warehouse",
-            "delivery_point_name",
-            "IR_date",
-            get_xml_element("value", "EANSKU", "string"),
-            get_xml_element("value", "article_ID", "string"),
-            get_xml_element("value", "SPN", "string"),
-            get_xml_element("value", "article_name", "string"),
-            get_xml_element("value", "stock", "string"),
-            get_xml_element("value", "sales", "string"),
-            get_xml_element("value", "sales_amount", "string"),
-        )
-
-        # Adding transformations for specific columns if needed
-        df = df.with_column("FOLDER_NAME", lit(temp_stage_path))\\
-               .with_column("FILE_NAME", lit(file_name))
-
-        # Remove entries with null IR_DATE
-        df_filtered = df.filter((col("IR_DATE").is_not_null()) & (col("IR_DATE").cast(StringType()) != ''''))
-
-        # Continue from the window specification and ranking
-        windowSpec = Window.partitionBy("IR_DATE", "WAREHOUSE", "SUPPLIER_ID").orderBy(substring(col("FILE_NAME"), 8, 26).desc())
-        df_with_rank = df_filtered.withColumn("RANK", row_number().over(windowSpec))
-
-        # Create a DataFrame of distinct file names where rank = 1
-        df_rank_1_files = df_with_rank.filter(col("RANK") == 1).select("FILE_NAME").distinct()
-
-        # Use a join operation to filter df_filtered based on the file names that have rank = 1
-        df_filtered = df_filtered.join(df_rank_1_files, "FILE_NAME", "inner")
-
-        snowdf = df_filtered.select(
-            "CREATION_DATE",
-            "SUPPLIER_ID",
-            "SUPPLIER_NAME",
-            "WAREHOUSE",
-            "DELIVERY_POINT_NAME",
-            "IR_DATE",
-            "EANSKU",
-            "ARTICLE_ID",
-            "SPN",
-            "ARTICLE_NAME",
-            "STOCK",
-            "SALES",
-            "SALES_AMOUNT",
-            "FILE_NAME",
-            "FOLDER_NAME"
-        )
-
-        # Check if DataFrame is empty
-        if snowdf.count() == 0:
-            return "No Data in table"
-
-        # Archive
-        file_name1=("_").join(file_name.split("_")[0:5])+"_"+datetime.now().strftime("%Y%m%d%H%M%S")
-        snowdf.write.copy_into_location("@"+Param[1]+"/"+Param[2]+"/success/"+file_name1, header=True, OVERWRITE=True)
-        
-        # Write operation
-        snowdf.write.mode("append").save_as_table(stage_name.split(".")[0]+"."+target_table)
-        
-        # Success message
-        return "Success"
-    except KeyError as key_error:
-        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
-        return error_message
-
-    except pd.errors.MergeError as merge_error:
-        error_message = f"DataFrame merging error: {str(merge_error)}"
-        return error_message
-    
-    except Exception as e:
-        error_message = f"Error: {str(e)}"
-        return error_message
-';
