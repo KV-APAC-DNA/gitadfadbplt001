@@ -1,0 +1,7 @@
+Delete from meta_raw.s3_to_adls where id in (95,96,97,98,99);
+
+INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (95,11,'TH','itx-arm-conapdna-thailand-prod-kdp','perfect-store/consumerreach/','jnj_consumerreach_cvs','tha','perfect-store/transaction/jnj_consumerreach_cvs',True);
+INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (96,11,'TH','itx-arm-conapdna-thailand-prod-kdp','perfect-store/consumerreach/','jnj_consumerreach_711','tha','perfect-store/transaction/jnj_consumerreach_711',True);
+INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (97,11,'TH','itx-arm-conapdna-thailand-prod-kdp','perfect-store/adecco/','(JNJ Mer) - COP_1','tha','perfect-store/transaction/COP_1',True);
+INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (98,11,'TH','itx-arm-conapdna-thailand-prod-kdp','perfect-store/adecco/','(JNJ Mer) - Share of Shelf','tha','perfect-store/transaction/Share_of_Shelf',True);
+INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive) VALUES (99,11,'TH','itx-arm-conapdna-thailand-prod-kdp','perfect-store/adecco/','(JNJ) OSA and OOS Report','tha','perfect-store/transaction/OSA_and_OOS_Report',True);
