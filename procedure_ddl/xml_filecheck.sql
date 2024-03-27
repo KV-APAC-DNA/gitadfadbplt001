@@ -38,7 +38,7 @@ def get_xml_element(
 
     new_element = when(new_element=='''', None).otherwise(new_element).cast(datatype)
 
-    # alias needs to be optional
+    
     return (
         new_element.alias(element) if with_alias else new_element
     )
@@ -48,7 +48,7 @@ def get_xml_element(
 def main(session: snowpark.Session, Param): 
     
     try:
-        # Extracting parameters from the input
+        
 
         file_name       = Param[0]
         stage_name      = Param[1]
@@ -56,11 +56,11 @@ def main(session: snowpark.Session, Param):
         sch_name        = stage_name.split(''.'')[0]
         target_table    = sch_name+"."+Param[3]
         
-        # Set the current session schema
+        
         
         session.use_schema(sch_name)
         
-        # Read the CSV file into a DataFrame
+        
         df = session.read\\
         .option("STRIP_OUTER_ELEMENT",False)\\
         .xml("@"+stage_name+"/"+temp_stage_path+"/"+file_name) \\
@@ -116,7 +116,7 @@ def main(session: snowpark.Session, Param):
             , "ShortShippedQty", "ItemPriceType", "ItemPrice", "ItemPriceUnit", "PriceCurrency" \\
         )
         
-        # Add  "FILE_NAME", "RUN_ID", "CRT_DTTM" to the Dataframe
+        
 
         
         #convertin time stamp into sg timezone
@@ -124,7 +124,7 @@ def main(session: snowpark.Session, Param):
         df = df.withColumn("FILE_NAME", lit(file_name).cast("string"))
         df = df.withColumn("RUN_ID", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
         
-        # Creating copy of the Dataframe
+        
         final_df = df.alias("final_df")
 
         if final_df.count()==0:
@@ -133,11 +133,11 @@ def main(session: snowpark.Session, Param):
         final_df=final_df.filter(col("LineItemNumber").is_not_null())
 
         
-        # Load Data to the target table
+        
         final_df.write.mode("append").saveAsTable(target_table)
 
     
-        # write to success folder
+        
     
         file_name=file_name.split(".")[0]+''_''+datetime.now().strftime("%Y%m%d%H%M%S")
         final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/success/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
@@ -145,12 +145,12 @@ def main(session: snowpark.Session, Param):
         return "Success"
 
     except KeyError as key_error:
-        # Handle KeyError (missing columns) here
+        
         error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
         return error_message
         
     except Exception as e:
-        # Handle exceptions here
+        
         error_message = f"Error: {str(e)}"
         return error_message
 ';
