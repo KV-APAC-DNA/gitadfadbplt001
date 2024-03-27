@@ -424,13 +424,13 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Here is the location of the file in ADLS : \"###\".",
+										"value": "Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL : @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Here is the location of the file in ADLS : \"###\".",
+										"value": "Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL : @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -438,7 +438,10 @@
 										"value": "@pipeline().parameters.parameters.value[0].container",
 										"type": "Expression"
 									},
-									"fileUrl": "test"
+									"fileUrl": {
+										"value": "@{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
+										"type": "Expression"
+									}
 								}
 							}
 						},
@@ -512,7 +515,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat(pipeline().parameters.parameters.value[0].container,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')}', 3600);\n",
+											"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat(pipeline().parameters.parameters.value[0].container,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')}', 3600) as URL;\n",
 											"type": "Expression"
 										}
 									}
