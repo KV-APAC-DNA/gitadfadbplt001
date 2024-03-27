@@ -69,7 +69,7 @@ def main(session: snowpark.Session, Param):
         .option("STRIP_OUTER_ELEMENT",False)\\
         .xml("@"+stage_name+"/"+temp_stage_path+"/"+file_name) \\
         .select(
-             xmlget(col(''$1''), lit(''InventoryHeader'')).alias(''InventoryHeader'') \\
+             xmlget(col(''''), lit(''InventoryHeader'')).alias(''InventoryHeader'') \\
             ,get_xml_element(''InventoryHeader'', ''PartnerCode'', ''string'') \\
             ,get_xml_element(''InventoryHeader'', ''PartnerName'', ''string'') \\
             ,get_xml_element(''InventoryHeader'', ''PartnerGLN'', ''string'') \\
@@ -80,7 +80,7 @@ def main(session: snowpark.Session, Param):
             ,get_xml_element(''InventoryHeader'', ''MessageDate'', ''string'') \\
             ,get_xml_element(''InventoryHeader'', ''InventoryReportDate'', ''string'') \\
             ,get_xml_element(''InventoryHeader'', ''DateType'', ''string'') \\
-            ,flatten(col(''$1''),''$'') \\
+            ,flatten(col(''''),'''') \\
         ) \\
         .select(
              "PartnerCode", "PartnerName", "PartnerGLN", "PartnerInventoryLocation" \\
