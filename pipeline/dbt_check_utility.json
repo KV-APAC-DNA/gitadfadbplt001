@@ -511,11 +511,16 @@
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
+									"businessMessage": {
+										"value": "Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Here is the location of the file in ADLS : \"###\".",
+										"type": "Expression"
+									},
 									"isError": "Yes",
 									"container": {
 										"value": "@pipeline().parameters.parameters.value[0].container",
 										"type": "Expression"
-									}
+									},
+									"fileUrl": "test"
 								}
 							}
 						},
