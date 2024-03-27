@@ -35,7 +35,7 @@ def get_xml_element(
                 col(column),
                 lit(element),
             ),
-            lit(''$'')
+            lit('''')
         )
         .cast("string")
     )
