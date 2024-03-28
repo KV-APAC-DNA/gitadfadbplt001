@@ -515,7 +515,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat(pipeline().parameters.parameters.value[0].container,'/',item().model_name,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')}', 3600) as URL;\n",
+											"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat(pipeline().parameters.parameters.value[0].container,'/',item().model_name,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')}', 604800) as URL;\n",
 											"type": "Expression"
 										}
 									}
