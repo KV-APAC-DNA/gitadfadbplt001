@@ -607,7 +607,7 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Refresh failed for tableau source (@{pipeline().parameters.tableauSourceName}): @{activity('Read Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes}\n",
+										"value": "Refresh failed for tableau source (@{pipeline().parameters.tableauSourceName}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Read Refresh Status Iteratively').output.value[0].job.extractRefreshJob.notes}_\n",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "No",
