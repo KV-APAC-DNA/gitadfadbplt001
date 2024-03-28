@@ -1646,7 +1646,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kkv-tableau-prod-pwd?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-pwd?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
@@ -1818,7 +1818,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error fetching tableau password from vault to refresh the tableau source (@{activity('read parameters').output.value[0].refreshType}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Fetch pwd from Vault').error?.message}_\n",
+							"value": "Error fetching tableau password from vault to refresh the tableau source (@{activity('read parameters').output.value[0].tableauSourceName}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Fetch pwd from Vault').error?.message}_\n",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
@@ -1871,10 +1871,9 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error fetching tableau uid from vault: @{activity('Fetch uid from Vault').error?.message}\n",
+							"value": "Error fetching tableau uid from vault to refresh the tableau source (@{activity('read parameters').output.value[0].tableauSourceName}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Fetch uid from Vault').error?.message}_\n\n",
 							"type": "Expression"
 						},
-						"teamWebhookUrlSupport": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac",
 						"isBusinessNotification": "No",
 						"isSupportNotification": "Yes",
 						"isError": "Yes"
@@ -1925,10 +1924,9 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error signing-in to tableau: @{activity('Sign In Tableau To Get Auth Token').error?.message}",
+							"value": "Error signing-in to tableau to refresh the tableau source (@{activity('read parameters').output.value[0].tableauSourceName}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Sign In Tableau To Get Auth Token').error?.message}_\n\n",
 							"type": "Expression"
 						},
-						"teamWebhookUrlSupport": "https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/18e6b38e15064ca9979eeb063f457f05/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac",
 						"isBusinessNotification": "No",
 						"isSupportNotification": "Yes",
 						"isError": "Yes"
