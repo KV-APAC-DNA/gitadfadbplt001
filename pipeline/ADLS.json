@@ -807,7 +807,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\nPROCESS_ID: \"@{pipeline().parameters.process_id}\" \\n\ncategory: \"@{pipeline().parameters.category}\" \\n\nphase id: \"@{pipeline().parameters.phase_id}\" \\n\nusecase_id: \"@{pipeline().parameters.usecase_id}\" \\n\nsequence_id: \"@{pipeline().parameters.sequence_id}\" \\n\ncontainer: \"@{activity('read parameters').output.value[0].CONTAINER}\" \\n\nfolder_path: \"@{activity('read parameters').output.value[0].FOLDER_PATH}\" \\n\nfile_Spec: \"@{activity('read parameters').output.value[0].FILE_SPEC}\" \\n\nerror: \"@{activity('get file name').error?.message}\"",
+							"value": "There is some issue with folder path or file location : \\n\nPROCESS_ID: \" @{pipeline().parameters.process_id} \" \\n\ncategory: \"\"@{pipeline().parameters.category}\"\" \\n\nphase id: \" \" @{pipeline().parameters.phase_id} \" \" \\n\nusecase_id: \"@{pipeline().parameters.usecase_id}\" \\n\nsequence_id: \"@{pipeline().parameters.sequence_id}\" \\n\ncontainer: \"@{activity('read parameters').output.value[0].CONTAINER}\" \\n\nfolder_path: \"@{activity('read parameters').output.value[0].FOLDER_PATH}\" \\n\nfile_Spec: \"@{activity('read parameters').output.value[0].FILE_SPEC}\" \\n\nerror: \"@{activity('get file name').error?.message}\"",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
