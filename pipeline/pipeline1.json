@@ -102,6 +102,8 @@
 			{
 				"name": "Set variable2",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
@@ -116,6 +118,8 @@
 			{
 				"name": "Set variable3",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable2",
@@ -136,12 +140,89 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@pipeline().parameters.filter.Value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Append variable1",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "arr",
+								"value": {
+									"value": "@concat(' || ',item().Result,' || ')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable4",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@join(variables('arr'),' ')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
 			"container": {
 				"type": "string",
 				"defaultValue": "ASP"
+			},
+			"filter": {
+				"type": "object",
+				"defaultValue": {
+					"ItemsCount": 28,
+					"FilteredItemsCount": 2,
+					"Value": [
+						{
+							"RunStartDate": null,
+							"Query": "REPLICATE [SDL_MDS_RG_ecom_plan] SELECT [brand], [ChangeTrackingMask] AS [changetrackingmask], [cluster], [Code] AS [code], [country], [EnterDateTime] AS [enterdatetime], [EnterUserName] AS [enterusername], [EnterVersionNumber] AS [enterversionnumber], [fisc_month], [fisc_year], [fiscal_quarter], [franchise], [ID] AS [id], [LastChgDateTime] AS [lastchgdatetime], [LastChgUserName] AS [lastchgusername], [LastChgVersionNumber] AS [lastchgversionnumber], [MUID] AS [muid], [Name] AS [name], [need_state], [sub_country], [target_ori], [type], [ValidationStatus] AS [validationstatus], [Version_ID] AS [version_id], [VersionFlag] AS [versionflag], [VersionName] AS [versionname], [VersionNumber] AS [versionnumber] FROM [MDS].[mdm].[RG_ecom_pla]",
+							"JobName": "RG_MDSQA_To_SnowflakeDEV",
+							"Status": "FAILED",
+							"Detail": "2 of 28 Tasks Failed",
+							"Result": "[0] [500] Could not execute the specified command: The table, MDS.mdm.RG_ecom_pla, does not exist"
+						},
+						{
+							"RunStartDate": null,
+							"Query": "REPLICATE [SDL_MDS_RG_profit_center_franchise_mapping] SELECT [ChangeTrackingMask] AS [changetrackingmask], [Code] AS [code], [EnterDateTime] AS [enterdatetime], [EnterUserName] AS [enterusername], [EnterVersionNumber] AS [enterversionnumber], [franchise_l1], [franchise_l2], [franchise_l3], [franchise_l4], [ID] AS [id], [LastChgDateTime] AS [lastchgdatetime], [LastChgUserName] AS [lastchgusername], [LastChgVersionNumber] AS [lastchgversionnumber], [MUID] AS [muid], [Name] AS [name], [need_state], [prod_minor], [prod_minor_desc], [Prod_Need_State], [profit_center], [ValidationStatus] AS [validationstatus], [Version_ID] AS [version_id], [VersionFlag] AS [versionflag], [VersionName] AS [versionname], [VersionNumber] AS [versionnumber] FROM [MDS].[mdm].[RG_profit_center_franchise_mappin]",
+							"JobName": "RG_MDSQA_To_SnowflakeDEV",
+							"Status": "FAILED",
+							"Detail": "2 of 28 Tasks Failed",
+							"Result": "[1] [500] Could not execute the specified command: The table, MDS.mdm.RG_profit_center_franchise_mappin, does not exist"
+						}
+					]
+				}
 			}
 		},
 		"variables": {
