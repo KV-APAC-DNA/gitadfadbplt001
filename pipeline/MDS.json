@@ -488,6 +488,8 @@
 			{
 				"name": "ForEach1_1",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Filter1",
@@ -502,59 +504,7 @@
 						"value": "@activity('filter1').output.value",
 						"type": "Expression"
 					},
-					"isSequential": true,
-					"activities": [
-						{
-							"name": "error log",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "@item().Result",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "@item().Status",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					]
+					"isSequential": true
 				}
 			},
 			{
@@ -1209,6 +1159,122 @@
 						"isError": "Yes"
 					}
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Filter1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Filter1').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Append variable",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "error_arr",
+								"value": {
+									"value": "@concat(' || ',item().Result,' || ')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set variable4",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@join(variables('arr'),' ')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "error log",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@join(variables('error_arr'),' ')",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@item().Status",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1245,6 +1311,9 @@
 			},
 			"file_path": {
 				"type": "String"
+			},
+			"error_arr": {
+				"type": "Array"
 			}
 		},
 		"folder": {
