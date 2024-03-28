@@ -857,6 +857,10 @@
 						"dbt_runid": {
 							"value": "@pipeline().RunId",
 							"type": "Expression"
+						},
+						"dbt_jobid": {
+							"value": "@{activity('read parameters').output.value[0].jobId}",
+							"type": "Expression"
 						}
 					}
 				}
