@@ -200,7 +200,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"src_path": {
-								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/test/@{activity('read parameters').output.value[0].FOLDER_PATH}",
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}",
 								"type": "Expression"
 							},
 							"src_container": {
