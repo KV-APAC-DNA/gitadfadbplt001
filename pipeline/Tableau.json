@@ -1646,7 +1646,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"method": "GET",
-					"url": "https://akvadbplt001.vault.azure.net/secrets/kv-tableau-prod-pwd?api-version=7.0",
+					"url": "https://akvadbplt001.vault.azure.net/secrets/kkv-tableau-prod-pwd?api-version=7.0",
 					"connectVia": {
 						"referenceName": "adfiradbplt002",
 						"type": "IntegrationRuntimeReference"
@@ -1818,7 +1818,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error fetching tableau password from vault: @{activity('Fetch pwd from Vault').error?.message}\n",
+							"value": "Error fetching tableau password from vault to refresh the tableau source (@{activity('read parameters').output.value[0].refreshType}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Fetch pwd from Vault').error?.message}_\n",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
