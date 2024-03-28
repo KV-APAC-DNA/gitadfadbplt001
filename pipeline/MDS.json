@@ -486,28 +486,6 @@
 				}
 			},
 			{
-				"name": "ForEach1_1",
-				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Filter1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('filter1').output.value",
-						"type": "Expression"
-					},
-					"isSequential": true
-				}
-			},
-			{
 				"name": "If job fail then update error for each task",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -630,59 +608,6 @@
 										"value": "@pipeline().parameters.phase_id",
 										"type": "Expression"
 									}
-								}
-							}
-						},
-						{
-							"name": "Send Error CDATA job failed",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "audit fail - file not present_copy1",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "NotifiyTeamsChannelPipeline",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"subscription": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-										"type": "Expression"
-									},
-									"resourceGroup": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-										"type": "Expression"
-									},
-									"runId": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"triggerTime": {
-										"value": "@pipeline().TriggerTime",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"supportMessage": {
-										"value": "Error CDATA Job @{variables('JOBNAME')} failed : Please check error logs for more details.",
-										"type": "Expression"
-									},
-									"isBusinessNotification": "No",
-									"isSupportNotification": "Yes",
-									"isError": "Yes"
 								}
 							}
 						}
@@ -1196,30 +1121,6 @@
 				}
 			},
 			{
-				"name": "Set variable4",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "ForEach1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "test",
-					"value": {
-						"value": "@join(variables('arr'),' ')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "error log",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -1265,14 +1166,64 @@
 							"value": "@pipeline().parameters.phase_id",
 							"type": "Expression"
 						},
-						"error_code": {
-							"value": "@item().Status",
-							"type": "Expression"
-						},
+						"error_code": "FAILED",
 						"job_id": {
 							"value": "@pipeline()?.TriggeredByPipelineRunId",
 							"type": "Expression"
 						}
+					}
+				}
+			},
+			{
+				"name": "Send Error CDATA job failed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEach1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"supportMessage": {
+							"value": "Error CDATA Job @{variables('JOBNAME')} failed : Please check error logs for more details. @{join(variables('error_arr'),' ')}",
+							"type": "Expression"
+						},
+						"isBusinessNotification": "No",
+						"isSupportNotification": "Yes",
+						"isError": "Yes"
 					}
 				}
 			}
