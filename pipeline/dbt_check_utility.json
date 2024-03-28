@@ -430,7 +430,7 @@
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL : @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
+										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -768,7 +768,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
+												"value": "Error in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
@@ -932,7 +932,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry.",
+												"value": "Error in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
@@ -987,7 +987,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry\n",
+							"value": "Error with DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _DBT job failed, check on run_id @{pipeline().parameters.run_id} and retry_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
