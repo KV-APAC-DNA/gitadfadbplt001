@@ -165,7 +165,10 @@
 						"referenceName": "log_json",
 						"type": "DatasetReference",
 						"parameters": {
-							"filename": "@concat(variables('GET_STATUS_FILE'),'.json')",
+							"filename": {
+								"value": "@concat(variables('GET_STATUS_FILE'),'.json')",
+								"type": "Expression"
+							},
 							"container": {
 								"value": "@variables('container')",
 								"type": "Expression"
@@ -459,7 +462,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Execute_job').error?.message",
+							"value": "@activity('execute_job').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -835,7 +838,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Execute_job').error?.message",
+							"value": "@activity('Get_the_status').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -851,7 +854,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('execute_job').error?.errorCode",
+							"value": "@activity('Get_the_status').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
