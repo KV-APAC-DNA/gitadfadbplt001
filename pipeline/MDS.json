@@ -670,7 +670,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "error log",
+									"activity": "audit fail - file not present_copy1",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -709,7 +709,7 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Error CDATA Job @{variables('JOBNAME')} failed : Please check error logs for more details. @{join(variables('error_arr'),' ')}",
+										"value": "Error CDATA Job **@{variables('JOBNAME')}** failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{join(variables('error_arr'),' ')}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "No",
@@ -1130,7 +1130,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error executing CDATA Job @{variables('JOBNAME')} : @{activity('execute_job').error?.message}",
+							"value": "Error executing CDATA Job **@{variables('JOBNAME')}** : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('execute_job').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
@@ -1183,7 +1183,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error getting status for CDATA Job @{variables('JOBNAME')} : @{activity('Get_the_status').error?.message}",
+							"value": "Error getting status for CDATA Job **@{variables('JOBNAME')}** : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Get_the_status').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
