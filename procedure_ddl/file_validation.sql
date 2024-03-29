@@ -7,6 +7,7 @@
 -- 09/03/24 Srihari     Added Logic to handle regular expressions in name and header
 -- 12/03/24 Thanish		Added Logic to Handle NTUC Multi xlsx file header
 -- 22/03/24 Thanish		Added Header Logic to handle CRM files (Thailand) 
+-- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -23,11 +24,11 @@ from snowflake.snowpark.functions import col
 import math
 import regex
 
-def main(session: snowpark.Session,Param): 
+def main(session: snowpark.Session,Param):
     try:
 
         # Example input
-        # Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'']
+        #Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'','''']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
@@ -93,10 +94,6 @@ def main(session: snowpark.Session,Param):
 
             # Converting the extension from xlsx to csv
             # Extracting the Header from the file
-            if "CRM_Children" in CURRENT_FILE or "TH_CRM_Consumer" in CURRENT_FILE:
-                utf_encoding= ''UTF-16''
-            else:
-                utf_encoding= ''UTF-8''
             
             if "NTUC" in CURRENT_FILE:
                 # if Core
@@ -116,11 +113,36 @@ def main(session: snowpark.Session,Param):
                     return "File Validation Failed; Columns from both the sheets are not matching"
                 else:
                     header=header_core
-                
-            else:
+
+            elif "CRM_Children" in CURRENT_FILE or "TH_CRM_Consumer" in CURRENT_FILE:
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                utf_encoding= ''UTF-16''
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("encoding",utf_encoding).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                
+            elif "OUT_CON_Forecast_VN" in CURRENT_FILE or "OUT_CON_Yeartarget" in CURRENT_FILE:
+                file_name= CURRENT_FILE.replace("xlsx","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif "Weekly Sales Report - Kenvue" in CURRENT_FILE:
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\u0001").option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+            
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                
+            else:
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
             
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
@@ -130,15 +152,24 @@ def main(session: snowpark.Session,Param):
             # If the source is of xlsx type, then splitting based on \\x01 delimiter
 
             header_pipe_split = header[0].split(''|'')
-            if val_file_extn==''xlsx'':
+            if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report - Kenvue'' not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
+            elif val_file_extn==''xlsx'':
+                result_list = header
+        
             elif len(header_pipe_split)>1:
                 result_list = header_pipe_split
             else:
                 result_list = header
+
+            if stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="FSSI Week":
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
+            else:
+                result_list=list(filter(None,result_list))
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
             
-            result_list=list(filter(None,result_list))
-            filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
             file_header= [item.replace(" ", "_").replace(".", "_") for item in filtered_list]
             val_header= val_header.lower()
 
