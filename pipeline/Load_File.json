@@ -399,7 +399,10 @@
 													"value": "@pipeline().parameters.sourceFileName",
 													"type": "Expression"
 												},
-												"src_sheetindex": 2,
+												"src_sheetindex": {
+													"value": "@pipeline().parameters.Parameters.value[0].sheet_index",
+													"type": "Expression"
+												},
 												"src_container": {
 													"value": "@pipeline().parameters.Parameters.value[0].container",
 													"type": "Expression"
