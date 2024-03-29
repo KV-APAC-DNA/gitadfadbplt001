@@ -9,7 +9,7 @@
 -- 22/03/24 Thanish		Added Header Logic to handle CRM files (Thailand) 
 -- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
 
-CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -28,6 +28,7 @@ def main(session: snowpark.Session,Param):
     try:
 
         # Example input
+        #Param=[''Schedule_20240313232501.txt'',''last'',''1-0-0'',''Schedule'',''txt'',''SaleUnit|OrderID|orderdate|Customer_Id|Customer_Name|City|Region|SaleDistrict|SaleOffice|SaleGroup|CustomerType|StoreType|SaleType|SalesEmployee|SaleName|ProductID|ProductName|MegaBrand|Brand|BaseProduct|Variant|Putup|PriceRef|Backlog|Qty|SubAmt1|Discount|SubAmt2|DiscountBTLine|TotalBeforeVat|Total|No|Canceled|DocumentID|RETURN_REASON|PromotionCode|PromotionCode1|PromotionCode2|PromotionCode3|PromotionCode4|PromotionCode5|Promotion_Code|Promotion_Code2|Promotion_Code3|AvgDiscount|ORDERTYPE|ApproverStatus|PRICELEVEL|OPTIONAL3|DELIVERYDATE|OrderTime|SHIPTO|BILLTO|DeliveryRouteID|APPROVED_DATE|APPROVED_TIME|REF_15|PaymentType'',0,''THASDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/LCM/transaction/Laos_Sales_Order_Data/'','''']
         #Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'','''']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
@@ -251,9 +252,6 @@ def thailand_processing(CURRENT_FILE):
         print("FileName : ", file)
     elif "OSA" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",4)
-        print("FileName : ", file)
-    elif "LAO" in CURRENT_FILE or "Schedule" in CURRENT_FILE or "Visit" in CURRENT_FILE:
-        file=CURRENT_FILE.rsplit("_",1)[0]
         print("FileName : ", file)
     else:
         file = CURRENT_FILE.replace(" ","_")
