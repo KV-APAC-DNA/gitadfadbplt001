@@ -6,6 +6,8 @@
 -- 06/03/24	Thanish		Added file name logic to Handle Thailand files
 -- 09/03/24 Srihari     Added Logic to handle regular expressions in name and header
 -- 12/03/24 Thanish		Added Logic to Handle NTUC Multi xlsx file header
+-- 22/03/24 Thanish		Added Header Logic to handle CRM files (Thailand) 
+-- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
 
 # The Snowpark package is required for Python Worksheets. 
 # You can add more packages by selecting them using the Packages control and then importing them.
