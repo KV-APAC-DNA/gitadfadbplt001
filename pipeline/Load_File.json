@@ -715,8 +715,12 @@
 										"value": "There is some issue while converting multisheet excel into separate CSVs : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _@{activity('converttocsv sheetwise').error?.message}_",
 										"type": "Expression"
 									},
-									"isBusinessNotification": "No",
+									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
+									"businessMessage": {
+										"value": "There is some issue with source file while converting multisheet excel into separate CSVs : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _@{activity('converttocsv sheetwise').error?.message}_",
+										"type": "Expression"
+									},
 									"isError": "Yes"
 								}
 							}
