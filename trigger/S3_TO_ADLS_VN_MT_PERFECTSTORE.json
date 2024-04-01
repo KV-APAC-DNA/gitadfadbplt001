@@ -1,0 +1,35 @@
+{
+	"name": "S3_TO_ADLS_VN_MT_PERFECTSTORE",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "s3_to_adls",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Group_id": "16"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-03-29T09:44:00",
+				"timeZone": "India Standard Time",
+				"schedule": {
+					"minutes": [
+						20
+					],
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}
