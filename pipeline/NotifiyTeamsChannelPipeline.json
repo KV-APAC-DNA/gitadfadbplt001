@@ -5,8 +5,6 @@
 			{
 				"name": "If support error notification",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set containerWebhook",
