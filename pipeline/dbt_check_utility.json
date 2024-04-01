@@ -1,0 +1,1064 @@
+{
+	"name": "dbt_check_utility",
+	"properties": {
+		"activities": [
+			{
+				"name": "audit failure of dbt status",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Switch success or failure",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": "dbt",
+						"message": {
+							"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error dbt run failed_1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Switch success or failure",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": "dbt",
+						"error_message": {
+							"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "2002",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Switch success or failure",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),'1','2'),'0')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "0",
+							"activities": [
+								{
+									"name": "audit success",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FINISH",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": "dbt",
+											"message": {
+												"value": "@concat('dbt pipeline is completed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline().parameters.parent_seq_run_id",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "1",
+							"activities": [
+								{
+									"name": "Script1",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "select * from core_integration.dbtjobs_test_cdc_metadata where tempid='@{pipeline().parameters.parameters.value[0].tempId}';\n",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Script2",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set parameters",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "call core_integration.SP_failed_tests_models('@{pipeline().parameters.parameters.value[0].tempId}',@{variables('sp_params')});",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "ResultSet Array",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Script2",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "resultSet",
+										"value": {
+											"value": "@activity('Script2').output.resultSets",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set parameters",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Script1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "sp_params",
+										"value": {
+											"value": "'@{replace(activity('Script1').output.resultSets[0].rows[0].MODELS,'''' ,'\\''')}'",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "2",
+							"activities": [
+								{
+									"name": "fail this job",
+									"type": "Fail",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
+											"type": "Expression"
+										},
+										"errorCode": "2002"
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "ForEveryModel",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "ModelName Array",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@variables('modelNameArray')",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "Script3",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "select * from CORE_INTEGRATION.DBTTEST_TABLES_METADATA where model= '@{item().model_name}';",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Set current time",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "currentTime",
+								"value": {
+									"value": "@utcnow()",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Send Error notification dbt ing build fail_copy1_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Script Fetch presigned url",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().parameters.dbt_runid",
+										"type": "Expression"
+									},
+									"name": "dbt",
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "FAIL",
+									"supportMessage": {
+										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
+										"type": "Expression"
+									},
+									"isBusinessNotification": "Yes",
+									"isSupportNotification": "Yes",
+									"businessMessage": {
+										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
+										"type": "Expression"
+									},
+									"isError": "Yes",
+									"container": {
+										"value": "@pipeline().parameters.parameters.value[0].container",
+										"type": "Expression"
+									},
+									"fileUrl": {
+										"value": "@{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Script Unload to stage",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Script3",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "Set current time",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/',pipeline().parameters.parameters.value[0].container,'/',item().model_name,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')}\nFROM (\n  @{replace(activity('Script3').output.resultSets[0].rows[0].QUERY,';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n)\nsingle = true\nheader=true;",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Script Fetch presigned url",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Script Unload to stage",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat(pipeline().parameters.parameters.value[0].container,'/',item().model_name,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')}', 604800) as URL;\n",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "If not Ingestion Error",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "ForEveryModel",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(and(greater(pipeline().parameters.run_status,10),equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Script5",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "call core_integration.SP_updatecdc_failed_tests_models('@{pipeline().parameters.parameters.value[0].tempId}',@{variables('sp_params')});",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ModelName Array",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Switch success or failure",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "modelNameArray",
+					"value": {
+						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),variables('emptyArray'),variables('resultSet')[0].rows),variables('emptyArray')),variables('emptyArray'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Switch Build or DQ check failed",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "If not Ingestion Error",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "10",
+							"activities": [
+								{
+									"name": "audit failure of dbt status ing build",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": "dbt",
+											"message": {
+												"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline().parameters.parent_seq_run_id",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error dbt run failed ing build",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "audit failure of dbt status ing build",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": "dbt",
+											"error_message": {
+												"value": "dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "2002",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline().parameters.parent_seq_run_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send Error notification dbt ing build fail",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "audit failure of dbt status ing build",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"name": "dbt",
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "Error in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "11",
+							"activities": [
+								{
+									"name": "audit failure of dbt ing dq check",
+									"type": "ExecutePipeline",
+									"dependsOn": [],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FAIL : DQ Check",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": "dbt",
+											"message": {
+												"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline().parameters.parent_seq_run_id",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error dbt run failed ing",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "audit failure of dbt ing dq check",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "2002",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline().parameters.parent_seq_run_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send Error notification dbt ing build fail_copy1",
+									"type": "ExecutePipeline",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [
+										{
+											"activity": "audit failure of dbt ing dq check",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().parameters.dbt_runid",
+												"type": "Expression"
+											},
+											"name": "dbt",
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "Error in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _dbt job failed, check on run_id @{pipeline().parameters.run_id} and retry_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Send Error notification dbt build fail 1",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Switch success or failure",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"name": "dbt",
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"supportMessage": {
+							"value": "Error with DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _DBT job failed, check on run_id @{pipeline().parameters.run_id} and retry_",
+							"type": "Expression"
+						},
+						"isBusinessNotification": "No",
+						"isSupportNotification": "Yes",
+						"isError": "Yes"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"category": {
+				"type": "string",
+				"defaultValue": "test"
+			},
+			"usecase_id": {
+				"type": "int",
+				"defaultValue": 2
+			},
+			"sequence_id": {
+				"type": "int",
+				"defaultValue": 1
+			},
+			"process_id": {
+				"type": "int",
+				"defaultValue": 62
+			},
+			"phase_id": {
+				"type": "int",
+				"defaultValue": 2
+			},
+			"parameters": {
+				"type": "object"
+			},
+			"run_id": {
+				"type": "int"
+			},
+			"run_status": {
+				"type": "int"
+			},
+			"parent_seq_run_id": {
+				"type": "string"
+			},
+			"dbt_runid": {
+				"type": "string"
+			},
+			"dbt_jobid": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"modelNameArray": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"sp_params": {
+				"type": "String"
+			},
+			"resultSet": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"emptyArray": {
+				"type": "Array",
+				"defaultValue": []
+			},
+			"currentTime": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Transformation/dbt/utilities"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-28T12:20:59Z"
+	}
+}
