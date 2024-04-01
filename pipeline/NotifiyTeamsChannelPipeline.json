@@ -39,7 +39,7 @@
 							"typeProperties": {
 								"variableName": "messageCardBusiness",
 								"value": {
-									"value": "{\n    \"@type\": \"MessageCard\",\n    \"@context\": \"http://schema.org/extensions\",\n    \"themeColor\": \"0076D7\",\n    \"summary\": \"Pipeline status alert message​​​​\",\n    \"sections\": [\n        {\n            \"activityTitle\": \"Pipeline execution alert​​​​\",\n            \"facts\": [\n                {\n                    \"name\": \"Subscription Id:\",\n                    \"value\": \"@{pipeline().parameters.subscription}\"\n                },\n                {\n                    \"name\": \"Resource Group:\",\n                    \"value\": \"@{pipeline().parameters.resourceGroup}\"\n                },\n                {\n                    \"name\": \"Data Factory Name:\",\n                    \"value\": \"@{pipeline().DataFactory}\"\n                },\n                {\n                    \"name\": \"Pipeline RunId:\",\n                    \"value\": \"@{pipeline().parameters.runId}\"\n                },\n                {\n                    \"name\": \"Pipeline Name:\",\n                    \"value\": \"@{pipeline().parameters.name}\"\n                },\n                {\n                    \"name\": \"Pipeline Status:\",\n                    \"value\": \"@{pipeline().parameters.status}\"\n                },\n                {\n                    \"name\": \"Execution Start Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(pipeline().parameters.triggerTime, 'UTC', 'Singapore Standard Time')}\"\n                },\n                {\n                    \"name\": \"Message:\",\n                    \"value\": \"@{replace(replace(replace(replace(pipeline().parameters.businessMessage,'\"',''),'\\n','~~'),'\\',''),'~~','\\n')}\"\n                },\n                {\n                    \"name\": \"Notification Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')}\"\n                }\n            ],\n            \"markdown\": true\n        }\n    ],\n    \"potentialAction\": [\n        {\n            \"@type\": \"OpenUri\",\n            \"name\": \"Download File Attachment\",\n            \"targets\": [\n                {\n                    \"os\": \"default\",\n                    \"uri\": \"@{if(equals(pipeline().parameters.fileUrl, null),'', pipeline().parameters.fileUrl)}\"\n                }\n            ]\n        }\n    ]\n}",
+									"value": "{\n    \"@type\": \"MessageCard\",\n    \"@context\": \"http://schema.org/extensions\",\n    \"themeColor\": \"0076D7\",\n    \"summary\": \"Pipeline status alert message​​​​\",\n    \"sections\": [\n        {\n            \"activityTitle\": \"Pipeline execution alert​​​​\",\n            \"facts\": [\n                {\n                    \"name\": \"Subscription Id:\",\n                    \"value\": \"@{pipeline().parameters.subscription}\"\n                },\n                {\n                    \"name\": \"Resource Group:\",\n                    \"value\": \"@{pipeline().parameters.resourceGroup}\"\n                },\n                {\n                    \"name\": \"Data Factory Name:\",\n                    \"value\": \"@{pipeline().DataFactory}\"\n                },\n                {\n                    \"name\": \"Pipeline RunId:\",\n                    \"value\": \"@{pipeline().parameters.runId}\"\n                },\n                {\n                    \"name\": \"Pipeline Name:\",\n                    \"value\": \"@{pipeline().parameters.name}\"\n                },\n                {\n                    \"name\": \"Pipeline Status:\",\n                    \"value\": \"@{pipeline().parameters.status}\"\n                },\n                {\n                    \"name\": \"Execution Start Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(pipeline().parameters.triggerTime, 'UTC', 'Singapore Standard Time')}\"\n                },\n                {\n                    \"name\": \"Message:\",\n                    \"value\": \"@{replace(replace(replace(replace(replace(replace(pipeline().parameters.businessMessage,'\"',''),'\\n','~~'),'\\',''),'~~','\\n'),'{',''),'}','')}\"\n                },\n                {\n                    \"name\": \"Notification Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')}\"\n                }\n            ],\n            \"markdown\": true\n        }\n    ],\n    \"potentialAction\": [\n        {\n            \"@type\": \"OpenUri\",\n            \"name\": \"Download File Attachment\",\n            \"targets\": [\n                {\n                    \"os\": \"default\",\n                    \"uri\": \"@{if(equals(pipeline().parameters.fileUrl, null),'', pipeline().parameters.fileUrl)}\"\n                }\n            ]\n        }\n    ]\n}",
 									"type": "Expression"
 								}
 							}
@@ -157,7 +157,7 @@
 							"typeProperties": {
 								"variableName": "messageCardSupport",
 								"value": {
-									"value": "{\n    \"@type\": \"MessageCard\",\n    \"@context\": \"http://schema.org/extensions\",\n    \"themeColor\": \"0076D7\",\n    \"summary\": \"Pipeline status alert message​​​​\",\n    \"sections\": [\n        {\n            \"activityTitle\": \"Pipeline execution alert​​​​\",\n            \"facts\": [\n                {\n                    \"name\": \"Subscription Id:\",\n                    \"value\": \"@{pipeline().parameters.subscription}\"\n                },\n                {\n                    \"name\": \"Resource Group:\",\n                    \"value\": \"@{pipeline().parameters.resourceGroup}\"\n                },\n                {\n                    \"name\": \"Data Factory Name:\",\n                    \"value\": \"@{pipeline().DataFactory}\"\n                },\n                {\n                    \"name\": \"Pipeline RunId:\",\n                    \"value\": \"@{pipeline().parameters.runId}\"\n                },\n                {\n                    \"name\": \"Pipeline Name:\",\n                    \"value\": \"@{pipeline().parameters.name}\"\n                },\n                {\n                    \"name\": \"Pipeline Status:\",\n                    \"value\": \"@{pipeline().parameters.status}\"\n                },\n                {\n                    \"name\": \"Execution Start Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(pipeline().parameters.triggerTime, 'UTC', 'Singapore Standard Time')}\"\n                },\n                {\n                    \"name\": \"Message:\",\n                    \"value\": \"@{replace(replace(replace(replace(pipeline().parameters.supportMessage,'\"',''),'\\n','~~'),'\\',''),'~~','\\n')}\"\n                },\n                {\n                    \"name\": \"Notification Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')}\"\n                }\n            ],\n            \"markdown\": true\n        }\n    ],\n    \"potentialAction\": [\n        {\n            \"@type\": \"OpenUri\",\n            \"name\": \"View pipeline run\",\n            \"targets\": [\n                {\n                    \"os\": \"default\",\n                    \"uri\": \"@{concat('https://adf.azure.com/monitoring/pipelineruns/',pipeline().parameters.runId,'?factory=%2Fsubscriptions%2F',pipeline().parameters.subscription,'%2FresourceGroups%2F',pipeline().parameters.resourceGroup,'%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2F',pipeline().DataFactory)}\"\n                }\n            ]\n        }\n    ]\n}",
+									"value": "{\n    \"@type\": \"MessageCard\",\n    \"@context\": \"http://schema.org/extensions\",\n    \"themeColor\": \"0076D7\",\n    \"summary\": \"Pipeline status alert message​​​​\",\n    \"sections\": [\n        {\n            \"activityTitle\": \"Pipeline execution alert​​​​\",\n            \"facts\": [\n                {\n                    \"name\": \"Subscription Id:\",\n                    \"value\": \"@{pipeline().parameters.subscription}\"\n                },\n                {\n                    \"name\": \"Resource Group:\",\n                    \"value\": \"@{pipeline().parameters.resourceGroup}\"\n                },\n                {\n                    \"name\": \"Data Factory Name:\",\n                    \"value\": \"@{pipeline().DataFactory}\"\n                },\n                {\n                    \"name\": \"Pipeline RunId:\",\n                    \"value\": \"@{pipeline().parameters.runId}\"\n                },\n                {\n                    \"name\": \"Pipeline Name:\",\n                    \"value\": \"@{pipeline().parameters.name}\"\n                },\n                {\n                    \"name\": \"Pipeline Status:\",\n                    \"value\": \"@{pipeline().parameters.status}\"\n                },\n                {\n                    \"name\": \"Execution Start Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(pipeline().parameters.triggerTime, 'UTC', 'Singapore Standard Time')}\"\n                },\n                {\n                    \"name\": \"Message:\",\n                    \"value\": \"@{replace(replace(replace(replace(replace(replace(pipeline().parameters.supportMessage,'\"',''),'\\n','~~'),'\\',''),'~~','\\n'),'{',''),'}','')}\"\n                },\n                {\n                    \"name\": \"Notification Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')}\"\n                }\n            ],\n            \"markdown\": true\n        }\n    ],\n    \"potentialAction\": [\n        {\n            \"@type\": \"OpenUri\",\n            \"name\": \"View pipeline run\",\n            \"targets\": [\n                {\n                    \"os\": \"default\",\n                    \"uri\": \"@{concat('https://adf.azure.com/monitoring/pipelineruns/',pipeline().parameters.runId,'?factory=%2Fsubscriptions%2F',pipeline().parameters.subscription,'%2FresourceGroups%2F',pipeline().parameters.resourceGroup,'%2Fproviders%2FMicrosoft.DataFactory%2Ffactories%2F',pipeline().DataFactory)}\"\n                }\n            ]\n        }\n    ]\n}",
 									"type": "Expression"
 								}
 							}
@@ -217,10 +217,148 @@
 			{
 				"name": "WaitSecond",
 				"type": "Wait",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set variable2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable3",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable4",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set variable5",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Set variable",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@pipeline().parameters.supportMessage",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test2",
+					"value": {
+						"value": "@replace(pipeline().parameters.supportMessage,'\"','')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable3",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test3",
+					"value": {
+						"value": "@replace(variables('test2'),'\\n','~')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable4",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test4",
+					"value": {
+						"value": "@replace(variables('test3'),'\\','')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set variable5",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test5",
+					"value": {
+						"value": "@replace(variables('test4'),'~','\\n')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -238,14 +376,15 @@
 				"type": "string"
 			},
 			"triggerTime": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "2024-04-01T07:58:04.6734142Z"
 			},
 			"status": {
 				"type": "string"
 			},
 			"supportMessage": {
 				"type": "string",
-				"defaultValue": "testing pipeline"
+				"defaultValue": "Data Loading Failed : \\\\n\\n**PROCESS_ID**:  2  \\\\n\\n**CATEGORY**: REGIONAL \\\\n\\n**PHASE_ID**:   1   \\\\n\\n**USECASE_ID**: 1 \\\\n\\n**SEQUENCE_ID**: 1 \\\\n\\n**CONTAINER**: asp \\\\n\\n**FOLDER_PATH**: dev/transactional \\\\n\\n**FILE_NAME**: DFS_202002.xlsx \\\\n\\n**ERROR**: _{\\\"DFS_PREPROCESSING\\\":\\\"No Data in file\\\"}_"
 			},
 			"isBusinessNotification": {
 				"type": "string",
@@ -288,6 +427,21 @@
 				"type": "String"
 			},
 			"supportWebhook": {
+				"type": "String"
+			},
+			"test": {
+				"type": "String"
+			},
+			"test2": {
+				"type": "String"
+			},
+			"test3": {
+				"type": "String"
+			},
+			"test4": {
+				"type": "String"
+			},
+			"test5": {
 				"type": "String"
 			}
 		},
