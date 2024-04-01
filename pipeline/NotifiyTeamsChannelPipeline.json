@@ -5,9 +5,11 @@
 			{
 				"name": "If support error notification",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "WaitSecond",
+						"activity": "Set containerWebhook",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -45,7 +47,7 @@
 							}
 						},
 						{
-							"name": "Invoke Teams Webhook URL bsuiness_copy1",
+							"name": "Invoke Teams Webhook URL support",
 							"type": "WebActivity",
 							"dependsOn": [
 								{
@@ -103,6 +105,124 @@
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "If business error notification",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set containerWebhook",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(equals(pipeline().parameters.isBusinessNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Set JSON Schema business",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set business Webhook",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "messageCardBusiness",
+								"value": {
+									"value": "{\n    \"@type\": \"MessageCard\",\n    \"@context\": \"http://schema.org/extensions\",\n    \"themeColor\": \"0076D7\",\n    \"summary\": \"Pipeline status alert message​​​​\",\n    \"sections\": [\n        {\n            \"activityTitle\": \"Pipeline execution alert​​​​\",\n            \"facts\": [\n                {\n                    \"name\": \"Subscription Id:\",\n                    \"value\": \"@{pipeline().parameters.subscription}\"\n                },\n                {\n                    \"name\": \"Resource Group:\",\n                    \"value\": \"@{pipeline().parameters.resourceGroup}\"\n                },\n                {\n                    \"name\": \"Data Factory Name:\",\n                    \"value\": \"@{pipeline().DataFactory}\"\n                },\n                {\n                    \"name\": \"Pipeline RunId:\",\n                    \"value\": \"@{pipeline().parameters.runId}\"\n                },\n                {\n                    \"name\": \"Pipeline Name:\",\n                    \"value\": \"@{pipeline().parameters.name}\"\n                },\n                {\n                    \"name\": \"Pipeline Status:\",\n                    \"value\": \"@{pipeline().parameters.status}\"\n                },\n                {\n                    \"name\": \"Execution Start Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(pipeline().parameters.triggerTime, 'UTC', 'Singapore Standard Time')}\"\n                },\n                {\n                    \"name\": \"Message:\",\n                    \"value\": \"@{replace(replace(replace(replace(replace(replace(pipeline().parameters.businessMessage,'\"',''),'\\n','~~'),'\\',''),'~~','\\n'),'{',''),'}','')}\"\n                },\n                {\n                    \"name\": \"Notification Time (SGT):\",\n                    \"value\": \"@{convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')}\"\n                }\n            ],\n            \"markdown\": true\n        }\n    ],\n    \"potentialAction\": [\n        {\n            \"@type\": \"OpenUri\",\n            \"name\": \"Download File Attachment\",\n            \"targets\": [\n                {\n                    \"os\": \"default\",\n                    \"uri\": \"@{if(equals(pipeline().parameters.fileUrl, null),'', pipeline().parameters.fileUrl)}\"\n                }\n            ]\n        }\n    ]\n}",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Invoke Teams Webhook URL business",
+							"type": "WebActivity",
+							"dependsOn": [
+								{
+									"activity": "Set JSON Schema business",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"method": "POST",
+								"url": {
+									"value": "@variables('businessWebhook')",
+									"type": "Expression"
+								},
+								"connectVia": {
+									"referenceName": "adfiradbplt001",
+									"type": "IntegrationRuntimeReference"
+								},
+								"body": {
+									"value": "@json(variables('messageCardBusiness'))",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set business Webhook",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "businessWebhook",
+								"value": {
+									"value": "@json(variables('container_webhook'))[pipeline().parameters.container]",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set containerWebhook",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "WaitSecond",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "container_webhook",
+					"value": "{\n  \"ASP\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/b398da3c0a4f4850be50325f503952dc/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"CHN\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/f0665cb578094c46b29dddd4ea186a61/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"HKG\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/ac3ed430c1ee4d72a6d8859915e678ff/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"IDN\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/8717a553083e434083969ea900f83d32/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"JPN\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/955285172d4f4bf2b78d2d38fc386867/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"KOR\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/197e62552b27472b85053504e21a1953/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"MYS\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/b913f1628c39442c8580554b194c55ee/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"PCF\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/393969131bfc443d839e218ea9a06547/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"PHL\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/99782cf96c264ba8aa7ef72613e18704/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"SGP\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/fdcbd28ccf0943ff92ece9d7932c01cf/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"TWN\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/26861b46646545f19c0777e302087af6/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"THA\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/19d85b838d734fcaa78d4a2fe434a454/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"VNM\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/39a67f22c5554058b0fdb0a6ca2cf97c/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\",\n  \"IND\": \"https://kenvue.webhook.office.com/webhookb2/08067575-6f4e-4e13-a36c-bc85d41b2896@7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56/IncomingWebhook/acd0598a7f55474398dcd724276ed628/b96e6ec8-5d95-42c8-9ba2-44a3024dd2ac\"\n}"
 				}
 			}
 		],
