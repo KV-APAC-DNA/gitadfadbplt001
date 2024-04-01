@@ -244,8 +244,7 @@
 				"type": "string"
 			},
 			"supportMessage": {
-				"type": "string",
-				"defaultValue": "testing default message"
+				"type": "string"
 			},
 			"isBusinessNotification": {
 				"type": "string",
@@ -253,11 +252,10 @@
 			},
 			"isSupportNotification": {
 				"type": "string",
-				"defaultValue": "Yes"
+				"defaultValue": "No"
 			},
 			"businessMessage": {
-				"type": "string",
-				"defaultValue": "testing pipeline"
+				"type": "string"
 			},
 			"isError": {
 				"type": "string",
