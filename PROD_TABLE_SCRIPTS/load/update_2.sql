@@ -4,7 +4,7 @@
 
 update meta_raw.process
 set SNOWFLAKE_STAGE = 'THASDL_RAW.PROD_LOAD_STAGE_ADLS'
-where PROCESS_ID in (171,172,173,174,177)
+where PROCESS_ID in (171,172,173,174,177);
 
 
 
