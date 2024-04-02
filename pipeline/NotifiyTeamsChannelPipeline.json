@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(pipeline().parameters.isSupportNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes'))",
+						"value": "@and(and(equals(pipeline().parameters.isSupportNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes')),equals(pipeline().globalParameters.environment, 'prod'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -119,7 +119,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(pipeline().parameters.isBusinessNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes'))",
+						"value": "@and(and(equals(pipeline().parameters.isBusinessNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes')),equals(pipeline().globalParameters.environment, 'prod'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -244,8 +244,7 @@
 				"type": "string"
 			},
 			"supportMessage": {
-				"type": "string",
-				"defaultValue": "testing default message"
+				"type": "string"
 			},
 			"isBusinessNotification": {
 				"type": "string",
@@ -253,11 +252,10 @@
 			},
 			"isSupportNotification": {
 				"type": "string",
-				"defaultValue": "Yes"
+				"defaultValue": "No"
 			},
 			"businessMessage": {
-				"type": "string",
-				"defaultValue": "testing pipeline"
+				"type": "string"
 			},
 			"isError": {
 				"type": "string",
