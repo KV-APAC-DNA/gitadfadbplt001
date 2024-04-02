@@ -1,0 +1,20 @@
+insert into core_integration.dbtjobs_test_cdc_metadata values('j_ap_dna_etl_framework_vn_td_tgt','31','(\'sdl_vn_gt_topdoor_target\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_sales_stock','32','(\'sdl_vn_dms_sales_stock_fact\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_order_promotion','33','(\'sdl_vn_dms_order_promotion\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_forecast','34','(\'sdl_vn_dms_forecast\', \'sdl_vn_dms_yearly_target\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_call_details','35','(\'sdl_vn_dms_call_details\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_master','36','(\'sdl_vn_dms_distributor_dim\', \'sdl_vn_dms_customer_dim\', \'sdl_vn_dms_kpi\', \'sdl_vn_dms_promotion_list\', \'sdl_vn_dms_product_dim\', \'sdl_vn_dms_sales_org_dim\', \'sdl_vn_dms_msl\', \'sdl_vn_dms_KPI_Sellin_sellthrgh\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_sellout','37','(\'sdl_vn_dms_d_sellout_sales_fact\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_dms_sellthrough','38','(\'sdl_vn_dms_sellthrgh_sales_fact\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_mt_sellin_master','39','(\'sdl_mds_vn_distributor_products\', \'sdl_mds_vn_distributor_customers\', \'sdl_mds_vn_gt_gts_ratio\', \'sdl_mds_vn_ps_weights\', \'sdl_mds_vn_ps_targets\', \'sdl_mds_vn_ps_store_tagging\', \'sdl_mds_vn_topdoor_storetype_mapping\', \'sdl_mds_vn_gt_msl_shoptype_mapping\', \'sdl_mds_vn_customer_segmentation\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_mt_pos_master','40','(\'sdl_mds_vn_pos_products\', \'sdl_mds_vn_pos_customers\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_mt_sellin_target','41','(\'sdl_vn_mt_sellin_target\', \'sdl_mds_vn_customer_sales_organization\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_mt_pos_transaction','42','(\'sdl_vn_mt_sellout_con_cung\',\'sdl_vn_mt_sellout_guardian\',\'sdl_vn_mt_sellout_lotte\',\'sdl_vn_mt_sellout_mega\',\'sdl_vn_mt_sellout_coop\',\'sdl_vn_mt_sellout_vinmart\',\'sdl_vn_mt_sellout_aeon\',\'sdl_vn_mt_sellout_aeon\',\'sdl_vn_mt_sellout_bhx\',\'sdl_vn_mt_sellout_bhx\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_mt_sellin_transaction','43','(\'sdl_vn_mt_sellin_dksh\', \'sdl_vn_mt_sellin_coop\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('j_vt_dksh_inventory_etl_framework','44','(\'sdl_vn_dksh_daily_sales\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_ecom_target','45','(\'sdl_mds_vn_ecom_target\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_target_by_sku','46','(\'sdl_mds_vn_allchannel_siso_target_sku\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_perfect_store','47','(\'sdl_vn_interface_answers\',\'sdl_vn_interface_branch\',\'sdl_vn_interface_choices\',\'sdl_vn_interface_cpg\',\'sdl_vn_interface_customer_visited\',\'sdl_vn_interface_ise_header\',\'sdl_vn_interface_notes\',\'sdl_vn_interface_question\',\'sdl_vn_product_mapping\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_one_view_otc','48','(\'sdl_vn_oneview_otc\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('vn_mti_offtake','49','(\'sdl_spiral_mti_offtake\')','0');
+
