@@ -1,3 +1,6 @@
+use database DEV_DNA_LOAD;
+use schema META_RAW;
+
 insert into test_parameters (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (1,1,'rg_travel_retail_shilla_group','val_file_header','Brand|SKU|Desc_|Ref_No_|EAN/UPC|Color|Sold_Qty|Gross_Sales|Sold_Qty|Gross_Sales|Sold_Qty|Gross_Sales|Sold_Qty|Gross_Sales|Sold_Qty|Gross_Sales|Sold_Qty|Gross_Sales',FALSE,TRUE);
 insert into test_parameters (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (2,1,'rg_travel_retail_shilla_group','trigger_mail','Y',FALSE,FALSE);
 insert into test_parameters (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (3,1,'rg_travel_retail_shilla_group','file_spec','Shilla',FALSE,TRUE);
