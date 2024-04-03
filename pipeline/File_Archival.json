@@ -445,7 +445,7 @@
 													"type": "Expression"
 												},
 												"sourceFile": {
-													"value": "@replace(replace(replace(replace(pipeline().parameters.sourceFile,'.xlsx','.csv'),' ', '_'),'(' ,''),')' ,'')",
+													"value": "@replace(replace(replace(replace(replace(pipeline().parameters.sourceFile,'.xlsx','.csv'),' ', '_'),'(' ,''),')' ,''),'.xls','.csv')",
 													"type": "Expression"
 												}
 											}
