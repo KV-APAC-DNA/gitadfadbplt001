@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ForEachSheetFromXlsx",
+						"activity": "ForEachSheetFromXlsxXls",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -120,7 +120,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ForEachSheetFromXlsx",
+						"activity": "ForEachSheetFromXlsxXls",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -355,7 +355,7 @@
 				}
 			},
 			{
-				"name": "Is xlsx",
+				"name": "Is xlsx_xls or others",
 				"type": "Switch",
 				"dependsOn": [
 					{
@@ -415,16 +415,60 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "xls",
+							"activities": [
+								{
+									"name": "Delete csv2",
+									"type": "Delete",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.container",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.directory}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@replace(replace(replace(replace(replace(pipeline().parameters.sourceFile,'.xlsx','.csv'),' ', '_'),'(' ,''),')' ,''),'.xls','.csv')",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "AzureBlobFSReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false
+										}
+									}
+								}
+							]
 						}
 					]
 				}
 			},
 			{
-				"name": "ForEachSheetFromXlsx",
+				"name": "ForEachSheetFromXlsxXls",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Is xlsx",
+						"activity": "Is xlsx_xls or others",
 						"dependencyConditions": [
 							"Succeeded"
 						]
