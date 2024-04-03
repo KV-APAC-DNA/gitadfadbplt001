@@ -323,7 +323,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(tolower(pipeline().parameters.parameters.value[0].source_extn)\n          ,'xlsx'),\n     if( empty(pipeline().parameters.sheetNames),'2',''),'1')",
+						"value": "@if(or(equals(tolower(pipeline().parameters.parameters.value[0].source_extn)\n          ,'xlsx'),equals(tolower(pipeline().parameters.parameters.value[0].source_extn)\n          ,'xls')),\n     if( empty(pipeline().parameters.sheetNames),'2',''),'1')",
 						"type": "Expression"
 					},
 					"cases": [
