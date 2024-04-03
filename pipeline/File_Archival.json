@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ForEachSheetFromXlsx",
+						"activity": "ForEachSheetFromXlsxXls",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -120,7 +120,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ForEachSheetFromXlsx",
+						"activity": "ForEachSheetFromXlsxXls",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -355,7 +355,7 @@
 				}
 			},
 			{
-				"name": "Is xlsx",
+				"name": "Is xlsx_xls or others",
 				"type": "Switch",
 				"dependsOn": [
 					{
@@ -464,11 +464,11 @@
 				}
 			},
 			{
-				"name": "ForEachSheetFromXlsx",
+				"name": "ForEachSheetFromXlsxXls",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "Is xlsx",
+						"activity": "Is xlsx_xls or others",
 						"dependencyConditions": [
 							"Succeeded"
 						]
