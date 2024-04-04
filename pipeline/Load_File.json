@@ -146,7 +146,7 @@
 									"type": "Lookup",
 									"dependsOn": [
 										{
-											"activity": "Set variable1",
+											"activity": "Set paramFileName",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -227,7 +227,7 @@
 									}
 								},
 								{
-									"name": "Set variable1",
+									"name": "Set paramFileName",
 									"type": "SetVariable",
 									"dependsOn": [],
 									"policy": {
