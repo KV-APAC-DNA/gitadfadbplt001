@@ -1,0 +1,26 @@
+{
+	"name": "adfadbplt001lsexacttargettha",
+	"properties": {
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "Ftp.s7.exacttarget.com",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "Basic",
+			"userName": "7306703_2",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsexacttargettha"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
