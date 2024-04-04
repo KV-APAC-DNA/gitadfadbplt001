@@ -1,0 +1,26 @@
+{
+	"name": "adfadbplt001lsperensoaus",
+	"properties": {
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "ftp.perenso.net",
+			"port": "5222",
+			"skipHostKeyValidation": true,
+			"authenticationType": "Basic",
+			"userName": "johnsonandjohnson",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsperensoaus"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
