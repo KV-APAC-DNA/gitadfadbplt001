@@ -61,8 +61,7 @@ def main(session: snowpark.Session,Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-	      for i in dataframe.columns:
+	for i in dataframe.columns:
             dataframe = dataframe.withColumn(f"{i}", regexp_replace(f"{i}", ''\\\\x00'',None))
         dataframe=dataframe.na.drop("all")
 
@@ -161,8 +160,7 @@ def main(session: snowpark.Session,Param):
         .option("field_delimiter", "|")\\
         .option("field_optionally_enclosed_by", "\\"") \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-	      for i in dataframe.columns:
+	for i in dataframe.columns:
             dataframe = dataframe.withColumn(f"{i}", regexp_replace(f"{i}", ''\\\\x00'',None))
 
         dataframe=dataframe.na.drop("all")
@@ -259,8 +257,7 @@ def main(session: snowpark.Session,Param):
         .option("field_delimiter", "|") \\
         .option("field_optionally_enclosed_by", "\\"")  \\
         .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
-		
-	      for i in dataframe.columns:
+	for i in dataframe.columns:
             dataframe = dataframe.withColumn(f"{i}", regexp_replace(f"{i}", ''\\\\x00'',None))
         dataframe=dataframe.na.drop("all")
         if dataframe.count()==0:
