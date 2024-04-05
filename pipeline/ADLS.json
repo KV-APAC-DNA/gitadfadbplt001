@@ -444,7 +444,8 @@
 						"value": "@activity('Filter Only File').output.Value",
 						"type": "Expression"
 					},
-					"isSequential": true,
+					"isSequential": false,
+					"batchCount": 20,
 					"activities": [
 						{
 							"name": "Execute Load_File",
