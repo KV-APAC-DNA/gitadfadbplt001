@@ -58,7 +58,7 @@ def main(session: snowpark.Session,Param):
             StructField("email_id", StringType()),
             StructField("email_address", StringType())
             ])
-        
+
         dataframe = session.read\\
             .schema(df_schema)\\
             .option("skip_header",1)\\
@@ -67,11 +67,11 @@ def main(session: snowpark.Session,Param):
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         for i in dataframe.columns:
-            dataframe = dataframe.withColumn(f"{i}", regexp_replace(f"{i}", ''\\\\x00'',None))
+        	dataframe = dataframe.withColumn(f"{i}", regexp_replace(f"{i}", ''\\\\x00'',None))
 
         dataframe=dataframe.na.drop("all")
         if dataframe.count()==0:
-		    return "No Data in file"
+		return "No Data in file"
         #---------------------------Transformation logic ------------------------------#
 
         # Add FILE_NAME and CRTD_DTTM to the dataframe
