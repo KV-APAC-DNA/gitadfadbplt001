@@ -32,7 +32,7 @@ def main(session:snowpark.Session):
             .option("skip_header",1) \
             .option("field_delimiter", "|") \
             .option("encoding", "ISO-8859-15") \
-            .option("field_optionally_enclosed_by", "\\\"") \
+            .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         # Check if DataFrame is empty
@@ -43,7 +43,7 @@ def main(session:snowpark.Session):
 
         snowdf = df.select("SOURCE_FILE_NAME", "DATE_OF_EXTRACTION", "RECORD_COUNT")
 
-        file_name = str(file_name.split(".")[0]) + "_" + str(datetime.now().strftime("%Y%m%d%H%M%S"))
+        file_name = file_name.split(".")[0] + "_" + datetime.now().strftime("%Y%m%d%H%M%S")
         current_date = datetime.now()
         formatted_year = current_date.strftime("%Y")
         formatted_month = current_date.strftime("%m")
