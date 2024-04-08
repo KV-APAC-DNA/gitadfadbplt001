@@ -43,7 +43,7 @@ def main(session:snowpark.Session):
 
         snowdf = df.select("SOURCE_FILE_NAME", "DATE_OF_EXTRACTION", "RECORD_COUNT")
 
-        file_name = file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        file_name = str(file_name.split(".")[0]) + "_" + str(datetime.now().strftime("%Y%m%d%H%M%S"))
         current_date = datetime.now()
         formatted_year = current_date.strftime("%Y")
         formatted_month = current_date.strftime("%m")
