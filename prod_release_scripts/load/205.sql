@@ -5,7 +5,8 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS 'from snowflake.snowpark.functions import col, lit, current_timestamp, trunc
+AS '
+from snowflake.snowpark.functions import col, lit, current_timestamp, trunc
 from snowflake.snowpark.types import StringType, StructType, StructField
 from datetime import datetime
 import snowflake.snowpark as snowpark
