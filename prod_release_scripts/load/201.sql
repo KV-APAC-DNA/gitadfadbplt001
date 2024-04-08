@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE PROD_DNA_LOAD.VNMSDL_RAW.SDL_VN_DMS_DATA_EXTRACT_SUMMARY("PARAM" ARRAY)
+CREATE OR REPLACE VNMSDL_RAW.PROCEDURE SDL_VN_DMS_DATA_EXTRACT_SUMMARY("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -13,13 +13,13 @@ from datetime import datetime
 import snowflake.snowpark as snowpark
 import pytz
 
-def main(session:snowpark.Session):
+def main(session:snowpark.Session,Param):
 
     try:
-        file_name       = "Data_Extract_Summary_VN_20240408003000.csv"  # File name
-        stage_name      = "VNMSDL_RAW.DEV_LOAD_STAGE_ADLS"  # Stage name where files are located
-        temp_stage_path = "dev/dms/dms_source/"  # Path in the stage
-        target_table    = "SDL_VN_DMS_DATA_EXTRACT_SUMMARY"  # Target table for the data
+        file_name = Param[0]  # File name
+        stage_name = Param[1]  # Stage name where files are located
+        temp_stage_path = Param[2]  # Path in the stage
+        target_table = Param[3]  # Target table for the data
 
         df_schema = StructType([
             StructField("SOURCE_FILE_NAME", StringType()),
