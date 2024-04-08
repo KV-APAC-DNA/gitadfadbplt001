@@ -1,0 +1,1 @@
+select get_ddl('procedure', 'PROD_DNA_LOAD.VNMSDL_RAW.SDL_VN_DMS_DATA_EXTRACT_SUMMARY(ARRAY)');
