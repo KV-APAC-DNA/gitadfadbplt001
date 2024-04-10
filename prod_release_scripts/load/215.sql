@@ -102,7 +102,7 @@ update meta_raw.s3_to_adls
 set s3_path = 'TH_POS_TESCO/ARCHIVE'
 where id = 148;
 
-update update meta_raw.s3_to_adls
+update meta_raw.s3_to_adls
 set adls_path = 'TH_POS_TESCO/transaction'
 where id = 148;
 
