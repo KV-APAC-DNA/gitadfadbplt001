@@ -43,8 +43,11 @@ def main(session: snowpark.Session,Param):
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
-        
 
+        if FileNameValidation and FileExtnValidation and FileHeaderValidation=="0":
+            return "SUCCESS: File validation passed"
+            
+        
     
         # If the File belongs to Regional, then it enters the function
     
@@ -402,7 +405,6 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
         
             
         return file_header_validation_status,counter
-
 
 
 
