@@ -9,7 +9,8 @@
 -- 22/03/24 Thanish		Added Header Logic to handle CRM files (Thailand) 
 -- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
 
-CREATE OR REPLACE PROCEDURE ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
+
+CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
@@ -28,12 +29,12 @@ def main(session: snowpark.Session,Param):
     try:
 
         # Example input
-        #Param=[''Schedule_20240313232501.txt'',''last'',''1-0-0'',''Schedule'',''txt'',''SaleUnit|OrderID|orderdate|Customer_Id|Customer_Name|City|Region|SaleDistrict|SaleOffice|SaleGroup|CustomerType|StoreType|SaleType|SalesEmployee|SaleName|ProductID|ProductName|MegaBrand|Brand|BaseProduct|Variant|Putup|PriceRef|Backlog|Qty|SubAmt1|Discount|SubAmt2|DiscountBTLine|TotalBeforeVat|Total|No|Canceled|DocumentID|RETURN_REASON|PromotionCode|PromotionCode1|PromotionCode2|PromotionCode3|PromotionCode4|PromotionCode5|Promotion_Code|Promotion_Code2|Promotion_Code3|AvgDiscount|ORDERTYPE|ApproverStatus|PRICELEVEL|OPTIONAL3|DELIVERYDATE|OrderTime|SHIPTO|BILLTO|DeliveryRouteID|APPROVED_DATE|APPROVED_TIME|REF_15|PaymentType'',0,''THASDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/LCM/transaction/Laos_Sales_Order_Data/'','''']
-        #Param=[''LSTR 112022.xlsx'',''last'',''1-1-1'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'','''']
+        #Param=[''LSTR 112022.xlsx'',''last'',''1-1-0'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'','''']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
         # CURRENT_FILE , index , validation, val_file_name,val_file_extn
+
 
         CURRENT_FILE        =  Param[0]
         index               =  Param[1]
@@ -48,6 +49,7 @@ def main(session: snowpark.Session,Param):
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
+        
 
     
         # If the File belongs to Regional, then it enters the function
@@ -56,8 +58,11 @@ def main(session: snowpark.Session,Param):
             processed_file_name=rg_travel_validation(CURRENT_FILE)
             
         # If the File belongs to Thailand, then it enters the function
-        elif stage_name.split(".")[0]=="THASDL_RAW":
-           processed_file_name=thailand_processing(CURRENT_FILE)
+        elif stage_name.split(".")[0]=="THASDL_RAW": 
+            processed_file_name=thailand_processing(CURRENT_FILE)
+
+        elif stage_name.split(".")[0]=="PCFSDL_RAW":
+            processed_file_name=aus_processing(CURRENT_FILE)
 
         else:
             processed_file_name=CURRENT_FILE
@@ -71,6 +76,8 @@ def main(session: snowpark.Session,Param):
             extracted_filename = processed_file_name.split("_")[0]
         elif index.lower() == "full":
             extracted_filename = processed_file_name.rsplit(".", 1)[0]
+        elif index =="name_mmmyyyy.xlsx":
+            extracted_filename=CURRENT_FILE.split(".")[0]
     
     
         # Check for File name Validation
@@ -115,7 +122,7 @@ def main(session: snowpark.Session,Param):
                 else:
                     header=header_core
 
-            elif "CRM_Children" in CURRENT_FILE or "TH_CRM_Consumer" in CURRENT_FILE:
+            elif "CRM_Children" in CURRENT_FILE or "TH_CRM_Consumer" in CURRENT_FILE or "TH_Action_Complaint" in CURRENT_FILE or "TH_Action_Open" in CURRENT_FILE or "TH_Action_Click" in CURRENT_FILE or "TH_Action_Sent" in CURRENT_FILE or "Action_Unsubscribe" in CURRENT_FILE or "TH_Action_Bounce" in CURRENT_FILE:
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 utf_encoding= ''UTF-16''
@@ -124,7 +131,7 @@ def main(session: snowpark.Session,Param):
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
                 
-            elif "OUT_CON_Forecast_VN" in CURRENT_FILE or "OUT_CON_Yeartarget" in CURRENT_FILE:
+            elif "OUT_CON_Forecast_VN" in CURRENT_FILE or "OUT_CON_Yeartarget" in CURRENT_FILE or "PH_IOP" in CURRENT_FILE:
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 df = session.read.option("INFER_SCHEMA", True).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -132,11 +139,21 @@ def main(session: snowpark.Session,Param):
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
 
-            elif "Weekly Sales Report - Kenvue" in CURRENT_FILE:
+            elif "Weekly_Sales_Report_-_Kenvue" in CURRENT_FILE:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\u0001").option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
             
+            
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                
+            elif "SPS003" in CURRENT_FILE:
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("REPLACE_INVALID_CHARACTERS", True).option("null_if", "").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
                 
@@ -150,10 +167,10 @@ def main(session: snowpark.Session,Param):
                     
                 
 
-            # If the source is of xlsx type, then splitting based on \\x01 delimiter
+            # If the source is of xlsx type, then splitting based on \\\\x01 delimiter
 
             header_pipe_split = header[0].split(''|'')
-            if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report - Kenvue'' not in CURRENT_FILE:
+            if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly_Sales_Report_-_Kenvue'' not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
             elif val_file_extn==''xlsx'':
                 result_list = header
@@ -259,17 +276,58 @@ def thailand_processing(CURRENT_FILE):
 
     return file
 
+def aus_processing(CURRENT_FILE):
+    if "Weekly_Sales_Report_-_Kenvue" in CURRENT_FILE:
+        file= CURRENT_FILE.replace("_"," ",3)
+        print("FileName : ", file)
+    elif "FSSI_Week_12_2024.xls" in CURRENT_FILE:
+        file= CURRENT_FILE.replace("_"," ",1)
+        print("FileName : ", file)
+
+    elif "All_J_J_Items_WE" in CURRENT_FILE:
+        parts= CURRENT_FILE[:16].split(''_'')
+        file_name = parts[0] + '' '' + parts[1]
+        file_name += ''_'' + parts[2].replace(''_'', '' '', 1)
+        file_name += '' '' + parts[3].replace(''_'', '' '', 1)
+        file_name += '' '' + parts[4].replace(''_'', '' '', 1)
+        file=file_name
+        print("FileName : ", file)
+    elif "Monthly_Sales_Report,_Supplier_filter_only_J_J" in CURRENT_FILE:
+        file=CURRENT_FILE.replace(''_'', '' '', 5)   
+
+    elif "Coles_09a__SOH_Trend_Detail_Report" in CURRENT_FILE:
+        fileA=CURRENT_FILE.replace("_"," ")
+        file=fileA.replace(" ","_",2)
+        
+    else:
+        file = CURRENT_FILE.replace(" ","_")
+        print("FileName : ", file)
+
+    return file
+        
+        
+    
 
 # Function to Perform File name validation
 
 def file_validation(counter,extracted_filename,val_file_name):
+
 
         if val_file_name.upper() == extracted_filename.upper():
             file_name_validation_status=""
             print("file_name_validation_status is successful")
         elif regex.match(val_file_name.upper(), extracted_filename.upper()):
             file_name_validation_status=""
-            print("file_name_validation_status is successful")       
+            print("file_name_validation_status is successful")
+        elif "Target_Sell_In" in extracted_filename:
+            first_name = extracted_filename[:extracted_filename.rfind("_")]
+            date = extracted_filename[extracted_filename.rfind("_") + 1:]
+            if len(date) == 7 and date[:3].isalpha() and date[3:].isdigit() and first_name.lower() == val_file_name.lower() :
+                file_name_validation_status=""
+            else :
+                file_name_validation_status="Invalid File Name"
+                counter=1
+        
         else:
             file_name_validation_status="Invalid File Name, received  " + extracted_filename+" while expecting " +val_file_name
             print("file_name_validation_status",file_name_validation_status)
@@ -349,7 +407,5 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
             counter = counter+4
         
             
-        return file_header_validation_status,counter
-
-';
+        return file_header_validation_status,counter';
 
