@@ -8,7 +8,8 @@
 -- 12/03/24 Thanish		Added Logic to Handle NTUC Multi xlsx file header
 -- 22/03/24 Thanish		Added Header Logic to handle CRM files (Thailand) 
 -- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
-
+-- 4/4/24   Shantanu,Mahima,Thanish 
+-- 10/4/24  Thanish     Header handling for PH market
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
