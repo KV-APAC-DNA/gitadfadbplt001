@@ -268,19 +268,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "1"
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"process_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"variables": {
