@@ -1,0 +1,12 @@
+{
+	"name": "SqlServer_input",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawswfqsgpw0003",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
