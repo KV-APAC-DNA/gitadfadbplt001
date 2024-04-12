@@ -211,6 +211,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "select ac_shortname,ac_longname,ac_attribute,ac_nielsencode from dbo.account",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
