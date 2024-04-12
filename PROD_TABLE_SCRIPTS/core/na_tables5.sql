@@ -4216,7 +4216,7 @@ CREATE OR REPLACE TABLE SNAPNTAITG_INTEGRATION.ITG_TSI_TARGET_DATA		--// CREATE 
 	,customer_cname VARCHAR(100)  		--//  ENCODE zstd
 	,customer_sname VARCHAR(100)  		--//  ENCODE zstd
 	,nts NUMERIC(34,8)  		--//  ENCODE az64
-	,offtake/sellout NUMERIC(34,8)  		--//  ENCODE az64
+	,"offtake/sellout" NUMERIC(34,8)  		--//  ENCODE az64
 	,gts NUMERIC(34,8)  		--//  ENCODE az64
 	,pre_sales NUMERIC(34,8)  		--//  ENCODE az64
 	,prs_code_01 VARCHAR(50)  		--//  ENCODE zstd
@@ -9347,7 +9347,7 @@ CREATE OR REPLACE TABLE SNAPNTAWKS_INTEGRATION.WKS_TSI_TARGET_DATA_TEMP		--// CR
 	,customer_cname VARCHAR(100)  		--//  ENCODE zstd
 	,customer_sname VARCHAR(100)  		--//  ENCODE zstd
 	,nts NUMERIC(34,8)  		--//  ENCODE az64
-	,offtake/sellout NUMERIC(34,8)  		--//  ENCODE az64
+	,"offtake/sellout" NUMERIC(34,8)  		--//  ENCODE az64
 	,gts NUMERIC(34,8)  		--//  ENCODE az64
 	,pre_sales NUMERIC(34,8)  		--//  ENCODE az64
 	,prs_code_01 VARCHAR(50)  		--//  ENCODE zstd
