@@ -368,7 +368,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@split(pipeline().parameters.sourceFile, '.')[1]",
+						"value": "@substring(pipeline().parameters.sourceFile,add(lastindexof(pipeline().parameters.sourceFile,'.'),1),sub(length(pipeline().parameters.sourceFile),add(lastindexof(pipeline().parameters.sourceFile,'.'),1)))",
 						"type": "Expression"
 					},
 					"cases": [
