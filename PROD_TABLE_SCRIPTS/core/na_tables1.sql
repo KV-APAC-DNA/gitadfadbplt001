@@ -202,7 +202,7 @@ CREATE OR REPLACE TABLE SNAPNTAEDW_INTEGRATION.EDW_PACIFIC_PERFECT_STORE		--// C
 	,kpi_chnl_wt NUMERIC(31,2)  		--//  ENCODE az64
 	,mkt_share NUMERIC(31,3)  		--//  ENCODE az64
 	,ques_desc VARCHAR(256)  		--//  ENCODE lzo
-	,y/n_flag VARCHAR(3)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(3)  		--//  ENCODE lzo
 	,rej_reason VARCHAR(256)  		--//  ENCODE lzo
 	,response VARCHAR(256)  		--//  ENCODE lzo
 	,response_score VARCHAR(256)  		--//  ENCODE lzo
@@ -500,7 +500,7 @@ CREATE OR REPLACE TABLE SNAPNTAEDW_INTEGRATION.RPT_IN_PERFECT_STORE		--// CREATE
 	,kpi_chnl_wt DOUBLE PRECISION  		--//  ENCODE zstd
 	,ms_flag numeric(18,0)		--//  ENCODE az64 // INTEGER  
 	,hit_ms_flag numeric(18,0)		--//  ENCODE az64 // INTEGER  
-	,y/n_flag VARCHAR(3)  		--//  ENCODE zstd
+	,"y/n_flag" VARCHAR(3)  		--//  ENCODE zstd
 	,priority_store_flag VARCHAR(1)  		--//  ENCODE zstd
 	,questiontext VARCHAR(255)  		--//  ENCODE zstd
 	,ques_desc VARCHAR(11)  		--//  ENCODE zstd
@@ -1394,7 +1394,7 @@ CREATE OR REPLACE TABLE SNAPNTAEDW_INTEGRATION.EDW_RPT_TH_PERFECT_STORE		--// CR
 	,prod_hier_l8 VARCHAR(100)  		--//  ENCODE lzo
 	,prod_hier_l9 VARCHAR(513)  		--//  ENCODE lzo
 	,kpi_chnl_wt DOUBLE PRECISION
-	,y/n_flag VARCHAR(3)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(3)  		--//  ENCODE lzo
 	,posm_execution_flag VARCHAR(1)  		--//  ENCODE lzo
 	,priority_store_flag VARCHAR(1)  		--//  ENCODE lzo
 	,questiontext VARCHAR(500)  		--//  ENCODE lzo
@@ -1442,7 +1442,7 @@ CREATE OR REPLACE TABLE SNAPNTAEDW_INTEGRATION.V_RPT_MY_PERFECT_STORE_SNAPSHOT		
 	,prod_hier_l8 VARCHAR(1)  		--//  ENCODE lzo
 	,prod_hier_l9 VARCHAR(255)  		--//  ENCODE lzo
 	,kpi_chnl_wt DOUBLE PRECISION
-	,y/n_flag VARCHAR(21)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(21)  		--//  ENCODE lzo
 	,posm_execution_flag VARCHAR(1)  		--//  ENCODE lzo
 	,priority_store_flag VARCHAR(1)  		--//  ENCODE lzo
 	,questiontext VARCHAR(255)  		--//  ENCODE lzo
@@ -1540,7 +1540,7 @@ CREATE OR REPLACE TABLE RG_WKS.WKS_EDW_PERFECT_STORE_DATA_REFORMAT		--// CREATE 
 	,prod_hier_l8 VARCHAR(500)  		--//  ENCODE lzo
 	,prod_hier_l9 VARCHAR(2258)  		--//  ENCODE lzo
 	,ques_type VARCHAR(382)  		--//  ENCODE lzo
-	,y/n_flag VARCHAR(150)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(150)  		--//  ENCODE lzo
 	,priority_store_flag VARCHAR(256)  		--//  ENCODE lzo
 	,add_info VARCHAR(65535)  		--//  ENCODE lzo
 	,response VARCHAR(65535)  		--//  ENCODE lzo
@@ -1596,7 +1596,7 @@ CREATE OR REPLACE TABLE RG_WKS.WKS_EDW_PERFECT_STORE_HASH		--// CREATE TABLE IF 
 	,prod_hier_l8 VARCHAR(500)  		--//  ENCODE lzo
 	,prod_hier_l9 VARCHAR(2258)  		--//  ENCODE lzo
 	,ques_type VARCHAR(382)  		--//  ENCODE lzo
-	,y/n_flag VARCHAR(150)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(150)  		--//  ENCODE lzo
 	,priority_store_flag VARCHAR(256)  		--//  ENCODE lzo
 	,add_info VARCHAR(65535)  		--//  ENCODE lzo
 	,response VARCHAR(65535)  		--//  ENCODE lzo
@@ -1921,7 +1921,7 @@ CREATE OR REPLACE TABLE RG_WKS.WKS_PERFECT_STORE_SOS_SOA_CUSTID_IND		--// CREATE
 	,prod_hier_l8 VARCHAR(500)  		--//  ENCODE lzo
 	,prod_hier_l9 VARCHAR(2258)  		--//  ENCODE lzo
 	,ques_type VARCHAR(382)  		--//  ENCODE lzo
-	,y/n_flag VARCHAR(150)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(150)  		--//  ENCODE lzo
 	,priority_store_flag VARCHAR(256)  		--//  ENCODE lzo
 	,add_info VARCHAR(65535)  		--//  ENCODE lzo
 	,response VARCHAR(65535)  		--//  ENCODE lzo
@@ -1978,7 +1978,7 @@ CREATE OR REPLACE TABLE RG_WKS.WKS_PERFECT_STORE_SOS_SOA_MNTH		--// CREATE TABLE
 	,prod_hier_l8 VARCHAR(500)  		--//  ENCODE lzo
 	,prod_hier_l9 VARCHAR(2258)  		--//  ENCODE lzo
 	,ques_type VARCHAR(382)  		--//  ENCODE lzo
-	,y/n_flag VARCHAR(150)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(150)  		--//  ENCODE lzo
 	,priority_store_flag VARCHAR(256)  		--//  ENCODE lzo
 	,add_info VARCHAR(65535)  		--//  ENCODE lzo
 	,response VARCHAR(65535)  		--//  ENCODE lzo
@@ -2229,7 +2229,7 @@ CREATE OR REPLACE TABLE SNAPNTAEDW_INTEGRATION.EDW_CN_PERFECT_STORE		--// CREATE
 	,target VARCHAR(40)  		--//  ENCODE lzo
 	,mkt_share NUMERIC(20,4)  		--//  ENCODE az64
 	,ques_desc VARCHAR(11)  		--//  ENCODE lzo
-	,y/n_flag VARCHAR(3)  		--//  ENCODE lzo
+	,"y/n_flag" VARCHAR(3)  		--//  ENCODE lzo
 )
 		--// DISTSTYLE EVEN
 ;
