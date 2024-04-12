@@ -4,7 +4,7 @@
 		"globalParameters": {
 			"environment": {
 				"type": "string",
-				"value": "prd"
+				"value": "dev"
 			},
 			"dev_resource_group": {
 				"type": "string",
@@ -24,7 +24,7 @@
 			}
 		},
 		"globalConfigurations": {
-			"PipelineBillingEnabled": "false",
+			"PipelineBillingEnabled": "true",
 			"factoryStagingLSReferenceName": "adfadbplt001lsdlsadbplt001",
 			"factoryStagingLSType": "LinkedServiceReference",
 			"factoryStagingFolderPath": "dataops"
