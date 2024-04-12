@@ -260,7 +260,7 @@
 						"parameters": {
 							"container": "pac",
 							"path": "dev/sql_server/test/",
-							"file": "account"
+							"file": "account.csv"
 						}
 					}
 				]
