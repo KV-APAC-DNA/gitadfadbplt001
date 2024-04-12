@@ -627,9 +627,9 @@ CREATE OR REPLACE TABLE SNAPNTAEDW_INTEGRATION.EDW_HK_SELLIN_BP_LE		--// CREATE 
 	,mega_brnd_desc VARCHAR(100)  		--//  ENCODE lzo
 	,brnd_desc VARCHAR(30)  		--//  ENCODE lzo
 	,"go to model" VARCHAR(50)  		--//  ENCODE lzo
-	,banner format VARCHAR(50)  		--//  ENCODE lzo
-	,sub channel VARCHAR(50)  		--//  ENCODE lzo
-	,parent customer VARCHAR(50)  		--//  ENCODE lzo
+	,"banner format" VARCHAR(50)  		--//  ENCODE lzo
+	,"sub channel" VARCHAR(50)  		--//  ENCODE lzo
+	,"parent customer" VARCHAR(50)  		--//  ENCODE lzo
 	,usd_rt NUMERIC(38,10)  		--//  ENCODE az64
 	,lcl_rt NUMERIC(38,10)  		--//  ENCODE az64
 	,tp_acc_start VARCHAR(20)  		--//  ENCODE lzo
