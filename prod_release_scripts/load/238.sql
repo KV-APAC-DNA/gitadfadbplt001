@@ -1,0 +1,3 @@
+USE SCHEMA META_RAW;
+
+update parameters set PARAMETER_VALUE='VNMSDL_RAW.DATA_EXTRACT_SUMMARY_PREPROCESSING' where PARAMETER_NAME='sp_name' and parameter_group_id=223;
