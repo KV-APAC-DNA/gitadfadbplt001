@@ -9323,7 +9323,7 @@ CREATE OR REPLACE TABLE SNAPNTAWKS_INTEGRATION.WKS_TSI_TARGET_DATA		--// CREATE 
 	,customer_cname VARCHAR(255)  		--//  ENCODE zstd
 	,customer_sname VARCHAR(255)  		--//  ENCODE zstd
 	,nts VARCHAR(255)  		--//  ENCODE zstd
-	,offtake(sell_out) VARCHAR(255)  		--//  ENCODE zstd
+	,"offtake(sell_out)" VARCHAR(255)  		--//  ENCODE zstd
 	,gts VARCHAR(255)  		--//  ENCODE zstd
 	,pre_sales VARCHAR(255)  		--//  ENCODE zstd
 	,prs_code_01 VARCHAR(255)  		--//  ENCODE zstd
