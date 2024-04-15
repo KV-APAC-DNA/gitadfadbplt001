@@ -67,7 +67,7 @@
 									"type": "AmazonS3ReadSettings",
 									"recursive": true,
 									"modifiedDatetimeStart": {
-										"value": "@if(not(pipeline().parameters.re_run),\nvariables('last_modified'),'')",
+										"value": "@if(not(pipeline().parameters.re_run),\nitem().last_modified,'')",
 										"type": "Expression"
 									},
 									"enablePartitionDiscovery": false
@@ -103,6 +103,8 @@
 						{
 							"name": "Set delete_source_file",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"secureOutput": false,
@@ -120,6 +122,8 @@
 						{
 							"name": "Set last run time",
 							"type": "SetVariable",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Set delete_source_file",
@@ -199,7 +203,7 @@
 													"type": "Expression"
 												},
 												"delete_from_source": {
-													"value": "@variables('delete_source_file')",
+													"value": "@item().delete_source_file",
 													"type": "Expression"
 												}
 											}
