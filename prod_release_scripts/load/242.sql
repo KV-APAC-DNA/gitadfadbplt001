@@ -8,7 +8,7 @@ where usecase_id in (77,94);
 Delete from meta_raw.process
 where process_id in (229,280);
 
-delete from meta_raw.META_RAW.PARAMETERS
+delete from META_RAW.PARAMETERS
 where parameter_group_id in(229,280);
 
 INSERT INTO meta_raw.USECASE (USECASE_ID, USECASE_NAME,CATEGORY,USECASE_DESCRIPTION,IS_ACTIVE,SEQUENCE_ID) VALUES (77,'j_anz_mds','PCF_MDS','mds to dna refresh description','TRUE',1);
