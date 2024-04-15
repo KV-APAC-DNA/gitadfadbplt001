@@ -2,7 +2,7 @@
 	"name": "S3_TO_ADLS_PCF_PHARM_ECOMM",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
