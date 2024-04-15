@@ -5,6 +5,14 @@
 			"referenceName": "adfadbplt001lsiqviaaus",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"directory": {
+				"type": "string"
+			},
+			"filename": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "ADF_Framework_Datasets/SFTP"
 		},
@@ -12,7 +20,15 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "SftpLocation"
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().filename",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				}
 			}
 		}
 	}
