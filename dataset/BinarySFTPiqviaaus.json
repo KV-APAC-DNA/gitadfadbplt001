@@ -1,0 +1,19 @@
+{
+	"name": "BinarySFTPiqviaaus",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsiqviaaus",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SFTP"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation"
+			}
+		}
+	}
+}
