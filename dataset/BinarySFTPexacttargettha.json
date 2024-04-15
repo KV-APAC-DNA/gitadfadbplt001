@@ -1,8 +1,8 @@
 {
-	"name": "BinarySFTPmarketingcloudopsphl",
+	"name": "BinarySFTPexacttargettha",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsmarketingcloudopsphl",
+			"referenceName": "adfadbplt001lsexacttargettha",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
