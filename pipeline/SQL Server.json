@@ -270,7 +270,7 @@
 								"type": "Expression"
 							},
 							"path": {
-								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/variables('file_path')}",
+								"value": "@variables('file_path')",
 								"type": "Expression"
 							},
 							"file": {
@@ -284,6 +284,8 @@
 			{
 				"name": "Script1",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data1",
@@ -326,7 +328,7 @@
 				"typeProperties": {
 					"variableName": "file_name",
 					"value": {
-						"value": "@concat(variables('file_name_temp'), '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss'))",
+						"value": "@concat(concat(variables('file_name_temp'), '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss')),'.csv')",
 						"type": "Expression"
 					}
 				}
@@ -361,11 +363,11 @@
 			},
 			"file_path": {
 				"type": "String",
-				"defaultValue": "sql_server/test/"
+				"defaultValue": "dev/sql_server/test/"
 			},
 			"file_name_temp": {
 				"type": "String",
-				"defaultValue": "account.csv"
+				"defaultValue": "account"
 			},
 			"file_name": {
 				"type": "String"
