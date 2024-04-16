@@ -264,6 +264,32 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Script1",
+				"type": "Script",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "COPY INTO PCFSDL_RAW.SDL_ACCT_NIELSENCODE_MAPPING FROM \n'@PCFSDL_RAW.DEV_LOAD_STAGE_ADLS/dev/sql_server/test/account' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE'; \n"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
 		"parameters": {
