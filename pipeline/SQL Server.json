@@ -332,7 +332,7 @@
 				}
 			},
 			{
-				"name": "Copy data2",
+				"name": "move to archive",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -415,10 +415,60 @@
 							"path": {
 								"value": "@concat(variables('file_path'),'archive')",
 								"type": "Expression"
+							},
+							"file": {
+								"value": "@variables('file_name')",
+								"type": "Expression"
 							}
 						}
 					}
 				]
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "move to archive",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "sql_server_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@variables('container')",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@variables('file_path')",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@variables('file_name')",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
 			}
 		],
 		"parameters": {
