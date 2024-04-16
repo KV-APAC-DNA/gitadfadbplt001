@@ -500,11 +500,11 @@
 			},
 			"file_path": {
 				"type": "String",
-				"defaultValue": "dev/sql_server/test/"
+				"defaultValue": "dev/sql_server/IRI_Scan_Data/"
 			},
 			"file_name_temp": {
 				"type": "String",
-				"defaultValue": "account"
+				"defaultValue": "nielsencode_mapping"
 			},
 			"file_name": {
 				"type": "String"
