@@ -21,7 +21,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "output",
+					"variableName": "container",
 					"value": "SQL Server Ingestion Executed"
 				}
 			},
@@ -207,7 +207,14 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set file_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -258,9 +265,18 @@
 						"referenceName": "sql_server_sink",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "pac",
-							"path": "dev/sql_server/test/",
-							"file": "account.csv"
+							"container": {
+								"value": "@variables('container')",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/variables('file_path')}",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@variables('file_name')",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -297,6 +313,23 @@
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
+			},
+			{
+				"name": "Set file_name",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_name",
+					"value": {
+						"value": "@concat(variables('file_name_temp'), '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss'))",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -322,7 +355,19 @@
 			}
 		},
 		"variables": {
-			"output": {
+			"container": {
+				"type": "String",
+				"defaultValue": "pac"
+			},
+			"file_path": {
+				"type": "String",
+				"defaultValue": "sql_server/test/"
+			},
+			"file_name_temp": {
+				"type": "String",
+				"defaultValue": "account.csv"
+			},
+			"file_name": {
 				"type": "String"
 			}
 		},
