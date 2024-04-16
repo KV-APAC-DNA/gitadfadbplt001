@@ -284,8 +284,6 @@
 			{
 				"name": "Script1",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data1",
@@ -310,7 +308,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "COPY INTO PCFSDL_RAW.SDL_ACCT_NIELSENCODE_MAPPING FROM \n'@PCFSDL_RAW.DEV_LOAD_STAGE_ADLS/dev/sql_server/test/account' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE'; \n"
+							"text": "COPY INTO @{variables('sdl_table')} FROM \n'@PCFSDL_RAW.DEV_LOAD_STAGE_ADLS/dev/sql_server/test/account' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE'; \n"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -371,6 +369,14 @@
 			},
 			"file_name": {
 				"type": "String"
+			},
+			"sdl_table": {
+				"type": "String",
+				"defaultValue": "PCFSDL_RAW.SDL_ACCT_NIELSENCODE_MAPPING"
+			},
+			"stage": {
+				"type": "String",
+				"defaultValue": "PCFSDL_RAW.DEV_LOAD_STAGE_ADLS"
 			}
 		},
 		"folder": {
