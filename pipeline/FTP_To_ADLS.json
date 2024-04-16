@@ -1,0 +1,9 @@
+{
+	"name": "FTP_To_ADLS",
+	"properties": {
+		"folder": {
+			"name": "Ingestion/Sources/Utilities"
+		},
+		"annotations": []
+	}
+}
