@@ -1,0 +1,28 @@
+{
+	"name": "sftpcsv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsmarketingcloudopstha",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": "TH_Action_Bounce_20240327.csv",
+				"folderPath": "/Import/Archive"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "OYBAccountID|JobID|ListID|BatchID|SubscriberID|SubscriberKey|EventDate|IsUnique|Domain|BounceCategoryID|BounceCategory|BounceSubcategoryID|BounceSubcategory|BounceTypeID|BounceType|SMTPBounceReason|SMTPMessage|SMTPCode|TriggererSendDefinitionObjectID|TriggeredSendCustomerKey|EmailSubject|BccEmail|EmailName|EmailID|EmailAddress",
+				"type": "String"
+			}
+		]
+	}
+}
