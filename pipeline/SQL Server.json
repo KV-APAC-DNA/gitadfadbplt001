@@ -205,7 +205,7 @@
 				}
 			},
 			{
-				"name": "Copy data1",
+				"name": "sql_server to adls",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -227,7 +227,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "select ac_shortname,ac_longname,ac_attribute,ac_nielsencode from dbo.account",
+							"value": "@variables('source table ')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -282,11 +282,11 @@
 				]
 			},
 			{
-				"name": "Script1",
+				"name": "adls_to_snowflake",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Copy data1",
+						"activity": "sql_server to adls",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -336,7 +336,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Script1",
+						"activity": "adls_to_snowflake",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -425,7 +425,7 @@
 				]
 			},
 			{
-				"name": "Delete1",
+				"name": "delete processed file",
 				"type": "Delete",
 				"dependsOn": [
 					{
@@ -516,6 +516,10 @@
 			"stage": {
 				"type": "String",
 				"defaultValue": "PCFSDL_RAW.DEV_LOAD_STAGE_ADLS"
+			},
+			"source table ": {
+				"type": "String",
+				"defaultValue": "select ac_shortname,ac_longname,ac_attribute,ac_nielsencode from dbo.account"
 			}
 		},
 		"folder": {
