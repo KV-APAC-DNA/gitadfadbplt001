@@ -1,1 +1,0 @@
-truncate table VNMSDL_RAW.sdl_vn_dms_distributor_dim;
