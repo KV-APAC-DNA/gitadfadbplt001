@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@variables('ftpName')",
+						"value": "@pipeline().parameters.FtpName",
 						"type": "Expression"
 					},
 					"cases": [
@@ -206,6 +206,9 @@
 				"type": "string"
 			},
 			"FtpFileName": {
+				"type": "string"
+			},
+			"FtpName": {
 				"type": "string"
 			}
 		},
