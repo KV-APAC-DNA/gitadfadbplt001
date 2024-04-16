@@ -207,9 +207,35 @@
 			{
 				"name": "sql_server to adls",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set file_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set FILE_PATH",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set container",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set SDL_TABLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set SOURCE_TABLE",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -284,6 +310,8 @@
 			{
 				"name": "adls_to_snowflake",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server to adls",
@@ -308,7 +336,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', variables('stage'), '/', variables('file_path'), variables('file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';"
+							"text": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].STAGE, '/', variables('file_path'), variables('file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -317,7 +345,14 @@
 			{
 				"name": "Set file_name",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
@@ -326,7 +361,7 @@
 				"typeProperties": {
 					"variableName": "file_name",
 					"value": {
-						"value": "@concat(concat(variables('file_name_temp'), '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss')),'.csv')",
+						"value": "@concat(concat(activity('read parameters').output.value[0].file_name, '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss')),'.csv')",
 						"type": "Expression"
 					}
 				}
@@ -334,6 +369,8 @@
 			{
 				"name": "move to archive",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -427,6 +464,8 @@
 			{
 				"name": "delete processed file",
 				"type": "Delete",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move to archive",
@@ -469,16 +508,143 @@
 						"enablePartitionDiscovery": false
 					}
 				}
+			},
+			{
+				"name": "read parameters",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "Select \n\"'container'\" AS container,\n\"'file_path'\" AS file_path,\n\"'file_name'\" AS file_name,\n\"'sdl_table'\" AS sdl_table,\n\"'stage'\" AS stage,\n\"'source_table'\" AS source_table\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'file_path',\n'file_name',\n'sdl_table',\n'stage',\n'source_table'\n));",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set FILE_PATH",
+				"description": "",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "file_path",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].FILE_PATH",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set SDL_TABLE",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sdl_table",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].SDL_TABLE",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set container",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "container",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].CONTAINER",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set SOURCE_TABLE",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "source table",
+					"value": {
+						"value": "@activity('read parameters').output.value[0].SOURCE_TABLE",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "1"
+				"defaultValue": "anz_sql_server"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 129
 			},
 			"sequence_id": {
 				"type": "int",
@@ -486,7 +652,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 1
+				"defaultValue": 432
 			},
 			"phase_id": {
 				"type": "int",
