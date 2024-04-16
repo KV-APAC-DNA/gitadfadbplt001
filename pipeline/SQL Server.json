@@ -207,8 +207,6 @@
 			{
 				"name": "sql_server to adls",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set file_name",
@@ -310,8 +308,6 @@
 			{
 				"name": "adls_to_snowflake",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server to adls",
@@ -336,7 +332,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].STAGE, '/', variables('file_path'), variables('file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';"
+							"text": "truncate table  @{variables('sdl_table')} ;\nCOPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].STAGE, '/', variables('file_path'), variables('file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -369,8 +365,6 @@
 			{
 				"name": "move to archive",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -464,8 +458,6 @@
 			{
 				"name": "delete processed file",
 				"type": "Delete",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move to archive",
