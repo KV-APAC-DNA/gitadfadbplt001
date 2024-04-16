@@ -227,7 +227,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@variables('source table ')",
+							"value": "@variables('source table')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -517,7 +517,7 @@
 				"type": "String",
 				"defaultValue": "PCFSDL_RAW.DEV_LOAD_STAGE_ADLS"
 			},
-			"source table ": {
+			"source table": {
 				"type": "String",
 				"defaultValue": "select ac_shortname,ac_longname,ac_attribute,ac_nielsencode from dbo.account"
 			}
