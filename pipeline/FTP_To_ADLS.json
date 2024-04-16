@@ -3,15 +3,212 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Wait1",
-				"type": "Wait",
+				"name": "Switch FTP 1",
+				"type": "Switch",
 				"dependsOn": [],
 				"userProperties": [],
 				"typeProperties": {
-					"waitTimeInSeconds": 1
+					"on": {
+						"value": "@variables('ftpName')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "iqviaaus",
+							"activities": [
+								{
+									"name": "Wait3",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "perensoaus",
+							"activities": [
+								{
+									"name": "Wait4",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "exacttargetphl",
+							"activities": [
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "marketingcloudopsphl",
+							"activities": [
+								{
+									"name": "Wait2",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
+						},
+						{
+							"value": "exacttargettha",
+							"activities": [
+								{
+									"name": "Get files exacttargettha",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinarySFTPexacttargettha",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": "/Import/CONSUMER_Data",
+												"filename": "*"
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "SftpReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false,
+											"disableChunking": false
+										},
+										"formatSettings": {
+											"type": "BinaryReadSettings"
+										}
+									}
+								},
+								{
+									"name": "files exacttargettha",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get files exacttargettha",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "getFiles",
+										"value": {
+											"value": "@string(activity('Get files exacttargettha').output.childItems)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "marketingclouadopstha",
+							"activities": [
+								{
+									"name": "Get file marketingcloudopstha",
+									"type": "GetMetadata",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinarySFTPmarketingcloudopstha",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": "/Import/Archive",
+												"filename": "*TH_Action_Bounce*.csv"
+											}
+										},
+										"fieldList": [
+											"childItems"
+										],
+										"storeSettings": {
+											"type": "SftpReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false,
+											"disableChunking": false
+										},
+										"formatSettings": {
+											"type": "BinaryReadSettings"
+										}
+									}
+								},
+								{
+									"name": "files marketingcloudopstha",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get file marketingcloudopstha",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "getFiles",
+										"value": {
+											"value": "@string(activity('Get files marketingcloudopstha').output.childItems)",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
 				}
 			}
 		],
+		"parameters": {
+			"FtpDirectory": {
+				"type": "string"
+			},
+			"FtpFileName": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Ingestion/Sources/Utilities"
 		},
