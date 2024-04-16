@@ -308,7 +308,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "COPY INTO @{variables('sdl_table')} FROM \n'@PCFSDL_RAW.DEV_LOAD_STAGE_ADLS/dev/sql_server/test/@{variables(''file_name'')} ' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE'; \n"
+							"text": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', variables('stage'), '/', variables('file_path'), variables('file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
