@@ -653,31 +653,25 @@
 		},
 		"variables": {
 			"container": {
-				"type": "String",
-				"defaultValue": "pac"
+				"type": "String"
 			},
 			"file_path": {
-				"type": "String",
-				"defaultValue": "dev/sql_server/IRI_Scan_Data/"
+				"type": "String"
 			},
 			"file_name_temp": {
-				"type": "String",
-				"defaultValue": "nielsencode_mapping"
+				"type": "String"
 			},
 			"file_name": {
 				"type": "String"
 			},
 			"sdl_table": {
-				"type": "String",
-				"defaultValue": "PCFSDL_RAW.SDL_ACCT_NIELSENCODE_MAPPING"
+				"type": "String"
 			},
 			"stage": {
-				"type": "String",
-				"defaultValue": "PCFSDL_RAW.DEV_LOAD_STAGE_ADLS"
+				"type": "String"
 			},
 			"source table": {
-				"type": "String",
-				"defaultValue": "select ac_shortname,ac_longname,ac_attribute,ac_nielsencode from dbo.account"
+				"type": "String"
 			}
 		},
 		"folder": {
