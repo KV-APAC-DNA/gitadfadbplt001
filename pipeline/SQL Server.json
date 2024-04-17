@@ -5,9 +5,11 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "delete_processed_file",
+						"activity": "move_to_archive",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -63,68 +65,10 @@
 				}
 			},
 			{
-				"name": "Audit_Finish_Fail",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "delete_processed_file",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "sql_server_to_adls",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set landing_file_name",
@@ -226,6 +170,8 @@
 			{
 				"name": "adls_to_snowflake",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server_to_adls",
@@ -251,7 +197,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "truncate table  @{variables('sdl_table')} ;\nCOPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].STAGE, '/', variables('landing_file_path'), variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';",
+								"value": "truncate table  @{variables('sdl_table')} ;\nCOPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';",
 								"type": "Expression"
 							}
 						}
@@ -286,6 +232,8 @@
 			{
 				"name": "move_to_archive",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -360,52 +308,6 @@
 				]
 			},
 			{
-				"name": "delete_processed_file",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "move_to_archive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "sql_server_sink",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@variables('container')",
-								"type": "Expression"
-							},
-							"path": {
-								"value": "@variables('landing_file_path')",
-								"type": "Expression"
-							},
-							"file": {
-								"value": "@variables('landing_file_name')",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
 				"name": "read parameters",
 				"type": "Lookup",
 				"dependsOn": [
@@ -428,7 +330,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'sdl_table'\" AS sdl_table,\n\"'stage'\" AS stage,\n\"'ms_query'\" AS ms_query\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'sdl_table',\n'stage',\n'ms_query'\n));",
+							"value": "Select SNOWFLAKE_STAGE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\n\"'ms_query'\" AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -486,7 +388,7 @@
 				"typeProperties": {
 					"variableName": "sdl_table",
 					"value": {
-						"value": "@activity('read parameters').output.value[0].SDL_TABLE",
+						"value": "@{activity('read parameters').output.value[0].TARGET_SCHEMA}.@{activity('read parameters').output.value[0].TARGET_TABLE}",
 						"type": "Expression"
 					}
 				}
@@ -595,6 +497,8 @@
 			{
 				"name": "audit fail - move sql_server_to_alds",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server_to_adls",
@@ -655,6 +559,8 @@
 			{
 				"name": "error log - move sql_server_to_alds",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server_to_adls",
@@ -712,6 +618,8 @@
 			{
 				"name": "Send error - sql_server_to_alds",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server_to_adls",
@@ -765,6 +673,8 @@
 			{
 				"name": "audit fail - move_to_archive",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -825,6 +735,8 @@
 			{
 				"name": "error log - move_to_archive",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -882,6 +794,8 @@
 			{
 				"name": "Send error - move_to_archive",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -933,118 +847,10 @@
 				}
 			},
 			{
-				"name": "error log - delete_processed_file",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "delete_processed_file",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_error_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"job_name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"error_message": {
-							"value": "@activity('delete_processed_file').error?.message",
-							"type": "Expression"
-						},
-						"run_id": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"error_code": {
-							"value": "@activity('delete_processed_file').error?.errorCode",
-							"type": "Expression"
-						},
-						"job_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "Send error - delete_processed_file",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "delete_processed_file",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "NotifiyTeamsChannelPipeline",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"subscription": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-							"type": "Expression"
-						},
-						"resourceGroup": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-							"type": "Expression"
-						},
-						"runId": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"triggerTime": {
-							"value": "@pipeline().TriggerTime",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('delete_processed_file').error?.message}_",
-							"type": "Expression"
-						},
-						"isBusinessNotification": "No",
-						"isSupportNotification": "Yes",
-						"isError": "Yes"
-					}
-				}
-			},
-			{
 				"name": "audit fail - adls_to_snowflake",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -1105,6 +911,8 @@
 			{
 				"name": "error log - adls_to_snowflake",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -1162,6 +970,8 @@
 			{
 				"name": "Send error - sql_server_to_alds_copy1",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
