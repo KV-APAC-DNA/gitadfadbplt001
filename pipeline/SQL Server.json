@@ -115,8 +115,6 @@
 			{
 				"name": "sql_server to adls",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set file_name",
@@ -256,8 +254,6 @@
 			{
 				"name": "Set file_name",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -463,8 +459,6 @@
 				"name": "Set FILE_PATH",
 				"description": "",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -489,8 +483,6 @@
 			{
 				"name": "Set SDL_TABLE",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -515,8 +507,6 @@
 			{
 				"name": "Set container",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -541,8 +531,6 @@
 			{
 				"name": "Set SOURCE_TABLE",
 				"type": "SetVariable",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
