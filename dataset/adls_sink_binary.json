@@ -2,7 +2,7 @@
 	"name": "adls_sink_binary",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
