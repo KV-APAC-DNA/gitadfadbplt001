@@ -1030,6 +1030,21 @@
 								}
 							]
 						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Unknown source",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Unknown source type: @{activity('read parameters').output.value[0].DECIDE_SOURCE}",
+									"type": "Expression"
+								},
+								"errorCode": "2000"
+							}
+						}
 					]
 				}
 			}
