@@ -109,6 +109,68 @@
 					},
 					"firstRowOnly": false
 				}
+			},
+			{
+				"name": "Copy marketingclouadopstha file_copy1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "SftpWriteSettings",
+							"operationTimeout": "01:00:00",
+							"useTempFileRename": true
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "BinarySFTPmarketingcloudopstha",
+						"type": "DatasetReference",
+						"parameters": {
+							"directory": "/Import/Archive",
+							"filename": "TH_Action_Bounce_20240326.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "BinarySFTPmarketingcloudopstha",
+						"type": "DatasetReference",
+						"parameters": {
+							"directory": "/Import/Archive/test",
+							"filename": "TH_Action_Bounce_20240326.csv"
+						}
+					}
+				]
 			}
 		],
 		"folder": {
