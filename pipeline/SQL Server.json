@@ -780,7 +780,7 @@
 				}
 			},
 			{
-				"name": "audit fail - move sql_server_to_alds_copy1",
+				"name": "audit fail - move_to_archive",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -840,7 +840,7 @@
 				}
 			},
 			{
-				"name": "error log - move sql_server_to_alds_copy1",
+				"name": "error log - move_to_archive",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -897,7 +897,7 @@
 				}
 			},
 			{
-				"name": "Send error - directory not present_copy1",
+				"name": "Send error - move_to_archive",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -950,7 +950,7 @@
 				}
 			},
 			{
-				"name": "error log - move sql_server_to_alds_copy1_copy1",
+				"name": "error log - delete_processed_file",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -1007,7 +1007,7 @@
 				}
 			},
 			{
-				"name": "Send error - directory not present_copy1_copy1",
+				"name": "Send error - delete_processed_file",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
