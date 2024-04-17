@@ -216,8 +216,6 @@
 			{
 				"name": "adls_to_snowflake",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server to adls",
@@ -278,8 +276,6 @@
 			{
 				"name": "move to archive",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -373,8 +369,6 @@
 			{
 				"name": "delete processed file",
 				"type": "Delete",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move to archive",
