@@ -57,7 +57,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"adls_container": "tha",
-							"adls_path": "SFMC/transaction/TH_Action_Bounce"
+							"adls_path": "SFMC/transaction/TH_Action_Bounce/test"
 						}
 					}
 				]
