@@ -169,7 +169,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@variables('source table')",
+							"value": "@variables('ms_query')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -549,9 +549,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "source table",
+					"variableName": "ms_query",
 					"value": {
-						"value": "@activity('read parameters').output.value[0].SOURCE_TABLE",
+						"value": "@activity('read parameters').output.value[0].ms_query",
 						"type": "Expression"
 					}
 				}
@@ -770,7 +770,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**SOURCE_TABLE**: @{activity('read parameters').output.value[0].SOURCE_TABLE} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FILE_PATH**: @{activity('read parameters').output.value[0].FILE_PATH} \\n\n**FILE_NAME**: @{activity('read parameters').output.value[0].FILE_NAME} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
+							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ms_query**: @{activity('read parameters').output.value[0].ms_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**landing_file_path**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**landing_file_name**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
@@ -1098,7 +1098,7 @@
 			"stage": {
 				"type": "String"
 			},
-			"source table": {
+			"ms_query": {
 				"type": "String"
 			}
 		},
