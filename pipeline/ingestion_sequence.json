@@ -158,7 +158,7 @@
 										]
 									},
 									{
-										"value": "SQL Server",
+										"value": "SQL",
 										"activities": [
 											{
 												"name": "SQL Server ingestion",
@@ -531,16 +531,20 @@
 		],
 		"parameters": {
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 129
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "anz_sql_server"
 			}
 		},
 		"variables": {
