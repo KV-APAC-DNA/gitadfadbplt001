@@ -304,51 +304,38 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "DelimitedTextSource",
+						"type": "BinarySource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"enablePartitionDiscovery": false
+							"deleteFilesAfterCompletion": true
 						},
 						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+							"type": "BinaryReadSettings"
 						}
 					},
 					"sink": {
-						"type": "DelimitedTextSink",
+						"type": "BinarySink",
 						"storeSettings": {
 							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "sql_server_sink",
+						"referenceName": "BinarySource",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": {
 								"value": "@variables('container')",
 								"type": "Expression"
 							},
-							"path": {
+							"directory": {
 								"value": "@variables('landing_file_path')",
 								"type": "Expression"
 							},
-							"file": {
+							"sourceFile": {
 								"value": "@variables('landing_file_name')",
 								"type": "Expression"
 							}
@@ -357,19 +344,15 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sql_server_sink",
+						"referenceName": "adls_sink_binary",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": {
+							"adls_container": {
 								"value": "@variables('container')",
 								"type": "Expression"
 							},
-							"path": {
-								"value": "@concat(variables('landing_file_path'),'archive')",
-								"type": "Expression"
-							},
-							"file": {
-								"value": "@variables('landing_file_name')",
+							"adls_path": {
+								"value": "@variables('landing_file_path')",
 								"type": "Expression"
 							}
 						}
