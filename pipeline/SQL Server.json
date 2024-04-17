@@ -69,7 +69,14 @@
 				"type": "Script",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "DECIDE_SOURCE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -387,11 +394,9 @@
 			{
 				"name": "audit fail - move sql_server_to_alds",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Switch1",
+						"activity": "DECIDE_SOURCE",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -799,7 +804,7 @@
 				}
 			},
 			{
-				"name": "Switch1",
+				"name": "DECIDE_SOURCE",
 				"type": "Switch",
 				"dependsOn": [
 					{
@@ -835,9 +840,13 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
+					"on": {
+						"value": "@activity('read parameters').output.value[0].DECIDE_SOURCE",
+						"type": "Expression"
+					},
 					"cases": [
 						{
-							"value": "Case1",
+							"value": "sql_server_awswfqsgpw",
 							"activities": [
 								{
 									"name": "sql_server_to_adls",
@@ -912,8 +921,6 @@
 								{
 									"name": "error log - move sql_server_to_alds",
 									"type": "ExecutePipeline",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "sql_server_to_adls",
@@ -971,8 +978,6 @@
 								{
 									"name": "Send error - sql_server_to_alds",
 									"type": "ExecutePipeline",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "sql_server_to_adls",
