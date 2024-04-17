@@ -58,6 +58,14 @@
             "type": "string",
             "defaultValue": "adfadbplt001lssnfkdevdnaload"
         },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_connectionString_secretName": {
+            "type": "string",
+            "defaultValue": "adfadbplt001lssnfkdevdnacorepassword"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_connectionString_secretName": {
+            "type": "string",
+            "defaultValue": "adfadbplt001lssnfkdevdnaloadpassword"
+        },
         "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url": {
             "type": "string",
             "defaultValue": "https://azrweksgpw0003.kenvue.com/api.rsc/"
