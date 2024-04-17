@@ -129,6 +129,8 @@
 			{
 				"name": "sql_server to adls",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set file_name",
@@ -230,6 +232,8 @@
 			{
 				"name": "adls_to_snowflake",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "sql_server to adls",
@@ -263,6 +267,8 @@
 			{
 				"name": "Set file_name",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -287,6 +293,8 @@
 			{
 				"name": "move to archive",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -380,6 +388,8 @@
 			{
 				"name": "delete processed file",
 				"type": "Delete",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move to archive",
@@ -426,6 +436,8 @@
 			{
 				"name": "read parameters",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Audit_Start",
@@ -464,6 +476,8 @@
 				"name": "Set FILE_PATH",
 				"description": "",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -488,6 +502,8 @@
 			{
 				"name": "Set SDL_TABLE",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -512,6 +528,8 @@
 			{
 				"name": "Set container",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -536,6 +554,8 @@
 			{
 				"name": "Set SOURCE_TABLE",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -560,8 +580,6 @@
 			{
 				"name": "Audit_Start",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureInput": false
