@@ -770,7 +770,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
+							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**SOURCE_TABLE**: @{activity('sql_server_to_adls').output.value[0].SOURCE_TABLE} \\n\n**CONTAINER**: @{activity('sql_server_to_adls').output.value[0].CONTAINER} \\n\n**FILE_PATH**: @{activity('sql_server_to_adls').output.value[0].FILE_PATH} \\n\n**FILE_NAME**: @{activity('sql_server_to_adls').output.value[0].FILE_NAME} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
