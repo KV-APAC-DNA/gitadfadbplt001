@@ -1,0 +1,15 @@
+{
+	"name": "adfadbplt001lsdlsadbplt001_ir001",
+	"properties": {
+		"description": "adls gen 2 using IR 001 (managed network)",
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://dlsadbplt001.dfs.core.windows.net/"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
