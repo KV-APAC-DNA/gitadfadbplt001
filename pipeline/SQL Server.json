@@ -7,7 +7,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "delete processed file",
+						"activity": "delete_processed_file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -67,7 +67,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "delete processed file",
+						"activity": "delete_processed_file",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -377,7 +377,7 @@
 				]
 			},
 			{
-				"name": "delete processed file",
+				"name": "delete_processed_file",
 				"type": "Delete",
 				"dependsOn": [
 					{
@@ -954,7 +954,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "delete processed file",
+						"activity": "delete_processed_file",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1011,7 +1011,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "delete processed file",
+						"activity": "delete_processed_file",
 						"dependencyConditions": [
 							"Failed"
 						]
