@@ -127,7 +127,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Set file_name",
+						"activity": "Set landing_file_name",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -212,11 +212,11 @@
 								"type": "Expression"
 							},
 							"path": {
-								"value": "@variables('file_path')",
+								"value": "@variables('landing_file_path')",
 								"type": "Expression"
 							},
 							"file": {
-								"value": "@variables('file_name')",
+								"value": "@variables('landing_file_name')",
 								"type": "Expression"
 							}
 						}
@@ -251,7 +251,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "truncate table  @{variables('sdl_table')} ;\nCOPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].STAGE, '/', variables('file_path'), variables('file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';",
+								"value": "truncate table  @{variables('sdl_table')} ;\nCOPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].STAGE, '/', variables('landing_file_path'), variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '|' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';",
 								"type": "Expression"
 							}
 						}
@@ -260,7 +260,7 @@
 				}
 			},
 			{
-				"name": "Set file_name",
+				"name": "Set landing_file_name",
 				"type": "SetVariable",
 				"dependsOn": [
 					{
@@ -276,9 +276,9 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "file_name",
+					"variableName": "landing_file_name",
 					"value": {
-						"value": "@concat(concat(activity('read parameters').output.value[0].file_name, '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss')),'.csv')",
+						"value": "@concat(concat(activity('read parameters').output.value[0].landing_file_name, '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss')),'.csv')",
 						"type": "Expression"
 					}
 				}
@@ -345,7 +345,7 @@
 								"type": "Expression"
 							},
 							"path": {
-								"value": "@variables('file_path')",
+								"value": "@variables('landing_file_path')",
 								"type": "Expression"
 							},
 							"file": {
@@ -365,11 +365,11 @@
 								"type": "Expression"
 							},
 							"path": {
-								"value": "@concat(variables('file_path'),'archive')",
+								"value": "@concat(variables('landing_file_path'),'archive')",
 								"type": "Expression"
 							},
 							"file": {
-								"value": "@variables('file_name')",
+								"value": "@variables('landing_file_name')",
 								"type": "Expression"
 							}
 						}
@@ -405,11 +405,11 @@
 								"type": "Expression"
 							},
 							"path": {
-								"value": "@variables('file_path')",
+								"value": "@variables('landing_file_path')",
 								"type": "Expression"
 							},
 							"file": {
-								"value": "@variables('file_name')",
+								"value": "@variables('landing_file_name')",
 								"type": "Expression"
 							}
 						}
@@ -445,7 +445,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'container'\" AS container,\n\"'file_path'\" AS file_path,\n\"'file_name'\" AS file_name,\n\"'sdl_table'\" AS sdl_table,\n\"'stage'\" AS stage,\n\"'source_table'\" AS source_table\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'file_path',\n'file_name',\n'sdl_table',\n'stage',\n'source_table'\n));",
+							"value": "Select \n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'sdl_table'\" AS sdl_table,\n\"'stage'\" AS stage,\n\"'ms_query'\" AS source_table\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'sdl_table',\n'stage',\n'ms_query'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -477,7 +477,7 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "file_path",
+					"variableName": "landing_file_path",
 					"value": {
 						"value": "@activity('read parameters').output.value[0].FILE_PATH",
 						"type": "Expression"
@@ -727,7 +727,7 @@
 				}
 			},
 			{
-				"name": "Send error - directory not present",
+				"name": "Send error - sql_server_to_alds",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -770,7 +770,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**SOURCE_TABLE**: @{activity('sql_server_to_adls').output.value[0].SOURCE_TABLE} \\n\n**CONTAINER**: @{activity('sql_server_to_adls').output.value[0].CONTAINER} \\n\n**FILE_PATH**: @{activity('sql_server_to_adls').output.value[0].FILE_PATH} \\n\n**FILE_NAME**: @{activity('sql_server_to_adls').output.value[0].FILE_NAME} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
+							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**SOURCE_TABLE**: @{activity('read parameters').output.value[0].SOURCE_TABLE} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FILE_PATH**: @{activity('read parameters').output.value[0].FILE_PATH} \\n\n**FILE_NAME**: @{activity('read parameters').output.value[0].FILE_NAME} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
@@ -1086,13 +1086,10 @@
 			"container": {
 				"type": "String"
 			},
-			"file_path": {
+			"landing_file_path": {
 				"type": "String"
 			},
-			"file_name_temp": {
-				"type": "String"
-			},
-			"file_name": {
+			"landing_file_name": {
 				"type": "String"
 			},
 			"sdl_table": {

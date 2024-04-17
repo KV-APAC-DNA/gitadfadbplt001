@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(and(equals(pipeline().parameters.isSupportNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes')),contains(pipeline().DataFactory,'prd'))",
+						"value": "@and(and(equals(pipeline().parameters.isSupportNotification, 'Yes'), equals(pipeline().parameters.isError, 'Yes')),contains(pipeline().DataFactory,'dev'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
