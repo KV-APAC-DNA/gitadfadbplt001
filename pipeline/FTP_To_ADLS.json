@@ -241,7 +241,7 @@
 			"process_id": {
 				"type": "int"
 			},
-			"phase)id": {
+			"phase_id": {
 				"type": "int"
 			}
 		},
