@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"fileName": "TH_Action_Bounce_20240327.csv",
+				"fileName": "PH_CRM_Consumer_Master_20240416.csv",
 				"folderPath": "/Import/Archive"
 			},
 			"columnDelimiter": ",",
