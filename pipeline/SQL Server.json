@@ -980,7 +980,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('move_to_archive').error?.message",
+							"value": "@activity('delete_processed_file').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -996,7 +996,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('move_to_archive').error?.errorCode",
+							"value": "@activity('delete_processed_file').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1050,7 +1050,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive').error?.message}_",
+							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('delete_processed_file').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
