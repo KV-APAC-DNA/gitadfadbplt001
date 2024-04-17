@@ -156,7 +156,7 @@
 						"referenceName": "BinarySFTPmarketingcloudopstha",
 						"type": "DatasetReference",
 						"parameters": {
-							"directory": "/Import/Archive",
+							"directory": "Import/Archive",
 							"filename": "TH_Action_Bounce_20240326.csv"
 						}
 					}
@@ -166,7 +166,7 @@
 						"referenceName": "BinarySFTPmarketingcloudopstha",
 						"type": "DatasetReference",
 						"parameters": {
-							"directory": "/Import/Archive/test",
+							"directory": "Import/Archive/test",
 							"filename": "TH_Action_Bounce_20240326.csv"
 						}
 					}
