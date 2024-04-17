@@ -278,7 +278,7 @@
 				"typeProperties": {
 					"variableName": "landing_file_name",
 					"value": {
-						"value": "@concat(concat(activity('read parameters').output.value[0].landing_file_name, '_', formatDateTime(utcnow(), 'yyyyMMddHHmmss')),'.csv')",
+						"value": "@concat(concat(activity('read parameters').output.value[0].landing_file_name, '_', formatDateTime(convertTimeZone(UTCnow(),'UTC','Singapore Standard Time'), 'yyyyMMddHHmmss')),'.csv')\n",
 						"type": "Expression"
 					}
 				}
