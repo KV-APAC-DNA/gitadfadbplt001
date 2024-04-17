@@ -349,7 +349,7 @@
 								"type": "Expression"
 							},
 							"file": {
-								"value": "@variables('file_name')",
+								"value": "@variables('landing_file_name')",
 								"type": "Expression"
 							}
 						}
