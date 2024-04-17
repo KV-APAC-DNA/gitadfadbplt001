@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "Lookup1",
+						"activity": "Wait1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
