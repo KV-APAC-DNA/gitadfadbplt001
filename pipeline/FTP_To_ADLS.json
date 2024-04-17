@@ -228,6 +228,21 @@
 			},
 			"AdlsPath": {
 				"type": "string"
+			},
+			"category": {
+				"type": "string"
+			},
+			"usecase_id": {
+				"type": "int"
+			},
+			"sequence_id": {
+				"type": "int"
+			},
+			"process_id": {
+				"type": "int"
+			},
+			"phase)id": {
+				"type": "int"
 			}
 		},
 		"folder": {
