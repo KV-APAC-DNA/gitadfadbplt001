@@ -46,7 +46,7 @@
 						"referenceName": "BinarySFTPmarketingcloudopstha",
 						"type": "DatasetReference",
 						"parameters": {
-							"directory": "/Import/Archive",
+							"directory": "Import/Archive",
 							"filename": "PH_CRM_Consumer_Master_20240416.csv"
 						}
 					}
@@ -74,6 +74,8 @@
 			{
 				"name": "Lookup1",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",
@@ -167,7 +169,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"directory": "Import/Archive/test",
-							"filename": "PH_CRM_Consumer_Master_20240416.csv"
+							"filename": "PH_CRM_Consumer_Master_20240416ftptoftp.csv"
 						}
 					}
 				]
