@@ -479,7 +479,7 @@
 				"typeProperties": {
 					"variableName": "landing_file_path",
 					"value": {
-						"value": "@activity('read parameters').output.value[0].landing_file_path",
+						"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/activity('read parameters').output.value[0].landing_file_path",
 						"type": "Expression"
 					}
 				}
