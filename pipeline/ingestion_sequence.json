@@ -567,6 +567,9 @@
 			},
 			"file_format": {
 				"type": "String"
+			},
+			"errorResponse": {
+				"type": "String"
 			}
 		},
 		"folder": {
