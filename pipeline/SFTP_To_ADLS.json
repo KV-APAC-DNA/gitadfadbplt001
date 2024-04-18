@@ -161,6 +161,54 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set error iqviaaus copy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Copy iqviaaus file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Copy iqviaaus file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set error iqviaaus archive",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Archive iqviaaus file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive iqviaaus file').error?.message",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -305,6 +353,54 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set error perensoaus copy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Copy perensoaus file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Copy perensoaus file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set error perensoaus archive",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Archive perensoaus file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive perensoaus file').error?.message",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -449,6 +545,54 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set error exacttargetphl copy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Copy exacttargetphl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Copy exacttargetphl file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set error exacttargetphl archive",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Archive exacttargetphl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive exacttargetphl file').error?.message",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
