@@ -879,7 +879,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "SqlServer_input",
+											"referenceName": "sql_server_awswfqsgpw",
 											"type": "DatasetReference"
 										}
 									],
