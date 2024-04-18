@@ -1013,6 +1013,26 @@
 											"isError": "Yes"
 										}
 									}
+								},
+								{
+									"name": "error",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "sql_server_to_adls: @{activity('sql_server_to_adls').error?.errorCode} @{activity('sql_server_to_adls').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
 								}
 							]
 						}
