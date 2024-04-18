@@ -134,7 +134,16 @@
 			{
 				"name": "Wait1",
 				"type": "Wait",
-				"dependsOn": [],
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 1
@@ -143,6 +152,8 @@
 			{
 				"name": "binary to binary_sftp",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",
@@ -201,8 +212,37 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@{split(variables('path'),'/')[0]}/Archive/ADF_Archive",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"errorResponse": {
+				"type": "String"
+			},
+			"test": {
+				"type": "String"
+			},
+			"path": {
+				"type": "String",
+				"defaultValue": "Import/Consumer"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
