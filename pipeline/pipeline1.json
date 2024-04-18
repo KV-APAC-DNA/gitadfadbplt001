@@ -70,8 +70,6 @@
 			{
 				"name": "binary to binary",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",

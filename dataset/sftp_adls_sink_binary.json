@@ -14,7 +14,7 @@
 			}
 		},
 		"folder": {
-			"name": "Miscellaneous Pipelines"
+			"name": "ADF_Framework_Datasets/SFTP"
 		},
 		"annotations": [],
 		"type": "Binary",

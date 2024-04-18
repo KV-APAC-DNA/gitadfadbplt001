@@ -5,6 +5,9 @@
 			"referenceName": "adfadbplt001lsmarketingcloudopstha",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SFTP"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {

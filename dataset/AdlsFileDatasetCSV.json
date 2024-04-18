@@ -5,6 +5,9 @@
 			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SFTP"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
