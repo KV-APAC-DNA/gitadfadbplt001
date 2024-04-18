@@ -737,6 +737,54 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set error marketingcloudopsphl copy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Copy marketingcloudopsphl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Copy marketingcloudopsphl file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set error marketingcloudopsphl archive",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Archive marketingcloudopsphl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive marketingcloudopsphl file').error?.message",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -881,6 +929,54 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set error exacttargettha copy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Copy exacttargettha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Copy exacttargettha file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set error exacttargettha archive",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Archive exacttargettha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive exacttargettha file').error?.message",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
