@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"fileName": "PH_CRM_Consumer_Master_20240416.csv",
+				"fileName": "PH_Action_Bounce_20240328.csv",
 				"folderPath": "/Import/Archive"
 			},
 			"columnDelimiter": ",",

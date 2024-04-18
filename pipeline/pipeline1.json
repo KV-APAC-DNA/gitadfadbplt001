@@ -112,7 +112,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"directory": "Import/Archive",
-							"filename": "PH_CRM_Consumer_Master_20240416.csv"
+							"filename": "PH_Action_Bounce_20240328.csv"
 						}
 					}
 				],
@@ -122,7 +122,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"adls_container": "tha",
-							"adls_path": "SFMC/transaction/TH_Action_Bounce/test"
+							"adls_path": "SFMC/transaction/TH_Action_Bounce/test/"
 						}
 					}
 				]
