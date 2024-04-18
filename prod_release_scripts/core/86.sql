@@ -47,7 +47,7 @@ epsilon_total_amount  AS "epsilon_total_amount",
 file_name  AS "file_name",
 crtd_dttm AS "crtd_dttm",
 updt_dttm AS "updt_dttm"
-FROM ASPITG_INTEGRATION.ITG_SFMC_REDEMPTION_DATA;
+FROM ASPITG_INTEGRATION.ITG_SFMC_INVOICE_DATA;
 
 create or replace TABLE ASPITG_INTEGRATION.ITG_SFMC_REDEMPTION_DATA (
 	CNTRY_CD VARCHAR(10),
