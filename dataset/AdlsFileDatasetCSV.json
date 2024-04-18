@@ -1,0 +1,24 @@
+{
+	"name": "AdlsFileDatasetCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "PH_CRM_Consumer_Master_20240416.csv",
+				"folderPath": "SFMC/transaction/TH_Action_Bounce/test",
+				"fileSystem": "tha"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
