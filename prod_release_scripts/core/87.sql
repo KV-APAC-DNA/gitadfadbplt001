@@ -81,7 +81,7 @@ order_num AS "order_num",
 website_unique_id AS "website_unique_id",
 file_name AS "file_name",
 crtd_dttm AS "crtd_dttm",
-updt_dtt AS "updt_dttm"
+updt_dttm AS "updt_dttm"
 FROM ASPITG_INTEGRATION.ITG_SFMC_REDEMPTION_DATA;
 
 create view prod_dna_core.aspedw_access.edw_jb_tw_invoice_record_detail as 
