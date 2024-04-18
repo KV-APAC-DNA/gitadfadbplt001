@@ -1195,7 +1195,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
-													"value": "a/bc/@{pipeline().parameters.FtpDirectory}",
+													"value": "@{pipeline().parameters.FtpDirectory}",
 													"type": "Expression"
 												},
 												"filename": {
@@ -1276,6 +1276,12 @@
 									"dependsOn": [
 										{
 											"activity": "Archive marketingclouadopstha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
+											"activity": "Copy marketingclouadopstha file",
 											"dependencyConditions": [
 												"Failed"
 											]
