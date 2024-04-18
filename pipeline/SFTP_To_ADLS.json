@@ -881,6 +881,30 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set error iqviaaus_copy1",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Copy marketingclouadopstha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse",
+										"value": {
+											"value": "@activity('Get files iqviaaus').error?.message",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
