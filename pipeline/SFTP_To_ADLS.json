@@ -1,9 +1,9 @@
 {
-	"name": "FTP_To_ADLS",
+	"name": "SFTP_To_ADLS",
 	"properties": {
 		"activities": [
 			{
-				"name": "Switch FTP",
+				"name": "Switch SFTP",
 				"type": "Switch",
 				"dependsOn": [
 					{
@@ -277,7 +277,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Switch FTP",
+						"activity": "Switch SFTP",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -337,7 +337,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Switch FTP",
+						"activity": "Switch SFTP",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -423,6 +423,11 @@
 			},
 			"phase_id": {
 				"type": "int"
+			}
+		},
+		"variables": {
+			"errorResponse": {
+				"type": "String"
 			}
 		},
 		"folder": {
