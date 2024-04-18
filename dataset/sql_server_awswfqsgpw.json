@@ -1,5 +1,5 @@
 {
-	"name": "SqlServer_input",
+	"name": "sql_server_awswfqsgpw",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsawswfqsgpw0003",
