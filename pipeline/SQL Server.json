@@ -183,14 +183,18 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "adls_sink_binary",
+						"referenceName": "BinaryDestination",
 						"type": "DatasetReference",
 						"parameters": {
-							"adls_container": {
+							"container": {
 								"value": "@variables('container')",
 								"type": "Expression"
 							},
-							"adls_path": {
+							"directory": {
+								"value": "@{variables('landing_file_path')}/archive",
+								"type": "Expression"
+							},
+							"fileName": {
 								"value": "@variables('landing_file_path')",
 								"type": "Expression"
 							}
