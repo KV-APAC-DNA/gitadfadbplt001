@@ -25,7 +25,7 @@
 		},
 		"globalConfigurations": {
 			"PipelineBillingEnabled": "true",
-			"factoryStagingLSReferenceName": "adfadbplt001lsdlsadbplt001",
+			"factoryStagingLSReferenceName": "adfadbplt001lsdlsadbplt001_ir001",
 			"factoryStagingLSType": "LinkedServiceReference",
 			"factoryStagingFolderPath": "dataops"
 		}
