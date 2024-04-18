@@ -1,0 +1,27 @@
+{
+	"name": "adfadbplt001lssnfkpltdnacore002",
+	"properties": {
+		"annotations": [],
+		"type": "SnowflakeV2",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"accountIdentifier": "yw48356.southeast-asia.azure",
+			"user": "SA-DNA-CORE-DEPLOY-DEV",
+			"database": "DEV_DNA_CORE",
+			"warehouse": "DEV_DNA_CORE_APP1_WH",
+			"role": "DEV_DNA_CORE_DEVELOPER_FR",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lssnfkdevdnacorepassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
