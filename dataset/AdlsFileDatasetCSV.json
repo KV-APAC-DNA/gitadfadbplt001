@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "1PH_Action_Bounce_20240328.csv",
+				"fileName": "test.csv",
 				"folderPath": "SFMC/transaction/TH_Action_Bounce",
 				"fileSystem": "tha"
 			},
