@@ -883,7 +883,7 @@
 									]
 								},
 								{
-									"name": "Set error iqviaaus_copy1",
+									"name": "Set error marketingcloudopstha copy",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
@@ -899,9 +899,33 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "errorResponse",
+										"variableName": "errorResponse1",
 										"value": {
-											"value": "@activity('Get files iqviaaus').error?.message",
+											"value": "@activity('Copy marketingclouadopstha file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set error marketingcloudopstha archive",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Archive marketingclouadopstha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive marketingclouadopstha file').error?.message",
 											"type": "Expression"
 										}
 									}
@@ -1118,7 +1142,10 @@
 			}
 		},
 		"variables": {
-			"errorResponse": {
+			"errorResponse1": {
+				"type": "String"
+			},
+			"errorResponse2": {
 				"type": "String"
 			}
 		},
