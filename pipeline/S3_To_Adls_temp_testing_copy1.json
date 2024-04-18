@@ -110,8 +110,6 @@
 			{
 				"name": "converttocsv sheetwise",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -156,10 +154,11 @@
 						"referenceName": "adls_srcexcel_sheetname",
 						"type": "DatasetReference",
 						"parameters": {
-							"src_path": "dev/transactional/DFS",
-							"src_filename": "Hainan Vendor Sales Report for Asian.xlsx",
-							"src_sheetname": "Hainan Vendor Sales Report for ",
-							"src_container": "asp"
+							"src_path": "dev/Pacific_reg_inv/transaction/Symbion",
+							"src_filename": "Stock Status by DC - 13 Months Sales.xlsx",
+							"src_sheetname": "sheet2",
+							"src_container": "pac",
+							"src_startRange": "A1"
 						}
 					}
 				],
@@ -168,9 +167,9 @@
 						"referenceName": "csv",
 						"type": "DatasetReference",
 						"parameters": {
-							"target_path": "dev/transactional/DFS",
-							"target_filename": "Hainan Vendor Sales Report for Asian.xlsx",
-							"target_container": "asp"
+							"target_path": "dev/Pacific_reg_inv/transaction/Symbion",
+							"target_filename": "Stock_Status_by_DC_-_13_Months_Sales.csv",
+							"target_container": "pac"
 						}
 					}
 				]
