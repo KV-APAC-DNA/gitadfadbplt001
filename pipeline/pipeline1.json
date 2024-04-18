@@ -5,14 +5,67 @@
 			{
 				"name": "Copy marketingclouadopstha file",
 				"type": "Copy",
-				"dependsOn": [
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
 					{
-						"activity": "Wait1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
+						"referenceName": "sftpcsv",
+						"type": "DatasetReference"
 					}
 				],
+				"outputs": [
+					{
+						"referenceName": "AdlsFileDatasetCSV",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Copy marketingclouadopstha file_copy1",
+				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -58,118 +111,6 @@
 						"parameters": {
 							"adls_container": "tha",
 							"adls_path": "SFMC/transaction/TH_Action_Bounce/test"
-						}
-					}
-				]
-			},
-			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
-			{
-				"name": "Lookup1",
-				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Wait1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "SftpReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false,
-							"disableChunking": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"dataset": {
-						"referenceName": "sftpcsv",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
-				"name": "Copy marketingclouadopstha file_copy1",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Wait1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "SftpReadSettings",
-							"recursive": true,
-							"disableChunking": false
-						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
-						}
-					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "SftpWriteSettings",
-							"operationTimeout": "01:00:00",
-							"useTempFileRename": true
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "BinarySFTPmarketingcloudopstha",
-						"type": "DatasetReference",
-						"parameters": {
-							"directory": "Import/Archive",
-							"filename": "PH_CRM_Consumer_Master_20240416.csv"
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "BinarySFTPmarketingcloudopstha",
-						"type": "DatasetReference",
-						"parameters": {
-							"directory": "Import/Archive/test",
-							"filename": "PH_CRM_Consumer_Master_20240416ftptoftp.csv"
 						}
 					}
 				]
