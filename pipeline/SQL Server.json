@@ -733,7 +733,7 @@
 				}
 			},
 			{
-				"name": "Send error - sql_server_to_alds_copy1",
+				"name": "Send error - adls_to_snowflake",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
