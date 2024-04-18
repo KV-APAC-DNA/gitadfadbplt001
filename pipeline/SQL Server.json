@@ -67,7 +67,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "truncate targer",
+						"activity": "Truncate_Target",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1031,7 +1031,7 @@
 				}
 			},
 			{
-				"name": "truncate targer",
+				"name": "Truncate_Target",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -1081,13 +1081,11 @@
 				}
 			},
 			{
-				"name": "audit fail - adls_to_snowflake_copy1",
+				"name": "audit fail - Truncate_Target",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "truncate targer",
+						"activity": "Truncate_Target",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1143,13 +1141,11 @@
 				}
 			},
 			{
-				"name": "error log - adls_to_snowflake_copy1",
+				"name": "error log - Truncate_Target",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "truncate targer",
+						"activity": "Truncate_Target",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1175,7 +1171,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('adls_to_snowflake').error?.message",
+							"value": "@activity('Truncate_Target').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -1191,7 +1187,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('adls_to_snowflake').error?.errorCode",
+							"value": "@activity('Truncate_Target').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1204,11 +1200,9 @@
 			{
 				"name": "Send error - sql_server_to_alds_copy1_copy1",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "truncate targer",
+						"activity": "Truncate_Target",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1247,7 +1241,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**landing_file_path**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**landing_file_name**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('adls_to_snowflake').error?.message}_",
+							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('Truncate_Target').error?.message}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
