@@ -34,10 +34,10 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": "|",
+			"columnDelimiter": "\u0001",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
-			"quoteChar": "\""
+			"quoteChar": ""
 		},
 		"schema": []
 	}
