@@ -143,6 +143,18 @@
                     }
                 }
             }
+        },
+        "SnowflakeV2": {
+            "properties": {
+                "typeProperties": {
+                    "user": "=",
+                    "warehouse": "=",
+                    "role": "=",
+                    "connectionString": {
+                        "secretName": "="
+                    }
+                }
+            }
         }
     },
     "Microsoft.DataFactory/factories/datasets": {
