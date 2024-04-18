@@ -1121,7 +1121,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
-													"value": "@{pipeline().parameters.FtpDirectory}",
+													"value": "df/@{pipeline().parameters.FtpDirectory}",
 													"type": "Expression"
 												},
 												"filename": {
