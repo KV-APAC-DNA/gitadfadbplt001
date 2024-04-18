@@ -1089,6 +1089,8 @@
 			{
 				"name": "audit fail - adls_to_snowflake_copy1",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "truncate targer",
@@ -1149,6 +1151,8 @@
 			{
 				"name": "error log - adls_to_snowflake_copy1",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "truncate targer",
@@ -1206,6 +1210,8 @@
 			{
 				"name": "Send error - sql_server_to_alds_copy1_copy1",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "truncate targer",
