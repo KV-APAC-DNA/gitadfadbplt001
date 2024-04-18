@@ -150,7 +150,7 @@
                     "user": "=",
                     "warehouse": "=",
                     "role": "=",
-                    "connectionString": {
+                    "password": {
                         "secretName": "="
                     }
                 }
