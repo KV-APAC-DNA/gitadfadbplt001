@@ -5,8 +5,6 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -127,8 +125,6 @@
 			{
 				"name": "move_to_archive",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
@@ -452,8 +448,6 @@
 			{
 				"name": "audit fail - move_to_archive",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -514,8 +508,6 @@
 			{
 				"name": "error log - move_to_archive",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -573,8 +565,6 @@
 			{
 				"name": "Send error - move_to_archive",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
