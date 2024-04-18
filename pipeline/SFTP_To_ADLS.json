@@ -24,13 +24,143 @@
 							"value": "iqviaaus",
 							"activities": [
 								{
-									"name": "Wait3",
-									"type": "Wait",
+									"name": "Copy iqviaaus file",
+									"type": "Copy",
 									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
 									"userProperties": [],
 									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPiqviaaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "adls_sink_binary",
+											"type": "DatasetReference",
+											"parameters": {
+												"adls_container": {
+													"value": "@pipeline().parameters.AdlsContainer",
+													"type": "Expression"
+												},
+												"adls_path": {
+													"value": "@pipeline().parameters.AdlsPath",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Archive iqviaaus file",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy iqviaaus file",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "SftpWriteSettings",
+												"operationTimeout": "01:00:00",
+												"useTempFileRename": true
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPiqviaaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinarySFTPiqviaaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -38,13 +168,143 @@
 							"value": "perensoaus",
 							"activities": [
 								{
-									"name": "Wait4",
-									"type": "Wait",
+									"name": "Copy perensoaus file",
+									"type": "Copy",
 									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
 									"userProperties": [],
 									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPperensoaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "adls_sink_binary",
+											"type": "DatasetReference",
+											"parameters": {
+												"adls_container": {
+													"value": "@pipeline().parameters.AdlsContainer",
+													"type": "Expression"
+												},
+												"adls_path": {
+													"value": "@pipeline().parameters.AdlsPath",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Archive perensoaus file",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy perensoaus file",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "SftpWriteSettings",
+												"operationTimeout": "01:00:00",
+												"useTempFileRename": true
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPperensoaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinarySFTPperensoaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -52,13 +312,143 @@
 							"value": "exacttargetphl",
 							"activities": [
 								{
-									"name": "Wait1",
-									"type": "Wait",
+									"name": "Copy exacttargetphl file",
+									"type": "Copy",
 									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
 									"userProperties": [],
 									"typeProperties": {
-										"waitTimeInSeconds": 1
-									}
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPexacttargetphl",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "adls_sink_binary",
+											"type": "DatasetReference",
+											"parameters": {
+												"adls_container": {
+													"value": "@pipeline().parameters.AdlsContainer",
+													"type": "Expression"
+												},
+												"adls_path": {
+													"value": "@pipeline().parameters.AdlsPath",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Archive exacttargetphl file",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy exacttargetphl file",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "SftpWriteSettings",
+												"operationTimeout": "01:00:00",
+												"useTempFileRename": true
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPexacttargetphl",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinarySFTPexacttargetphl",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -99,7 +489,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "BinarySFTPexacttargettha",
+											"referenceName": "BinarySFTPmarketingcloudopsphl",
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
@@ -173,7 +563,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "BinarySFTPexacttargettha",
+											"referenceName": "BinarySFTPmarketingcloudopsphl",
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
@@ -189,7 +579,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "BinarySFTPexacttargettha",
+											"referenceName": "BinarySFTPmarketingcloudopsphl",
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
