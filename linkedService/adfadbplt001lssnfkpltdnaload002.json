@@ -1,0 +1,27 @@
+{
+	"name": "adfadbplt001lssnfkpltdnaload002",
+	"properties": {
+		"annotations": [],
+		"type": "SnowflakeV2",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"accountIdentifier": "yw48356.southeast-asia.azure",
+			"user": "SA-DNA-LOAD-DEV",
+			"database": "DEV_DNA_LOAD",
+			"warehouse": "DEV_DNA_LOAD_APP1_WH",
+			"role": "DEV_DNA_LOAD_DEVELOPER_FR",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lssnfkdevdnaloadpassword"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

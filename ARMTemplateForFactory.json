@@ -58,13 +58,45 @@
             "type": "string",
             "defaultValue": "adfadbplt001lssnfkdevdnaload"
         },
-        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_connectionString_secretName": {
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_password_secretName": {
             "type": "string",
             "defaultValue": "adfadbplt001lssnfkdevdnacorepassword"
         },
-        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_connectionString_secretName": {
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_password_secretName": {
             "type": "string",
             "defaultValue": "adfadbplt001lssnfkdevdnaloadpassword"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_user": {
+            "type": "string",
+            "defaultValue": "SA-DNA-CORE-DEPLOY-DEV"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_user": {
+            "type": "string",
+            "defaultValue": "SA-DNA-LOAD-DEV"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_database": {
+            "type": "string",
+            "defaultValue": "DEV_DNA_CORE"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_database": {
+            "type": "string",
+            "defaultValue": "DEV_DNA_LOAD"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_role": {
+            "type": "string",
+            "defaultValue": "DEV_DNA_CORE_DEVELOPER_FR"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_role": {
+            "type": "string",
+            "defaultValue": "DEV_DNA_LOAD_DEVELOPER_FR"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_warehouse": {
+            "type": "string",
+            "defaultValue": "DEV_DNA_CORE_APP1_WH"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_warehouse": {
+            "type": "string",
+            "defaultValue": "DEV_DNA_LOAD_APP1_WH"
         },
         "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url": {
             "type": "string",
