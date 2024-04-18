@@ -13,8 +13,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "test.csv",
-				"folderPath": "SFMC/transaction/TH_Action_Bounce",
+				"fileName": "TH_Action_Complaint_20240410.csv",
+				"folderPath": "SFMC/transaction/TH_Action_Complaint",
 				"fileSystem": "tha"
 			},
 			"columnDelimiter": ",",

@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "SftpLocation",
-				"fileName": "PH_Action_Bounce_20240328.csv",
+				"fileName": "TH_Action_Complaint_20240410.csv",
 				"folderPath": "/Import/Archive"
 			},
 			"columnDelimiter": ",",
