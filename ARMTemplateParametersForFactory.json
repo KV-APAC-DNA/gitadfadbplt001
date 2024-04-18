@@ -54,11 +54,35 @@
         "adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName": {
             "value": "adfadbplt001lssnfkdevdnaload"
         },
-        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_connectionString_secretName": {
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_password_secretName": {
             "value": "adfadbplt001lssnfkdevdnacorepassword"
         },
-        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_connectionString_secretName": {
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_password_secretName": {
             "value": "adfadbplt001lssnfkdevdnaloadpassword"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_user": {
+            "value": "SA-DNA-CORE-DEPLOY-PROD"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_user": {
+            "value": "SA-DNA-LOAD-PROD"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_warehouse": {
+            "value": "PROD_DNA_CORE_APP1_WH"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_warehouse": {
+            "value": "PROD_DNA_LOAD_APP1_WH"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_role": {
+            "value": "PROD_DNA_CORE_DEVELOPER_FR"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_role": {
+            "value": "PROD_DNA_LOAD_DEVELOPER_FR"
+        },
+        "adfadbplt001lssnfkpltdnacore002_properties_typeProperties_database": {
+            "value": "PROD_DNA_CORE"
+        },
+        "adfadbplt001lssnfkpltdnaload002_properties_typeProperties_database": {
+            "value": "PROD_DNA_LOAD"
         },
         "adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url": {
             "value": "https://azrweksgpw0003.kenvue.com/api.rsc/"
