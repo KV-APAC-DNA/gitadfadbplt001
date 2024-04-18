@@ -5,6 +5,8 @@
 			{
 				"name": "csv to csv",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",
@@ -70,6 +72,8 @@
 			{
 				"name": "binary to binary",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Wait1",
@@ -122,7 +126,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"adls_container": "tha",
-							"adls_path": "SFMC/transaction/TH_Action_Complaint/"
+							"adls_path": "SFMC/transaction/TH_Action_Complaint/test/"
 						}
 					}
 				]
@@ -135,6 +139,68 @@
 				"typeProperties": {
 					"waitTimeInSeconds": 1
 				}
+			},
+			{
+				"name": "binary to binary_sftp",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "SftpWriteSettings",
+							"operationTimeout": "01:00:00",
+							"useTempFileRename": true
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "BinarySFTPmarketingcloudopstha",
+						"type": "DatasetReference",
+						"parameters": {
+							"directory": "Import/Archive",
+							"filename": "TH_Action_Complaint_20240410.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "BinarySFTPmarketingcloudopstha",
+						"type": "DatasetReference",
+						"parameters": {
+							"directory": "Import/Archive/test1",
+							"filename": "TH_Action_Complaint_20240410.csv"
+						}
+					}
+				]
 			}
 		],
 		"folder": {
