@@ -531,20 +531,16 @@
 		],
 		"parameters": {
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 129
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"category": {
-				"type": "string",
-				"defaultValue": "anz_sql_server"
+				"type": "string"
 			}
 		},
 		"variables": {
