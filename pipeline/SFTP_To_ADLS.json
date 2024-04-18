@@ -1021,7 +1021,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
-													"value": "abc/@{pipeline().parameters.FtpDirectory}",
+													"value": "@{pipeline().parameters.FtpDirectory}",
 													"type": "Expression"
 												},
 												"filename": {
@@ -1095,7 +1095,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
-													"value": "@pipeline().parameters.FtpDirectory",
+													"value": "abc/@{pipeline().parameters.FtpDirectory}",
 													"type": "Expression"
 												},
 												"filename": {
