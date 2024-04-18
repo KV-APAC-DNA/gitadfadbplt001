@@ -150,6 +150,7 @@
                     "user": "=",
                     "warehouse": "=",
                     "role": "=",
+                    "database": "=",
                     "password": {
                         "secretName": "="
                     }
