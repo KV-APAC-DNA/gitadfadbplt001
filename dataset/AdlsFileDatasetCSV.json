@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobFSLocation",
 				"fileName": "PH_Action_Bounce_20240328.csv",
-				"folderPath": "SFMC/transaction/TH_Action_Bounce/test",
+				"folderPath": "SFMC/transaction/TH_Action_Bounce",
 				"fileSystem": "tha"
 			},
 			"columnDelimiter": ",",

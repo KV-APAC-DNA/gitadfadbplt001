@@ -122,7 +122,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"adls_container": "tha",
-							"adls_path": "SFMC/transaction/TH_Action_Bounce/test/"
+							"adls_path": "SFMC/transaction/TH_Action_Bounce/PH_Action_Bounce_20240328.csv"
 						}
 					}
 				]
