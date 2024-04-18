@@ -209,6 +209,26 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Archival fail 1",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Archive iqviaaus file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
+									}
 								}
 							]
 						},
@@ -400,6 +420,26 @@
 											"value": "@activity('Archive perensoaus file').error?.message",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Archival fail 2",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Archive perensoaus file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
 									}
 								}
 							]
@@ -593,6 +633,26 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Archival fail 3",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Archive exacttargetphl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
+									}
 								}
 							]
 						},
@@ -784,6 +844,26 @@
 											"value": "@activity('Archive marketingcloudopsphl file').error?.message",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Archival fail 4",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Archive marketingcloudopsphl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
 									}
 								}
 							]
@@ -977,6 +1057,26 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Archival fail 5",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Archive exacttargettha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
+									}
 								}
 							]
 						},
@@ -1168,6 +1268,26 @@
 											"value": "@activity('Archive marketingclouadopstha file').error?.message",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Archival fail 6",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Archive marketingclouadopstha file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
 									}
 								}
 							]
