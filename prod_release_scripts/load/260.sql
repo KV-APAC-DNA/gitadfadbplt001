@@ -1,18 +1,18 @@
 update meta_raw.parameters
 set PARAMETER_VALUE = 'Objectivekey,Created_Date,Description,Account Key,AssignedUserKey,CreatedUserKey,Due_By,Date_Completed,Status'
-where PARAMETER_GROUP_ID = 283 and PARAMETER_NAME = 'val_file_header'
+where PARAMETER_GROUP_ID = 283 and PARAMETER_NAME = 'val_file_header';
 
 update meta_raw.parameters
 set PARAMETER_VALUE = 'DiaryitemKey,Date/Time,Start_Time,End_Time,Duration,Latitude,Longitude,Google_Maps_URL'
-where PARAMETER_GROUP_ID = 286 and PARAMETER_NAME = 'val_file_header'
+where PARAMETER_GROUP_ID = 286 and PARAMETER_NAME = 'val_file_header';
 
 update meta_raw.parameters
 set PARAMETER_VALUE = 'Ranging_'
-where parameter_id in(3678,3680)
+where parameter_id in(3678,3680);
 
 update meta_raw.parameters
 set PARAMETER_VALUE = '1-1-1'
-where parameter_id = 4638
+where parameter_id = 4638;
  
 create or replace TABLE PCFSDL_RAW.SDL_RAW_PERENSO_ACCOUNT (
 	ACCT_KEY NUMBER(10,0),
