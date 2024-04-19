@@ -1,0 +1,15 @@
+{
+	"name": "sql_server_awswfqsgpw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawswfqsgpw0003",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
