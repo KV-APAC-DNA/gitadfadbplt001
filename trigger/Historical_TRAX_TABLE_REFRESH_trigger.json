@@ -1,5 +1,5 @@
 {
-	"name": "TRAX_TABLE_REFRESH_trigger",
+	"name": "Historical_TRAX_TABLE_REFRESH_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
