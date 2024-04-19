@@ -1,0 +1,35 @@
+{
+	"name": "sftp_adls_sink_binary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"adls_container": {
+				"type": "string"
+			},
+			"adls_path": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SFTP"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": {
+					"value": "@dataset().adls_path",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().adls_container",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

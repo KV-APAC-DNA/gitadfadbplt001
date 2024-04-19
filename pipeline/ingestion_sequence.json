@@ -158,7 +158,7 @@
 										]
 									},
 									{
-										"value": "SQL Server",
+										"value": "SQL",
 										"activities": [
 											{
 												"name": "SQL Server ingestion",
@@ -566,6 +566,9 @@
 				"type": "String"
 			},
 			"file_format": {
+				"type": "String"
+			},
+			"errorResponse": {
 				"type": "String"
 			}
 		},

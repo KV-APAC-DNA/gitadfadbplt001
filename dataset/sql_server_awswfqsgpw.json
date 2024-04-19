@@ -1,0 +1,12 @@
+{
+	"name": "sql_server_awswfqsgpw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawswfqsgpw0003",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SqlServerTable",
+		"schema": []
+	}
+}
