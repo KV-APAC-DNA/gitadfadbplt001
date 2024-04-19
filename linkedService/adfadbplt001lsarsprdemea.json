@@ -1,0 +1,26 @@
+{
+	"name": "adfadbplt001lsarsprdemea",
+	"properties": {
+		"description": "EMEA Redshift for PACIFIC TRAX ingestion",
+		"annotations": [],
+		"type": "AmazonRedshift",
+		"typeProperties": {
+			"server": "emea-prd.cbgri8r8mege.us-east-1.redshift.amazonaws.com",
+			"database": "prd",
+			"port": 5439,
+			"username": "bi_ps",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsarsprdemea"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
