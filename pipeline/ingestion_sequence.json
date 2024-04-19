@@ -158,7 +158,7 @@
 										]
 									},
 									{
-										"value": "SQL Server",
+										"value": "SQL",
 										"activities": [
 											{
 												"name": "SQL Server ingestion",
