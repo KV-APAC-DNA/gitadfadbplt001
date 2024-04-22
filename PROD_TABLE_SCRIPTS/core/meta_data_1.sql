@@ -1,9 +1,0 @@
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_mds_pacific_cust_attrb','select * from pcfwks_integration.TRATBL_sdl_mds_pacific_cust_attrb__duplicate_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_mds_pacific_cust_ciw_plan','select * from pcfwks_integration.TRATBL_sdl_mds_pacific_cust_ciw_plan__duplicate_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_mds_pacific_sapbw_plan_lkp','select * from pcfwks_integration.TRATBL_sdl_mds_pacific_sapbw_plan_lkp__duplicate_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_mds_pacific_sap_gl_ciw_mapping','select * from pcfwks_integration.TRATBL_sdl_mds_pacific_sap_gl_ciw_mapping__duplicate_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_mds_pacific_px_gl_ciw_mapping','select * from pcfwks_integration.TRATBL_sdl_mds_pacific_px_gl_ciw_mapping__duplicate_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_api_dstr','select * from pcfwks_integration.TRATBL_sdl_api_dstr__null_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_symbion_dstr','select * from pcfwks_integration.TRATBL_sdl_symbion_dstr__null_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_chw_ecomm_data','select * from pcfwks_integration.TRATBL_sdl_chw_ecomm_data__null_test;');
-insert into prod_dna_core.core_integration.dbttest_tables_metadata values('sdl_national_ecomm_data','select * from pcfwks_integration.TRATBL_sdl_national_ecomm_data__null_test;');
