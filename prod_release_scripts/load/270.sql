@@ -393,3 +393,7 @@ INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,ad
 INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (239,19,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/transaction_files/metcash/grocery','Monthly Sales Report, Supplier filter only_J_J','pac','ap_perenso/transaction/metcash/grocery',TRUE,'Y');
 INSERT INTO META_RAW.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (240,17,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/transaction_files/SurveyResult/','TodoOption','pac','ap_perenso/transaction/survey',TRUE,'Y');
 
+
+INSERT INTO META_RAW.USECASE (USECASE_ID, USECASE_NAME,CATEGORY,USECASE_DESCRIPTION,IS_ACTIVE,SEQUENCE_ID) VALUES (141,'PCF_CIW_EDW_Sales','REGIONAL REFRESH','CIW And EDW Sales reporting','TRUE',2);
+INSERT INTO META_RAW.USECASE (USECASE_ID, USECASE_NAME,CATEGORY,USECASE_DESCRIPTION,IS_ACTIVE,SEQUENCE_ID) VALUES (142,'PCF_Promax_CIW','REGIONAL REFRESH','Promax_CIW','TRUE',3);
+
