@@ -19,4 +19,4 @@ where PARAMETER_GROUP_ID = 363;
 
 update meta_raw.process
 set usecase_id = 142
-where where PARAMETER_GROUP_ID = 419;
+where PARAMETER_GROUP_ID = 419;
