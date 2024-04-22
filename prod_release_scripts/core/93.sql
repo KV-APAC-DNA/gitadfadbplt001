@@ -1,3 +1,11 @@
+USE ROLE PROD_DNA_CORE_APPADMIN_FR;
+USE WAREHOUSE PROD_DNA_CORE_APPADMIN_WH;
+CALL PROD_DNA_CORE.CORE_ADMIN.ADD_INTEGRATION_SCHEMA_SP('PHLWKS');
+CALL PROD_DNA_CORE.CORE_ADMIN.ADD_INTEGRATION_SCHEMA_SP('PHLITG');
+CALL PROD_DNA_CORE.CORE_ADMIN.ADD_INTEGRATION_SCHEMA_SP('PHLEDW');
+CALL PROD_DNA_CORE.CORE_ADMIN.ADD_ACCESS_SCHEMA_SP('PHLEDW');
+
+
 USE schema PHLWKS_INTEGRATION;
 
 create or replace TABLE EDW_PRODUCT_ATTR_DIM (
@@ -4191,7 +4199,7 @@ create or replace view EDW_PH_GT_SCORECARD(
     ontime AS "ontime",
     rka_cd AS "rka_cd",
     promo_national AS "promo_national"
-    FROM DEV_DNA_CORE.phledw_integration.EDW_PH_GT_SCORECARD;
+    FROM PROD_DNA_CORE.phledw_integration.EDW_PH_GT_SCORECARD;
 create or replace view EDW_PH_NPI(
 	"nts_val",
 	"pipeline",
@@ -4239,7 +4247,7 @@ create or replace view EDW_PH_NPI(
     sales_cycle AS "sales_cycle",
     account_name AS "account_name",
     sku AS "sku"
-    FROM DEV_DNA_CORE.phledw_integration.EDW_PH_NPI;
+    FROM PROD_DNA_CORE.phledw_integration.EDW_PH_NPI;
 create or replace view EDW_PH_POS_ANALYSIS(
 	"jj_year",
 	"jj_qtr",
@@ -4479,7 +4487,7 @@ jj_gts as "jj_gts",
 jj_vat_amt as "jj_vat_amt",
 jj_nts as "jj_nts",
 pka_productkey as "pka_productkey"
-from dev_dna_core.phledw_integration.edw_ph_pos_analysis;
+from PROD_dna_core.phledw_integration.edw_ph_pos_analysis;
 create or replace view EDW_PH_POS_ANALYSIS_V2(
 	"jj_year",
 	"jj_qtr",
@@ -4717,7 +4725,7 @@ jj_item_prc_per_pc as "jj_item_prc_per_pc",
 jj_gts as "jj_gts",
 jj_vat_amt as "jj_vat_amt",
 jj_nts as "jj_nts"
-from dev_dna_core.phledw_integration.edw_ph_pos_analysis_v2;
+from PROD_dna_core.phledw_integration.edw_ph_pos_analysis_v2;
 create or replace view EDW_PH_SELLIN_ANALYSIS(
 	"jj_year",
 	"jj_qtr",
@@ -4893,7 +4901,7 @@ le_trgt_val as "le_trgt_val",
 last_updt_dt as "last_updt_dt",
 iop_gts_trgt_val as "iop_gts_trgt_val",
 pka_productkey as "pka_productkey"
-from dev_dna_core.phledw_integration.edw_ph_sellin_analysis;
+from PROD_dna_core.phledw_integration.edw_ph_sellin_analysis;
 create or replace view EDW_PH_SELLOUT_ANALYSIS(
 	"jj_grs_trd_sls",
 	"account_grp",
@@ -5151,7 +5159,7 @@ create or replace view EDW_PH_SELLOUT_ANALYSIS(
     sap_base_prod_cd AS "sap_base_prod_cd",
     sales_team AS "sales_team",
     region_cd AS "region_cd"
-FROM DEV_DNA_CORE.phledw_integration.EDW_PH_SELLOUT_ANALYSIS;
+FROM PROD_DNA_CORE.phledw_integration.EDW_PH_SELLOUT_ANALYSIS;
 create or replace view EDW_PH_SFMC_ANALYSIS(
 	"data_src",
 	"country_code",
@@ -5305,7 +5313,7 @@ subscriber_status as "subscriber_status",
 opt_in_for_jnj_communication as "opt_in_for_jnj_communication",
 opt_in_for_campaign as "opt_in_for_campaign",
 viber_engaged as "viber_engaged"
-from dev_dna_core.phledw_integration.edw_ph_sfmc_analysis;
+from PROD_dna_core.phledw_integration.edw_ph_sfmc_analysis;
 create or replace view EDW_PH_SISO_ANALYSIS(
 	"is_hero",
 	"is_reg",
@@ -5547,7 +5555,7 @@ create or replace view EDW_PH_SISO_ANALYSIS(
     sap_city AS "sap_city",
     sap_mega_brnd_desc AS "sap_mega_brnd_desc",
     sap_prod_sgmt_cd AS "sap_prod_sgmt_cd"
-FROM DEV_DNA_CORE.phledw_integration.EDW_PH_SISO_ANALYSIS;
+FROM PROD_DNA_CORE.phledw_integration.EDW_PH_SISO_ANALYSIS;
 create or replace view EDW_PH_SI_POS_ANALYSIS(
 	"parent_customer_cd",
 	"sap_brnd_cd",
@@ -5767,7 +5775,7 @@ create or replace view EDW_PH_SI_POS_ANALYSIS(
     gch_region AS "gch_region",
     si_nts_qty AS "si_nts_qty",
     global_prod_brand AS "global_prod_brand"
-FROM DEV_DNA_CORE.phledw_integration.EDW_PH_SI_POS_ANALYSIS;
+FROM PROD_DNA_CORE.phledw_integration.EDW_PH_SI_POS_ANALYSIS;
 create or replace view EDW_VW_PH_DELIVERY_FACT(
 	"cntry_key",
 	"cntry_nm",
@@ -6605,7 +6613,7 @@ select jj_mnth_id as "jj_mnth_id",
     item_nm as "item_nm",
     pos_qty as "pos_qty",
     pos_gts as "pos_gts"
-from dev_dna_core.phlitg_integration.itg_ph_pos_wm_competitor;
+from PROD_dna_core.phlitg_integration.itg_ph_pos_wm_competitor;
 create or replace view ITG_MDS_PH_DISTRIBUTOR_PRODUCT(
 	"promo_reg_nm",
 	"promo_strt_period",
@@ -6731,7 +6739,7 @@ zip_cd_name as "zip_cd_name",
 barangay_code as "barangay_code",
 barangay_cd_name as "barangay_cd_name",
 long_lat_source as "long_lat_source"
-from dev_dna_core.phlitg_integration.itg_mds_ph_gt_customer;
+from PROD_dna_core.phlitg_integration.itg_mds_ph_gt_customer;
 create or replace view ITG_MDS_PH_LAV_CUSTOMER(
 	"dstrbtr_grp_cd",
 	"zip_code",
@@ -6895,7 +6903,7 @@ effective_to as "effective_to",
 active as "active",
 crtd_dttm as "crtd_dttm",
 updt_dttm as "updt_dttm"
-from dev_dna_core.phlitg_integration.itg_mds_ph_lav_product;
+from PROD_dna_core.phlitg_integration.itg_mds_ph_lav_product;
 create or replace view ITG_MDS_PH_POS_CUSTOMERS(
 	"code",
 	"cust_cd",
@@ -7037,7 +7045,7 @@ barangay_cd_name as "barangay_cd_name",
 long_lat_source as "long_lat_source",
 latitude as "latitude",
 longitude as "longitude"
-from dev_dna_core.phlitg_integration.itg_mds_ph_pos_customers;
+from PROD_dna_core.phlitg_integration.itg_mds_ph_pos_customers;
 create or replace view ITG_MDS_PH_POS_PRICELIST(
 	"code",
 	"item_cd",
@@ -7079,7 +7087,7 @@ effective_to as "effective_to",
 active as "active",
 crtd_dttm as "crtd_dttm",
 updt_dttm as "updt_dttm"
-from dev_dna_core.phlitg_integration.itg_mds_ph_pos_pricelist;
+from PROD_dna_core.phlitg_integration.itg_mds_ph_pos_pricelist;
 create or replace view ITG_MDS_PH_REF_DISTRIBUTORS(
 	"primary_sold_to",
 	"rpt_grp_14_desc",
@@ -7235,4 +7243,4 @@ sls_rep_type as "sls_rep_type",
 order_qty as "order_qty",
 order_delivery_dt as "order_delivery_dt",
 order_status as "order_status"
-from dev_dna_core.phlitg_integration.itg_ph_dms_sellout_sales_fact;
+from PROD_dna_core.phlitg_integration.itg_ph_dms_sellout_sales_fact;
