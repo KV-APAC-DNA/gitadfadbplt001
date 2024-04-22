@@ -10,7 +10,7 @@
 				"frequency": "Day",
 				"interval": 1,
 				"startTime": "2024-04-22T00:00:00",
-				"timeZone": "India Standard Time",
+				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						40
