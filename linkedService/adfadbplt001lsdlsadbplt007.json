@@ -1,0 +1,14 @@
+{
+	"name": "adfadbplt001lsdlsadbplt007",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://dlsadbplt007.dfs.core.windows.net/"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
