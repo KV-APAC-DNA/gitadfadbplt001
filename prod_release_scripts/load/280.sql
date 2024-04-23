@@ -5,8 +5,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('openpyxl==3.0.10','regex==2023.10.3','snowflake-snowpark-python==*')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col
@@ -66,9 +65,6 @@ def main(session: snowpark.Session,Param):
             file_ext_validation_status,counter=file_extn_validation(counter,CURRENT_FILE,val_file_extn)
         else:
             print("File extension Validation not required")
-    
-    
-        # Check for File Header Validation
     
         if FileHeaderValidation == "1":
 
@@ -151,10 +147,6 @@ def main(session: snowpark.Session,Param):
             
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
-                    
-                
-
-            # If the source is of xlsx type, then splitting based on \\\\\\\\x01 delimiter
 
             if CURRENT_FILE[0:3]=="ROB" or CURRENT_FILE[0:2]=="SS":
                 header=[i[:-1] for i in header]
@@ -195,8 +187,6 @@ def main(session: snowpark.Session,Param):
             
             file_header= [item.replace(" ", "_").replace(".", "_") for item in filtered_list]
             val_header= val_header.lower()
-
-            # If the Header from Metadata is of comma separated or | separated then split accordingly
             
             comma_split = val_header.split('','')
             if len(comma_split) > 1:
@@ -241,7 +231,6 @@ def main(session: snowpark.Session,Param):
 
 
 def rg_travel_validation(CURRENT_FILE):
-    #assigning the value to varibale file
     
     if "CNSC" in CURRENT_FILE:
             fileA = CURRENT_FILE.replace(" ", "_")
@@ -312,11 +301,6 @@ def aus_processing(CURRENT_FILE):
         print("FileName : ", file)
 
     return file
-        
-        
-    
-
-# Function to Perform File name validation
 
 def file_validation(counter,extracted_filename,val_file_name):
 
@@ -352,9 +336,6 @@ def file_validation(counter,extracted_filename,val_file_name):
             print("file_name_validation_status",file_name_validation_status)
             counter = 1
         return file_name_validation_status,counter
-    
-
-# Function to perform file extension validation
 
 def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
     
@@ -369,11 +350,6 @@ def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
         return file_ext_validation_status,counter
 
 def file_header_validation(counter,final_val_header,file_header, hreg):
-
-        # Compare the header from file and the header from metadata
-        # Get the count of both
-        # Perform index matching and return output based on the checks
-        # Moving the failed header to a list and displaying it as part of Error message
         
         file_header_rejected_list=[]
         val_rejected_list=[]
@@ -410,13 +386,11 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
             file_header_validation_status="Success"
             print("file_header_validation_status is successful")
 
-            # Return Fail message if value found in Rejected list and not in extra columns list
         elif len(file_header_rejected_list)!=0 and not extra_columns:
             file_header_validation_status="Header validation Failed"+" , unmatched columns found in index "+ str(index) +" and columns are" + str(file_header_rejected_list) + " expected "+str(final_val_header)+ " received " + str(file_header)
             print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
 
-            # Return Fail message if values found in extra columns list
         elif len(extra_columns)!=0:
             file_header_validation_status="Header validation Failed, unmatched columns found in index " + str(index) + " and columns are " + str(file_header_rejected_list) + " ; extra columns found in file header! " + str(extra_columns) 
             print("file_header_validation_status",file_header_validation_status)
