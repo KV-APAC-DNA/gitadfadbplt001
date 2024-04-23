@@ -1,3 +1,4 @@
+use schema PHLEDW_ACCESS;
 create or replace view EDW_VW_PH_POS_WM_COMPETITOR_ANALYSIS(
 	"jj_mnth_id",
 	"brnch_cd",
