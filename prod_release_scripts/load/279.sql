@@ -18,13 +18,6 @@ import pandas as pd
 def main(session: snowpark.Session,Param):
     try:
 
-        # Example input
-        #Param=[''''LSTR 112022.xlsx'''',''''last'''',''''1-1-0'''',''''LSTR'''',''''xlsx'''',''''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'''',2,''''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'''',''''dev/transactional/Lagardere'''','''''''']
-        # Your code goes here, inside the "main" handler.
-        # Return value will appear in the Results tab
-        # ********   Variable  we need from ETL table : 
-        # CURRENT_FILE , index , validation, val_file_name,val_file_extn
-
 
         CURRENT_FILE        =  Param[0]
         index               =  Param[1]
@@ -38,19 +31,10 @@ def main(session: snowpark.Session,Param):
         header_reg          =  Param[9]
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
-        counter             =  0 
-
-        #if FileNameValidation and FileExtnValidation and FileHeaderValidation=="0":
-         #   return "SUCCESS: File validation passed"
-            
-        
-    
-        # If the File belongs to Regional, then it enters the function
+        counter             =  0
     
         if stage_name.split(".")[0]=="ASPSDL_RAW":
             processed_file_name=rg_travel_validation(CURRENT_FILE)
-            
-        # If the File belongs to Thailand, then it enters the function
         elif stage_name.split(".")[0]=="THASDL_RAW": 
             processed_file_name=thailand_processing(CURRENT_FILE)
 
@@ -60,8 +44,6 @@ def main(session: snowpark.Session,Param):
         else:
             processed_file_name=CURRENT_FILE
 
-    
-        #Extracting the filename based on index variable
         
         if index.lower() == "last":
             extracted_filename = processed_file_name.rsplit("_", 1)[0]
@@ -71,9 +53,6 @@ def main(session: snowpark.Session,Param):
             extracted_filename = processed_file_name.rsplit(".", 1)[0]
         elif index =="name_mmmyyyy.xlsx" or index =="name_yyyymmww.xlsx" or index =="name_yyyymmww.xls":
             extracted_filename=CURRENT_FILE.split(".")[0]
-    
-    
-        # Check for File name Validation
     
         if FileNameValidation=="1":
             file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name)
