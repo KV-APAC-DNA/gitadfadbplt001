@@ -1,25 +1,35 @@
-delete from meta_raw.parameters
-where parameter_id in (3551,3671,4202,4598,5967);
+create or replace TABLE PCFSDL_RAW.SDL_PERENSO_ACCT_DIST_ACCT (
+	ACCT_KEY NUMBER(10,0),
+	BRANCH_KEY NUMBER(10,0),
+	ID VARCHAR(50),
+	SYSTEM_PRIMARY VARCHAR(10),
+	ACTIVE VARCHAR(10),
+	RUN_ID NUMBER(14,0),
+	CREATE_DT TIMESTAMP_NTZ(9) DEFAULT CONVERT_TIMEZONE('SGT', CAST(CAST('CURRENT_TIMESTAMP()' AS TIMESTAMP_NTZ(9)) AS TIMESTAMP_TZ(9)))
+);
 
-delete from meta_raw.s3_to_adls
-where id in (135,182,191,196,207);
+create or replace TABLE PCFSDL_RAW.SDL_PERENSO_ACCOUNT (
+	ACCT_KEY NUMBER(10,0),
+	DISP_NAME VARCHAR(256),
+	ACCT_TYPE_KEY NUMBER(10,0),
+	ACTIVE VARCHAR(10),
+	ACCT_STREET1 VARCHAR(256),
+	ACCT_STREET2 VARCHAR(256),
+	ACCT_STREET3 VARCHAR(256),
+	ACCT_SUBURB VARCHAR(25),
+	ACCT_POSTCODE VARCHAR(255),
+	ACCT_STATECODE VARCHAR(20),
+	ACCT_STATE VARCHAR(20),
+	ACCT_COUNTRY VARCHAR(20),
+	ACCT_PHONE VARCHAR(50),
+	ACCT_FAX VARCHAR(50),
+	ACCT_EMAIL VARCHAR(256),
+	RUN_ID NUMBER(14,0),
+	CREATE_DT TIMESTAMP_NTZ(9) DEFAULT CONVERT_TIMEZONE('SGT', CAST(CAST('CURRENT_TIMESTAMP()' AS TIMESTAMP_NTZ(9)) AS TIMESTAMP_TZ(9)))
+);
 
 
-INSERT INTO meta_raw.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (3551,280,'anz_perenso_overandabove_group','folder_path','ap_perenso/transaction/overandabove/OverandAbove',FALSE,TRUE);
-INSERT INTO meta_raw.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (3671,287,'anz_perenso_Ranging','folder_path','ap_perenso/transaction/ranging/Ranging',FALSE,TRUE);
-INSERT INTO meta_raw.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (4202,317,'perenso_product_group','folder_path','ap_perenso/master/product/ProdGrp',FALSE,TRUE);
-INSERT INTO meta_raw.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (4598,364,'AcctGrp','folder_path','ap_perenso/master/account/AcctGrp',FALSE,TRUE);
-INSERT INTO meta_raw.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (5967,451,'Account','folder_path','ap_perenso/master/account/Account',FALSE,TRUE);
-
-INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (135,17,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/transaction_files/overandabove/','OverandAbove','pac','ap_perenso/transaction/overandabove/OverandAbove',TRUE,'Y');
-INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (182,17,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/master/product/ProdGrp','ProdGrp','pac','ap_perenso/master/product/ProdGrp',TRUE,'Y');
-INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (191,17,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/master_files/account','AcctGrp','pac','ap_perenso/master/account/AcctGrp',TRUE,'Y');
-INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (196,17,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/master_files/account','Account','pac','ap_perenso/master/account/Account',TRUE,'Y');
-INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (207,17,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/transaction_files/ranging/','Ranging','pac','ap_perenso/transaction/ranging/Ranging',TRUE,'Y');
-
-
-
-CREATE OR REPLACE PROCEDURE PCF_PERENSO_PRODUCT_PREPROCESSING("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE PCFSDL_RAW.PCF_PERENSO_PRODUCT_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.8'
