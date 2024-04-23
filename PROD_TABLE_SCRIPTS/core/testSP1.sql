@@ -1,0 +1,1 @@
+call core_integration.SP_failed_tests_models('55','(\'sdl_perenso_account_group_lvl\', \'sdl_perenso_account_group\', \'sdl_perenso_account_fields\', \'sdl_perenso_account_reln_id\', \'sdl_perenso_account_type\', \'sdl_perenso_account\', \'sdl_perenso_acct_dist_acct\', \'sdl_perenso_distributor_detail\')');
