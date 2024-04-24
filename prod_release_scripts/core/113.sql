@@ -882,7 +882,7 @@ FROM (
                             WHERE (b.mnth_id = (a.jj_mnth_id)::text)
                         ) veposf
                         LEFT JOIN (
-                            SELECT EDW_VW_PH_MATERIAL_DIM."cntry_key",
+                            SELECT EDW_VW_PH_MATERIAL_DIM.cntry_key,
                                 EDW_VW_PH_MATERIAL_DIM."sap_matl_num",
                                 EDW_VW_PH_MATERIAL_DIM."sap_mat_desc",
                                 EDW_VW_PH_MATERIAL_DIM."ean_num",
@@ -936,7 +936,7 @@ FROM (
                                 EDW_VW_PH_MATERIAL_DIM."shlf_life"
                             FROM  PHLEDW_INTEGRATION.EDW_VW_PH_MATERIAL_DIM
                             WHERE (
-                                    (EDW_VW_PH_MATERIAL_DIM."cntry_key")::text = ('PH'::character varying)::text
+                                    (EDW_VW_PH_MATERIAL_DIM.cntry_key)::text = ('PH'::character varying)::text
                                 )
                         ) veomd ON (
                             (
