@@ -137,18 +137,8 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "adls_sink_binary",
-														"type": "DatasetReference",
-														"parameters": {
-															"adls_container": {
-																"value": "@pipeline().parameters.adls_container",
-																"type": "Expression"
-															},
-															"adls_path": {
-																"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.adls_path}",
-																"type": "Expression"
-															}
-														}
+														"referenceName": "adls_sink_binary_copy1",
+														"type": "DatasetReference"
 													}
 												]
 											}
