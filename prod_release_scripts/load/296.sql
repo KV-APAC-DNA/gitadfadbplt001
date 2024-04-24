@@ -1,9 +1,3 @@
-UPDATE meta_raw.parameters
-SET PARAMETER_GROUP_NAME = 'th_sfmc_dbt_ing_group' where parameter_id='3490';
-
-UPDATE prod_dna_load.meta_raw.parameters
-SET PARAMETER_GROUP_NAME = 'j_ap_dna_etl_framework_dn_td_tgt_dbt_ing_group' where parameter_id='4358';
-
 CREATE OR REPLACE PROCEDURE PCFSDL_RAW.PCF_PERENSO_ORDER_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
@@ -120,7 +114,7 @@ def main(session: snowpark.Session,Param):
         final_df.write.mode("append").saveAsTable(target_table)
         
         #move to success
-        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True,file_format_name="PCFSDL_RAW.MY_CSV_FORMAT")
 
 
         return "Success"
