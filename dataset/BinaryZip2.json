@@ -12,10 +12,6 @@
 				"type": "AzureBlobFSLocation",
 				"folderPath": "dev/pop6",
 				"fileSystem": "tha"
-			},
-			"compression": {
-				"type": "deflate",
-				"level": "Optimal"
 			}
 		}
 	}
