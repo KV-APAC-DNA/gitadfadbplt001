@@ -1,0 +1,22 @@
+{
+	"name": "BinaryZip2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "dev/pop6",
+				"fileSystem": "tha"
+			},
+			"compression": {
+				"type": "deflate",
+				"level": "Optimal"
+			}
+		}
+	}
+}
