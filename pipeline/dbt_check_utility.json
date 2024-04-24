@@ -424,13 +424,13 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
+										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**DATASET**: @{item().model_name} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
+										"value": "Error due to Data Quality Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**ERROR**: _DBT job failed due to DQ check while loading data from @{item().model_name}, Please check with support team on run_id @{pipeline().parameters.run_id}. Please Download this file which contains failed records with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
