@@ -3,20 +3,20 @@ INSERT INTO meta_raw.PROCESS VALUES (416,416,'j_pac_sls_evol_refresh_gts_visibil
 INSERT INTO meta_raw.PROCESS VALUES (362,362,'j_pac_iri_scan_sales_etl_framework',361,1,1,FALSE,TRUE,104,null,3,null,'','','','','','Tableau');
 
 
-UPDATE prod_dna_load.meta_raw.META_RAW.PARAMETERS
+UPDATE prod_dna_load.META_RAW.PARAMETERS
   SET PARAMETER_VALUE = '65'
   WHERE PARAMETER_GROUP_NAME = 'ANZ_MDS_SDL_TO_EDW_LOAD_dbt_ing_group' and PARAMETER_id='6028';
 
-UPDATE prod_dna_load.meta_raw.META_RAW.PARAMETERS
+UPDATE prod_dna_load.META_RAW.PARAMETERS
   SET PARAMETER_GROUP_NAME = 'j_ap_dna_etl_framework_vn_td_tgt'
   WHERE PARAMETER_VALUE = '31';
 
-UPDATE prod_dna_load.meta_raw.META_RAW.PARAMETERS
+UPDATE prod_dna_load.META_RAW.PARAMETERS
   SET PARAMETER_GROUP_NAME = 'th_sfmc_files'
   WHERE PARAMETER_VALUE = '27';
 
 
-update meta_raw.META_RAW.PARAMETERS
+update prod_dna_load.META_RAW.PARAMETERS
 set PARAMETER_VALUE = 'pac'
 where PARAMETER_VALUE ='pcf' and parameter_id in(
 6000
