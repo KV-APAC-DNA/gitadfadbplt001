@@ -1,10 +1,4 @@
-delete from meta_raw.PROCESS
-where PROCESS_ID IN(415,416,361);
-
-INSERT INTO meta_raw.PROCESS VALUES (415,415,'j_pac_sls_evol_refresh',415,1,1,FALSE,TRUE,32,null,3,null,'','','','','','Tableau');
-INSERT INTO meta_raw.PROCESS VALUES (416,416,'j_pac_sls_evol_refresh_gts_visibility',416,1,1,FALSE,TRUE,32,null,3,null,'','','','','','Tableau');
-INSERT INTO meta_raw.PROCESS VALUES (362,362,'j_pac_iri_scan_sales_etl_framework',361,1,1,FALSE,TRUE,104,null,3,null,'','','','','','Tableau');
-ALTER TABLE PARAMETERS
+ALTER TABLE meta_raw.PARAMETERS
 ALTER COLUMN PARAMETER_VALUE SET DATA TYPE VARCHAR(5000);
 
 INSERT INTO META_RAW.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (6406,515,'J_Pac_Px_Master_Edw','ms_query','SELECT ac_Code,
