@@ -807,7 +807,7 @@ FROM (
                                                     itg_mds_ph_ref_pos_primary_sold_to.active,
                                                     itg_mds_ph_ref_pos_primary_sold_to.crtd_dttm,
                                                     itg_mds_ph_ref_pos_primary_sold_to.updt_dttm
-                                                FROM  OSEITG_INTEGRATION.itg_mds_ph_ref_pos_primary_sold_to
+                                                FROM  PHLITG_INTEGRATION.itg_mds_ph_ref_pos_primary_sold_to
                                                 WHERE (
                                                         (itg_mds_ph_ref_pos_primary_sold_to.active)::text = ('Y'::character varying)::text
                                                     )
