@@ -10,7 +10,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"folderPath": "dev/pop6/unzipped/",
+				"folderPath": "dev/pop6/*",
 				"fileSystem": "tha"
 			}
 		}
