@@ -1610,7 +1610,8 @@
 									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true
+										"recursive": true,
+										"deleteFilesAfterCompletion": true
 									},
 									"formatSettings": {
 										"type": "BinaryReadSettings",
@@ -1619,12 +1620,48 @@
 										}
 									}
 								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
 								"enableStaging": false
 							},
 							"inputs": [
 								{
 									"referenceName": "sftp_adls_source_binary_zip",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@pipeline().parameters.AdlsPath",
+											"type": "Expression"
+										},
+										"file_name": {
+											"value": "@pipeline().parameters.FtpFileName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adls_sink_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@pipeline().parameters.AdlsPath",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
