@@ -11,9 +11,6 @@
 			},
 			"path": {
 				"type": "string"
-			},
-			"file": {
-				"type": "string"
 			}
 		},
 		"folder": {
@@ -30,10 +27,6 @@
 				},
 				"folderPath": {
 					"value": "@dataset().path",
-					"type": "Expression"
-				},
-				"fileName": {
-					"value": "@dataset().file",
 					"type": "Expression"
 				}
 			}
