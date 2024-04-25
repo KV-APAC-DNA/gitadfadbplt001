@@ -337,6 +337,10 @@
 							"path": {
 								"value": "@pipeline().parameters.s3_path",
 								"type": "Expression"
+							},
+							"file": {
+								"value": "@pipeline().parameters.s3_file",
+								"type": "Expression"
 							}
 						}
 					}

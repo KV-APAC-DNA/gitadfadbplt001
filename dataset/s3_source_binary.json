@@ -31,6 +31,10 @@
 				"folderPath": {
 					"value": "@dataset().path",
 					"type": "Expression"
+				},
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
 				}
 			}
 		}
