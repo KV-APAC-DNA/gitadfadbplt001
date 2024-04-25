@@ -17,6 +17,8 @@
 						{
 							"name": "if_file_exists",
 							"type": "GetMetadata",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -86,6 +88,8 @@
 											{
 												"name": "s3_to_adls_delete_source_file",
 												"type": "Copy",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"policy": {
 													"timeout": "0.12:00:00",
