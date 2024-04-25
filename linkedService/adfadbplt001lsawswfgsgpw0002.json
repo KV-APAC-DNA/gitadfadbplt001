@@ -1,0 +1,24 @@
+{
+	"name": "adfadbplt001lsawswfgsgpw0002",
+	"properties": {
+		"description": "promax weekly sell promo file feed prod file shared folder",
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "\\\\10.225.18.150\\Data Transfer\\Outbound",
+			"userId": "jx2.com\\SA-JX2-CAPDNAANZ",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsawswfgsgpw0002"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
