@@ -161,7 +161,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"adls_container": "tha",
-							"adls_path": "dev/pop6/test"
+							"adls_path": "dev/pop6/test2/Outlet_20240323_20240328213034.csv"
 						}
 					},
 					"logStorageSettings": {
