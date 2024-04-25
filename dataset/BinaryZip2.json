@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "test20240422_pop_lists.csv",
 				"folderPath": "dev/pop6/unzipped",
 				"fileSystem": "tha"
 			}
