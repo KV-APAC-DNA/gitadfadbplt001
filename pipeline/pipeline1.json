@@ -5,6 +5,8 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -70,9 +72,7 @@
 						"referenceName": "BinaryZip",
 						"type": "DatasetReference"
 					},
-					"fieldList": [
-						"childItems"
-					],
+					"fieldList": [],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"enablePartitionDiscovery": false
@@ -81,6 +81,58 @@
 						"type": "BinaryReadSettings"
 					}
 				}
+			},
+			{
+				"name": "Copy data1_copy1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "sftp_adls_source_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": "tha",
+							"adls_path": "dev/pop6/test/Outlet_20240323_20240328213034.zip"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sftp_adls_sink_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": "tha",
+							"adls_path": "dev/pop6/test2"
+						}
+					}
+				]
 			}
 		],
 		"folder": {

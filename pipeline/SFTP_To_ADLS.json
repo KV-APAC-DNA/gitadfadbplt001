@@ -1623,7 +1623,8 @@
 								"sink": {
 									"type": "BinarySink",
 									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
 									}
 								},
 								"enableStaging": false
@@ -1658,7 +1659,78 @@
 											"type": "Expression"
 										},
 										"adls_path": {
-											"value": "@pipeline().parameters.AdlsPath",
+											"value": "@{pipeline().parameters.AdlsPath}/temp",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Unzip File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "sftp_adls_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sftp_adls_sink_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
 											"type": "Expression"
 										}
 									}
