@@ -162,6 +162,126 @@
 									"value": "@greater(activity('Filter Only File').output.FilteredItemsCount,0)",
 									"type": "Expression"
 								},
+								"ifFalseActivities": [
+									{
+										"name": "Execute Pipeline1_copy1",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "s3_adls_child",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"s3_bucket": {
+													"value": "@item().S3_BUCKET",
+													"type": "Expression"
+												},
+												"s3_path": {
+													"value": "@item().S3_PATH",
+													"type": "Expression"
+												},
+												"s3_file": {
+													"value": "@activity('Filter Only File').output.value",
+													"type": "Expression"
+												},
+												"adls_container": {
+													"value": "@item().ADLS_CONTAINER",
+													"type": "Expression"
+												},
+												"adls_path": {
+													"value": "@item().ADLS_PATH",
+													"type": "Expression"
+												},
+												"last_modified": {
+													"value": "@item().last_modified",
+													"type": "Expression"
+												},
+												"delete_from_source": {
+													"value": "@item().delete_source_file",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "log_successful_copy_copy1",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Execute Pipeline1_copy1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "adfadbplt001lssnfkpltdnaload",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "alter session set  timezone ='UTC';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG\n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'SUCCESS'\n)",
+														"type": "Expression"
+													}
+												}
+											],
+											"scriptBlockExecutionTimeout": "02:00:00"
+										}
+									},
+									{
+										"name": "log_failed_copy_copy1",
+										"type": "Script",
+										"dependsOn": [
+											{
+												"activity": "Execute Pipeline1_copy1",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "adfadbplt001lssnfkpltdnaload",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "alter session set  timezone ='UTC';\nINSERT INTO META_RAW.S3_TO_ADLS_AUDIT_LOG \n(S3_TO_ADLS_ID, GROUP_ID, S3_BUCKET, S3_PATH, S3_FILE, RUN_AT, STATUS)\nVALUES\n(@{item().id},\n@{pipeline().parameters.Group_id},\n'@{item().S3_BUCKET}',\n'@{item().S3_PATH}',\n'@{item().s3_file}',\nCURRENT_TIMESTAMP(),\n'FAILED'\n)",
+														"type": "Expression"
+													}
+												}
+											],
+											"scriptBlockExecutionTimeout": "02:00:00"
+										}
+									}
+								],
 								"ifTrueActivities": [
 									{
 										"name": "Execute Pipeline1",
