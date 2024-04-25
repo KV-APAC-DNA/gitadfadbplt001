@@ -201,7 +201,7 @@
 												],
 												"outputs": [
 													{
-														"referenceName": "adls_sink_binary",
+														"referenceName": "adls_sink_binary_copy1",
 														"type": "DatasetReference",
 														"parameters": {
 															"adls_container": {
@@ -209,7 +209,7 @@
 																"type": "Expression"
 															},
 															"adls_path": {
-																"value": "@{pipeline().parameters.adls_path}",
+																"value": "@pipeline().parameters.adls_path",
 																"type": "Expression"
 															}
 														}
