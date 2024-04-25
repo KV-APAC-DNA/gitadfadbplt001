@@ -85,6 +85,8 @@
 			{
 				"name": "Copy data1_copy1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -160,6 +162,12 @@
 						"parameters": {
 							"adls_container": "tha",
 							"adls_path": "dev/pop6/test"
+						}
+					},
+					"logStorageSettings": {
+						"linkedServiceName": {
+							"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+							"type": "LinkedServiceReference"
 						}
 					},
 					"enableLogging": true,
