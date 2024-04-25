@@ -42,10 +42,6 @@
 										"path": {
 											"value": "@{pipeline().parameters.s3_path}",
 											"type": "Expression"
-										},
-										"file": {
-											"value": "@item().name",
-											"type": "Expression"
 										}
 									}
 								},
@@ -199,6 +195,10 @@
 															"path": {
 																"value": "@pipeline().parameters.s3_path",
 																"type": "Expression"
+															},
+															"file": {
+																"value": "@item().name",
+																"type": "Expression"
 															}
 														}
 													}
@@ -337,10 +337,6 @@
 							"path": {
 								"value": "@pipeline().parameters.s3_path",
 								"type": "Expression"
-							},
-							"file": {
-								"value": "@pipeline().parameters.s3_file",
-								"type": "Expression"
 							}
 						}
 					}
@@ -369,9 +365,6 @@
 			},
 			"s3_path": {
 				"type": "string"
-			},
-			"s3_file": {
-				"type": "array"
 			},
 			"adls_container": {
 				"type": "string"
