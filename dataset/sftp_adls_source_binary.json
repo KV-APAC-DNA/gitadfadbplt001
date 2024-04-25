@@ -11,9 +11,6 @@
 			},
 			"adls_path": {
 				"type": "string"
-			},
-			"file_name": {
-				"type": "string"
 			}
 		},
 		"folder": {
