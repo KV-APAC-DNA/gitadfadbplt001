@@ -10,7 +10,6 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "abc.csv",
 				"folderPath": "dev/pop6",
 				"fileSystem": "tha"
 			}
