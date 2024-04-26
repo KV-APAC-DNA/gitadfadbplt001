@@ -445,430 +445,6 @@
 							]
 						},
 						{
-							"value": "exacttargetphl",
-							"activities": [
-								{
-									"name": "Copy exacttargetphl file",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "BinarySource",
-											"storeSettings": {
-												"type": "SftpReadSettings",
-												"recursive": true,
-												"disableChunking": false
-											},
-											"formatSettings": {
-												"type": "BinaryReadSettings"
-											}
-										},
-										"sink": {
-											"type": "BinarySink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "BinarySFTPexacttargetphl",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@pipeline().parameters.FtpDirectory",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@pipeline().parameters.FtpFileName",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "adls_sink_binary",
-											"type": "DatasetReference",
-											"parameters": {
-												"adls_container": {
-													"value": "@pipeline().parameters.AdlsContainer",
-													"type": "Expression"
-												},
-												"adls_path": {
-													"value": "@pipeline().parameters.AdlsPath",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Archive exacttargetphl file",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Copy exacttargetphl file",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "BinarySource",
-											"storeSettings": {
-												"type": "SftpReadSettings",
-												"recursive": true,
-												"disableChunking": false
-											},
-											"formatSettings": {
-												"type": "BinaryReadSettings"
-											}
-										},
-										"sink": {
-											"type": "BinarySink",
-											"storeSettings": {
-												"type": "SftpWriteSettings",
-												"operationTimeout": "01:00:00",
-												"useTempFileRename": true
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "BinarySFTPexacttargetphl",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@pipeline().parameters.FtpDirectory",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@pipeline().parameters.FtpFileName",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "BinarySFTPexacttargetphl",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@pipeline().parameters.FtpFileName",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Set error exacttargetphl copy",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Copy exacttargetphl file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorResponse1",
-										"value": {
-											"value": "@activity('Copy exacttargetphl file').error?.message",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set error exacttargetphl archive",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Archive exacttargetphl file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorResponse1",
-										"value": {
-											"value": "@activity('Archive exacttargetphl file').error?.message",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Archival fail 3",
-									"type": "Fail",
-									"dependsOn": [
-										{
-											"activity": "Archive exacttargetphl file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
-											"type": "Expression"
-										},
-										"errorCode": "002"
-									}
-								}
-							]
-						},
-						{
-							"value": "marketingcloudopsphl",
-							"activities": [
-								{
-									"name": "Copy marketingcloudopsphl file",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "BinarySource",
-											"storeSettings": {
-												"type": "SftpReadSettings",
-												"recursive": true,
-												"disableChunking": false
-											},
-											"formatSettings": {
-												"type": "BinaryReadSettings"
-											}
-										},
-										"sink": {
-											"type": "BinarySink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "BinarySFTPmarketingcloudopsphl",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@pipeline().parameters.FtpDirectory",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@pipeline().parameters.FtpFileName",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "adls_sink_binary",
-											"type": "DatasetReference",
-											"parameters": {
-												"adls_container": {
-													"value": "@pipeline().parameters.AdlsContainer",
-													"type": "Expression"
-												},
-												"adls_path": {
-													"value": "@pipeline().parameters.AdlsPath",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Archive marketingcloudopsphl file",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Copy marketingcloudopsphl file",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "BinarySource",
-											"storeSettings": {
-												"type": "SftpReadSettings",
-												"recursive": true,
-												"disableChunking": false
-											},
-											"formatSettings": {
-												"type": "BinaryReadSettings"
-											}
-										},
-										"sink": {
-											"type": "BinarySink",
-											"storeSettings": {
-												"type": "SftpWriteSettings",
-												"operationTimeout": "01:00:00",
-												"useTempFileRename": true
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "BinarySFTPmarketingcloudopsphl",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@pipeline().parameters.FtpDirectory",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@pipeline().parameters.FtpFileName",
-													"type": "Expression"
-												}
-											}
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "BinarySFTPmarketingcloudopsphl",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "@pipeline().parameters.FtpFileName",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Set error marketingcloudopsphl copy",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Copy marketingcloudopsphl file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorResponse1",
-										"value": {
-											"value": "@activity('Copy marketingcloudopsphl file').error?.message",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set error marketingcloudopsphl archive",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Archive marketingcloudopsphl file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorResponse1",
-										"value": {
-											"value": "@activity('Archive marketingcloudopsphl file').error?.message",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Archival fail 4",
-									"type": "Fail",
-									"dependsOn": [
-										{
-											"activity": "Archive marketingcloudopsphl file",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
-											"type": "Expression"
-										},
-										"errorCode": "002"
-									}
-								}
-							]
-						},
-						{
 							"value": "exacttargettha",
 							"activities": [
 								{
@@ -1353,7 +929,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Switch SFTP",
+						"activity": "If Unzip Needed",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1574,6 +1150,435 @@
 						"isError": "Yes"
 					}
 				}
+			},
+			{
+				"name": "If Unzip Needed",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Switch SFTP",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.isUnzipNeeded,'Y')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Unzip File",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings"
+										}
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings",
+										"copyBehavior": "PreserveHierarchy"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "sftp_adls_source_binary_zip",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@pipeline().parameters.AdlsPath",
+											"type": "Expression"
+										},
+										"file_name": {
+											"value": "@pipeline().parameters.FtpFileName",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "adls_sink_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}/temp",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Unzip File",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "sftp_adls_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sftp_adls_sink_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "Delete temp location",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "sftp_adls_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}/temp",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						},
+						{
+							"name": "Delete adls zip",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Copy data1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "sftp_adls_source_binary",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": {
+											"value": "@pipeline().parameters.AdlsContainer",
+											"type": "Expression"
+										},
+										"adls_path": {
+											"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
+											"type": "Expression"
+										}
+									}
+								},
+								"logStorageSettings": {
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+										"type": "LinkedServiceReference"
+									}
+								},
+								"enableLogging": true,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "error log -unzipping file",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Unzip Needed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "There is some issue while unzipping file @{pipeline().parameters.FtpFileName} from location @{pipeline().parameters.AdlsContainer}/@{pipeline().parameters.AdlsPath}",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": "002",
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Send error - unzipping file",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Unzip Needed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"supportMessage": {
+							"value": "There is some issue while copying file from SFTP location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**FTP_NAME**: @{pipeline().parameters.FtpName} \\n\n**FTP_DIRECTORY**: @{pipeline().parameters.FtpDirectory} \\n\n**FILE_NAME**: @{pipeline().parameters.FtpFileName} \\n\n**ERROR**: _@{variables('errorResponse1')}_",
+							"type": "Expression"
+						},
+						"isBusinessNotification": "No",
+						"isSupportNotification": "Yes",
+						"isError": "Yes"
+					}
+				}
+			},
+			{
+				"name": "audit fail while unzipping",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Unzip Needed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -1606,6 +1611,10 @@
 			},
 			"phase_id": {
 				"type": "int"
+			},
+			"isUnzipNeeded": {
+				"type": "string",
+				"defaultValue": "N"
 			}
 		},
 		"variables": {
