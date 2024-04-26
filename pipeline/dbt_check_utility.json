@@ -430,7 +430,7 @@
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "Error due to Data Quality Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**ERROR**: _DBT job failed due to DQ check while loading data from @{item().model_name}, Please check with support team on run_id @{pipeline().parameters.run_id}. Please Download this file which contains failed records with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
+										"value": "Error due to Data Quality Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**ERROR**: _Data load failed for @{item().model_name}. Please check the failed records here @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_ \\n \nKindly fix and reupload.",
 										"type": "Expression"
 									},
 									"isError": "Yes",
