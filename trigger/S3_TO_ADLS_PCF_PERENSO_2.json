@@ -1,17 +1,16 @@
 {
-	"name": "Historical_TRAX_TABLE_REFRESH_trigger",
+	"name": "S3_TO_ADLS_PCF_PERENSO_2",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"referenceName": "s3_to_adls",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD",
-					"process_id": "1347,1348,1440"
+					"Group_id": "24"
 				}
 			}
 		],
@@ -20,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-19T17:44:00",
+				"startTime": "2024-04-26T12:44:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						10
+						45
 					],
 					"hours": [
-						18
+						22
 					]
 				}
 			}

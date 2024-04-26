@@ -721,7 +721,7 @@
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema_",
+										"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload._",
 										"type": "Expression"
 									},
 									"isError": "Yes"
@@ -929,7 +929,7 @@
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _Please check with support team on this error - @{variables('errorMessage')}_",
+										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _Kindly fix the file and reupload. More details on error - @{variables('errorMessage')}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -1081,7 +1081,7 @@
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. More details on error, please check with support team - @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}_",
+										"value": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload. More details on error,  - @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -1924,7 +1924,7 @@
 						"isBusinessNotification": "Yes",
 						"isSupportNotification": "Yes",
 						"businessMessage": {
-							"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema._",
+							"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload._",
 							"type": "Expression"
 						},
 						"isError": "Yes"
