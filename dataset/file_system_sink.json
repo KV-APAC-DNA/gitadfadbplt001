@@ -5,6 +5,14 @@
 			"referenceName": "adfadbplt001lsawswfgsgpw0002",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"path": {
+				"type": "string"
+			},
+			"fle_name": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
