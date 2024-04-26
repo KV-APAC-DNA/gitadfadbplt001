@@ -102,7 +102,7 @@
 															"type": "Expression"
 														},
 														"process_id": {
-															"value": "@item().usecase_id",
+															"value": "@item().process_id",
 															"type": "Expression"
 														},
 														"phase_id": {
