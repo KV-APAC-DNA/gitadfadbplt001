@@ -1,0 +1,17 @@
+{
+	"name": "file_system_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawswfgsgpw0002",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"fileName": " PromotionWeeklySell.csv"
+			}
+		}
+	}
+}
