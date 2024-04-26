@@ -5,6 +5,8 @@
 			{
 				"name": "Get Metadata1",
 				"type": "GetMetadata",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -70,7 +72,10 @@
 				"inputs": [
 					{
 						"referenceName": "file_system_source",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"File_Name": "PromotionWeeklySell.csv"
+						}
 					}
 				],
 				"outputs": [
