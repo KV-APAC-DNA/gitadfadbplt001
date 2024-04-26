@@ -5,6 +5,11 @@
 			"referenceName": "adfadbplt001lsawswfgsgpw0002",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"File_Name": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
