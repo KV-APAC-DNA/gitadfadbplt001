@@ -5,8 +5,6 @@
 			{
 				"name": "Get Metadata1",
 				"type": "GetMetadata",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -34,6 +32,8 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -65,10 +65,7 @@
 				"inputs": [
 					{
 						"referenceName": "file_system_source",
-						"type": "DatasetReference",
-						"parameters": {
-							"fle_name": "PromotionWeeklySell.csv"
-						}
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
