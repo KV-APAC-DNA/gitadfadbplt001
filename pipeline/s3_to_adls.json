@@ -53,10 +53,6 @@
 										"path": {
 											"value": "@item().S3_PATH",
 											"type": "Expression"
-										},
-										"file": {
-											"value": "@concat(item().S3_FILE,'*.*')",
-											"type": "Expression"
 										}
 									}
 								},
@@ -184,10 +180,6 @@
 												},
 												"s3_path": {
 													"value": "@item().S3_PATH",
-													"type": "Expression"
-												},
-												"s3_file": {
-													"value": "@activity('Filter Only File').output.value",
 													"type": "Expression"
 												},
 												"adls_container": {
