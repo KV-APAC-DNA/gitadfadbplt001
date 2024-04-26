@@ -8,6 +8,9 @@
 		"parameters": {
 			"File_Name": {
 				"type": "string"
+			},
+			"file_path": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -16,6 +19,10 @@
 			"location": {
 				"type": "FileServerLocation",
 				"fileName": {
+					"value": "@dataset().File_Name",
+					"type": "Expression"
+				},
+				"folderPath": {
 					"value": "@dataset().File_Name",
 					"type": "Expression"
 				}
