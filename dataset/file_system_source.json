@@ -23,7 +23,7 @@
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().File_Name",
+					"value": "@dataset().file_path",
 					"type": "Expression"
 				}
 			}
