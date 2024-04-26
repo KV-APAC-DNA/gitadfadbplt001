@@ -6,9 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"path": {
-				"type": "string"
-			},
 			"fle_name": {
 				"type": "string"
 			}
