@@ -14,8 +14,7 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "FileServerLocation",
-				"fileName": " PromotionWeeklySell.csv"
+				"type": "FileServerLocation"
 			}
 		}
 	}
