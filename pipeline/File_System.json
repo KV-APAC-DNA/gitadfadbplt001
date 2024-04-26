@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "file_system_source",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"File_Name": "PromotionWeeklySell.csv"
+						}
 					},
 					"fieldList": [],
 					"storeSettings": {
