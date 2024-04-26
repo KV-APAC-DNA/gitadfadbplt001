@@ -1,5 +1,5 @@
 {
-	"name": "file_system_sink",
+	"name": "file_system_source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsawswfgsgpw0002",
