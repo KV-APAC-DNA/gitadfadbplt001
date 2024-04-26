@@ -22,7 +22,9 @@
 							"File_Name": "PromotionWeeklySell.csv"
 						}
 					},
-					"fieldList": [],
+					"fieldList": [
+						"exists"
+					],
 					"storeSettings": {
 						"type": "FileServerReadSettings",
 						"enablePartitionDiscovery": false
