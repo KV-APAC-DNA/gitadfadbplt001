@@ -430,8 +430,6 @@
 			{
 				"name": "ForEveryFile",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If is_truncate Y",
@@ -718,8 +716,6 @@
 			{
 				"name": "If is_truncate Y",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set sheet_names array",
