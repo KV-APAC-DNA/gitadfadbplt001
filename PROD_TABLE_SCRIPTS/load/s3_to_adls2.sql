@@ -1,4 +1,4 @@
-delete meta_raw.s3_to_adls where id in(182,191,196,207,135);
+delete from meta_raw.s3_to_adls where id in(182,191,196,207,135);
 INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (182,24,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/master_files/product','ProdGrp','pac','ap_perenso/master/product/ProdGrp',TRUE,'N');
 INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (191,24,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/master_files/account','AcctGrp','pac','ap_perenso/master/account/Account/AcctGrp',TRUE,'N');
 INSERT INTO meta_raw.s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (196,24,'PCF','itx-arm-conapdna-pacific-prod-kdp','ap_perenso/master_files/account','Account','pac','ap_perenso/master/account/Account',TRUE,'Y');
