@@ -67,6 +67,7 @@
 						"referenceName": "file_system_source",
 						"type": "DatasetReference",
 						"parameters": {
+							"path": "/",
 							"fle_name": "PromotionWeeklySell.csv"
 						}
 					}
