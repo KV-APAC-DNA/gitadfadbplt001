@@ -14,7 +14,11 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "FileServerLocation"
+				"type": "FileServerLocation",
+				"fileName": {
+					"value": "@dataset().File_Name",
+					"type": "Expression"
+				}
 			}
 		}
 	}
