@@ -151,7 +151,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
-													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
+													"value": "@{pipeline().parameters.FtpDirectory}/Archive/ADF_Archive",
 													"type": "Expression"
 												},
 												"filename": {
@@ -363,7 +363,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
-													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/Archive/ADF_Archive",
+													"value": "@{split(pipeline().parameters.FtpDirectory,'/')[0]}/archive/ADF_Archive",
 													"type": "Expression"
 												},
 												"filename": {
