@@ -10,20 +10,23 @@
 -- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
 -- 4/4/24   Shantanu,Mahima,Thanish 
 -- 10/4/24  Thanish     Header handling for PH market
+-- 29/4/24  Latest Update
 
 # The Snowpark package is required for Python Worksheets. 
 # You can add more packages by selecting them using the Packages control and then importing them.
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col
+from snowflake.snowpark.files import SnowflakeFile
 import math
 import regex
+import pandas as pd
 
 def main(session: snowpark.Session,Param):
     try:
 
         # Example input
-        #Param=['LSTR 112022.xlsx','last','1-1-0','LSTR','xlsx','Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock',2,'ASPSDL_RAW.DEV_LOAD_STAGE_ADLS','dev/transactional/Lagardere','']
+        #Param=[''LSTR 112022.xlsx'',''last'',''1-1-0'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'','''']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
@@ -44,8 +47,8 @@ def main(session: snowpark.Session,Param):
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
 
-        if FileNameValidation and FileExtnValidation and FileHeaderValidation=="0":
-            return "SUCCESS: File validation passed"
+        #if FileNameValidation and FileExtnValidation and FileHeaderValidation=="0":
+         #   return "SUCCESS: File validation passed"
             
         
     
@@ -69,12 +72,16 @@ def main(session: snowpark.Session,Param):
         
         if index.lower() == "last":
             extracted_filename = processed_file_name.rsplit("_", 1)[0]
+            print(extracted_filename)
         elif index.lower() == "first":
             extracted_filename = processed_file_name.split("_")[0]
+            print(extracted_filename)
         elif index.lower() == "full":
             extracted_filename = processed_file_name.rsplit(".", 1)[0]
-        elif index =="name_mmmyyyy.xlsx":
+            print(extracted_filename)
+        elif index =="name_mmmyyyy.xlsx" or index =="name_yyyymmww.xlsx" or index =="name_yyyymmww.xls":
             extracted_filename=CURRENT_FILE.split(".")[0]
+
     
     
         # Check for File name Validation
@@ -95,7 +102,7 @@ def main(session: snowpark.Session,Param):
     
         # Check for File Header Validation
     
-        if FileHeaderValidation == "1":
+        if FileHeaderValidation == "1" and counter==0:
 
             # Converting the extension from xlsx to csv
             # Extracting the Header from the file
@@ -153,6 +160,21 @@ def main(session: snowpark.Session,Param):
 
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif "Account" in CURRENT_FILE or "PH_BP" in CURRENT_FILE or "Constants" in CURRENT_FILE or "DealDiscount" in CURRENT_FILE or "Todo" in CURRENT_FILE:
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif CURRENT_FILE[0:3]=="ROB" or CURRENT_FILE[0:2]=="SS":
+                full_path = "@"+stage_name+"/"+temp_stage_path+"/"+CURRENT_FILE
+                with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
+                    df_pandas=pd.read_excel(f)
+                    header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                
                 
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
@@ -164,10 +186,14 @@ def main(session: snowpark.Session,Param):
                     
                 
 
-            # If the source is of xlsx type, then splitting based on \\x01 delimiter
+            # If the source is of xlsx type, then splitting based on \\\\x01 delimiter
 
-            header_pipe_split = header[0].split('|')
-            if (val_file_extn=='xlsx' or val_file_extn=='xls') and 'Weekly_Sales_Report_-_Kenvue' not in CURRENT_FILE:
+            if CURRENT_FILE[0:3]=="ROB" or CURRENT_FILE[0:2]=="SS":
+                header=[i[:-1] for i in header]
+            else:
+                header_pipe_split = header[0].split('|')
+                
+            if (val_file_extn=='xlsx' or val_file_extn=='xls') and 'Weekly Sales Report' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS":
                 result_list = header[0].split('\x01')
             elif val_file_extn=='xlsx':
                 result_list = header
@@ -177,7 +203,21 @@ def main(session: snowpark.Session,Param):
             else:
                 result_list = header
 
+
             if stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="FSSI Week":
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
+            elif stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="ManufacturersReport":
+                result=list(filter(None,result_list))
+                result_list=result[:13]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
+            elif stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="Replenishment E3 Buyers Report":
+                result_list=result_list[:19]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
+            elif stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=='Stock Status by DC - 13 Months Sales':
+                result_list=result_list[:11]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
             else:
@@ -270,6 +310,9 @@ def thailand_processing(CURRENT_FILE):
     else:
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
+    bol_th_pos6=[i for i in ["pop_lists","product_lists_allocation","product_lists_pops","product_lists_products","pops","product","users"] if i in CURRENT_FILE]
+    if len(bol_th_pos6) >0:
+        CURRENT_FILE=("_").join(CURRENT_FILE.split("_")[1:])
 
     return file
 
@@ -277,16 +320,16 @@ def aus_processing(CURRENT_FILE):
     if "Weekly_Sales_Report_-_Kenvue" in CURRENT_FILE:
         file= CURRENT_FILE.replace("_"," ",3)
         print("FileName : ", file)
-    elif "FSSI_Week_12_2024.xls" in CURRENT_FILE:
+    elif "FSSI_Week" in CURRENT_FILE:
         file= CURRENT_FILE.replace("_"," ",1)
         print("FileName : ", file)
 
     elif "All_J_J_Items_WE" in CURRENT_FILE:
         parts= CURRENT_FILE[:16].split('_')
-        file_name = parts[0] + ' ' + parts[1]
+        file_name = parts[0] + " " + parts[1]
         file_name += '_' + parts[2].replace('_', ' ', 1)
-        file_name += ' ' + parts[3].replace('_', ' ', 1)
-        file_name += ' ' + parts[4].replace('_', ' ', 1)
+        file_name += ' ' + parts[3].replace('_', '' '', 1)
+        file_name += ' ' + parts[4].replace('_', '' '', 1)
         file=file_name
         print("FileName : ", file)
     elif "Monthly_Sales_Report,_Supplier_filter_only_J_J" in CURRENT_FILE:
@@ -295,6 +338,9 @@ def aus_processing(CURRENT_FILE):
     elif "Coles_09a__SOH_Trend_Detail_Report" in CURRENT_FILE:
         fileA=CURRENT_FILE.replace("_"," ")
         file=fileA.replace(" ","_",2)
+
+    elif "Replenishment_E3_Buyers_Report" in CURRENT_FILE or "RE_2.0_API_Inventory_and_Sales_Report" in CURRENT_FILE or "Stock_Status_by_DC_-_13_Months_Sales" in CURRENT_FILE:
+        file=CURRENT_FILE.replace("_"," ")
         
     else:
         file = CURRENT_FILE.replace(" ","_")
@@ -313,6 +359,17 @@ def file_validation(counter,extracted_filename,val_file_name):
         if val_file_name.upper() == extracted_filename.upper():
             file_name_validation_status=""
             print("file_name_validation_status is successful")
+        elif "Coop_Sell_In" in extracted_filename:
+            first_name = extracted_filename[:extracted_filename.rfind("_")]
+            print("first_name:", first_name)
+            date = extracted_filename[extracted_filename.rfind("_")+1:]
+            print("extracted date:", date)
+            total_filename = f"{first_name}_{date}"
+            if regex.match("[a-zA-Z]{3}[0-9]{4}", date) and first_name.lower() == val_file_name.lower() and total_filename.lower() == extracted_filename.lower():
+                 file_name_validation_status=""
+            else:
+                file_name_validation_status="Invalid File Name"
+                counter=1
         elif regex.match(val_file_name.upper(), extracted_filename.upper()):
             file_name_validation_status=""
             print("file_name_validation_status is successful")
@@ -324,6 +381,18 @@ def file_validation(counter,extracted_filename,val_file_name):
             else :
                 file_name_validation_status="Invalid File Name"
                 counter=1
+            
+        elif "TW" in extracted_filename and "_JJ_KPI_Status" in extracted_filename:
+            extracted_filename_year=extracted_filename.split("_")[1]
+            extracted_filename_week=extracted_filename.split("_")[2][2:]
+            extracted_filename_last="_"+("_").join(extracted_filename.split("_")[3:]).split(".")[0]
+            extracted_filename_first=extracted_filename.split("_")[0]
+            if extracted_filename_year.isnumeric() and extracted_filename_week.isnumeric() and extracted_filename_last=="_JJ_KPI_Status" and extracted_filename_first==val_file_name:
+                file_name_validation_status=""
+            else :
+                file_name_validation_status="Invalid File Name"
+                counter=1
+            
         
         else:
             file_name_validation_status="Invalid File Name, received  " + extracted_filename+" while expecting " +val_file_name
@@ -359,6 +428,7 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
         extra_columns=[]
 
         file_header=[x.lower() for x in file_header]
+        print(file_header)
         val_header_count=len(final_val_header)
         file_header_count=len(file_header)
     
