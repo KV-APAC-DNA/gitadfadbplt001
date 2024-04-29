@@ -1,5 +1,5 @@
 {
-	"name": "PCF_PAC_PHARM_trigger",
+	"name": "PH_IOP_TARGET_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PAC_PHARM"
+					"category": "PH_IOP_TARGET"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-16T00:00:00",
+				"startTime": "2024-04-29T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						20
+						36
 					],
 					"hours": [
-						21
+						20
 					]
 				}
 			}

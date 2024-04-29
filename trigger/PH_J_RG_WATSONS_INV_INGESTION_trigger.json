@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_PCF_PAC_PHARM",
+	"name": "PH_J_RG_WATSONS_INV_INGESTION_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "20"
+					"category": "PH_J_RG_WATSONS_INV_INGESTION"
 				}
 			}
 		],
@@ -19,13 +19,15 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-16T00:00:00",
+				"startTime": "2024-04-29T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						40
+						0
 					],
 					"hours": [
+						17,
+						18,
 						21
 					]
 				}
