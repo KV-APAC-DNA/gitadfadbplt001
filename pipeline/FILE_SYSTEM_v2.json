@@ -346,118 +346,6 @@
 				}
 			},
 			{
-				"name": "FilterOnlyFile",
-				"type": "Filter",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Switch_FileSystem",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@json(variables('getFiles'))",
-						"type": "Expression"
-					},
-					"condition": {
-						"value": "@equals(item().type,'File')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "ForEveryFileInFTP",
-				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "FilterOnlyFile",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"items": {
-						"value": "@activity('FilterOnlyFile').output.Value",
-						"type": "Expression"
-					},
-					"isSequential": false,
-					"batchCount": 20,
-					"activities": [
-						{
-							"name": "Execute SFTP_To_ADLS",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "SFTP_To_ADLS",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"FtpDirectory": {
-										"value": "@activity('read parameters').output.value[0].ftpDirectory",
-										"type": "Expression"
-									},
-									"FtpFileName": {
-										"value": "@item().Name",
-										"type": "Expression"
-									},
-									"FtpName": {
-										"value": "@activity('read parameters').output.value[0].ftpName",
-										"type": "Expression"
-									},
-									"AdlsContainer": {
-										"value": "@activity('read parameters').output.value[0].container",
-										"type": "Expression"
-									},
-									"AdlsPath": {
-										"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"sequence_id": {
-										"value": "@pipeline().parameters.sequence_id",
-										"type": "Expression"
-									},
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"isUnzipNeeded": {
-										"value": "@activity('read parameters').output.value[0].isUnzipNeeded",
-										"type": "Expression"
-									}
-								}
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "audit fail - Switch_FileSystem",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -520,11 +408,9 @@
 			{
 				"name": "audit success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "ForEveryFileInFTP",
+						"activity": "Switch_FileSystem",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -554,68 +440,6 @@
 						},
 						"message": {
 							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
-						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
-				"name": "audit fail",
-				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "ForEveryFileInFTP",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
 							"type": "Expression"
 						},
 						"runid": {
