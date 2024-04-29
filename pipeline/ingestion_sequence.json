@@ -287,7 +287,47 @@
 										]
 									},
 									{
-										"value": "File_System"
+										"value": "File_System",
+										"activities": [
+											{
+												"name": "File_System",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "FILE_SYSTEM",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
 									}
 								],
 								"defaultActivities": [
