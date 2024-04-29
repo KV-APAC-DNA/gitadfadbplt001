@@ -303,6 +303,8 @@
 								{
 									"name": "Archive perensoaus file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy perensoaus file",
@@ -515,6 +517,8 @@
 								{
 									"name": "Archive exacttargettha file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy exacttargettha file",
@@ -727,6 +731,8 @@
 								{
 									"name": "Archive marketingclouadopstha file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy marketingclouadopstha file",
