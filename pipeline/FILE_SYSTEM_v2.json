@@ -95,8 +95,6 @@
 			{
 				"name": "Switch SFTP",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -113,192 +111,7 @@
 					},
 					"cases": [
 						{
-							"value": "iqviaaus",
-							"activities": [
-								{
-									"name": "Get files iqviaaus",
-									"type": "GetMetadata",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "BinarySFTPiqviaaus",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@{activity('read parameters').output.value[0].ftpDirectory}",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "*@{activity('read parameters').output.value[0].file_spec}*.@{activity('read parameters').output.value[0].source_extn}",
-													"type": "Expression"
-												}
-											}
-										},
-										"fieldList": [
-											"childItems"
-										],
-										"storeSettings": {
-											"type": "SftpReadSettings",
-											"recursive": true,
-											"enablePartitionDiscovery": false,
-											"disableChunking": false
-										},
-										"formatSettings": {
-											"type": "BinaryReadSettings"
-										}
-									}
-								},
-								{
-									"name": "files iqviaaus",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Get files iqviaaus",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "getFiles",
-										"value": {
-											"value": "@string(activity('Get files iqviaaus').output.childItems)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set error iqviaaus",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Get files iqviaaus",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorResponse1",
-										"value": {
-											"value": "@activity('Get files iqviaaus').error?.message",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"value": "perensoaus",
-							"activities": [
-								{
-									"name": "Get files perensoaus",
-									"type": "GetMetadata",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"dataset": {
-											"referenceName": "BinarySFTPperensoaus",
-											"type": "DatasetReference",
-											"parameters": {
-												"directory": {
-													"value": "@{activity('read parameters').output.value[0].ftpDirectory}",
-													"type": "Expression"
-												},
-												"filename": {
-													"value": "*@{activity('read parameters').output.value[0].file_spec}*.@{activity('read parameters').output.value[0].source_extn}",
-													"type": "Expression"
-												}
-											}
-										},
-										"fieldList": [
-											"childItems"
-										],
-										"storeSettings": {
-											"type": "SftpReadSettings",
-											"recursive": true,
-											"enablePartitionDiscovery": false,
-											"disableChunking": false
-										},
-										"formatSettings": {
-											"type": "BinaryReadSettings"
-										}
-									}
-								},
-								{
-									"name": "files perensoaus",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Get files perensoaus",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "getFiles",
-										"value": {
-											"value": "@string(activity('Get files perensoaus').output.childItems)",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Set error exacttargetphl_copy1",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "Get files perensoaus",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorResponse1",
-										"value": {
-											"value": "@activity('Get files perensoaus').error?.message",
-											"type": "Expression"
-										}
-									}
-								}
-							]
+							"value": "sawswfgsgpw0002"
 						}
 					],
 					"defaultActivities": [
@@ -451,8 +264,6 @@
 			{
 				"name": "audit fail - directory not present",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Switch SFTP",
@@ -513,8 +324,6 @@
 			{
 				"name": "error log - directory not present",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Switch SFTP",
@@ -569,8 +378,6 @@
 			{
 				"name": "Send error - directory not present",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Switch SFTP",
