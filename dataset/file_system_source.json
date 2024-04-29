@@ -10,6 +10,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/FILE_SYSTEM"
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
