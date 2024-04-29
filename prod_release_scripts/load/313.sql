@@ -283,8 +283,7 @@ def main(session: snowpark.Session, Param):
         # Handle exceptions here
         error_message = f"Error: {str(e)}"
         return error_message
-        
-        
+              
         
         
 ';
