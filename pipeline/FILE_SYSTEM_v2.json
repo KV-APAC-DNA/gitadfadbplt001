@@ -170,7 +170,7 @@
 													"type": "Expression"
 												},
 												"fileName": {
-													"value": "@activity('read parameters').output.value[0].FILESYSTEMNAME",
+													"value": "@activity('read parameters').output.value[0].FILENAME",
 													"type": "Expression"
 												}
 											}
