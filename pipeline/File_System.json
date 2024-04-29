@@ -29,6 +29,7 @@
 					],
 					"storeSettings": {
 						"type": "FileServerReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -39,8 +40,6 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -84,7 +83,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "pac",
-							"directory": "dev/file_system",
+							"directory": "dev/file_system/PromotionWeeklySell",
 							"fileName": "PromotionWeeklySell.csv"
 						}
 					}
