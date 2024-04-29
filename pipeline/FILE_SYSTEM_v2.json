@@ -298,7 +298,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{activity('read parameters').output.value[0].ms_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].ADLS_PATH} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].FILENAME} \\n\n**ERROR**: _@{activity('FileSystem_to_ADLS').error?.message}_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
