@@ -1,0 +1,25 @@
+{
+	"name": "J_PH_DNA_TAB_REFRESH_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-04-29T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						5
+					]
+				}
+			}
+		}
+	}
+}
