@@ -6,6 +6,7 @@ PACKAGES = ('openpyxl==3.0.10','snowflake-snowpark-python==*','unidecode==1.2.0'
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS 'import snowflake.snowpark as snowpark
+from snowflake import snowpark
 from snowflake.snowpark.window import Window
 from snowflake.snowpark.functions import col,lit,concat,regexp_replace,trim,split,rtrim,upper,coalesce,row_number,when,to_date,is_null
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField,DecimalType,DateType
@@ -235,4 +236,4 @@ def main(session: snowpark.Session,Param):
     except Exception as e:
         # Handle exceptions here
         error_message = f"Error: {str(e)}"
-        return error_message;
+        return error_message;';
