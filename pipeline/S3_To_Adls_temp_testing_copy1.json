@@ -110,8 +110,6 @@
 			{
 				"name": "converttocsv sheetwise",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -156,10 +154,11 @@
 						"referenceName": "adls_srcexcel_sheetname",
 						"type": "DatasetReference",
 						"parameters": {
-							"src_path": "dev/transactional/DFS",
-							"src_filename": "Hainan Vendor Sales Report for Asian.xlsx",
-							"src_sheetname": "Hainan Vendor Sales Report for ",
-							"src_container": "asp"
+							"src_path": "dev/pos/transaction/ec",
+							"src_filename": "TW_POS_EC_RawData_20240201_20240320002857.xlsx",
+							"src_sheetname": "0201-0229",
+							"src_container": "twn",
+							"src_startRange": "A1"
 						}
 					}
 				],
@@ -168,9 +167,9 @@
 						"referenceName": "csv",
 						"type": "DatasetReference",
 						"parameters": {
-							"target_path": "dev/transactional/DFS",
-							"target_filename": "Hainan Vendor Sales Report for Asian.xlsx",
-							"target_container": "asp"
+							"target_path": "dev/pos/transaction/ec",
+							"target_filename": "TW_POS_EC_RawData_20240201.csv",
+							"target_container": "twn"
 						}
 					}
 				]
