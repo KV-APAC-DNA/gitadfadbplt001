@@ -316,7 +316,7 @@
 							"type": "Fail",
 							"dependsOn": [
 								{
-									"activity": "Set error unknown ftp",
+									"activity": "Set error unknown file system",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -324,12 +324,12 @@
 							],
 							"userProperties": [],
 							"typeProperties": {
-								"message": "Fail - FTP Source Unknown",
+								"message": "Fail - file system  Source Unknown",
 								"errorCode": "404"
 							}
 						},
 						{
-							"name": "Set error unknown ftp",
+							"name": "Set error unknown file system",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
