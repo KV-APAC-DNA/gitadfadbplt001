@@ -1365,24 +1365,19 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "my_gt_sales_dna_to_mds"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 43
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 116
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			}
 		},
 		"variables": {
