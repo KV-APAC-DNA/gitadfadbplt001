@@ -1,0 +1,23 @@
+{
+	"name": "adfadbplt001lsawsbtasgpw0000",
+	"properties": {
+		"annotations": [],
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "\\\\AWSBTASGPW0000.jx2.com\\IRTHST",
+			"userId": "jx2.com\\SA-JX2-TIM",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsawsbtasgpw0000"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
