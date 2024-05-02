@@ -73,7 +73,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "sftp_adls_sink_binary",
 											"type": "DatasetReference",
 											"parameters": {
 												"adls_container": {
@@ -91,6 +91,8 @@
 								{
 									"name": "Archive iqviaaus file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy iqviaaus file",
@@ -189,6 +191,8 @@
 								{
 									"name": "Set error iqviaaus archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -213,6 +217,8 @@
 								{
 									"name": "Archival fail 1",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -285,7 +291,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "sftp_adls_sink_binary",
 											"type": "DatasetReference",
 											"parameters": {
 												"adls_container": {
@@ -403,6 +409,8 @@
 								{
 									"name": "Set error perensoaus archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -427,6 +435,8 @@
 								{
 									"name": "Archival fail 2",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -499,7 +509,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "sftp_adls_sink_binary",
 											"type": "DatasetReference",
 											"parameters": {
 												"adls_container": {
@@ -617,6 +627,8 @@
 								{
 									"name": "Set error exacttargettha archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -641,6 +653,8 @@
 								{
 									"name": "Archival fail 5",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -831,6 +845,8 @@
 								{
 									"name": "Set error marketingcloudopstha archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingclouadopstha file",
@@ -855,6 +871,8 @@
 								{
 									"name": "Archival fail 6",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingclouadopstha file",
