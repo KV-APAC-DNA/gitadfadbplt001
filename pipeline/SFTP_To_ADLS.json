@@ -73,7 +73,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "sftp_adls_sink_binary",
 											"type": "DatasetReference",
 											"parameters": {
 												"adls_container": {
@@ -291,7 +291,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "sftp_adls_sink_binary",
 											"type": "DatasetReference",
 											"parameters": {
 												"adls_container": {
@@ -509,7 +509,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "sftp_adls_sink_binary",
 											"type": "DatasetReference",
 											"parameters": {
 												"adls_container": {
