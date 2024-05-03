@@ -11,12 +11,13 @@
 -- 4/4/24   Shantanu,Mahima,Thanish 
 -- 10/4/24  Thanish     Header handling for PH market
 -- 29/4/24  Lastest version
+-- 3/5/24   Saurabh, Thanish
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
-RETURNS TABLE ()
+RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('openpyxl==3.0.10','regex==2023.10.3','snowflake-snowpark-python==*')
+PACKAGES = ('openpyxl==3.0.10','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS '# The Snowpark package is required for Python Worksheets. 
@@ -70,6 +71,9 @@ def main(session: snowpark.Session,Param):
 
         elif stage_name.split(".")[0]=="PCFSDL_RAW":
             processed_file_name=aus_processing(CURRENT_FILE)
+
+        elif stage_name.split(".")[0]=="NTASDL_RAW":
+            processed_file_name=north_asia_processing(CURRENT_FILE)
 
         else:
             processed_file_name=CURRENT_FILE
@@ -133,7 +137,7 @@ def main(session: snowpark.Session,Param):
                 else:
                     header=header_core
 
-            elif "CRM_Children" in CURRENT_FILE or "TH_CRM_Consumer" in CURRENT_FILE or "TH_Action_Complaint" in CURRENT_FILE or "TH_Action_Open" in CURRENT_FILE or "TH_Action_Click" in CURRENT_FILE or "TH_Action_Sent" in CURRENT_FILE or "Action_Unsubscribe" in CURRENT_FILE or "TH_Action_Bounce" in CURRENT_FILE:
+            elif "CRM_Children" in CURRENT_FILE or "CRM_Consumer" in CURRENT_FILE or "Action_Complaint" in CURRENT_FILE or "Action_Open" in CURRENT_FILE or "Action_Click" in CURRENT_FILE or "Action_Sent" in CURRENT_FILE or "Action_Unsubscribe" in CURRENT_FILE or "Action_Bounce" in CURRENT_FILE or "TW_CRM_Invoice" in CURRENT_FILE or "TW_CRM_Redemption" in CURRENT_FILE or "PROD_Naver_KR_Lounge_Data" in CURRENT_FILE :
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 utf_encoding= ''UTF-16''
@@ -181,6 +185,22 @@ def main(session: snowpark.Session,Param):
                 with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
                     df_pandas=pd.read_excel(f)
                     header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif val_file_name=="FSSI Week":
+                file_name=CURRENT_FILE.replace("_"," ")
+                full_path = "@"+stage_name+"/"+temp_stage_path+"/"+file_name
+                with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
+                    df_pandas=pd.read_excel(f)
+                    header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif "JJ_KPI_Status" in CURRENT_FILE:
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\u0001").option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+                
+                df_pandas=df.to_pandas()
+                df_header=df_pandas.iloc[:,:10]
+                header=df_header.iloc[int(file_header_row_num)].tolist()
                 
                 
             else:
@@ -200,7 +220,7 @@ def main(session: snowpark.Session,Param):
             else:
                 header_pipe_split = header[0].split(''|'')
                 
-            if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report'' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS":
+            if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report'' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
             elif val_file_extn==''xlsx'':
                 result_list = header
@@ -212,7 +232,8 @@ def main(session: snowpark.Session,Param):
 
 
             if stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="FSSI Week":
-                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+                filtered_list=list('''' if pd.isna(x) else x for x in result_list)
+                filtered_list=[s.split(''\\n'')[0] for s in filtered_list]
 
             elif stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="ManufacturersReport":
                 result=list(filter(None,result_list))
@@ -317,9 +338,6 @@ def thailand_processing(CURRENT_FILE):
     else:
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
-    bol_th_pos6=[i for i in ["pop_lists","product_lists_allocation","product_lists_pops","product_lists_products","pops","product","users"] if i in CURRENT_FILE]
-    if len(bol_th_pos6) >0:
-        CURRENT_FILE=("_").join(CURRENT_FILE.split("_")[1:])
 
     return file
 
@@ -353,6 +371,18 @@ def aus_processing(CURRENT_FILE):
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
 
+    return file
+
+
+def north_asia_processing(CURRENT_FILE):
+    bol_th_pos6=[i for i in ["pop_lists","product_lists_allocation","product_lists_pops","product_lists_products","pops","product","users"] if i in CURRENT_FILE]
+    if len(bol_th_pos6) >0:
+        file=("_").join(CURRENT_FILE.split("_")[1:])
+
+    else:
+        file = CURRENT_FILE.replace(" ","_")
+        print("FileName : ", file)
+        
     return file
         
         
@@ -482,3 +512,4 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
         
             
         return file_header_validation_status,counter';
+
