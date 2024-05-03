@@ -1,8 +1,5 @@
 alter table prod_dna_core.pcfitg_integration.itg_weekly_forecast
-add column file_name varchar(255);
--------------------------------------------------------
-update prod_dna_core.pcfitg_integration.itg_weekly_forecast
-set file_name='No file name in Legacy System';
+add column file_name varchar(255) default 'No file name in Legacy System';
 ------------------------------------------------------
 insert into prod_dna_core.aspwks_integration.sap_transactional_processed_files(source_table_name,source_view_name,target_table_name,act_file_name,inserted_on,is_deleted) 
 values
