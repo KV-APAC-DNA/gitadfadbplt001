@@ -20,7 +20,7 @@
 						"type": "Expression"
 					},
 					"isSequential": false,
-					"batchCount": 10,
+					"batchCount": 15,
 					"activities": [
 						{
 							"name": "get file name",

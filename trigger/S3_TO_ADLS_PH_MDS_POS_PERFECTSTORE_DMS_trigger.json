@@ -1,16 +1,16 @@
 {
-	"name": "PCF_PERENSO_trigger",
+	"name": "S3_TO_ADLS_PH_MDS_POS_PERFECTSTORE_DMS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "master",
+					"referenceName": "s3_to_adls",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PERENSO"
+					"Group_id": "31"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-16T00:00:00",
+				"startTime": "2024-05-03T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						10
+						15
 					],
 					"hours": [
-						22
+						1
 					]
 				}
 			}
