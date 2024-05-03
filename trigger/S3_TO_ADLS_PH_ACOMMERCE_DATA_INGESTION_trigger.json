@@ -1,0 +1,25 @@
+{
+	"name": "S3_TO_ADLS_PH_ACOMMERCE_DATA_INGESTION_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-05-03T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						35
+					],
+					"hours": [
+						1
+					]
+				}
+			}
+		}
+	}
+}
