@@ -1,3 +1,14 @@
+create or replace TABLE PHLSDL_RAW.SDL_PH_LE_TRGT (
+	JJ_MNTH_ID VARCHAR(10),
+	CUST_ID VARCHAR(20),
+	TRGT_TYPE VARCHAR(10),
+	BRND_CD VARCHAR(100),
+	TP_TRGT_AMT VARCHAR(100),
+	FILENAME VARCHAR(20),
+	CDL_DTTM VARCHAR(50),
+	CURR_DATE TIMESTAMP_NTZ(9)
+);
+
 CREATE OR REPLACE PROCEDURE PCFSDL_RAW.PCF_IG_INV_METCASH_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
@@ -91,7 +102,7 @@ def main(session: snowpark.Session,Param):
         # Read the CSV file into a DataFrame
         dataframe = session.read\\
             .schema(df_schema)\\
-            .option("skip_header",0)\\
+            .option("skip_header",6)\\
             .option("field_delimiter", "\\u0001")\\
             .option("field_optionally_enclosed_by", "\\"")\\
             .option("skip_blank_lines", True)\\
