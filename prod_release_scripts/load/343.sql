@@ -1,4 +1,4 @@
-update parameters set parameter_value='PROBE'
+update meta_raw.parameters set parameter_value='PROBE'
 where parameter_id in (4924,4935);
 
 
