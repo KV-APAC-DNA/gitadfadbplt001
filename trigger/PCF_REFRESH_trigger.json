@@ -1,5 +1,5 @@
 {
-	"name": "UAT_J_RG_SELL_IN_COPA_TAB_REFRESH_trigger",
+	"name": "PCF_REFRESH_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "REGIONAL REFRESH"
+					"category": "PCF_REFRESH"
 				}
 			}
 		],
@@ -19,11 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-26T00:00:00",
+				"startTime": "2024-05-06T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						30
+					],
 					"hours": [
-						22
+						2
 					]
 				}
 			}

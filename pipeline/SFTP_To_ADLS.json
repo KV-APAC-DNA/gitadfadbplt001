@@ -1415,7 +1415,7 @@
 											"type": "Expression"
 										},
 										"adls_path": {
-											"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
+											"value": "@{pipeline().parameters.AdlsPath}/@{pipeline().parameters.FtpFileName}",
 											"type": "Expression"
 										}
 									}

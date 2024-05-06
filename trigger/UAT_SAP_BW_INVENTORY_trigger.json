@@ -23,12 +23,12 @@
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"hours": [
-						2,
 						6,
 						10,
 						14,
 						18,
-						22
+						22,
+						2
 					]
 				}
 			}
