@@ -2,7 +2,7 @@ UPDATE meta_raw.parameters
 set PARAMETER_VALUE = 'KENVUE_RetailPROBE_WE_20240427'
 WHERE PARAMETER_ID = 7073;
 
-delect from meta_raw.parameters
+delete from meta_raw.parameters
 where PARAMETER_ID =4680;
 
 INSERT INTO meta_raw.PARAMETERS (PARAMETER_ID, PARAMETER_GROUP_ID,PARAMETER_GROUP_NAME,PARAMETER_NAME,PARAMETER_VALUE,IS_SENSITIVE,IS_ACTIVE) VALUES (4680,369,'PH_sfmc_tde_refresh_group','waitTime','30',FALSE,TRUE);
