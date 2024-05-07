@@ -262,3 +262,18 @@ union all
 select * from phlwks_integration.tratbl_sdl_ph_pos_sm_goods__lookup_sm_CUST_CD
 union all
 select * from phlwks_integration.tratbl_sdl_ph_pos_sm_goods__null_test;');
+
+
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_dms','67','(\'sdl_ph_cpg_calls\', \'sdl_ph_dms_sellout_sales_fact\', \'sdl_ph_dms_sellout_stock_fact\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_mds_itg_refresh','68','(\'sdl_mds_ph_targets_by_national_and_skus\', \'sdl_mds_ph_gt_customer\', \'sdl_mds_ph_ref_pos_primary_sold_to\', \'sdl_mds_ph_pos_product\', \'sdl_mds_ph_ref_parent_customer\', \'sdl_mds_ph_npi_peg_item\', \'sdl_mds_ph_npi_sales_groupings\', \'sdl_mds_ph_targets_by_account_and_skus\', \'sdl_mds_ph_distributor_product\', \'sdl_mds_ph_ref_repfranchise\', \'sdl_mds_ph_lav_customer\', \'sdl_mds_ph_pos_pricelist\', \'sdl_mds_ph_ps_weights\', \'sdl_mds_ph_msl_hdr\', \'sdl_mds_ph_msl_dtls\', \'sdl_mds_ph_ps_targets\', \'sdl_mds_ph_distributor_supervisors\', \'sdl_mds_ph_ref_repbrand\', \'sdl_mds_ph_lav_product\', \'sdl_mds_ph_pos_customers\', \'sdl_mds_ph_ref_rka_master\', \'sdl_mds_ph_retailer_soldto_map\', \'sdl_mds_ph_non_ise_weights\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_pos','69','(\'sdl_ph_pos_robinsons\', \'sdl_ph_pos_mercury\', \'sdl_ph_pos_watsons\', \'sdl_ph_pos_rustans\', \'sdl_ph_pos_south_star\', \'sdl_ph_pos_waltermart\', \'sdl_ph_pos_dyna_sales\', \'sdl_ph_pos_puregold\',\'sdl_ph_pos_711\',\'sdl_ph_pos_sm_goods\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_perfectstore','70','(\'sdl_ph_tbl_isebranchmaster\', \'sdl_ph_clobotics_task_raw_data\', \'sdl_ph_clobotics_store_raw_data\', \'sdl_ph_clobotics_survey_data\', \'sdl_ph_tbl_surveyisehdr\', \'sdl_ph_tbl_surveyisequestion\', \'sdl_ph_tbl_surveychoices\', \'sdl_ph_tbl_acctexec\', \'sdl_ph_tbl_surveycpg\', \'sdl_ph_tbl_surveyanswers\', \'sdl_ph_tbl_surveycustomers\', \'sdl_ph_tbl_surveynotes\', \'sdl_mds_ph_ref_distributors\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_sfmc','71','(\'sdl_ph_sfmc_bounce_data\', \'sdl_ph_sfmc_click_data\', \'sdl_ph_sfmc_complaint_data\', \'sdl_ph_sfmc_sent_data\', \'sdl_ph_sfmc_unsubscribe_data\', \'sdl_ph_sfmc_children_data\', \'sdl_ph_sfmc_open_data\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_crm','72','(\'sdl_ph_sfmc_consumer_master\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_iop_target','73','(\'sdl_ph_iop_trgt\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_bp_target','74','(\'sdl_ph_bp_trgt\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_non_pos','75','(\'sdl_ph_non_ise_robinsons_ds\', \'sdl_ph_non_ise_waltermart\', \'sdl_ph_non_ise_svi_smc\', \'sdl_ph_non_ise_shm\', \'sdl_ph_non_ise_robinsons_sm\', \'sdl_ph_non_ise_landmark_sm\', \'sdl_ph_non_ise_super_8\', \'sdl_ph_non_ise_puregold\', \'sdl_ph_non_ise_landmark_ds\', \'sdl_ph_non_ise_rustans\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('j_rg_watsons_inv_ingestion','76','(\'sdl_ph_as_watsons_inventory\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('j_os_dna_sdl_to_edw_wm_sales','77','(\'sdl_ph_pos_waltermart\')','0');
+insert into core_integration.dbtjobs_test_cdc_metadata values('ph_acommerce_data_ingestion','78','(\'sdl_ph_ecommerce_offtake_acommerce\')','0');
+
