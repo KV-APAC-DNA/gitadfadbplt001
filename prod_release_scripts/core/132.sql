@@ -1,0 +1,10 @@
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_landmark_ds;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_landmark_sm;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_puregold;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_robinsons_ds;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_robinsons_sm;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_rustans;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_shm;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_super_8;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_svi_smc;
+truncate table prod_dna_core.phlwks_integration.wks_ph_non_ise_waltermart;
