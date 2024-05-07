@@ -1,5 +1,5 @@
 
-update table prod_dna_load.meta_raw.usecase
+update prod_dna_load.meta_raw.usecase
 set category='PACIFIC_SALES_REPORTING_AND_PROMAX'  
 where usecase_id in (3,6,29,37,141,142) and category = 'REGIONAL REFRESH';
 
