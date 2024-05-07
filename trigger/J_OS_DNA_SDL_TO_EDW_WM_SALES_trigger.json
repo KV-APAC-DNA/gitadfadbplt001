@@ -1,5 +1,5 @@
 {
-	"name": "UAT_J_RG_SELL_IN_COPA_TAB_REFRESH_trigger",
+	"name": "J_OS_DNA_SDL_TO_EDW_WM_SALES_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,20 +10,27 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PACIFIC_SALES_REPORTING_AND_PROMAX"
+					"category": "J_OS_DNA_SDL_TO_EDW_WM_SALES"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Week",
 				"interval": 1,
-				"startTime": "2024-02-26T00:00:00",
+				"startTime": "2024-05-07T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"hours": [
 						22
+					],
+					"weekDays": [
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday"
 					]
 				}
 			}

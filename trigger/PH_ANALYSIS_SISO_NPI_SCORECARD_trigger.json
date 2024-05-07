@@ -1,5 +1,5 @@
 {
-	"name": "UAT_J_RG_SELL_IN_COPA_TAB_REFRESH_trigger",
+	"name": "PH_ANALYSIS_SISO_NPI_SCORECARD_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PACIFIC_SALES_REPORTING_AND_PROMAX"
+					"category": "PH_ANALYSIS_SISO_NPI_SCORECARD"
 				}
 			}
 		],
@@ -19,11 +19,11 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-26T00:00:00",
+				"startTime": "2024-05-07T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"hours": [
-						22
+						4
 					]
 				}
 			}

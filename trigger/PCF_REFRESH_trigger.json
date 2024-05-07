@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_REFRESH"
+					"category": "PCF_BW_INVOICE"
 				}
 			}
 		],
