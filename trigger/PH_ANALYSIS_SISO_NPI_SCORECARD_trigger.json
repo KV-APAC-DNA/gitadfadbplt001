@@ -1,0 +1,22 @@
+{
+	"name": "PH_ANALYSIS_SISO_NPI_SCORECARD_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-05-07T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"hours": [
+						4
+					]
+				}
+			}
+		}
+	}
+}
