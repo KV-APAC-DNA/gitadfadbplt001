@@ -30,7 +30,7 @@ def main(session: snowpark.Session,Param):
         temp_stage_path = Param[2]
         sch_name        = stage_name.split('.')[0]
         target_table    = sch_name+"."+Param[3]
-
+        
         df_schema = StructType([
                     StructField("Account_Name", StringType()),
                     StructField("Year", StringType()),
@@ -42,7 +42,7 @@ def main(session: snowpark.Session,Param):
                     StructField("Sales_Value_Rs_", StringType()),
                     StructField("Sales_Qty", StringType())
                 ])
-                
+
         df = session.read\
             .schema(df_schema)\
             .option("skip_header",1)\
@@ -50,15 +50,16 @@ def main(session: snowpark.Session,Param):
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
-        filespec,filecode,fileuploadeddate,filedate = file_name.split("_")
         
+
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
-        df = df.withColumn("FILE_UPLOADED_DATE", to_timestamp(lit(fileuploadeddate),"YYYYMMDDHHMISS"))
+        df = df.withColumn("FILE_UPLOADED_DATE",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d")))
         df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
-
-        final_df = df.select("Account_Name", "Year", "Month", "Level", "Store_Code", "Subcategory", "Article_Code", \
-                    "Sales_Value_Rs_", "Sales_Qty", "FILE_NAME", "RUN_ID", "FILE_UPLOADED_DATE", "CRT_DTTM" ).alias("final_df")
+        
+        final_df = df.select("Account_Name", to_date(concat(col("Year"), lit("-"), col("Month"), lit("-15")),lit("YYYY-mon-DD")).as_("POST_DT"), \
+                            "Level",  "Store_Code",  "Subcategory", "Article_Code", "Sales_Value_Rs_", "Sales_Qty", \
+                            "FILE_NAME", "RUN_ID", "FILE_UPLOADED_DATE", "CRT_DTTM" ).alias("final_df")
 
         if final_df.count()==0:
             return "No Data in file"
@@ -75,7 +76,6 @@ def main(session: snowpark.Session,Param):
         file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
         final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
    
-
         return "Success"
         
     except KeyError as key_error:
@@ -88,6 +88,7 @@ def main(session: snowpark.Session,Param):
         error_message = f"Error: {str(e)}" +str(df.columns)
         return error_message
 $$;
+
 
 
 CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_POS_HG_PREPROCESSING("PARAM" ARRAY)
@@ -113,7 +114,7 @@ def main(session: snowpark.Session,Param):
         temp_stage_path = Param[2]
         sch_name        = stage_name.split('.')[0]
         target_table    = sch_name+"."+Param[3]
-    
+
         df_schema = StructType([
                     StructField("Account_Name", StringType()),
                     StructField("Year", StringType()),
@@ -133,15 +134,16 @@ def main(session: snowpark.Session,Param):
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
-        filespec,filecode,fileuploadeddate,filedate = file_name.split("_")
+        
 
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
-        df = df.withColumn("FILE_UPLOADED_DATE", to_timestamp(lit(fileuploadeddate),"YYYYMMDDHHMISS"))
+        df = df.withColumn("FILE_UPLOADED_DATE",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d")))
         df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
         
-        final_df = df.select("Account_Name", "Year", "Month", "Level",  "Store_Code",  "Subcategory", "Article_Code", \
-                            "Sales_Value_Rs_", "Sales_Qty", "FILE_NAME", "RUN_ID", "FILE_UPLOADED_DATE", "CRT_DTTM" ).alias("final_df")
+        final_df = df.select("Account_Name", to_date(concat(col("Year"), lit("-"), col("Month"), lit("-15")),lit("YYYY-mon-DD")).as_("POST_DT"), \
+                            "Level",  "Store_Code",  "Subcategory", "Article_Code", "Sales_Value_Rs_", "Sales_Qty", \
+                            "FILE_NAME", "RUN_ID", "FILE_UPLOADED_DATE", "CRT_DTTM" ).alias("final_df")
 
         if final_df.count()==0:
             return "No Data in file"
@@ -218,7 +220,8 @@ def main(session: snowpark.Session,Param):
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
 
-        final_df = df.select("distCode", "RsdCode", "OutletCode", "UserCode", "UdcCode", "CreatedDate", \
+        final_df = df.select("distCode", "RsdCode", "OutletCode", "UserCode", "UdcCode", \
+            to_timestamp("CreatedDate", lit("YYYY/MM/DD HH24:MI:SS")).as_("CreatedDate"), \
             "IsActive", "IsDelFlag", "RowId", "FILE_NAME", "CRT_DTTM" ).alias("final_df")
 
         if final_df.count()==0:
@@ -310,9 +313,9 @@ def main(session: snowpark.Session,Param):
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
 
-        final_df = df.select("Password", "EUserName", "UserLevel", "ParentID", "IsActive", "TeritoryID", "ABNumber", \
-                            "ForumCode", "RegionId", "EmailID", "CurrentVersion", "UpdateVersion", "IMEI", \
-                            "MobileNo", "LocationID", "IsHHT", "User_CreatedDate", "DistUserId", "FreezeDay", \
+        final_df = df.select("UserID", "UserCode", "Login", "Password", "EUserName", "UserLevel", "ParentID", "IsActive", \
+                            "TeritoryID", "ABNumber", "ForumCode", "RegionId", "EmailID", "CurrentVersion", "UpdateVersion", \
+                            "IMEI", "MobileNo", "LocationID", "IsHHT", "User_CreatedDate", "DistUserId", "FreezeDay", \
                             "FILE_NAME", "CRT_DTTM" ).alias("final_df")
 
         if final_df.count()==0:
