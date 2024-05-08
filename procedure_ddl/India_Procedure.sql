@@ -430,3 +430,170 @@ def main(session: snowpark.Session,Param):
         error_message = f"Error: {str(e)}" +str(df.columns)
         return error_message
 $$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_WINCULUM_DAILYSALES_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+    
+        df_schema = StructType([
+                    StructField("DistCode", StringType()),
+                    StructField("salinvdate", StringType()),
+                    StructField("salinvno", StringType()),
+                    StructField("RtrCode", StringType()),
+                    StructField("Productcode", StringType()),
+                    StructField("PrdQty", StringType()),
+                    StructField("NR", StringType()),
+                    StructField("Total_Price", StringType()),
+                    StructField("Tax", StringType())
+                ])
+ 
+        df = session.read\
+            .schema(df_schema)\
+            .option("skip_header",1)\
+            .option("field_delimiter", "\u0001")\
+            .option("field_optionally_enclosed_by", "\"") \
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
+        df2=df.filter(col("DistCode").is_not_null()) and df.filter(col("salinvdate").is_not_null())  and df.filter(col("salinvno").is_not_null()) \
+            and df.filter(col("RtrCode").is_not_null()) and df.filter(col("Productcode").is_not_null())
+            
+        df2 = df2.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df2 = df2.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+        df2 = df2.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        
+        final_df = df2.select("DistCode", "salinvdate", "salinvno", "RtrCode", "Productcode", "PrdQty", "NR", "Total_Price", "Tax", \
+                            "FILE_NAME", "RUN_ID", "CRT_DTTM" ).alias("final_df")
+
+                        
+                            
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_WINCULUM_SALESRETURN_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+  
+        df_schema = StructType([
+                    StructField("DistCode", StringType()),
+                    StructField("SRNDate", StringType()),
+                    StructField("SRNRefNo", StringType()),
+                    StructField("RtrCode", StringType()),
+                    StructField("Productcode", StringType()),
+                    StructField("PrdQty", StringType()),
+                    StructField("NR", StringType()),
+                    StructField("Total_Price", StringType()),
+                    StructField("Tax", StringType())
+                ])
+ 
+        df = session.read\
+            .schema(df_schema)\
+            .option("skip_header",1)\
+            .option("field_delimiter", "\u0001")\
+            .option("field_optionally_enclosed_by", "\"") \
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
+        df2=df.filter(col("DistCode").is_not_null()) and df.filter(col("SRNDate").is_not_null())  and df.filter(col("SRNRefNo").is_not_null()) \
+            and df.filter(col("RtrCode").is_not_null()) and df.filter(col("Productcode").is_not_null())
+            
+        df2 = df2.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df2 = df2.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+        df2 = df2.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        
+        final_df = df2.select("DistCode", "SRNDate", "SRNRefNo", "RtrCode", "Productcode", "PrdQty", "NR", "Total_Price", "Tax", \
+                            "FILE_NAME", "RUN_ID", "CRT_DTTM" ).alias("final_df")
+
+                        
+                            
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
