@@ -69,8 +69,8 @@ def main(session: snowpark.Session,Param):
         if temp_df.count()==0:
             return "No Data in file"
 
-        temp_df = temp_df.withColumn("gross_sales_wk5",None)
-        temp_df = temp_df.withColumn("gross_cases_wk5",None)
+        temp_df = temp_df.withColumn("gross_sales_wk5",lit(None))
+        temp_df = temp_df.withColumn("gross_cases_wk5",lit(None))
         temp_df = temp_df.withColumn("run_id",lit(lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S"))))
         temp_df = temp_df.withColumn("create_dt",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
         temp_df = temp_df.withColumn("file_name",lit(file_name.replace("_"," ").replace(".csv",".xlsx")))
