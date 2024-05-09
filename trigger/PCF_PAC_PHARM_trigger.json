@@ -17,7 +17,7 @@
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Week",
 				"interval": 1,
 				"startTime": "2024-04-16T00:00:00",
 				"timeZone": "Singapore Standard Time",
@@ -27,6 +27,9 @@
 					],
 					"hours": [
 						21
+					],
+					"weekDays": [
+						"Thursday"
 					]
 				}
 			}
