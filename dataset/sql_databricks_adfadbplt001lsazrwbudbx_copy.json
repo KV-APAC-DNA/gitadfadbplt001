@@ -1,10 +1,6 @@
 {
 	"name": "sql_databricks_adfadbplt001lsazrwbudbx_copy",
 	"properties": {
-		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsawswfqsgpw0003",
-			"type": "LinkedServiceReference"
-		},
 		"folder": {
 			"name": "ADF_Framework_Datasets/SQL"
 		},
