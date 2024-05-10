@@ -392,7 +392,14 @@
 			{
 				"name": "audit fail - move sql_server_to_alds",
 				"type": "ExecutePipeline",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "otif_server_to_adls_copy",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
 				"policy": {
 					"secureInput": false
 				},
@@ -785,7 +792,14 @@
 			{
 				"name": "Truncate_Target",
 				"type": "IfCondition",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "otif_server_to_adls_copy",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
@@ -996,7 +1010,7 @@
 				}
 			},
 			{
-				"name": "sql_server_to_adls_copy1",
+				"name": "otif_server_to_adls_copy",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -1040,13 +1054,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": {
-							"value": "@variables('ms_query')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "OdbcSource",
+						"queryTimeout": "02:00:00"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -1071,7 +1080,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sql_server_awswfqsgpw",
+						"referenceName": "Odbc_databricks_adfadbplt001lsazrwbudbx_copy",
 						"type": "DatasetReference"
 					}
 				],
