@@ -1,0 +1,27 @@
+{
+	"name": "adfadbplt001lsthepopcompanycom",
+	"properties": {
+		"description": "linked services to pop6 sftp server",
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "sftp.thepopcompany.com",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "Basic",
+			"userName": "JnJ",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsthepopcompanycom"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
