@@ -1,4 +1,3 @@
-
 ---version History--------------------------------
 -- 02/02/24 	Thanish		Initial Version
 -- 01/03/24	Srihari		Added Header logic to Handle files with '|' Delimiter
@@ -13,6 +12,7 @@
 -- 29/4/24  Latest Update
 -- 3/5/24   Saurabh, Thanish
 -- 10/5/24  Thanish
+-- 14/5/24  Thanish
 
 # The Snowpark package is required for Python Worksheets. 
 # You can add more packages by selecting them using the Packages control and then importing them.
@@ -453,7 +453,7 @@ def file_validation(counter,extracted_filename,val_file_name):
                 file_name_validation_status="Invalid File Name"
                 counter=1
 
-        elif "Superindo" in extracted_filename or "Alfamart" in extracted_filename:
+        elif "Superindo" in extracted_filename or "Alfamart" in extracted_filename or "Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename or "Stock_Beauty" in extracted_filename or "Stock_JB" in extracted_filename or "Stock_OTC" in extracted_filename:
             file_name_date_format=extracted_filename.rsplit("_",1)[1]
             if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
                 if len(file_name_date_format) == 6 and file_name_date_format.isdigit():
@@ -540,13 +540,13 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
 
             # Return Fail message if value found in Rejected list and not in extra columns list
         elif len(file_header_rejected_list)!=0 and not extra_columns:
-            file_header_validation_status="Header validation Failed"+" , unmatched columns found in index "+ str(index) +" and columns are" + str(file_header_rejected_list) + " expected "+str(final_val_header)+ " received " + str(file_header)
+            file_header_validation_status="Header validation Failed; \nunmatched columns are" + str(file_header_rejected_list) +"\nExpected Header :"+str(final_val_header)+ "\nReceived Header :" + str(file_header)
             #print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
 
             # Return Fail message if values found in extra columns list
         elif len(extra_columns)!=0:
-            file_header_validation_status="Header validation Failed, unmatched columns found in index " + str(index) + " and columns are " + str(file_header_rejected_list) + " ; extra columns found in file header! " + str(extra_columns) 
+            file_header_validation_status="Header validation Failed; \nunmatched columns are " + str(file_header_rejected_list) + "\nextra columns found in file header! " + str(extra_columns) 
             #print("file_header_validation_status",file_header_validation_status)
             counter = counter+4
 
