@@ -19,7 +19,7 @@
 						"referenceName": "file_system_source_th",
 						"type": "DatasetReference",
 						"parameters": {
-							"File_Name": "@endsWith(item().name, '_D')"
+							"File_Name": "@endsWith( '_D')"
 						}
 					},
 					"fieldList": [
