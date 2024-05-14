@@ -12,7 +12,8 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "FileServerLocation"
+				"type": "FileServerLocation",
+				"folderPath": "2024-05-14_D"
 			}
 		}
 	}
