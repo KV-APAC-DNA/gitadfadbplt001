@@ -17,13 +17,10 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "file_system_source_th",
-						"type": "DatasetReference",
-						"parameters": {
-							"File_Name": "@endsWith( '_D')"
-						}
+						"type": "DatasetReference"
 					},
 					"fieldList": [
-						"childItems"
+						"itemName"
 					],
 					"storeSettings": {
 						"type": "FileServerReadSettings",
