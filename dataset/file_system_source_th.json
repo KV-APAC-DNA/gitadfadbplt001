@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "FileServerLocation",
-				"folderPath": "2024-05-14_D"
+				"fileName": "2024-05-14_D"
 			}
 		}
 	}
