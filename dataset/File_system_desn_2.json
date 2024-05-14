@@ -1,0 +1,22 @@
+{
+	"name": "File_system_desn_2",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "dev/TH_POS_TESCO",
+				"fileSystem": "tha"
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Fastest"
+			}
+		}
+	}
+}
