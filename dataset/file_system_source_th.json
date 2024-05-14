@@ -14,9 +14,6 @@
 			"location": {
 				"type": "FileServerLocation",
 				"folderPath": "2024-05-14_D"
-			},
-			"compression": {
-				"type": "ZipDeflate"
 			}
 		}
 	}
