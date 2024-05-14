@@ -1,0 +1,29 @@
+{
+	"name": "adfadbplt001lsdmsindprd001",
+	"properties": {
+		"description": "Linked Services to India DMS MYSQL reporting database",
+		"annotations": [],
+		"type": "MySql",
+		"typeProperties": {
+			"server": "vpce-099a59854e0767b42-7bpfvs80.vpce-svc-0a36231669f511a9a.ap-southeast-1.vpce.amazonaws.com",
+			"port": 3306,
+			"database": "csngjnjreport",
+			"username": "AS_DNA",
+			"sslMode": 1,
+			"useSystemTrustStore": 0,
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsdmsindprd001"
+			},
+			"driverVersion": "v2"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt003",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
