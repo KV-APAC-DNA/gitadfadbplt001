@@ -490,7 +490,10 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"container": "@activity('read parameters').output.value[0].CONTAINER",
-												"folder_path": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].ADLS_PATH}"
+												"folder_path": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].ADLS_PATH}/{concat(formatDateTime(convertTimeZone(utcnow(), 'UTC', 'India Standard Time'), 'yyyy-MM-dd'), '_D')}",
+													"type": "Expression"
+												}
 											}
 										}
 									]
