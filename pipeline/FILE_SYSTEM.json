@@ -501,6 +501,8 @@
 								{
 									"name": "Copy data1",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "FileSystem_to_ADLS_th",
@@ -553,7 +555,7 @@
 											"parameters": {
 												"container": "@activity('read parameters').output.value[0].CONTAINER",
 												"folder_path": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].ADLS_PATH}",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].ADLS_PATH}/@{activity('read parameters').output.value[0].ADLS_PATH}",
 													"type": "Expression"
 												}
 											}
