@@ -26,6 +26,7 @@
 					],
 					"storeSettings": {
 						"type": "FileServerReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -116,6 +117,36 @@
 					"value": {
 						"value": "@concat(formatDateTime(convertTimeZone(utcnow(), 'UTC', 'India Standard Time'), 'yyyy-MM-dd'), '_D')\n",
 						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Delete1",
+				"type": "Delete",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "BinaryDestination",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "tha",
+							"directory": "dev/TH_POS_TESCO",
+							"fileName": "2024-05-15_D2.zip"
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
 					}
 				}
 			}
