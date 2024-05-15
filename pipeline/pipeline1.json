@@ -114,7 +114,7 @@
 				"typeProperties": {
 					"variableName": "date",
 					"value": {
-						"value": "@utcnow()",
+						"value": "@formatDateTime(convertTimeZone(utcnow(),'UTC','India Standard Time'),'yyyy-MM-dd')",
 						"type": "Expression"
 					}
 				}
