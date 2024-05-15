@@ -43,7 +43,7 @@ select subsource_type as "subsource_type",
     tp_bp as "tp_bp",
     nts_le as "nts_le",
     tp_le as "tp_le"
-from dev_dna_core.ntaedw_integration.edw_hk_sellin_bp_le;
+from ntaedw_integration.edw_hk_sellin_bp_le;
 create or replace view EDW_IMS_FACT(
 	"ims_txn_dt",
 	"dstr_cd",
@@ -150,7 +150,7 @@ select ims_txn_dt as "ims_txn_dt",
     sales_priority as "sales_priority",
     sales_stores as "sales_stores",
     sales_rate as "sales_rate"
-from dev_dna_core.ntaedw_integration.edw_ims_fact;
+from ntaedw_integration.edw_ims_fact;
 create or replace view EDW_IMS_INVENTORY_FACT(
 	"invnt_dt",
 	"dstr_cd",
@@ -207,7 +207,7 @@ select invnt_dt as "invnt_dt",
     chn_uom as "chn_uom",
     storage_name as "storage_name",
     area as "area"
-from dev_dna_core.ntaedw_integration.edw_ims_inventory_fact;
+from ntaedw_integration.edw_ims_inventory_fact;
 create or replace view EDW_KR_DADS_ANALYSIS(
 	"brand",
 	"keyword",
@@ -276,7 +276,7 @@ select brand as "brand",
     rocket_wow_price as "rocket_wow_price",
     total_monthly_search_volume as "total_monthly_search_volume",
     payment_amount as "payment_amount"
-from dev_dna_core.ntaedw_integration.edw_kr_dads_analysis;
+from ntaedw_integration.edw_kr_dads_analysis;
 create or replace view EDW_RPT_HK_POS(
 	"subsource_type",
 	"customer",
@@ -451,7 +451,7 @@ sos_complaince_denominator_wt as "sos_complaince_denominator_wt",
 soa_complaince_numerator as "soa_complaince_numerator",
 soa_complaince_denominator as "soa_complaince_denominator",
 soa_complaince_denominator_wt as "soa_complaince_denominator_wt"
-from dev_dna_core.ntaedw_integration.edw_rpt_hk_pos;
+from ntaedw_integration.edw_rpt_hk_pos;
 create or replace view EDW_RPT_TW_SALES_INCENTIVE(
 	"source_type",
 	"cntry_cd",
@@ -496,7 +496,7 @@ select source_type as "source_type",
     quarterly_achievement as "quarterly_achievement",
     quarterly_incentive_amount as "quarterly_incentive_amount",
     crt_dttm as "crt_dttm"
-from dev_dna_core.ntaedw_integration.edw_rpt_tw_sales_incentive;
+from ntaedw_integration.edw_rpt_tw_sales_incentive;
 create or replace view EDW_SFMC_NAVER_DM(
 	"cntry_cd",
 	"naver_id",
@@ -567,7 +567,7 @@ no_of_attendances_group as "no_of_attendances_group",
 msg_read as "msg_read",
 coupon_usage as "coupon_usage",
 new_update_date as "new_update_date"
-from DEV_DNA_CORE.NTAEDW_INTEGRATION.EDW_SFMC_NAVER_DM;
+from NTAEDW_INTEGRATION.EDW_SFMC_NAVER_DM;
 create or replace view EDW_VW_KR_TP_TRACKER(
 	"identifier",
 	"sls_org",
@@ -954,7 +954,7 @@ select distributor_code as "distributor_code",
     hq as "hq",
     crt_dttm as "crt_dttm",
     updt_dttm as "updt_dttm"
-from dev_dna_core.ntaitg_integration.itg_tw_ims_dstr_customer_mapping;
+from ntaitg_integration.itg_tw_ims_dstr_customer_mapping;
 create or replace view ITG_TW_IMS_DSTR_PROD_MAP(
 	"dstr_cd",
 	"dstr_nm",
@@ -971,7 +971,7 @@ select dstr_cd as "dstr_cd",
     ean_cd as "ean_cd",
     crt_dttm as "crt_dttm",
     updt_dttm as "updt_dttm"
-from dev_dna_core.ntaitg_integration.itg_tw_ims_dstr_prod_map;
+from ntaitg_integration.itg_tw_ims_dstr_prod_map;
 create or replace view ITG_TW_IMS_DSTR_PROD_PRICE_MAP(
 	"dstr_cd",
 	"dstr_nm",
@@ -994,7 +994,7 @@ select dstr_cd as "dstr_cd",
     promotion_end_date as "promotion_end_date",
     crt_dttm as "crt_dttm",
     updt_dttm as "updt_dttm"
-from dev_dna_core.ntaitg_integration.itg_tw_ims_dstr_prod_price_map;
+from ntaitg_integration.itg_tw_ims_dstr_prod_price_map;
 create or replace view VW_EDW_COUPANG_PREMIUM(
 	"ctry_cd",
 	"ctry_nm",
