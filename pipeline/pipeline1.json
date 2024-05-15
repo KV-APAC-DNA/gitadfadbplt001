@@ -83,7 +83,10 @@
 				"inputs": [
 					{
 						"referenceName": "file_system_source_th",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"input_folder": "2024-05-14_D"
+						}
 					}
 				],
 				"outputs": [
