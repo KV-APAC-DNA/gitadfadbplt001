@@ -94,8 +94,8 @@
 						"referenceName": "File_system_dest_th",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "dev/TH_POS_TESCO",
-							"folder_path": "tha"
+							"container": "tha",
+							"folder_path": "dev/TH_POS_TESCO"
 						}
 					}
 				]
