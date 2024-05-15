@@ -18,7 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "FileServerLocation",
-				"folderPath": "2024-05-14_D"
+				"folderPath": {
+					"value": "@dataset().input_folder",
+					"type": "Expression"
+				}
 			}
 		}
 	}
