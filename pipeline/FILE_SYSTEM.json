@@ -655,19 +655,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "THAILAND"
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 83
 			},
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"process_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 724
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"variables": {
