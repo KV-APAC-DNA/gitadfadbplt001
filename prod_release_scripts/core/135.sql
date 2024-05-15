@@ -1,0 +1,1 @@
+CREATE OR REPLACE TABLE PROD_DNA_CORE.pcfedw_integration.edw_demand_forecast_snapshot_temp CLONE PROD_DNA_CORE.pcfedw_integration.EDW_DEMAND_FORECAST_SNAPSHOT;
