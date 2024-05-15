@@ -33,10 +33,6 @@
 					"value": "@dataset().container",
 					"type": "Expression"
 				}
-			},
-			"compression": {
-				"type": "ZipDeflate",
-				"level": "Fastest"
 			}
 		}
 	}
