@@ -29,9 +29,6 @@
 					"value": "@dataset().container",
 					"type": "Expression"
 				}
-			},
-			"compression": {
-				"type": "ZipDeflate"
 			}
 		}
 	}
