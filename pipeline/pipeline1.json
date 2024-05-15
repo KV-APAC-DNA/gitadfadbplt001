@@ -51,8 +51,6 @@
 			{
 				"name": "Copy data1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -87,7 +85,7 @@
 						"referenceName": "file_system_source_th",
 						"type": "DatasetReference",
 						"parameters": {
-							"input_folder": "2024-05-14_D"
+							"input_folder": "@concat(formatDateTime(convertTimeZone(utcnow(), 'UTC', 'India Standard Time'), 'yyyy-MM-dd'), '_D')"
 						}
 					}
 				],
@@ -105,6 +103,8 @@
 			{
 				"name": "Set variable1",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
@@ -114,7 +114,7 @@
 				"typeProperties": {
 					"variableName": "date",
 					"value": {
-						"value": "@formatDateTime(addDays(convertTimeZone(utcnow(),'UTC','India Standard Time'), -1),'yyyy-MM-dd')\n",
+						"value": "@concat(formatDateTime(convertTimeZone(utcnow(), 'UTC', 'India Standard Time'), 'yyyy-MM-dd'), '_D')\n",
 						"type": "Expression"
 					}
 				}
