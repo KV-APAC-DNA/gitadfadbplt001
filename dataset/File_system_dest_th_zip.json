@@ -32,7 +32,7 @@
 			},
 			"compression": {
 				"type": "ZipDeflate",
-				"level": "Fastest"
+				"level": "Optimal"
 			}
 		}
 	}
