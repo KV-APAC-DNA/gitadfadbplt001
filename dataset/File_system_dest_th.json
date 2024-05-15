@@ -21,6 +21,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(formatDateTime(convertTimeZone(utcnow(), 'UTC', 'India Standard Time'), 'yyyy-MM-dd'), '_D')",
+					"type": "Expression"
+				},
 				"folderPath": {
 					"value": "@dataset().folder_path",
 					"type": "Expression"
