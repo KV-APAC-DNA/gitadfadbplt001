@@ -14,9 +14,6 @@
 -- 10/5/24  Thanish
 -- 14/5/24  Thanish
 
-# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
-
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col
 from snowflake.snowpark.files import SnowflakeFile
@@ -29,6 +26,7 @@ def main(session: snowpark.Session,Param):
     try:
 
         # Example input
+        #Param=['BU_BU1_Carrefour_202403.csv','first','1-1-1','BU*','csv','SAP_Code,Representative_Customer_Number,Year,Month,System_List_Price,Gross_Invoice_Price,Gross_Invoice_Price_Less_Terms,RF_Sell_Out_Qty,RF_Sell_In_Qty,Price_Off,"Reference_List"!H7',0,'NTASDL_RAW.DEV_LOAD_STAGE_ADLS_TWN','dev/taiwan_forecast/transaction/bu_forecast/sku/','']
         #Param=[''LSTR 112022.xlsx'',''last'',''1-1-0'',''LSTR'',''xlsx'',''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'',2,''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/transactional/Lagardere'','''']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
@@ -221,6 +219,16 @@ def main(session: snowpark.Session,Param):
                 df_pandas=df.to_pandas()
                 df_header=df_pandas.iloc[:,1:14]
                 header=df_header.iloc[int(file_header_row_num)].tolist()
+
+            elif "BU_BU1_Carrefour" in CURRENT_FILE or "BP_BP1" in CURRENT_FILE :
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+            
+                df_pandas=df.to_pandas()
+                header_extract=df_pandas.iloc[int(file_header_row_num)].tolist()
+                header = [s.replace("'", '"') for s in header_extract]
+                
                        
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
@@ -407,6 +415,9 @@ def north_asia_processing(CURRENT_FILE):
     if len(bol_th_pos6) >0:
         file=("_").join(CURRENT_FILE.split("_")[1:])
 
+    elif "NU_RI_ZON" in CURRENT_FILE:
+        file=CURRENT_FILE.replace("_"," ",2)
+
     else:
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
@@ -453,11 +464,25 @@ def file_validation(counter,extracted_filename,val_file_name):
                 file_name_validation_status="Invalid File Name"
                 counter=1
 
-        elif "Superindo" in extracted_filename or "Alfamart" in extracted_filename or "Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename or "Stock_Beauty" in extracted_filename or "Stock_JB" in extracted_filename or "Stock_OTC" in extracted_filename:
+        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename:
             file_name_date_format=extracted_filename.rsplit("_",1)[1]
             if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
                 if len(file_name_date_format) == 6 and file_name_date_format.isdigit():
                     file_name_validation_status=""
+                else:
+                    file_name_validation_status="File Name Valid, Invalid Date format- "+ "Expected 'YYYYMM' but received " + file_name_date_format
+                    counter=1
+            else:
+                
+                file_name_validation_status="Invalid File Name"
+                counter=1
+
+        elif "Matahari" in extracted_filename:
+            file_name_date_format=extracted_filename.rsplit("_",1)[1]
+            if val_file_name.upper() == extracted_filename.rsplit("_",2)[0].upper():
+                if len(file_name_date_format) == 6 and file_name_date_format.isdigit():
+                    file_name_validation_status=""
+
                 else:
                     file_name_validation_status="File Name Valid, Invalid Date format- "+ "Expected 'YYYYMM' but received " + file_name_date_format
                     counter=1
