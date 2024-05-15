@@ -88,8 +88,12 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "File_system_desn_2",
-						"type": "DatasetReference"
+						"referenceName": "File_system_dest_th",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "dev/TH_POS_TESCO",
+							"folder_path": "tha"
+						}
 					}
 				]
 			}
