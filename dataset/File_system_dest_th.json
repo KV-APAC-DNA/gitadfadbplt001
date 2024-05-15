@@ -1,9 +1,17 @@
 {
-	"name": "File_system_desn_2",
+	"name": "File_system_dest_th",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"folder_path": {
+				"type": "string"
+			}
 		},
 		"annotations": [],
 		"type": "Binary",
