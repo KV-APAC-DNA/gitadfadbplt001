@@ -333,7 +333,7 @@
 									}
 								},
 								{
-									"name": "error log - move sql_server_to_alds_copy1",
+									"name": "error log - FileSystem_to_ADLS_th",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -390,7 +390,7 @@
 									}
 								},
 								{
-									"name": "Send error - sql_server_to_alds_copy1",
+									"name": "Send error - FileSystem_to_ADLS_th",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -498,7 +498,7 @@
 									]
 								},
 								{
-									"name": "Copy data1",
+									"name": "adls_to_adls_zip",
 									"type": "Copy",
 									"dependsOn": [
 										{
@@ -564,7 +564,7 @@
 									"type": "Delete",
 									"dependsOn": [
 										{
-											"activity": "Copy data1",
+											"activity": "adls_to_adls_zip",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -595,6 +595,136 @@
 											"type": "AzureBlobFSReadSettings",
 											"recursive": true,
 											"enablePartitionDiscovery": false
+										}
+									}
+								},
+								{
+									"name": "error adls_to_adls_zip",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "adls_to_adls_zip",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "FileSystem_to_ADLS: @{activity('adls_to_adls_zip').error?.errorCode} @{activity('adls_to_adls_zip').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								},
+								{
+									"name": "error log - adls_to_adls_zip",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "adls_to_adls_zip",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('adls_to_adls_zip').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('adls_to_adls_zip').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - adls_to_adls_zip",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "adls_to_adls_zip",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].ADLS_PATH} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].FILENAME} \\n\n**ERROR**: _@{activity('adls_to_adls_zip').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
 										}
 									}
 								}
