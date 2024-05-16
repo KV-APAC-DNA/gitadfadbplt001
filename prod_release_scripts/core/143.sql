@@ -1,2 +1,2 @@
-delete from pcfedw_integration.edw_sls_evolution
-where snapshot_date='2024-05-16';
+create or replace table pcfedw_integration.edw_demand_forecast_snapshot clone pcfedw_integration.edw_demand_forecast_snapshot_temp;
+delete from pcfedw_integration.edw_demand_forecast_snapshot where jj_period<'202311';
