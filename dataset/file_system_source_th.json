@@ -1,0 +1,28 @@
+{
+	"name": "file_system_source_th",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawsbtasgpw0000",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"input_folder": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/FILE_SYSTEM"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "FileServerLocation",
+				"folderPath": {
+					"value": "@dataset().input_folder",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

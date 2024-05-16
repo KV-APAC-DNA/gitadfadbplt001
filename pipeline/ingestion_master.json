@@ -443,13 +443,16 @@
 		],
 		"parameters": {
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 83
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "THAILAND"
 			}
 		},
 		"variables": {
