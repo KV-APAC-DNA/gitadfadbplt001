@@ -2,7 +2,7 @@
 	"name": "File_system_dest_th",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
