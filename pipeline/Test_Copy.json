@@ -96,7 +96,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "COPY INTO OTIFCOUNSUMER_RAW.SDL_OTIF_CONSUMER_ATTR FROM\nSNOWFLAKE_STAGE.SNOWFLAKE_STAGE/odbc_server/otif/otif_cnsmr_attr_detl \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';",
+								"value": "COPY INTO OTIFCOUNSUMER_RAW.SDL_OTIF_CONSUMER_ATTR FROM\notif/odbc_server/otif/otif_cnsmr_attr_detl \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = '\"')\nON_ERROR = 'CONTINUE';",
 								"type": "Expression"
 							}
 						}
