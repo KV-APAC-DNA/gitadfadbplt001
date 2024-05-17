@@ -1,0 +1,1 @@
+create table prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_history like prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot;
