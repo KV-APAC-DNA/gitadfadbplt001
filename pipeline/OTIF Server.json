@@ -1108,19 +1108,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "OTIF"
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 190
 			},
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"process_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 711
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			}
 		},
 		"variables": {
