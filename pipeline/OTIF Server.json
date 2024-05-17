@@ -569,6 +569,8 @@
 			{
 				"name": "Send error - move_to_archive",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
@@ -739,6 +741,8 @@
 			{
 				"name": "Send error - adls_to_snowflake",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "adls_to_snowflake",
