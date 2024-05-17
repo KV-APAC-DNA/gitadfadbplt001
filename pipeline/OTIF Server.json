@@ -1114,7 +1114,7 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 195
+				"defaultValue": 501
 			},
 			"sequence_id": {
 				"type": "int",
