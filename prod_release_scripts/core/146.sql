@@ -1,2 +1,0 @@
-create or replace table pcfedw_integration.edw_demand_forecast_snapshot_history clone SBX_DNA_LAB1.AAGRAW03_WORKSPACE.EDW_DEMAND_FORECAST_SNAPSHOT_HISTORICAL_15052024;
-delete from phlitg_integration.itg_ph_dms_sellout_sales_fact where cdl_dttm ='20240507224506';
