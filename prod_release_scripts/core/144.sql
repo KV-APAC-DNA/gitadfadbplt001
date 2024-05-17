@@ -1,2 +1,0 @@
-delete from pcfedw_integration.edw_demand_forecast_snapshot_temp where jj_period<'202311';
-create or replace table pcfedw_integration.edw_demand_forecast_snapshot clone pcfedw_integration.edw_demand_forecast_snapshot_temp;
