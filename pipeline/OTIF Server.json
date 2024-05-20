@@ -1060,7 +1060,7 @@
 					"source": {
 						"type": "OdbcSource",
 						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl LIMIT 500",
-						"queryTimeout": "02:00:00"
+						"queryTimeout": "24:00:00"
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
