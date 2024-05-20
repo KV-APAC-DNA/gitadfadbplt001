@@ -1,0 +1,2 @@
+create or replace TABLE pcfedw_integration.edw_demand_forecast_snapshot clone PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_HISTORY;
+create or replace TABLE pcfedw_integration.edw_demand_forecast_snapshot_temp clone PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_HISTORY;
