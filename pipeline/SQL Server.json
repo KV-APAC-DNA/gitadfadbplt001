@@ -225,7 +225,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select SNOWFLAKE_STAGE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\n\"'ms_query'\" AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source'\n));",
+							"value": "Select SNOWFLAKE_STAGE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\n\"'ms_query'\" AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nifnull(\"'param_list'\",'') AS param_list,\n\"'param_query'\" AS param_query\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source',\n'param_list',\n'param_query'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -819,6 +819,12 @@
 					},
 					{
 						"activity": "Set SOURCE_TABLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "If Condition1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1522,6 +1528,113 @@
 						"enablePartitionDiscovery": false
 					}
 				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set SOURCE_TABLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(not(equals(activity('read parameters').output.value[0].param_list, '')),true,false)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "read_query_parameters",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": "SELECT MIN(TO_DATE(caldate))::STRING AS CM_WEEK_FROMDATE,\n             MAX(TO_DATE(caldate))::STRING AS CM_WEEK_TODATE\n      FROM INDEDW_INTEGRATION.EDW_RETAILER_CALENDAR_DIM\n      WHERE mth_mm IN (SELECT DISTINCT (year||lpad (MONTH,2,0))\n                       FROM INDITG_INTEGRATION.ITG_MDS_MONTH_END_DATES\n                       WHERE TO_DATE(convert_timezone('Asia/Kolkata',CURRENT_DATE())) <= TO_DATE(pathfinder_month_end))"
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "replace_query_params_with_values",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "read_query_parameters",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "CALL META_RAW.SP_GET_FULLQUERY(['@{replace(variables('ms_query'),'''','''''')}','@{activity('read parameters').output.value[0].param_list}','@{activity('read_query_parameters').output.resultSets[0].rows[0]}'])",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "reset_source_query",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "replace_query_params_with_values",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "ms_query",
+								"value": {
+									"value": "@activity('replace_query_params_with_values').output.resultSets[0].rows[0].SP_GET_FULLQUERY",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -1558,6 +1671,9 @@
 				"type": "String"
 			},
 			"ms_query": {
+				"type": "String"
+			},
+			"temp_query": {
 				"type": "String"
 			}
 		},
