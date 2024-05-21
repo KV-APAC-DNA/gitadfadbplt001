@@ -2,7 +2,7 @@
 	"name": "historical_trigger_retail_excellence",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
