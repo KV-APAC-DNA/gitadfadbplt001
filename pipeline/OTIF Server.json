@@ -1059,7 +1059,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "OdbcSource",
-						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl LIMIT 500",
+						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl ",
 						"queryTimeout": "24:00:00"
 					},
 					"sink": {
