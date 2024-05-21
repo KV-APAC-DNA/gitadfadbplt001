@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT  @{pipeline().parameters.Column_Name}\r\nFROM  @{pipeline().parameters.Table_Name}\r\nWHERE @{pipeline().parameters.Where_Condition}\r\nGROUP BY @{pipeline().parameters.Group_By}\r\nORDER BY @{pipeline().parameters.Order_by} DESC ;",
+						"sqlReaderQuery": "SELECT  @{pipeline().parameters.Column_Name}\r\nFROM  @{pipeline().parameters.Table_Name}\r\nWHERE @{pipeline().parameters.Where_Condition}\r\nGROUP BY @{pipeline().parameters.Group_By}\r\n ;",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -77,7 +77,7 @@
 			},
 			"Table_Name": {
 				"type": "string",
-				"defaultValue": "EDW_MY_SELLIN_ANALYSIS"
+				"defaultValue": "DEV_DNA_CORE.MYSEDW_ACCESS.EDW_MY_SELLIN_ANALYSIS"
 			},
 			"Where_Condition": {
 				"type": "string",
