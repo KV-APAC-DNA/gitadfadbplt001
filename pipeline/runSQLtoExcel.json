@@ -1,0 +1,100 @@
+{
+	"name": "runSQLtoExcel",
+	"properties": {
+		"activities": [
+			{
+				"name": "performancesql_load_to_adls_copy",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT  @{pipeline().parameters.Column_Name}\r\nFROM  @{pipeline().parameters.Table_Name}\r\nWHERE @{pipeline().parameters.Where_Condition}\r\nGROUP BY @{pipeline().parameters.Group_By}\r\nORDER BY @{pipeline().parameters.Order_by} DESC ;",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "sql_server_awswfqsgpw",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sql_server_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@variables('container')",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@variables('landing_file_path')",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@variables('landing_file_name')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"Column_Name": {
+				"type": "string",
+				"defaultValue": "distinct jj_mnth_id,to_crncy,sum(nts_val) nts_val"
+			},
+			"Table_Name": {
+				"type": "string",
+				"defaultValue": "EDW_MY_SELLIN_ANALYSIS"
+			},
+			"Where_Condition": {
+				"type": "string",
+				"defaultValue": "jj_year>='2023'"
+			},
+			"Group_By": {
+				"type": "string",
+				"defaultValue": "1"
+			},
+			"Order_By": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
