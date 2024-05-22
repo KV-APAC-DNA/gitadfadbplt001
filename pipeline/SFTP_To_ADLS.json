@@ -5,8 +5,6 @@
 			{
 				"name": "Switch SFTP",
 				"type": "Switch",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "audit start",
@@ -1398,8 +1396,6 @@
 			{
 				"name": "If Unzip Needed",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Switch SFTP",
