@@ -1,4 +1,4 @@
----version History--------------------------------
+-- version History--------------------------------
 -- 02/02/24 	Thanish		Initial Version
 -- 01/03/24	Srihari		Added Header logic to Handle files with '|' Delimiter
 -- 05/03/24	Srihari		Added Exception handling
@@ -9,16 +9,18 @@
 -- 29/03/24 Thanish     Header Logic to handle Aus files (PAC)
 -- 4/4/24   Shantanu,Mahima,Thanish 
 -- 10/4/24  Thanish     Header handling for PH market
--- 29/4/24  Lastest version
+-- 29/4/24  Latest Update
 -- 3/5/24   Saurabh, Thanish
 -- 10/5/24  Thanish
 -- 14/5/24  Thanish
+-- 22/5/24  Thanish
+
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('openpyxl==3.0.10','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
+PACKAGES = ('openpyxl==3.1.2','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS '# The Snowpark package is required for Python Worksheets. 
@@ -36,8 +38,6 @@ def main(session: snowpark.Session,Param):
     try:
 
         # Example input
-        #Param=[''BU_BU1_Carrefour_202403.csv'',''first'',''1-1-1'',''BU*'',''csv'',''SAP_Code,Representative_Customer_Number,Year,Month,System_List_Price,Gross_Invoice_Price,Gross_Invoice_Price_Less_Terms,RF_Sell_Out_Qty,RF_Sell_In_Qty,Price_Off,"Reference_List"!H7'',0,''NTASDL_RAW.DEV_LOAD_STAGE_ADLS_TWN'',''dev/taiwan_forecast/transaction/bu_forecast/sku/'','''']
-        #Param=[''''LSTR 112022.xlsx'''',''''last'''',''''1-1-0'''',''''LSTR'''',''''xlsx'''',''''Brand_name|Barcode|Item_Code|English_Desc|Chinese_Desc|Category|SRP_USD|Unit|Amt|Unit|Amt|Unit|Amt|Stock'''',2,''''ASPSDL_RAW.DEV_LOAD_STAGE_ADLS'''',''''dev/transactional/Lagardere'''','''''''']
         # Your code goes here, inside the "main" handler.
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
@@ -77,6 +77,9 @@ def main(session: snowpark.Session,Param):
 
         elif stage_name.split(".")[0]=="NTASDL_RAW":
             processed_file_name=north_asia_processing(CURRENT_FILE)
+
+        elif stage_name.split(".")[0]=="IDNSDL_RAW":
+            processed_file_name=indonesia_processing(CURRENT_FILE)
 
         else:
             processed_file_name=CURRENT_FILE
@@ -227,10 +230,10 @@ def main(session: snowpark.Session,Param):
                 df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "").option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
                 df_pandas=df.to_pandas()
-                df_header=df_pandas.iloc[:,1:14]
+                df_header=df_pandas.iloc[:,0:14]
                 header=df_header.iloc[int(file_header_row_num)].tolist()
 
-            elif "BU_BU1_Carrefour" in CURRENT_FILE or "BP_BP1" in CURRENT_FILE :
+            elif "BU_" in CURRENT_FILE or "BP_" in CURRENT_FILE :
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -238,6 +241,14 @@ def main(session: snowpark.Session,Param):
                 df_pandas=df.to_pandas()
                 header_extract=df_pandas.iloc[int(file_header_row_num)].tolist()
                 header = [s.replace("''", ''"'') for s in header_extract]
+
+            elif "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE:
+                file_name=CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name=file_name.split("_")[0]
+                df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\\t").option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+            
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
                 
                        
             else:
@@ -293,6 +304,7 @@ def main(session: snowpark.Session,Param):
             elif stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name==''Weekly_Summary_Trexi_raw_data'':
                 result_list=result_list[:12]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+                
 
             else:
                 result_list=list(filter(None,result_list))
@@ -311,6 +323,14 @@ def main(session: snowpark.Session,Param):
             pipe_split = val_header.split(''|'')
             if len(pipe_split) > 1:
                 final_val_header=pipe_split
+
+            space_split=val_header.split(" ")
+            if len(space_split) > 1:
+                final_val_header=space_split
+
+            tab_split=val_header.split("	")
+            if len(tab_split) > 1:
+                final_val_header=tab_split
 
             header_reg = header_reg.lower()
             regex_list = header_reg.split(''^'')
@@ -421,7 +441,9 @@ def aus_processing(CURRENT_FILE):
 
 
 def north_asia_processing(CURRENT_FILE):
-    bol_th_pos6=[i for i in ["pop_lists","product_lists_allocation","product_lists_pops","product_lists_products","pops","product","users"] if i in CURRENT_FILE]
+    var_1=CURRENT_FILE.find("_")
+    new_file=CURRENT_FILE[var_1+1:].split(".")[0]
+    bol_th_pos6=[i for i in ["pop_lists","product_lists_allocation","product_lists_pops","product_lists_products","pops","products","users"] if i == new_file]
     if len(bol_th_pos6) >0:
         file=("_").join(CURRENT_FILE.split("_")[1:])
 
@@ -433,8 +455,18 @@ def north_asia_processing(CURRENT_FILE):
         print("FileName : ", file)
         
     return file
-        
-        
+
+def indonesia_processing(CURRENT_FILE):
+    if "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE:
+        file=CURRENT_FILE.replace("_"," ",1)
+        print(file)
+
+    else:
+        file = CURRENT_FILE.replace(" ","_")
+        print("FileName : ", file)
+
+    return file
+
     
 
 # Function to Perform File name validation
@@ -474,7 +506,7 @@ def file_validation(counter,extracted_filename,val_file_name):
                 file_name_validation_status="Invalid File Name"
                 counter=1
 
-        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename:
+        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfmidi" in extracted_filename or "Stock_Alfmidi" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename:
             file_name_date_format=extracted_filename.rsplit("_",1)[1]
             if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
                 if len(file_name_date_format) == 6 and file_name_date_format.isdigit():
