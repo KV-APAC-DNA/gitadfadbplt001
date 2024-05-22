@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_THAILAND_trigger",
+	"name": "promax_ingesion_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "8"
+					"category": "PCF_PROMAX"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-03-25T20:39:00",
+				"startTime": "2024-05-22T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						15
+						5
 					],
 					"hours": [
-						1
+						21
 					]
 				}
 			}
