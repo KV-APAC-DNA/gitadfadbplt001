@@ -676,6 +676,7 @@ def main(session: snowpark.Session,Param):
         return error_message
 ';
 
+
 CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_RETAILER_PREPROCESSING("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
@@ -751,7 +752,7 @@ def main(session: snowpark.Session, Param):
         df = session.read\
             .schema(df_schema)\
             .option("skip_header",1)\
-            .option("field_delimiter", "|")\
+            .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -776,15 +777,7 @@ def main(session: snowpark.Session, Param):
             "FILE_NAME", "RUN_ID", "CRT_DTTM" \
         ).alias("final_df")
         
-        current_date = datetime.now()
-        formatted_year = current_date.strftime("%Y")
-        formatted_month = current_date.strftime("%m")
-        # print(new_file_name)
-       
-    
         final_df.write.mode("append").saveAsTable(target_table)
-        final_df.write.copy_into_location("@"+stage_name + "/"+temp_stage_path + "/processed/success/" + formatted_year + "/" + formatted_month + "/" + file_name, \
-            file_format_type="csv", format_type_options= {"field_optionally_enclosed_by":"\""} , OVERWRITE=True, header=True)
         return "Success"
     except KeyError as key_error:
         # Handle KeyError (missing columns) here
@@ -845,7 +838,7 @@ def main(session: snowpark.Session, Param):
         df = session.read\
             .schema(df_schema)\
             .option("skip_header",1)\
-            .option("field_delimiter", "|")\
+            .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -861,15 +854,7 @@ def main(session: snowpark.Session, Param):
             "FILE_NAME", "RUN_ID", "CRT_DTTM" \
         ).alias("final_df")
         
-        current_date = datetime.now()
-        formatted_year = current_date.strftime("%Y")
-        formatted_month = current_date.strftime("%m")
-        # print(new_file_name)
-       
-    
         final_df.write.mode("append").saveAsTable(target_table)
-        final_df.write.copy_into_location("@"+stage_name + "/"+temp_stage_path + "/processed/success/" + formatted_year + "/" + formatted_month + "/" + file_name, \
-            file_format_type="csv", format_type_options= {"field_optionally_enclosed_by":"\""} , OVERWRITE=True, header=True)
         return "Success"
     except KeyError as key_error:
         # Handle KeyError (missing columns) here
@@ -941,7 +926,7 @@ def main(session: snowpark.Session, Param):
         df = session.read\
             .schema(df_schema)\
             .option("skip_header",1)\
-            .option("field_delimiter", "|")\
+            .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -963,15 +948,7 @@ def main(session: snowpark.Session, Param):
             "FILE_NAME", "RUN_ID", "CRT_DTTM" \
         ).alias("final_df")
         
-        current_date = datetime.now()
-        formatted_year = current_date.strftime("%Y")
-        formatted_month = current_date.strftime("%m")
-        # print(new_file_name)
-       
-    
         final_df.write.mode("append").saveAsTable(target_table)
-        final_df.write.copy_into_location("@" + stage_name + "/" + temp_stage_path + "/processed/success/" + formatted_year + "/" + formatted_month + "/" + file_name, \
-                file_format_type="csv", format_type_options= {"field_optionally_enclosed_by":"\""} , OVERWRITE=True, header=True)
         return "Success"
 
     except KeyError as key_error:
@@ -1031,7 +1008,7 @@ def main(session: snowpark.Session, Param):
         df = session.read\
             .schema(df_schema)\
             .option("skip_header",1)\
-            .option("field_delimiter", "|")\
+            .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -1046,15 +1023,7 @@ def main(session: snowpark.Session, Param):
             "FILE_NAME", "RUN_ID", "CRT_DTTM" \
         ).alias("final_df")
         
-        current_date = datetime.now()
-        formatted_year = current_date.strftime("%Y")
-        formatted_month = current_date.strftime("%m")
-        # print(new_file_name)
-       
-    
         final_df.write.mode("append").saveAsTable(target_table)
-        final_df.write.copy_into_location("@" + stage_name + "/" + temp_stage_path + "/processed/success/" + formatted_year + "/" + formatted_month + "/" + file_name, \
-                file_format_type="csv", format_type_options= {"field_optionally_enclosed_by":"\""} , OVERWRITE=True, header=True)
         return "Success"
 
     except KeyError as key_error:
@@ -1121,7 +1090,7 @@ def main(session: snowpark.Session, Param):
         df = session.read\
             .schema(df_schema)\
             .option("skip_header",1)\
-            .option("field_delimiter", "|")\
+            .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
             .option("field_optionally_enclosed_by", "\"") \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -1139,16 +1108,9 @@ def main(session: snowpark.Session, Param):
             try_cast(col("createddt"), TimestampType()).alias("createddt"),\
             "FILE_NAME", "RUN_ID", "CRT_DTTM" \
         ).alias("final_df")
-        
-        current_date = datetime.now()
-        formatted_year = current_date.strftime("%Y")
-        formatted_month = current_date.strftime("%m")
-        # print(new_file_name)
-       
+               
     
         final_df.write.mode("append").saveAsTable(target_table)
-        final_df.write.copy_into_location("@"+stage_name + "/"+temp_stage_path + "/processed/success/" + formatted_year + "/" + formatted_month + "/" + file_name, \
-            file_format_type="csv", format_type_options= {"field_optionally_enclosed_by":"\""} , OVERWRITE=True, header=True)
         return "Success"
     except KeyError as key_error:
         # Handle KeyError (missing columns) here
