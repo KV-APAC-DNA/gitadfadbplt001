@@ -16,10 +16,11 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT  @{pipeline().parameters.Column_Name}\r\nFROM  @{pipeline().parameters.Table_Name}\r\nWHERE @{pipeline().parameters.Where_Condition}\r\nGROUP BY @{pipeline().parameters.Group_By}\r\n ;",
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"type": "SnowflakeSource",
+						"query": "SELECT  @{pipeline().parameters.Column_Name}\nFROM  @{pipeline().parameters.Table_Name}\nWHERE @{pipeline().parameters.Where_Condition}\nGROUP BY @{pipeline().parameters.Group_By}\nORDER BY @{pipeline().parameters.Order_By} DESC",
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
 					},
 					"sink": {
 						"type": "DelimitedTextSink",
@@ -32,19 +33,11 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
-						"referenceName": "sql_server_awswfqsgpw",
+						"referenceName": "DNA_CORE_Dataset",
 						"type": "DatasetReference"
 					}
 				],
