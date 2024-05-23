@@ -2212,7 +2212,18 @@
 							]
 						},
 						{
-							"value": "NO_WATERMARK"
+							"value": "NO_WATERMARK",
+							"activities": [
+								{
+									"name": "dummy_wait",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
 						},
 						{
 							"value": "UNKNOWN",
