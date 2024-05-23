@@ -2485,18 +2485,18 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Data Loading Failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _@{variables('errorMessage')}_",
+										"value": "Data Loading Failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{variables('container')} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{variables('landing_file_path')} \\n\n**FILE_NAME**: @{variables('landing_file_name')} \\n\n**ERROR**: _@{variables('errorMessage')}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _Kindly fix the file and reupload. More details on error - @{variables('errorMessage')}_",
+										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{variables('container')}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{variables('landing_file_path')} \\n\n**FILE_NAME**: @{variables('landing_file_name')} \\n\n**ERROR**: _Kindly fix the file and reupload. More details on error - @{variables('errorMessage')}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
 									"container": {
-										"value": "@{pipeline().parameters.Parameters.value[0].container}",
+										"value": "@variables('container')",
 										"type": "Expression"
 									}
 								}
