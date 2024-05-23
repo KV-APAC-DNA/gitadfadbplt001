@@ -1,0 +1,15 @@
+{
+	"name": "mysql_server_csngjnjreport",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdmsindprd001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": []
+	}
+}

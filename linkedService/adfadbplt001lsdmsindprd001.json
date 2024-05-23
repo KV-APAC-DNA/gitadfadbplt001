@@ -22,7 +22,7 @@
 			"driverVersion": "v2"
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt003",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
