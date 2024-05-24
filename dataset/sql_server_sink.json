@@ -38,6 +38,10 @@
 				}
 			},
 			"columnDelimiter": "\u0001",
+			"rowDelimiter": {
+				"value": "\r\n",
+				"type": "Expression"
+			},
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": ""
