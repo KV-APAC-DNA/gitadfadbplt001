@@ -189,7 +189,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select SNOWFLAKE_STAGE,IS_INCREMENTAL,WATERMARK_VALUE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\nCASE WHEN IS_INCREMENTAL = TRUE AND WATERMARK_VALUE IS NOT NULL\nTHEN\n    CONCAT(\"'ms_query'\",' ',REPLACE(ifnull(\"'incremental_filter'\",''), '{WATERMARK_VALUE}', WATERMARK_VALUE))\nELSE    \"'ms_query'\" END AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nifnull(\"'param_list'\",'') AS param_list,\n\"'param_query'\" AS param_query,\nlower(ifnull(\"'load_method'\",'copy')) AS load_method,\n\"'sp_name'\" AS SP_NAME,\n\"'next_incremental_value'\" AS next_incremental_value\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT, IS_INCREMENTAL,WATERMARK_VALUE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS P USING (PARAMETER_GROUP_ID)\nLEFT JOIN (SELECT PROCESS_ID,WATERMARK_VALUE FROM META_RAW.INCREMENTAL_WATERMARK\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND LOAD_STATUS = 'SUCCESS'\nQUALIFY ROW_NUMBER() OVER(PARTITION BY PROCESS_ID ORDER BY INSERT_TIMESTAMP DESC) = 1) I USING(PROCESS_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source',\n'param_list',\n'param_query',\n'incremental_filter',\n'load_method',\n'sp_name',\n'next_incremental_value'\n));",
+							"value": "Select SNOWFLAKE_STAGE,IS_INCREMENTAL,WATERMARK_VALUE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\nCASE WHEN IS_INCREMENTAL = TRUE AND WATERMARK_VALUE IS NOT NULL\nTHEN\n    CONCAT(\"'ms_query'\",' ',REPLACE(ifnull(\"'incremental_filter'\",''), '{WATERMARK_VALUE}', WATERMARK_VALUE))\nELSE    \"'ms_query'\" END AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nifnull(\"'param_list'\",'') AS param_list,\n\"'param_query'\" AS param_query,\nlower(ifnull(\"'load_method'\",'copy')) AS load_method,\n\"'sp_name'\" AS SP_NAME,\n\"'next_incremental_value'\" AS next_incremental_value,\nifnull(\"'map_names'\",'N') AS map_names\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT, IS_INCREMENTAL,WATERMARK_VALUE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS P USING (PARAMETER_GROUP_ID)\nLEFT JOIN (SELECT PROCESS_ID,WATERMARK_VALUE FROM META_RAW.INCREMENTAL_WATERMARK\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND LOAD_STATUS = 'SUCCESS'\nQUALIFY ROW_NUMBER() OVER(PARTITION BY PROCESS_ID ORDER BY INSERT_TIMESTAMP DESC) = 1) I USING(PROCESS_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source',\n'param_list',\n'param_query',\n'incremental_filter',\n'load_method',\n'sp_name',\n'next_incremental_value',\n'map_names'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -1588,6 +1588,26 @@
 									"isError": "Yes"
 								}
 							}
+						},
+						{
+							"name": "fail_on_truncate",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "truncate table",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "@activity('truncate table').error?.message",
+									"type": "Expression"
+								},
+								"errorCode": "1500"
+							}
 						}
 					]
 				}
@@ -1984,6 +2004,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "set_match_names",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -2017,7 +2043,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None);",
+													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' @{concat('',if(variables('match_names'),'PARSE_HEADER = TRUE','SKIP_HEADER = 1'))} ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None)\n@{concat('',if(variables('match_names'),'MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE',''))}\n;",
 													"type": "Expression"
 												}
 											}
@@ -2047,6 +2073,26 @@
 											"value": "Load Failed : @{activity('load_adls_to_snowflake').error?.message}",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "fail_on_copy",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "load_adls_to_snowflake",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "@{activity('load_adls_to_snowflake').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "1501"
 									}
 								}
 							]
@@ -2586,6 +2632,30 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "set_match_names",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "match_names",
+					"value": {
+						"value": "@equals(toLower(activity('read parameters').output.value[0].map_names),'y')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -2630,6 +2700,9 @@
 			},
 			"watermark_vlaue": {
 				"type": "String"
+			},
+			"match_names": {
+				"type": "Boolean"
 			}
 		},
 		"folder": {
