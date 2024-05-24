@@ -36,13 +36,7 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": true,
-					"stagingSettings": {
-						"linkedServiceName": {
-							"referenceName": "adfadbplt001lsdlsadbplt001",
-							"type": "LinkedServiceReference"
-						}
-					}
+					"enableStaging": false
 				},
 				"inputs": [
 					{
@@ -52,19 +46,19 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "sql_server_sink",
+						"referenceName": "snowflake_adls_copy",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": {
-								"value": "@pipeline().parameters.Container",
-								"type": "Expression"
-							},
-							"path": {
+							"src_path": {
 								"value": "@pipeline().parameters.Path",
 								"type": "Expression"
 							},
-							"file": {
-								"value": "@concat(pipeline().parameters.FileName,'.csv')",
+							"src_container": {
+								"value": "@pipeline().parameters.Container",
+								"type": "Expression"
+							},
+							"src_filename": {
+								"value": "@pipeline().parameters.FileName",
 								"type": "Expression"
 							}
 						}
