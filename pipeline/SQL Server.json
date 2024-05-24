@@ -1989,7 +1989,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@activity('read parameters').output.value[0].load_method",
+						"value": "@toLower(activity('read parameters').output.value[0].load_method)",
 						"type": "Expression"
 					},
 					"cases": [
@@ -2017,12 +2017,36 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = NONE);",
+													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' SKIP_HEADER = 1 ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None);",
 													"type": "Expression"
 												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message_on_Copy",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "load_adls_to_snowflake",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('load_adls_to_snowflake').error?.message}",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -2350,6 +2374,218 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "If Error Encountered during load",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "load_with_load_method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@or(contains(toUpper(variables('errorMessage')),'SUCCESS'),\ncontains(toUpper(variables('errorMessage')),'NO'))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "error log - load",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "Data Load Failed : @{variables('errorMessage')}",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "102",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Data load fail",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "error log - load",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Data Load Failed : @{variables('errorMessage')}",
+									"type": "Expression"
+								},
+								"errorCode": "102"
+							}
+						},
+						{
+							"name": "Send error - data load failed",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "error log - load",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "FAIL",
+									"supportMessage": {
+										"value": "Data Loading Failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{variables('container')} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{variables('landing_file_path')} \\n\n**FILE_NAME**: @{variables('landing_file_name')} \\n\n**ERROR**: _@{variables('errorMessage')}_",
+										"type": "Expression"
+									},
+									"isBusinessNotification": "Yes",
+									"isSupportNotification": "Yes",
+									"businessMessage": {
+										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{variables('container')}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{variables('landing_file_path')} \\n\n**FILE_NAME**: @{variables('landing_file_name')} \\n\n**ERROR**: _Kindly fix the file and reupload. More details on error - @{variables('errorMessage')}_",
+										"type": "Expression"
+									},
+									"isError": "Yes",
+									"container": {
+										"value": "@variables('container')",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "audit fail - load_sp",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If Error Encountered during load",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -2389,7 +2625,8 @@
 				"type": "String"
 			},
 			"errorMessage": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": "NO"
 			},
 			"watermark_vlaue": {
 				"type": "String"
