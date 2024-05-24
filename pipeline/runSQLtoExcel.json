@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT  @{pipeline().parameters.Column_Name}\nFROM  @{pipeline().parameters.Table_Name}\nWHERE @{pipeline().parameters.Where_Condition}\nGROUP BY @{pipeline().parameters.Group_By}\nORDER BY @{pipeline().parameters.Order_By} DESC;",
+							"value": "SELECT  @{pipeline().parameters.Column_Name}\nFROM  @{pipeline().parameters.Table_Name}\nWHERE @{pipeline().parameters.Where_Condition}\nGROUP BY @{pipeline().parameters.Group_By} 1,2\nORDER BY @{pipeline().parameters.Order_By} DESC;",
 							"type": "Expression"
 						},
 						"exportSettings": {
