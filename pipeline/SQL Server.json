@@ -2391,7 +2391,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(toLower(activity('read parameters').output.value[0].load_method),'sp')\n    ,or(contains(toUpper(variables('errorMessage')),'SUCCESS'),\ncontains(toUpper(variables('errorMessage')),'NO')))",
+						"value": "@or(contains(toUpper(variables('errorMessage')),'SUCCESS'),\ncontains(toUpper(variables('errorMessage')),'NO'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
