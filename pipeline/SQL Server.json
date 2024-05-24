@@ -1588,6 +1588,26 @@
 									"isError": "Yes"
 								}
 							}
+						},
+						{
+							"name": "fail_on_truncate",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "truncate table",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "@activity('truncate table').error?.message",
+									"type": "Expression"
+								},
+								"errorCode": "1500"
+							}
 						}
 					]
 				}
