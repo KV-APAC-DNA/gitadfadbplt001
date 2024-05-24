@@ -50,15 +50,15 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": {
-								"value": "@variables('container')",
+								"value": "@pipeline().parameters.Container",
 								"type": "Expression"
 							},
 							"path": {
-								"value": "@variables('landing_file_path')",
+								"value": "@pipeline().parameters.Path",
 								"type": "Expression"
 							},
 							"file": {
-								"value": "@concat(concat(@variables('FileName'), '_', formatDateTime(convertTimeZone(UTCnow(),'UTC','Singapore Standard Time'), 'yyyyMMddHHmmss')),'.csv')",
+								"value": "@pipeline().parameters.FileName",
 								"type": "Expression"
 							}
 						}
