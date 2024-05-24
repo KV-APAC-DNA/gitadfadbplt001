@@ -1655,8 +1655,6 @@
 			{
 				"name": "delete_original_file",
 				"type": "Delete",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "move_to_archive",
