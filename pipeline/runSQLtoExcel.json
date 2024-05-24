@@ -36,7 +36,13 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "adfadbplt001lsdlsadbplt001",
+							"type": "LinkedServiceReference"
+						}
+					}
 				},
 				"inputs": [
 					{
