@@ -1,17 +1,16 @@
 {
-	"name": "historical_trigger_retail_excellence",
+	"name": "TW_SFMC_CRM_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "PIPE_hist_data_migration_redshift_snowflake_master",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Environment": "PROD",
-					"process_id": "5000,5001,5002,5003,5004,5005,5006,5007,5008,5009,5010,5011"
+					"category": "TW_SFMC_CRM"
 				}
 			}
 		],
@@ -20,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-05-22T16:00:00",
+				"startTime": "2024-05-23T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						45
 					],
 					"hours": [
-						18
+						15
 					]
 				}
 			}
