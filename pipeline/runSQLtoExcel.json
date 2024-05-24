@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeSource",
-						"query": "SELECT  @{pipeline().parameters.Column_Name}\nFROM  @{pipeline().parameters.Table_Name}\nWHERE @{pipeline().parameters.Where_Condition}\nGROUP BY @{pipeline().parameters.Group_By}\nORDER BY @{pipeline().parameters.Order_By} DESC;",
+						"query": {
+							"value": "SELECT  @{pipeline().parameters.Column_Name}\nFROM  @{pipeline().parameters.Table_Name}\nWHERE @{pipeline().parameters.Where_Condition}\nGROUP BY @{pipeline().parameters.Group_By}\nORDER BY @{pipeline().parameters.Order_By} DESC;",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -70,7 +73,7 @@
 			},
 			"Table_Name": {
 				"type": "string",
-				"defaultValue": "DEV_DNA_CORE.MYSEDW_ACCESS.EDW_MY_SELLIN_ANALYSIS"
+				"defaultValue": "PROD_DNA_CORE.MYSEDW_INTEGRATION.EDW_MY_SELLIN_ANALYSIS"
 			},
 			"Where_Condition": {
 				"type": "string",
