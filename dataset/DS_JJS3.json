@@ -5,6 +5,17 @@
 			"referenceName": "adfadbplt001lsas3adpprd001",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"bucketName": {
+				"type": "string"
+			},
+			"folderName": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines/DS_TMP_KVADLS_TO_JJS3"
 		},
