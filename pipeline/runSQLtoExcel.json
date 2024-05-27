@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT @pipeline().parameters.Query;\n",
+							"value": "@pipeline().parameters.Query",
 							"type": "Expression"
 						},
 						"exportSettings": {
