@@ -116,7 +116,16 @@
 								{
 									"name": "Copy data dna core to sql",
 									"type": "Copy",
-									"dependsOn": [],
+									"state": "Inactive",
+									"onInactiveMarkAs": "Failed",
+									"dependsOn": [
+										{
+											"activity": "Script1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -179,6 +188,8 @@
 								{
 									"name": "error log - move dna_core_to_adls",
 									"type": "ExecutePipeline",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy data dna core to sql",
@@ -236,6 +247,8 @@
 								{
 									"name": "Send error - mds_sql_server_to_adls",
 									"type": "ExecutePipeline",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy data dna core to sql",
@@ -293,6 +306,8 @@
 								{
 									"name": "error_copying_dna_core",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy data dna core to sql",
@@ -308,6 +323,48 @@
 											"type": "Expression"
 										},
 										"errorCode": "2000"
+									}
+								},
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								},
+								{
+									"name": "Script1",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Wait1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "SELECT * FROM DEV_DNA_CORE.IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC;"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
 									}
 								}
 							]
