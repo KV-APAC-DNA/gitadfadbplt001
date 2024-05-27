@@ -2,7 +2,7 @@
 	"name": "EVT_TMP_KVADLS_TO_JJS3",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
