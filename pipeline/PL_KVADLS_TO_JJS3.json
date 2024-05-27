@@ -5,7 +5,14 @@
 			{
 				"name": "PLCOPY_KVADLS_TO_S3",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "LU_KVADLS_JJS3_META",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -73,6 +80,7 @@
 				}
 			}
 		],
+		"concurrency": 10,
 		"folder": {
 			"name": "Miscellaneous Pipelines/PL_TMP_KVADLS_TO_JJS3_COPY"
 		},
