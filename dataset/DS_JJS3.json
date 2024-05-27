@@ -2,7 +2,7 @@
 	"name": "DS_JJS3",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsas3adpprd001",
+			"referenceName": "adfadbplt001lsas3sfaphoto001",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
