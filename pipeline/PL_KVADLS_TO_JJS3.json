@@ -1,0 +1,56 @@
+{
+	"name": "PL_KVADLS_TO_JJS3",
+	"properties": {
+		"activities": [
+			{
+				"name": "PLCOPY_KVADLS_TO_S3",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AmazonS3WriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_KVADLS",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_JJS3",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Miscellaneous Pipelines/PL_TMP_KVADLS_TO_JJS3_COPY"
+		},
+		"annotations": []
+	}
+}
