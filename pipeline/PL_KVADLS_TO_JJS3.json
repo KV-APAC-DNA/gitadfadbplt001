@@ -26,7 +26,8 @@
 						"type": "BinarySource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"recursive": true
+							"recursive": true,
+							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
 							"type": "BinaryReadSettings"
@@ -39,12 +40,29 @@
 							"copyBehavior": "PreserveHierarchy"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "adfadbplt001lsdlsadbplt001",
+							"type": "LinkedServiceReference"
+						},
+						"path": "dataops/tmp"
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "DS_KVADLS",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"folderPath": {
+								"value": "@pipeline().parameters.folderPath",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@pipeline().parameters.fileName",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
