@@ -1,0 +1,19 @@
+{
+	"name": "DS_JJS3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsas3adpprd001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/DS_TMP_KVADLS_TO_JJS3"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AmazonS3Location"
+			}
+		}
+	}
+}
