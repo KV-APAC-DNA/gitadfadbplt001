@@ -1,0 +1,7 @@
+{
+	"name": "adfadbplt001mpepdlsadbplt001_blob",
+	"properties": {
+		"privateLinkResourceId": "/subscriptions/00ab5361-0cd5-44b3-b4df-8f24e00fe1df/resourceGroups/AZR-WEK-rg-dls-adb-001/providers/Microsoft.Storage/storageAccounts/dlsadbplt001",
+		"groupId": "blob"
+	}
+}
