@@ -1388,7 +1388,11 @@
 											},
 											"isBusinessNotification": "No",
 											"isSupportNotification": "Yes",
-											"isError": "Yes"
+											"isError": "Yes",
+											"container": {
+												"value": "@variables('container')",
+												"type": "Expression"
+											}
 										}
 									}
 								},
@@ -2829,6 +2833,9 @@
 			},
 			"match_names": {
 				"type": "Boolean"
+			},
+			"errorResponse1": {
+				"type": "String"
 			}
 		},
 		"folder": {
