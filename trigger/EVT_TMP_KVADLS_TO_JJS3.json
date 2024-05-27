@@ -8,6 +8,10 @@
 				"pipelineReference": {
 					"referenceName": "PL_KVADLS_TO_JJS3",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"folderPath": "@triggerBody().folderPath",
+					"fileName": "@triggerBody().fileName"
 				}
 			}
 		],

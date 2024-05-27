@@ -81,6 +81,16 @@
 			}
 		],
 		"concurrency": 10,
+		"parameters": {
+			"folderPath": {
+				"type": "string",
+				"defaultValue": "@triggerBody().folderPath"
+			},
+			"fileName": {
+				"type": "string",
+				"defaultValue": "@triggerBody().fileName"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines/PL_TMP_KVADLS_TO_JJS3_COPY"
 		},
