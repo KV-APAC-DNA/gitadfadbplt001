@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "PLCOPY_KVADLS_TO_S3",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
