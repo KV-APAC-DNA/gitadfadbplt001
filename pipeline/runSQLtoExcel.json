@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT  @{pipeline().parameters.Column_Name}\nFROM  @{pipeline().parameters.Table_Name}\nWHERE @{pipeline().parameters.Where_Condition}\nGROUP BY @{pipeline().parameters.Group_By} 1,2\nORDER BY @{pipeline().parameters.Order_By} DESC;",
+							"value": "SELECT @pipeline().parameters.Query;\n",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -67,25 +67,13 @@
 			}
 		],
 		"parameters": {
-			"Column_Name": {
-				"type": "string",
-				"defaultValue": "distinct jj_mnth_id,to_crncy,sum(nts_val) nts_val"
-			},
-			"Table_Name": {
-				"type": "string",
-				"defaultValue": "DEV_DNA_CORE.MYSEDW_INTEGRATION.EDW_MY_SELLIN_ANALYSIS"
-			},
-			"Where_Condition": {
-				"type": "string",
-				"defaultValue": "jj_year>='2023'"
-			},
-			"Group_By": {
+			"Src_ID": {
 				"type": "string",
 				"defaultValue": "1"
 			},
-			"Order_By": {
+			"Query": {
 				"type": "string",
-				"defaultValue": "1"
+				"defaultValue": "select distinct mnth_id,data_src,sum(in_transit_val) in_transit_val,sum(jj_grs_trd_sls) jj_grs_trd_sls,sum(end_stock_val) end_stock_val  ,sum(trgt_val) trgt_val from os_edw.EDW_MY_SELLOUT_ANALYSIS where mnth_id>='202301' group by 1,2 order by 1 desc;--not matching for 2024(end_stock_val & jj_grs_trd_sls)"
 			},
 			"Container": {
 				"type": "string",
