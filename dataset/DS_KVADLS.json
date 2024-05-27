@@ -1,0 +1,19 @@
+{
+	"name": "DS_KVADLS",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/DS_TMP_KVADLS_TO_JJS3"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation"
+			}
+		}
+	}
+}
