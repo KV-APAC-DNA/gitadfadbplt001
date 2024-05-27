@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "PL_KVADLS_TO_S3",
 	"properties": {
 		"activities": [
 			{
