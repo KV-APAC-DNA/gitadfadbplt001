@@ -73,7 +73,7 @@
 			},
 			"Query": {
 				"type": "string",
-				"defaultValue": "select distinct mnth_id,data_src,sum(in_transit_val) in_transit_val,sum(jj_grs_trd_sls) jj_grs_trd_sls,sum(end_stock_val) end_stock_val  ,sum(trgt_val) trgt_val from MYSEDW_INTEGRATIO.EDW_MY_SELLOUT_ANALYSIS where mnth_id>='202301' group by 1,2 order by 1 desc;"
+				"defaultValue": "select distinct mnth_id,data_src,sum(in_transit_val) in_transit_val,sum(jj_grs_trd_sls) jj_grs_trd_sls,sum(end_stock_val) end_stock_val  ,sum(trgt_val) trgt_val from MYSEDW_INTEGRATION.EDW_MY_SELLOUT_ANALYSIS where mnth_id>='202301' group by 1,2 order by 1 desc;--not matching for 2024(end_stock_val & jj_grs_trd_sls) "
 			},
 			"Container": {
 				"type": "string",
