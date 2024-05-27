@@ -23,7 +23,19 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "AmazonS3Location"
+				"type": "AmazonS3Location",
+				"bucketName": {
+					"value": "@dataset().bucketName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folderName",
+					"type": "Expression"
+				},
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				}
 			}
 		}
 	}
