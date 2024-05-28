@@ -1,5 +1,5 @@
 {
-	"name": "Binary2",
+	"name": "BinarySinkAdlsDataset",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
@@ -12,6 +12,9 @@
 			"directory": {
 				"type": "string"
 			}
+		},
+		"folder": {
+			"name": "s3_to_adls_idn_utility"
 		},
 		"annotations": [],
 		"type": "Binary",

@@ -36,7 +36,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "Binary1",
+						"referenceName": "BinarySourceS3Dataset",
 						"type": "DatasetReference",
 						"parameters": {
 							"bucket": "itx-arm-conapdna-indonesia-prod-kdp",
@@ -49,7 +49,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "Binary2",
+						"referenceName": "BinarySinkAdlsDataset",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "idn",

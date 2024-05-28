@@ -1,5 +1,5 @@
 {
-	"name": "Binary1",
+	"name": "BinarySourceS3Dataset",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsas3adpprd001",
@@ -14,7 +14,7 @@
 			}
 		},
 		"folder": {
-			"name": "temp_datasets"
+			"name": "s3_to_adls_idn_utility"
 		},
 		"annotations": [],
 		"type": "Binary",
