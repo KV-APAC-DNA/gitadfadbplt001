@@ -2435,7 +2435,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(contains(toUpper(variables('errorMessage')),'ERROR'))",
+						"value": "@not(contains(toUpper(variables('errorMessage')),'ERROR:'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
