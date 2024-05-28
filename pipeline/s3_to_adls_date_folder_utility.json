@@ -40,7 +40,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"bucket": {
-								"value": "@pipeline().parameters.S3Directory",
+								"value": "@pipeline().parameters.S3BucketName",
 								"type": "Expression"
 							},
 							"directory": {
