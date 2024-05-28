@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "s3_to_adls_date_folder_utility",
 	"properties": {
 		"activities": [
 			{
@@ -140,7 +140,7 @@
 			}
 		},
 		"folder": {
-			"name": "Miscellaneous Pipelines"
+			"name": "Miscellaneous Pipelines/s3_to_adls"
 		},
 		"annotations": []
 	}
