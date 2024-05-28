@@ -16,6 +16,9 @@
 				"type": "string"
 			}
 		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
