@@ -5,8 +5,14 @@
 		"annotations": [],
 		"type": "AzureBlobStorage",
 		"typeProperties": {
-			"serviceEndpoint": "https://dlsadbplt001.blob.core.windows.net/",
-			"accountKind": "StorageV2"
+			"sasUri": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsdlsadbplt001blob"
+			}
 		},
 		"connectVia": {
 			"referenceName": "adfiradbplt001",
