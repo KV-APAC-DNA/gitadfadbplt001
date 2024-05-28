@@ -1,5 +1,5 @@
 {
-	"name": "sql_server_sink_comma_delim",
+	"name": "sql_server_sink_soh_delim",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
@@ -37,14 +37,14 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": ",",
+			"columnDelimiter": "\u0001",
 			"rowDelimiter": {
 				"value": "\r\n",
 				"type": "Expression"
 			},
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
