@@ -105,7 +105,7 @@
 											"storeSettings": {
 												"type": "AmazonS3ReadSettings",
 												"recursive": true,
-												"deleteFilesAfterCompletion": true
+												"deleteFilesAfterCompletion": false
 											},
 											"formatSettings": {
 												"type": "BinaryReadSettings"
@@ -178,7 +178,7 @@
 			},
 			"IsToBeDeleted": {
 				"type": "string",
-				"defaultValue": "Y"
+				"defaultValue": "N"
 			}
 		},
 		"variables": {
