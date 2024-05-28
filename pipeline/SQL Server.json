@@ -2435,7 +2435,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(contains(toUpper(variables('errorMessage')),'SUCCESS'),\ncontains(toUpper(variables('errorMessage')),'NO'))",
+						"value": "@or(contains(toUpper(variables('errorMessage')),'SUCCESS:'),\nequals(toUpper(variables('errorMessage')),'NO'))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
