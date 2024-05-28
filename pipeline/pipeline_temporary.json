@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "pipeline_temporary",
 	"properties": {
 		"activities": [
 			{
@@ -74,7 +74,14 @@
 				"type": "Copy",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -125,7 +132,16 @@
 			{
 				"name": "Copy data dna core to sql_copy1",
 				"type": "Copy",
-				"dependsOn": [],
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Wait1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -136,10 +152,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
-						"query": "SELECT * FROM DEV_DNA_CORE.IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC;",
-						"exportSettings": {
-							"type": "SnowflakeExportCopyCommand"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
 						}
 					},
 					"sink": {
@@ -147,17 +167,30 @@
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
-						"referenceName": "DNA_CORE_Dataset",
-						"type": "DatasetReference"
+						"referenceName": "sql_server_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "idn",
+							"path": "test",
+							"file": "t.csv"
+						}
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "SqlServerTest",
+						"referenceName": "SqlServerSink",
 						"type": "DatasetReference",
 						"parameters": {
 							"schema": "dbo",
@@ -165,6 +198,15 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Wait1",
+				"type": "Wait",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
 			}
 		],
 		"folder": {
