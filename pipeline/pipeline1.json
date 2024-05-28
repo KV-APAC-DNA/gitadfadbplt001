@@ -158,7 +158,11 @@
 				"outputs": [
 					{
 						"referenceName": "SqlServerTest",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": "ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
+						}
 					}
 				]
 			}
