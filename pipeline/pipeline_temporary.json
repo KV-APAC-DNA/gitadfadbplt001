@@ -5,15 +5,7 @@
 			{
 				"name": "Script1",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
-					{
-						"activity": "Copy data dna core to sql",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
 					{
 						"activity": "Copy data dna core to sql_copy1",
 						"dependencyConditions": [
@@ -30,42 +22,16 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"referenceName": "adfadbplt001lsawswdvsgpw0006",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "SELECT * FROM DEV_DNA_CORE.IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC;"
+							"text": "SELECT * FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
 						}
 					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "Script2",
-				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Script1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"scripts": [],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			},
@@ -76,7 +42,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Script1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -132,11 +98,9 @@
 			{
 				"name": "Copy data dna core to sql_copy1",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Script1_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -179,12 +143,12 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sql_server_sink",
+						"referenceName": "sql_server_sink_comma_delim",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "idn",
 							"path": "test",
-							"file": "t.csv"
+							"file": "test.csv"
 						}
 					}
 				],
@@ -200,12 +164,29 @@
 				]
 			},
 			{
-				"name": "Wait1",
-				"type": "Wait",
+				"name": "Script1_copy1",
+				"type": "Script",
 				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
 				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lsawswdvsgpw0006",
+					"type": "LinkedServiceReference"
+				},
 				"typeProperties": {
-					"waitTimeInSeconds": 1
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "SELECT * FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
 				}
 			}
 		],
