@@ -116,8 +116,6 @@
 								{
 									"name": "Copy data dna core to sql",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Script1",
@@ -188,8 +186,6 @@
 								{
 									"name": "error log - move dna_core_to_adls",
 									"type": "ExecutePipeline",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy data dna core to sql",
@@ -247,8 +243,6 @@
 								{
 									"name": "Send error - mds_sql_server_to_adls",
 									"type": "ExecutePipeline",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy data dna core to sql",
@@ -306,8 +300,6 @@
 								{
 									"name": "error_copying_dna_core",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy data dna core to sql",
