@@ -148,7 +148,7 @@
 										"sink": {
 											"type": "DelimitedTextSink",
 											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
+												"type": "AzureBlobStorageWriteSettings"
 											},
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
@@ -166,14 +166,14 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "sql_server_sink",
+											"referenceName": "csv_blob_sink",
 											"type": "DatasetReference",
 											"parameters": {
 												"container": {
 													"value": "@{activity('read parameters').output.value[0].container}",
 													"type": "Expression"
 												},
-												"path": {
+												"directory": {
 													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].landing_file_path}",
 													"type": "Expression"
 												},
