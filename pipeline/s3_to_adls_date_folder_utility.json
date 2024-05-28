@@ -3,70 +3,160 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy files from s3 to adls",
-				"type": "Copy",
+				"name": "Switch case",
+				"type": "Switch",
 				"dependsOn": [],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "AmazonS3ReadSettings",
-							"recursive": true,
-							"deleteFilesAfterCompletion": true
+					"on": {
+						"value": "@if(equals(pipeline().parameters.IsToBeDeleted,'Y'),'DeleteAndMove','Move')",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "DeleteAndMove",
+							"activities": [
+								{
+									"name": "Copy files from s3 to adls and delete",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AmazonS3ReadSettings",
+												"recursive": true,
+												"deleteFilesAfterCompletion": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySourceS3Dataset",
+											"type": "DatasetReference",
+											"parameters": {
+												"bucket": {
+													"value": "@pipeline().parameters.S3BucketName",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{pipeline().parameters.S3Directory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinarySinkAdlsDataset",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.AdlsContainer",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.AdlsDirectory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
 						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
+						{
+							"value": "Move",
+							"activities": [
+								{
+									"name": "Copy files from s3 to adls",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AmazonS3ReadSettings",
+												"recursive": true,
+												"deleteFilesAfterCompletion": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySourceS3Dataset",
+											"type": "DatasetReference",
+											"parameters": {
+												"bucket": {
+													"value": "@pipeline().parameters.S3BucketName",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{pipeline().parameters.S3Directory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinarySinkAdlsDataset",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.AdlsContainer",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.AdlsDirectory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
 						}
-					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings",
-							"copyBehavior": "PreserveHierarchy"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "BinarySourceS3Dataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"bucket": {
-								"value": "@pipeline().parameters.S3BucketName",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@{pipeline().parameters.S3Directory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "BinarySinkAdlsDataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@pipeline().parameters.AdlsContainer",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.AdlsDirectory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
-								"type": "Expression"
-							}
-						}
-					}
-				]
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -85,6 +175,10 @@
 			"AdlsDirectory": {
 				"type": "string",
 				"defaultValue": "IVY/"
+			},
+			"IsToBeDeleted": {
+				"type": "string",
+				"defaultValue": "Y"
 			}
 		},
 		"variables": {
