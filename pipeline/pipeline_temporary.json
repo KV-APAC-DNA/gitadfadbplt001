@@ -40,6 +40,8 @@
 			{
 				"name": "Copy data dna core to sql",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script1_copy2",
@@ -196,6 +198,8 @@
 			{
 				"name": "Script1_copy2",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script1",
