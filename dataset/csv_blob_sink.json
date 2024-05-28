@@ -35,6 +35,7 @@
 				}
 			},
 			"columnDelimiter": "\u0001",
+			"rowDelimiter": "\r\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": ""
