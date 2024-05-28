@@ -1,0 +1,22 @@
+{
+	"name": "adfadbplt001lsdlsadbplt001_blob",
+	"properties": {
+		"description": "linkedservice to dlsadbplt001 configured as blob storage for special purpose e.g. staging for snowflake source",
+		"annotations": [],
+		"type": "AzureBlobStorage",
+		"typeProperties": {
+			"sasUri": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsdlsadbplt001blob"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
