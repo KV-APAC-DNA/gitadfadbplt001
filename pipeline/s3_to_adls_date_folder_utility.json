@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "Copy files from s3 to adls",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -39,9 +39,12 @@
 						"referenceName": "BinarySourceS3Dataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"bucket": "itx-arm-conapdna-indonesia-prod-kdp",
+							"bucket": {
+								"value": "@pipeline().parameters.S3Directory",
+								"type": "Expression"
+							},
 							"directory": {
-								"value": "raw_data_lake/IVY/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+								"value": "@{pipeline().parameters.S3Directory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
 								"type": "Expression"
 							}
 						}
@@ -52,81 +55,12 @@
 						"referenceName": "BinarySinkAdlsDataset",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "idn",
-							"directory": {
-								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/IVY/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "s3_to_adls_donot_delete_source_file",
-				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Copy data1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "BinarySource",
-						"storeSettings": {
-							"type": "AmazonS3ReadSettings",
-							"recursive": true,
-							"deleteFilesAfterCompletion": false
-						},
-						"formatSettings": {
-							"type": "BinaryReadSettings"
-						}
-					},
-					"sink": {
-						"type": "BinarySink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						}
-					},
-					"enableStaging": false
-				},
-				"inputs": [
-					{
-						"referenceName": "s3_source_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"bucket": "itx-arm-conapdna-indonesia-prod-kdp",
-							"path": "raw_data_lake/IVY/",
-							"file": {
-								"value": "@item().name",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "adls_sink_binary",
-						"type": "DatasetReference",
-						"parameters": {
-							"adls_container": {
-								"value": "@pipeline().parameters.adls_container",
+							"container": {
+								"value": "@pipeline().parameters.AdlsContainer",
 								"type": "Expression"
 							},
-							"adls_path": {
-								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.adls_path}",
+							"directory": {
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.AdlsDirectory}@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
 								"type": "Expression"
 							}
 						}
@@ -134,6 +68,24 @@
 				]
 			}
 		],
+		"parameters": {
+			"S3BucketName": {
+				"type": "string",
+				"defaultValue": "itx-arm-conapdna-indonesia-prod-kdp"
+			},
+			"S3Directory": {
+				"type": "string",
+				"defaultValue": "raw_data_lake/IVY/"
+			},
+			"AdlsContainer": {
+				"type": "string",
+				"defaultValue": "idn"
+			},
+			"AdlsDirectory": {
+				"type": "string",
+				"defaultValue": "IVY/"
+			}
+		},
 		"variables": {
 			"t": {
 				"type": "String"
