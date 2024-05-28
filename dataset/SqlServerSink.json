@@ -1,5 +1,5 @@
 {
-	"name": "SqlServerTest",
+	"name": "SqlServerSink",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsawswdvsgpw0006",
