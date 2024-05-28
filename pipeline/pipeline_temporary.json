@@ -3,45 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Script1",
-				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [
-					{
-						"activity": "Copy data dna core to sql_copy1",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lsawswdvsgpw0006",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": "SELECT * FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
 				"name": "Copy data dna core to sql",
 				"type": "Copy",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script1_copy2",
@@ -61,7 +24,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeSource",
-						"query": "SELECT * FROM IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC",
+						"query": "SELECT key_outlet  AS \"key_outlet\",\njj_sap_dstrbtr_id  AS \"jj_sap_dstrbtr_id\",\njj_sap_dstrbtr_nm  AS \"jj_sap_dstrbtr_nm\",\ncust_id  AS \"cust_id\",\ncust_nm  AS \"cust_nm\",\naddress  AS \"address\",\ncity  AS \"city\",\ncust_grp  AS \"cust_grp\",\nchnl  AS \"chnl\",\noutlet_type  AS \"outlet_type\",\nchnl_grp  AS \"chnl_grp\",\njjid  AS \"jjid\",\npst_cd  AS \"pst_cd\",\ncust_id_map  AS \"cust_id_map\",\ncust_nm_map  AS \"cust_nm_map\",\nchnl_grp2  AS \"chnl_grp2\",\ncust_crtd_dt  AS \"cust_crtd_dt\",\ncust_grp2  AS \"cust_grp2\",\ncrtd_dttm  AS \"crtd_dttm\",\nupdt_dttm  AS \"updt_dttm\"\nFROM DEV_DNA_CORE.IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC;",
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -104,7 +67,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Script1_copy1",
+						"activity": "Copy data dna core to sql",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -147,7 +110,7 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sql_server_sink_comma_delim",
+						"referenceName": "sql_server_sink_soh_delim",
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "idn",
@@ -202,7 +165,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Script1",
+						"activity": "Script1_copy1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -225,6 +188,41 @@
 						{
 							"type": "Query",
 							"text": "SELECT * FROM IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC"
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Script1_copy1_copy1",
+				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Copy data dna core to sql_copy1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lsawswdvsgpw0006",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": "SELECT * FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
