@@ -40,7 +40,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"bucket": "itx-arm-conapdna-indonesia-prod-kdp",
-							"directory": "raw_data_lake/IVY/2024-05-28"
+							"directory": {
+								"value": "raw_data_lake/IVY/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -50,7 +53,10 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": "idn",
-							"directory": "dev/test"
+							"directory": {
+								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/IVY/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd')}",
+								"type": "Expression"
+							}
 						}
 					}
 				]
@@ -128,6 +134,11 @@
 				]
 			}
 		],
+		"variables": {
+			"t": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
