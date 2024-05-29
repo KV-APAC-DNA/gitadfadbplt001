@@ -2410,7 +2410,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "INSERT INTO META_RAW.INCREMENTAL_WATERMARK \n(PROCESS_ID, WATERMARK_VALUE, LOAD_STATUS)\nVALUES\n(@{pipeline().parameters.process_id},\n'@{variables('watermark_vlaue')}',\n'SUCCESS'\n)",
+											"value": "INSERT INTO META_RAW.INCREMENTAL_WATERMARK \n(PROCESS_ID, WATERMARK_VALUE, LOAD_STATUS)\nVALUES\n(@{pipeline().parameters.process_id},\n'@{variables('watermark_value')}',\n'SUCCESS'\n)",
 											"type": "Expression"
 										}
 									}
