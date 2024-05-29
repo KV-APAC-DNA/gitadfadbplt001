@@ -775,6 +775,77 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "If success notification ON",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "If Refresh Successful",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(pipeline().parameters.isSuccessNotification,'Y')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Send Success notification",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "SUCCESS",
+									"isBusinessNotification": "Yes",
+									"isSupportNotification": "No",
+									"businessMessage": {
+										"value": "Refresh Successful for tableau source (@{pipeline().parameters.tableauSourceName})\n",
+										"type": "Expression"
+									},
+									"isError": "No",
+									"container": {
+										"value": "@pipeline().parameters.container",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
