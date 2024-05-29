@@ -56,7 +56,7 @@
 								"type": "Expression"
 							},
 							"folderPath": {
-								"value": "@pipeline().parameters.folderPath",
+								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow.ADLS_PATH",
 								"type": "Expression"
 							},
 							"fileName": {
@@ -99,7 +99,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('SELECT REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH,ADLS_CONTAINER FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
+							"value": "@concat('SELECT REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH,ADLS_CONTAINER, ADLS_PATH FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
 							"type": "Expression"
 						},
 						"exportSettings": {
