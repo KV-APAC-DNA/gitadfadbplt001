@@ -161,7 +161,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "SELECT * FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
+							"text": "TRUNCATE TABLE dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -266,6 +266,8 @@
 			{
 				"name": "Set variable2",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
