@@ -14,6 +14,7 @@
 -- 10/5/24  Thanish
 -- 14/5/24  Thanish
 -- 22/5/24  Thanish
+-- 29/5/24  Thanish
 # The Snowpark package is required for Python Worksheets. 
 # You can add more packages by selecting them using the Packages control and then importing them.
 
@@ -233,13 +234,21 @@ def main(session: snowpark.Session,Param):
                 header_extract=df_pandas.iloc[int(file_header_row_num)].tolist()
                 header = [s.replace("'", '"') for s in header_extract]
 
-            elif "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE:
+            elif "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE or "VISIBILITY" in CURRENT_FILE or "PLANOGRAM" in CURRENT_FILE or "PRICING" in CURRENT_FILE or "SECONDARY_DISPLAY" in CURRENT_FILE or "PROMO" in CURRENT_FILE or "PRODUCT_AVAILABILITY" in CURRENT_FILE:
                 file_name=CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name=file_name.split("_")[0]
                 df = session.read.option("INFER_SCHEMA", True).option("field_delimiter", "\t").option("field_optionally_enclosed_by", "\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
             
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif "Naver_keyword" in CURRENT_FILE:
+                file_name= CURRENT_FILE
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                full_path = "@"+stage_name+"/"+temp_stage_path+"/"+file_name
+                with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
+                    df_pandas=pd.read_excel(f)
+                    header=df_pandas.iloc[int(file_header_row_num)].tolist()
                 
                        
             else:
@@ -256,11 +265,14 @@ def main(session: snowpark.Session,Param):
 
             if CURRENT_FILE[0:3]=="ROB" or CURRENT_FILE[0:2]=="SS":
                 header=[i[:-1] for i in header]
+
+            elif "Naver_keyword" in CURRENT_FILE:
+                header=header
                 
             else:
                 header_pipe_split = header[0].split('|')
                 
-            if (val_file_extn=='xlsx' or val_file_extn=='xls') and 'Weekly Sales Report' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE and "TW_POS_PXCivilia" not in CURRENT_FILE and 'TW_POS_RTMart_RawData' not in  CURRENT_FILE and "MT01P39R" not in CURRENT_FILE and "Weekly_Summary_Trexi_raw_data" not in CURRENT_FILE:
+            if (val_file_extn=='xlsx' or val_file_extn=='xls') and 'Weekly Sales Report' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE and "TW_POS_PXCivilia" not in CURRENT_FILE and 'TW_POS_RTMart_RawData' not in  CURRENT_FILE and "MT01P39R" not in CURRENT_FILE and "Weekly_Summary_Trexi_raw_data" not in CURRENT_FILE and "Naver_keyword" not in CURRENT_FILE:
                 result_list = header[0].split('\x01')
             elif val_file_extn=='xlsx':
                 result_list = header
@@ -441,6 +453,9 @@ def north_asia_processing(CURRENT_FILE):
     elif "NU_RI_ZON" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",2)
 
+    elif "KR_POS_GS_Super" in CURRENT_FILE:
+        file=CURRENT_FILE.rsplit("_",2)[0]
+
     else:
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
@@ -448,7 +463,7 @@ def north_asia_processing(CURRENT_FILE):
     return file
 
 def indonesia_processing(CURRENT_FILE):
-    if "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE:
+    if "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE or "VISIBILITY" in CURRENT_FILE or "PLANOGRAM" in CURRENT_FILE or "PRICING" in CURRENT_FILE or "SECONDARY_DISPLAY" in CURRENT_FILE or "PROMO" in CURRENT_FILE or "PRODUCT_AVAILABILITY" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",1)
         print(file)
 
