@@ -5,9 +5,11 @@
 			{
 				"name": "Copy data dna core to sql",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Script1_copy2",
+						"activity": "Set variable1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -63,6 +65,8 @@
 			{
 				"name": "Copy data dna core to sql_copy1",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data dna core to sql",
@@ -131,6 +135,8 @@
 			{
 				"name": "Script1_copy1",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -181,7 +187,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "SELECT * FROM IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC"
+							"text": "SELECT count(*) AS \"count\" FROM IDNITG_INTEGRATION.SDL_DISTRIBUTOR_IVY_OUTLET_MASTER_MDS_SYNC"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -219,8 +225,38 @@
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Script1_copy2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "sourceCount",
+					"value": {
+						"value": "@int(activity('Script1_copy2').output.resultSets[0].rows[0].count)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"sourceCount": {
+				"type": "Integer",
+				"defaultValue": 0
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
