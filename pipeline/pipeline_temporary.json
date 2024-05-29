@@ -137,7 +137,14 @@
 				"type": "Script",
 				"state": "Inactive",
 				"onInactiveMarkAs": "Succeeded",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Set variable2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -163,6 +170,8 @@
 			{
 				"name": "Script1_copy2",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script1_copy1",
@@ -196,6 +205,8 @@
 			{
 				"name": "Script1_copy1_copy1",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data dna core to sql_copy1",
@@ -229,6 +240,8 @@
 			{
 				"name": "Set variable1",
 				"type": "SetVariable",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script1_copy2",
@@ -249,12 +262,38 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@split(pipeline().parameters.t,'.')[0]",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"parameters": {
+			"t": {
+				"type": "string",
+				"defaultValue": "abc.def"
+			}
+		},
 		"variables": {
 			"sourceCount": {
 				"type": "Integer",
 				"defaultValue": 0
+			},
+			"test": {
+				"type": "String"
 			}
 		},
 		"folder": {
