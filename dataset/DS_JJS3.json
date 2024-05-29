@@ -6,9 +6,6 @@
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
-			"bucketName": {
-				"type": "string"
-			},
 			"folderName": {
 				"type": "string"
 			},
