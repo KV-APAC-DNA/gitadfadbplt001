@@ -37,9 +37,11 @@
 					"sink": {
 						"type": "BinarySink",
 						"storeSettings": {
-							"type": "AmazonS3WriteSettings",
+							"type": "SftpWriteSettings",
 							"maxConcurrentConnections": 10,
-							"copyBehavior": "PreserveHierarchy"
+							"copyBehavior": "PreserveHierarchy",
+							"operationTimeout": "01:00:00",
+							"useTempFileRename": true
 						}
 					},
 					"enableStaging": false
@@ -69,10 +71,6 @@
 						"referenceName": "DS_JJS3",
 						"type": "DatasetReference",
 						"parameters": {
-							"bucketName": {
-								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow.S3_BUCKET",
-								"type": "Expression"
-							},
 							"folderName": {
 								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow.S3_PATH",
 								"type": "Expression"
@@ -101,7 +99,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('SELECT REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH,ADLS_CONTAINER FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND ADLS_CONTAINER=''',split(pipeline().parameters.folderPath,'_')[0],''' AND ADLS_PATH = ''',pipeline().parameters.folderPath,'''')",
+							"value": "@concat('SELECT REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH,ADLS_CONTAINER FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
 							"type": "Expression"
 						},
 						"exportSettings": {
