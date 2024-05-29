@@ -1137,9 +1137,6 @@
 			"emptyArray": {
 				"type": "Array",
 				"defaultValue": []
-			},
-			"test": {
-				"type": "String"
 			}
 		},
 		"folder": {
