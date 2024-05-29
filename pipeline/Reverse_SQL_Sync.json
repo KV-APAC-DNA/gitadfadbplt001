@@ -819,8 +819,6 @@
 								{
 									"name": "Script Truncate Source",
 									"type": "Script",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Script Target Count post sync",
