@@ -1595,6 +1595,10 @@
 						"token": {
 							"value": "@activity('Read token and siteId').output.value[0].credentials.token",
 							"type": "Expression"
+						},
+						"isSuccessNotification": {
+							"value": "@{activity('read parameters').output.value[0].isSuccessNotification}",
+							"type": "Expression"
 						}
 					}
 				}
