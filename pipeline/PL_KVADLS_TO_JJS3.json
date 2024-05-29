@@ -52,11 +52,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"container": {
-								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow.ADLS_CONTAINER",
+								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow['ADLS_CONTAINER']",
 								"type": "Expression"
 							},
 							"folderPath": {
-								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow.ADLS_PATH",
+								"value": "@activity('LU_KVADLS_JJS3_META').output.firstRow['ADLS_PATH']",
 								"type": "Expression"
 							},
 							"fileName": {
@@ -72,7 +72,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"folderName": {
-								"value": "@concat('JJISG_APDNA_',replace(activity('LU_KVADLS_JJS3_META').output.firstRow.S3_BUCKET,'-','_'),'/',activity('LU_KVADLS_JJS3_META').output.firstRow.S3_PATH)",
+								"value": "@concat('JJISG_APDNA_',replace(activity('LU_KVADLS_JJS3_META').output.firstRow['S3_BUCKET'],'-','_'),'/',activity('LU_KVADLS_JJS3_META').output.firstRow['S3_PATH'])",
 								"type": "Expression"
 							},
 							"fileName": {
@@ -99,7 +99,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('SELECT REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH,ADLS_CONTAINER, ADLS_PATH FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
+							"value": "@concat('SELECT TOP 1 REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH,ADLS_CONTAINER, ADLS_PATH FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
 							"type": "Expression"
 						},
 						"exportSettings": {
