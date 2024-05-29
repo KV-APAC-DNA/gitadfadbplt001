@@ -2,7 +2,7 @@
 	"name": "DS_JJS3",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsas3adpprd001",
+			"referenceName": "adfadbplt001lsmftappvkenvuecom",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -23,17 +23,13 @@
 		"type": "Binary",
 		"typeProperties": {
 			"location": {
-				"type": "AmazonS3Location",
-				"bucketName": {
-					"value": "@dataset().bucketName",
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
 					"type": "Expression"
 				},
 				"folderPath": {
 					"value": "@dataset().folderName",
-					"type": "Expression"
-				},
-				"fileName": {
-					"value": "@dataset().fileName",
 					"type": "Expression"
 				}
 			}
