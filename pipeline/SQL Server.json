@@ -1388,11 +1388,7 @@
 											},
 											"isBusinessNotification": "No",
 											"isSupportNotification": "Yes",
-											"isError": "Yes",
-											"container": {
-												"value": "@variables('container')",
-												"type": "Expression"
-											}
+											"isError": "Yes"
 										}
 									}
 								},
@@ -2218,7 +2214,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "watermark_vlaue",
+										"variableName": "watermark_value",
 										"value": {
 											"value": "@formatDateTime(convertTimeZone(utcNow(),'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
 											"type": "Expression"
@@ -2247,7 +2243,7 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "watermark_vlaue",
+										"variableName": "watermark_value",
 										"value": {
 											"value": "@activity('run_watermark_query').output.firstRow.next_value",
 											"type": "Expression"
@@ -2362,7 +2358,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "watermark_vlaue",
+								"variableName": "watermark_value",
 								"value": "NULL"
 							}
 						}
@@ -2828,14 +2824,11 @@
 				"type": "String",
 				"defaultValue": "NO"
 			},
-			"watermark_vlaue": {
+			"watermark_value": {
 				"type": "String"
 			},
 			"match_names": {
 				"type": "Boolean"
-			},
-			"errorResponse1": {
-				"type": "String"
 			}
 		},
 		"folder": {
