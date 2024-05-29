@@ -205,8 +205,6 @@
 			{
 				"name": "Script1_copy1_copy1",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data dna core to sql_copy1",
