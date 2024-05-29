@@ -245,14 +245,7 @@
 								{
 									"name": "Copy data dna core to sql",
 									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Script Source Query ",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -370,7 +363,7 @@
 									}
 								},
 								{
-									"name": "Send error - mds_sql_server_to_adls_copy1",
+									"name": "Send error - mds_sf_core_to_adls_copy1",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -413,7 +406,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "There is some issue while copying data from snowflake core to adls : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{activity('read parameters').output.value[0].ms_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('Copy data dna core to sql').error?.message}_",
+												"value": "There is some issue while copying data from snowflake core to adls : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**SOURCE_QUERY**: @{activity('read parameters').output.value[0].source_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**TARGET_SCHEMA_TABLE**: @{activity('read parameters').output.value[0].target_schema_table} \\n\n**ERROR**: _@{activity('Copy data dna core to sql').error?.message}_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
@@ -427,7 +420,7 @@
 									}
 								},
 								{
-									"name": "error_copying_dna_core_copy1",
+									"name": "error_copying_dna_core",
 									"type": "Fail",
 									"dependsOn": [
 										{
@@ -447,9 +440,99 @@
 									}
 								},
 								{
-									"name": "Script Source Query",
+									"name": "Copy data adls to sql",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Copy data dna core to sql",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true,
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "SqlServerSink",
+											"writeBehavior": "insert",
+											"sqlWriterUseTableLock": false
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "sql_server_sink_soh_delim",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@{activity('read parameters').output.value[0].container}",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].landing_file_path}",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@{activity('read parameters').output.value[0].landing_file_name}.csv",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "SqlServerSink",
+											"type": "DatasetReference",
+											"parameters": {
+												"schema": {
+													"value": "@split(activity('read parameters').output.value[0].target_schema_table,'.')[0]",
+													"type": "Expression"
+												},
+												"table": {
+													"value": "@split(activity('read parameters').output.value[0].target_schema_table,'.')[1]",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Script Target Count post sync",
 									"type": "Script",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Copy data adls to sql",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -459,7 +542,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"referenceName": "adfadbplt001lsawswdvsgpw0006",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -467,12 +550,270 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@{activity('read parameters').output.value[0].source_query}",
+													"value": "SELECT count(*) FROM @{activity('read parameters').output.value[0].target_schema_table}",
 													"type": "Expression"
 												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Execute Archival",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Copy data adls to sql",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "File_Archival",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"sequence_id": {
+												"value": "@pipeline().parameters.sequence_id",
+												"type": "Expression"
+											},
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"isError": "No",
+											"container": {
+												"value": "@activity('read parameters').output.value[0].container",
+												"type": "Expression"
+											},
+											"directory": {
+												"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].landing_file_path}",
+												"type": "Expression"
+											},
+											"sourceFile": {
+												"value": "@{activity('read parameters').output.value[0].landing_file_name}.csv",
+												"type": "Expression"
+											},
+											"sheetNames": {
+												"value": "@variables('emptyArray')",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error log - move adls to sql",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Copy data adls to sql",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('Copy data adls to sql').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('Copy data adls to sql').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - mds_adls_to_sql",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Copy data adls to sql",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue while copying data from adls to sql : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**SOURCE_QUERY**: @{activity('read parameters').output.value[0].source_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**TARGET_SCHEMA_TABLE**: @{activity('read parameters').output.value[0].target_schema_table} \\n\n**ERROR**: _@{activity('Copy data adls to sql').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes",
+											"container": {
+												"value": "@{activity('read parameters').output.value[0].container}",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error_copying_adls_to_sql",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Copy data adls to sql",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "adls_to_sql: @{activity('Copy data adls to sql').error?.errorCode} @{activity('Copy data adls to sql').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								},
+								{
+									"name": "Execute Archival_error",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Copy data adls to sql",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "File_Archival",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"sequence_id": {
+												"value": "@pipeline().parameters.sequence_id",
+												"type": "Expression"
+											},
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"isError": "Yes",
+											"container": {
+												"value": "@activity('read parameters').output.value[0].container",
+												"type": "Expression"
+											},
+											"directory": {
+												"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].landing_file_path}",
+												"type": "Expression"
+											},
+											"sourceFile": {
+												"value": "@{activity('read parameters').output.value[0].landing_file_name}.csv",
+												"type": "Expression"
+											},
+											"sheetNames": {
+												"value": "@variables('emptyArray')",
+												"type": "Expression"
+											}
+										}
 									}
 								}
 							]
@@ -543,181 +884,6 @@
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
-			},
-			{
-				"name": "Copy data adls to sql",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Switch Source",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "SqlServerSink",
-						"writeBehavior": "insert",
-						"sqlWriterUseTableLock": false
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "sql_server_sink_soh_delim",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@{activity('read parameters').output.value[0].container}",
-								"type": "Expression"
-							},
-							"path": {
-								"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].landing_file_path}",
-								"type": "Expression"
-							},
-							"file": {
-								"value": "@{activity('read parameters').output.value[0].landing_file_name}.csv",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "SqlServerSink",
-						"type": "DatasetReference",
-						"parameters": {
-							"schema": "dbo",
-							"table": "ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
-						}
-					}
-				]
-			},
-			{
-				"name": "Script Target Count post sync",
-				"type": "Script",
-				"dependsOn": [
-					{
-						"activity": "Copy data adls to sql",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"linkedServiceName": {
-					"referenceName": "adfadbplt001lsawswdvsgpw0006",
-					"type": "LinkedServiceReference"
-				},
-				"typeProperties": {
-					"scripts": [
-						{
-							"type": "Query",
-							"text": {
-								"value": "SELECT count(*) FROM @{activity('read parameters').output.value[0].target_schema_table}",
-								"type": "Expression"
-							}
-						}
-					],
-					"scriptBlockExecutionTimeout": "02:00:00"
-				}
-			},
-			{
-				"name": "Execute Archival",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Copy data adls to sql",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "File_Archival",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"sequence_id": {
-							"value": "@pipeline().parameters.sequence_id",
-							"type": "Expression"
-						},
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"isError": "No",
-						"container": {
-							"value": "@activity('read parameters').output.value[0].container",
-							"type": "Expression"
-						},
-						"directory": {
-							"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].landing_file_path}",
-							"type": "Expression"
-						},
-						"sourceFile": {
-							"value": "@{activity('read parameters').output.value[0].landing_file_name}.csv",
-							"type": "Expression"
-						},
-						"sheetNames": {
-							"value": "@variables('emptyArray')",
-							"type": "Expression"
-						}
-					}
-				}
 			}
 		],
 		"parameters": {
@@ -748,6 +914,9 @@
 			"emptyArray": {
 				"type": "Array",
 				"defaultValue": []
+			},
+			"test": {
+				"type": "String"
 			}
 		},
 		"folder": {
