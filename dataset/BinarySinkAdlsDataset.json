@@ -1,5 +1,5 @@
 {
-	"name": "sql_server_sink",
+	"name": "BinarySinkAdlsDataset",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
@@ -9,43 +9,27 @@
 			"container": {
 				"type": "string"
 			},
-			"path": {
-				"type": "string"
-			},
-			"file": {
+			"directory": {
 				"type": "string"
 			}
 		},
 		"folder": {
-			"name": "ADF_Framework_Datasets/SQL"
+			"name": "s3_to_adls_idn_utility"
 		},
 		"annotations": [],
-		"type": "DelimitedText",
+		"type": "Binary",
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": {
-					"value": "@dataset().file",
-					"type": "Expression"
-				},
 				"folderPath": {
-					"value": "@dataset().path",
+					"value": "@dataset().directory",
 					"type": "Expression"
 				},
 				"fileSystem": {
 					"value": "@dataset().container",
 					"type": "Expression"
 				}
-			},
-			"columnDelimiter": "\u0001",
-			"rowDelimiter": {
-				"value": "\r\n",
-				"type": "Expression"
-			},
-			"escapeChar": "\\",
-			"firstRowAsHeader": true,
-			"quoteChar": ""
-		},
-		"schema": []
+			}
+		}
 	}
 }
