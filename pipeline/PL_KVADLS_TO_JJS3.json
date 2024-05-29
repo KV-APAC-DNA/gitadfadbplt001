@@ -110,7 +110,7 @@
 						"referenceName": "DS_KVSNFK",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": false
+					"firstRowOnly": true
 				}
 			}
 		],
