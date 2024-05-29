@@ -813,6 +813,9 @@
 			},
 			"token": {
 				"type": "string"
+			},
+			"isSuccessNotification": {
+				"type": "string"
 			}
 		},
 		"variables": {
