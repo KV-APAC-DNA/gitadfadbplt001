@@ -2,7 +2,7 @@
 	"name": "DS_KVSNFK",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lssnfkpltdnaload002",
+			"referenceName": "adfadbplt001lssnfksbxdnalab1001",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
