@@ -135,8 +135,6 @@
 			{
 				"name": "Script1_copy1",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set variable2",
@@ -205,6 +203,8 @@
 			{
 				"name": "Script1_copy1_copy1",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Copy data dna core to sql_copy1",
@@ -229,7 +229,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "SELECT * FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
+							"text": "SELECT count(*) AS count FROM dbo.ID_MDS_DISTRIBUTOR_IVY_OUTLET_MASTER_TEMP"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
