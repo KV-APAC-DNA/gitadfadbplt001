@@ -37,6 +37,7 @@
 						"type": "BinarySink",
 						"storeSettings": {
 							"type": "AmazonS3WriteSettings",
+							"maxConcurrentConnections": 10,
 							"copyBehavior": "PreserveHierarchy"
 						}
 					},
@@ -87,6 +88,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeV2Source",
+						"query": {
+							"value": "@concat('SELECT REPLACE(S3_BUCKET,''-kdp'',''''), S3_PATH FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND ADLS_CONTAINER=''',pipeline().parameters.folderPath,''' AND ADLS_PATH LIKE ''%',pipeline().parameters.folderPath,'%'' AND S3_FILE LIKE ''%',pipeline().parameters.fileName,''')\n\n",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
