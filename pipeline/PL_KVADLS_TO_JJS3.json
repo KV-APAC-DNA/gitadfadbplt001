@@ -99,7 +99,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('SELECT TOP 1 REPLACE(S3_BUCKET,''-kdp'','''') as S3_BUCKET, S3_PATH, ADLS_CONTAINER, ADLS_PATH FROM meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
+							"value": "@concat('SELECT TOP 1 REPLACE(S3_BUCKET,''-kdp'','''') as S3_BUCKET, S3_PATH, ADLS_CONTAINER, ADLS_PATH FROM PROD_DNA_LOAD.meta_raw.s3_to_adls WHERE ISACTIVE = ''TRUE'' AND concat(ADLS_CONTAINER,''/'',ADLS_PATH) = ''',pipeline().parameters.folderPath,'''')",
 							"type": "Expression"
 						},
 						"exportSettings": {
