@@ -110,7 +110,7 @@
 						"type": "BinarySource",
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
+							"recursive": false,
 							"wildcardFolderPath": {
 								"value": "@variables('landing_file_path')",
 								"type": "Expression"
@@ -1519,6 +1519,77 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "mysql_server_csngjnjreport_dbload",
+							"activities": [
+								{
+									"name": "mysql_to_adls_dbload",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@variables('ms_query')",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "SnowflakeSink",
+											"preCopyScript": {
+												"value": "@if(equals(activity('read parameters').output.value[0].truncate_and_load,'Y'),concat('TRUNCATE TABLE ',activity('read parameters').output.value[0].target_schema,'.',activity('read parameters').output.value[0].target_table),'')",
+												"type": "Expression"
+											},
+											"importSettings": {
+												"type": "SnowflakeImportCopyCommand"
+											}
+										},
+										"enableStaging": true,
+										"stagingSettings": {
+											"linkedServiceName": {
+												"referenceName": "adfadbplt001lsdlsadbplt001_blob",
+												"type": "LinkedServiceReference"
+											},
+											"path": {
+												"value": "@{variables('container')}/@{variables('landing_file_path')}",
+												"type": "Expression"
+											},
+											"enableCompression": true
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "mysql_server_csngjnjreport",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "mtd_process_target",
+											"type": "DatasetReference",
+											"parameters": {
+												"tablename": {
+													"value": "@activity('read parameters').output.value[0].target_table",
+													"type": "Expression"
+												},
+												"schemaname": {
+													"value": "@activity('read parameters').output.value[0].target_schema",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
 						}
 					],
 					"defaultActivities": [
@@ -1552,7 +1623,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('read parameters').output.value[0].TRUNCATE_AND_LOAD, 'Y')",
+						"value": "@and(equals(activity('read parameters').output.value[0].TRUNCATE_AND_LOAD, 'Y'),\nnot(endswith(activity('read parameters').output.value[0].decide_source,'dbload')))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -1819,7 +1890,7 @@
 					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
+						"recursive": false,
 						"wildcardFileName": {
 							"value": "@{variables('landing_file_name')}*",
 							"type": "Expression"
