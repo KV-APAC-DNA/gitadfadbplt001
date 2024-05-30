@@ -1015,7 +1015,7 @@
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
-										"retry": 0,
+										"retry": 2,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
 										"secureInput": false
@@ -1218,7 +1218,7 @@
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
-										"retry": 2,
+										"retry": 0,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
 										"secureInput": false
@@ -1418,7 +1418,7 @@
 							"value": "mysql_server_csngjnjreport_batchread",
 							"activities": [
 								{
-									"name": "mds_sql_server_to_adls_multifiles",
+									"name": "mysql_to_adls_multifiles",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -1431,13 +1431,11 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SqlServerSource",
-											"sqlReaderQuery": {
+											"type": "MySqlSource",
+											"query": {
 												"value": "@variables('ms_query')",
 												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
+											}
 										},
 										"sink": {
 											"type": "DelimitedTextSink",
@@ -1467,7 +1465,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "sql_server_mds",
+											"referenceName": "mysql_server_csngjnjreport",
 											"type": "DatasetReference"
 										}
 									],
