@@ -1,15 +1,15 @@
 {
-	"name": "sql_server_sink",
+	"name": "csv_blob_sink",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"referenceName": "adfadbplt001lsdlsadbplt001_blob",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
 			"container": {
 				"type": "string"
 			},
-			"path": {
+			"directory": {
 				"type": "string"
 			},
 			"file": {
@@ -23,28 +23,25 @@
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobFSLocation",
+				"type": "AzureBlobStorageLocation",
 				"fileName": {
 					"value": "@dataset().file",
 					"type": "Expression"
 				},
 				"folderPath": {
-					"value": "@dataset().path",
+					"value": "@dataset().directory",
 					"type": "Expression"
 				},
-				"fileSystem": {
+				"container": {
 					"value": "@dataset().container",
 					"type": "Expression"
 				}
 			},
 			"columnDelimiter": "\u0001",
-			"rowDelimiter": {
-				"value": "\r\n",
-				"type": "Expression"
-			},
+			"rowDelimiter": "\r\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}

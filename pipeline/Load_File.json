@@ -164,7 +164,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path}','@{pipeline().parameters.parameters.value[0].target_table\n}']);\n",
+												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table\n}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -271,7 +271,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path}','@{pipeline().parameters.parameters.value[0].header_regex\n}']);",
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex\n}']);",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -392,7 +392,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"src_path": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path}",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 													"type": "Expression"
 												},
 												"src_filename": {
@@ -420,7 +420,7 @@
 											"type": "DatasetReference",
 											"parameters": {
 												"target_path": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path}",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 													"type": "Expression"
 												},
 												"target_filename": {
@@ -551,7 +551,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"src_path": {
-											"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path}",
+											"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 											"type": "Expression"
 										},
 										"src_filename": {
@@ -579,7 +579,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"target_path": {
-											"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path}",
+											"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 											"type": "Expression"
 										},
 										"target_filename": {
@@ -715,13 +715,13 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "There is some issue while converting multisheet excel into separate CSVs : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _@{activity('converttocsv sheetwise').error?.message}_",
+										"value": "There is some issue while converting multisheet excel into separate CSVs : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _@{activity('converttocsv sheetwise').error?.message}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload._",
+										"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_NAME**: @{item()} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload._",
 										"type": "Expression"
 									},
 									"isError": "Yes"
@@ -923,13 +923,13 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Data Loading Failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _@{variables('errorMessage')}_",
+										"value": "Data Loading Failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _@{variables('errorMessage')}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _Kindly fix the file and reupload. More details on error - @{variables('errorMessage')}_",
+										"value": "There is some issue with the source file as Data Loading was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _Kindly fix the file and reupload. More details on error - @{variables('errorMessage')}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -1075,13 +1075,13 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "File Validation Failure : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _@{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}_",
+										"value": "File Validation Failure : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _@{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload. More details on error,  - @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}_",
+										"value": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload. More details on error,  - @{activity('FileStructureValidation SP Call').output.value[0].FILE_VALIDATION}_",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -1433,7 +1433,7 @@
 							"type": "Expression"
 						},
 						"directory": {
-							"value": "@pipeline().parameters.Parameters.value[0].folder_path",
+							"value": "@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 							"type": "Expression"
 						},
 						"sourceFile": {
@@ -1495,7 +1495,7 @@
 							"type": "Expression"
 						},
 						"directory": {
-							"value": "@pipeline().parameters.Parameters.value[0].folder_path",
+							"value": "@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 							"type": "Expression"
 						},
 						"sourceFile": {
@@ -1557,7 +1557,7 @@
 							"type": "Expression"
 						},
 						"directory": {
-							"value": "@pipeline().parameters.Parameters.value[0].folder_path",
+							"value": "@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 							"type": "Expression"
 						},
 						"sourceFile": {
@@ -1619,7 +1619,7 @@
 							"type": "Expression"
 						},
 						"directory": {
-							"value": "@pipeline().parameters.Parameters.value[0].folder_path",
+							"value": "@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 							"type": "Expression"
 						},
 						"sourceFile": {
@@ -1860,7 +1860,7 @@
 							"type": "Expression"
 						},
 						"directory": {
-							"value": "@pipeline().parameters.Parameters.value[0].folder_path",
+							"value": "@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
 							"type": "Expression"
 						},
 						"sourceFile": {
@@ -1918,13 +1918,13 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "There is some issue while converting excel into csv : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_INDEX**: @{pipeline().parameters.Parameters.value[0].sheet_index} \\n\n**ERROR**: _@{variables('errorMessage')}_",
+							"value": "There is some issue while converting excel into csv : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**SHEET_INDEX**: @{pipeline().parameters.Parameters.value[0].sheet_index} \\n\n**ERROR**: _@{variables('errorMessage')}_",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "Yes",
 						"isSupportNotification": "Yes",
 						"businessMessage": {
-							"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].folder_path} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload._",
+							"value": "There is some issue with source file. Following are the details of the file: \\n\n**FOLDER_PATH**: @{pipeline().parameters.Parameters.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{pipeline().parameters.parameters.value[0].target_table} table under @{pipeline().parameters.parameters.value[0].target_schema} schema. Kindly fix and reupload._",
 							"type": "Expression"
 						},
 						"isError": "Yes"
@@ -1979,6 +1979,9 @@
 				"type": "Array"
 			},
 			"paramfilename": {
+				"type": "String"
+			},
+			"errorResponse1": {
 				"type": "String"
 			}
 		},

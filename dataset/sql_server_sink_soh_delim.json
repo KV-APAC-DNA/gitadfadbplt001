@@ -1,5 +1,5 @@
 {
-	"name": "sql_server_sink",
+	"name": "sql_server_sink_soh_delim",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
@@ -44,7 +44,7 @@
 			},
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
