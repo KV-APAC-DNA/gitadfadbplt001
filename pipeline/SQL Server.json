@@ -111,6 +111,14 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
+							"wildcardFolderPath": {
+								"value": "@variables('landing_file_path')",
+								"type": "Expression"
+							},
+							"wildcardFileName": {
+								"value": "@{variables('landing_file_name')}*",
+								"type": "Expression"
+							},
 							"deleteFilesAfterCompletion": false
 						},
 						"formatSettings": {
@@ -1420,7 +1428,14 @@
 								{
 									"name": "mysql_to_adls_multifiles",
 									"type": "Copy",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set landing_file_name_no_ext",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 4,
@@ -1485,6 +1500,23 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set landing_file_name_no_ext",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "landing_file_name",
+										"value": {
+											"value": "@concat(concat(activity('read parameters').output.value[0].landing_file_name, '_', formatDateTime(convertTimeZone(UTCnow(),'UTC','Singapore Standard Time'), 'yyyyMMddHHmmss')))\n",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
@@ -1788,6 +1820,10 @@
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
+						"wildcardFileName": {
+							"value": "@{variables('landing_file_name')}*",
+							"type": "Expression"
+						},
 						"enablePartitionDiscovery": false
 					}
 				}
