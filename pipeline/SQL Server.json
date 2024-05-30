@@ -1218,7 +1218,7 @@
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
-										"retry": 0,
+										"retry": 2,
 										"retryIntervalInSeconds": 30,
 										"secureOutput": false,
 										"secureInput": false
@@ -1411,6 +1411,82 @@
 										},
 										"errorCode": "2000"
 									}
+								}
+							]
+						},
+						{
+							"value": "mysql_server_csngjnjreport_batchread",
+							"activities": [
+								{
+									"name": "mds_sql_server_to_adls_multifiles",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 4,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@variables('ms_query')",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"maxRowsPerFile": 20000,
+												"fileNamePrefix": {
+													"value": "@variables('landing_file_name')",
+													"type": "Expression"
+												},
+												"quoteAllText": true,
+												"fileExtension": ".csv"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "sql_server_mds",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "mysql_server_sink_multifile",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						}
