@@ -1316,7 +1316,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "mtd_process_target",
+											"referenceName": "snowflake_sink_target",
 											"type": "DatasetReference",
 											"parameters": {
 												"tablename": {
