@@ -1,5 +1,5 @@
 {
-	"name": "mtd_process_target",
+	"name": "snowflake_sink_target",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssnfkpltdnaload",
