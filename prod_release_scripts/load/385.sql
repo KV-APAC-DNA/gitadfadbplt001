@@ -18,11 +18,6 @@ from datetime import datetime
 def main(session: snowpark.Session,Param):
     try:
 
-       
-
-        
-
-
         CURRENT_FILE        =  Param[0]
         index               =  Param[1]
         validation          =  Param[2]
