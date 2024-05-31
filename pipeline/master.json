@@ -85,8 +85,6 @@
 			{
 				"name": "audit fail on for loop",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "for each usecase",
@@ -260,8 +258,6 @@
 			{
 				"name": "audit fail on lookup",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read usecases",
@@ -313,8 +309,6 @@
 			{
 				"name": "eror log 2",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read usecases",
@@ -645,7 +639,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Until1",
+						"activity": "repeat_until_no_dependents",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -692,7 +686,7 @@
 				}
 			},
 			{
-				"name": "Until1",
+				"name": "repeat_until_no_dependents",
 				"type": "Until",
 				"dependsOn": [
 					{
