@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_PCF_PA_PHARMA",
+	"name": "IDN_MDS_SDL_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "22"
+					"category": "IDN_MDS_SDL"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
+				"startTime": "2024-05-31T14:58:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						55
 					],
 					"hours": [
-						16
+						5
 					]
 				}
 			}

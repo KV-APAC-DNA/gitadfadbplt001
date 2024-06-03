@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_PCF_PA_PHARMA",
+	"name": "ID_PS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "22"
+					"category": "ID_PS"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
-				"timeZone": "Singapore Standard Time",
+				"startTime": "2024-05-31T14:59:00",
+				"timeZone": "India Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						0
 					],
 					"hours": [
-						16
+						4
 					]
 				}
 			}

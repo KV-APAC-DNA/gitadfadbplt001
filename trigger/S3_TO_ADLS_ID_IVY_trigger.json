@@ -1,5 +1,5 @@
 {
-	"name": "S3_TO_ADLS_PCF_PA_PHARMA",
+	"name": "S3_TO_ADLS_ID_IVY_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "22"
+					"Group_id": "34"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
+				"startTime": "2024-05-31T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						50
 					],
 					"hours": [
-						16
+						4
 					]
 				}
 			}
