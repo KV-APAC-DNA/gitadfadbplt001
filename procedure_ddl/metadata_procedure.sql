@@ -23,7 +23,7 @@ $$
             FROM USECASE U
             JOIN PROCESS P
             ON U.USECASE_ID = P.USECASE_ID
-            CROSS JOIN TABLE(SPLIT_TO_TABLE(DEPENDS_ON,'','')) D
+            CROSS JOIN TABLE(SPLIT_TO_TABLE(NULLIF(TRIM(DEPENDS_ON),''''),'','')) D
             WHERE U.CATEGORY = '''||:var_cat||'''
         ';
         var_processes:= (execute immediate :var_sql);
