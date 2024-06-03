@@ -1,40 +1,32 @@
 {
-	"name": "S3_TO_ADLS_PH_MDS_POS_PERFECTSTORE_DMS_trigger",
+	"name": "ID_POS_DAILY_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "31"
+					"category": "ID_POS_DAILY"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Week",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-05-03T00:00:00",
+				"startTime": "2024-05-31T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						15
+						0
 					],
 					"hours": [
 						1
-					],
-					"weekDays": [
-						"Monday",
-						"Tuesday",
-						"Wednesday",
-						"Thursday",
-						"Friday",
-						"Saturday"
 					]
 				}
 			}

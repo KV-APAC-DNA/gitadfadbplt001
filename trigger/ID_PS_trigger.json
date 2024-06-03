@@ -1,5 +1,5 @@
 {
-	"name": "PCF_PERENSO_METCASH_trigger",
+	"name": "ID_PS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PERENSO_METCASH"
+					"category": "ID_PS"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-16T00:00:00",
-				"timeZone": "Singapore Standard Time",
+				"startTime": "2024-05-31T14:59:00",
+				"timeZone": "India Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						6
+						4
 					]
 				}
 			}
