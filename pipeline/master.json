@@ -914,6 +914,110 @@
 					],
 					"timeout": "0.12:00:00"
 				}
+			},
+			{
+				"name": "read_successor_jobs",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "check phasemaster status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "WITH AUDIT_LOG AS\n(\n    SELECT MAX(MOMENT) MOMENT,PROCESS_ID \n    FROM META_RAW.PROCESS_AUDIT_LOG \n    GROUP BY PROCESS_ID\n) \nSELECT \n    DEP_USECASE.CATEGORY, \n    LISTAGG(DISTINCT DEP_PROC.PROCESS_ID,',') AS SUCCESSORS\nFROM META_RAW.PROCESS DEP_PROC\nCROSS JOIN TABLE(SPLIT_TO_TABLE(NULLIF(TRIM(DEP_PROC.DEPENDS_ON),''),',')) DEP_JOBS\nJOIN META_RAW.USECASE DEP_USECASE ON DEP_PROC.USECASE_ID = DEP_USECASE.USECASE_ID\nLEFT JOIN AUDIT_LOG DEP_AUDIT ON DEP_PROC.PROCESS_ID  = DEP_AUDIT.PROCESS_ID\nJOIN META_RAW.PROCESS CUR_PROC\nON DEP_JOBS.VALUE = CUR_PROC.PROCESS_ID\nJOIN META_RAW.USECASE CUR_USECASE\nON  CUR_PROC.USECASE_ID = CUR_USECASE.USECASE_ID\nLEFT JOIN AUDIT_LOG CUR_AUDIT ON CUR_PROC.PROCESS_ID  = CUR_AUDIT.PROCESS_ID\nWHERE CUR_USECASE.CATEGORY = '@{pipeline().parameters.category}' AND DEP_AUDIT.MOMENT<CUR_AUDIT.MOMENT\nGROUP BY DEP_USECASE.CATEGORY",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "if_successors_exit",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "read_successor_jobs",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(activity('read_successor_jobs').output.count,1)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "notify_to_run",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "Run Dependent Categories",
+									"supportMessage": {
+										"value": "Running : \\n\n**CATEGORY**: @{pipeline().parameters.category} has completed. \\n\nAnd the below categories seem to be depending on this, please run them if necessary \\n\n@{activity('check_dependent_job').output.value} \\n\n",
+										"type": "Expression"
+									},
+									"isBusinessNotification": "No",
+									"isSupportNotification": "Yes",
+									"isError": "No"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
