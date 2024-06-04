@@ -241,13 +241,13 @@ def main(session: snowpark.Session,Param):
                 header=df_header.iloc[int(file_header_row_num)].tolist()
 
             elif "Sellout_1" in CURRENT_FILE:
-				file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("field_delimiter", "|").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
             
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
-                           
+
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
