@@ -1,0 +1,26 @@
+{
+	"name": "IDN_MDS_trigger_3",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-06-04T14:14:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						40
+					],
+					"hours": [
+						11,
+						16
+					]
+				}
+			}
+		}
+	}
+}
