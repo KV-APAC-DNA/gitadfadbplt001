@@ -24,9 +24,6 @@
 				"schedule": {
 					"minutes": [
 						50
-					],
-					"hours": [
-						12
 					]
 				}
 			}
