@@ -281,7 +281,7 @@ def main(session: snowpark.Session,Param):
                 
             elif sheet_names != "[]":
                 file_name = sheet_names[1:-1].split(",")[0]
-                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")+".csv"
+                file_name = file_name.strip("\\"").replace("(", "").replace(")", "").replace(" ","_")+".csv"
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()                
@@ -670,4 +670,3 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
         
             
         return file_header_validation_status,counter';
-        

@@ -2435,3 +2435,456 @@ def main(session: snowpark.Session, Param):
         error_message = f"Error: {str(e)}" +str(df.columns)
         return error_message
 $$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_PERFECTSTORE_MSL_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+        sheet_names     = Param[4]
+
+        df_schema = StructType([
+            StructField("Visit_ID", StringType()),
+            StructField("Visit_Date", StringType()),
+            StructField("Region", StringType()),
+            StructField("JnJRKAM", StringType()),
+            StructField("JnJZM_Code", StringType()),
+            StructField("JNJ_ABI_Code", StringType()),
+            StructField("JnJSupervisor_Code", StringType()),
+            StructField("ISP_Code", StringType()),
+            StructField("ISP_Name", StringType()),
+            StructField("Month", StringType()),
+            StructField("Year", StringType()),
+            StructField("Format", StringType()),
+            StructField("Chain_Code", StringType()),
+            StructField("Chain", StringType()),
+            StructField("Store_Code", StringType()),
+            StructField("Store_Name", StringType()),
+            StructField("Product_Code", StringType()),
+            StructField("Product_Name", StringType()),
+            StructField("MSL", StringType()),
+            StructField("Cost(INR)", StringType()),
+            StructField("Quantity", StringType()),
+            StructField("Amount(INR)", StringType()),
+            StructField("Priority_Store", StringType())
+        ])
+
+        if sheet_names == "[]":
+            files_to_read = [file_name]
+        else:
+            files_to_read = sheet_names[1:-1].split(",")
+            files_to_read = [sh_name.strip("\"").replace("(", "").replace(")", "").replace(" ","_") + ".csv" for sh_name in files_to_read]
+        
+        df = None
+
+        for src_file in files_to_read:
+            
+            file_df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",1)\
+                .option("field_delimiter", "\u0001")\
+                .option("field_optionally_enclosed_by", "\"") \
+                .csv("@" + stage_name+"/"+temp_stage_path+"/"+src_file)
+            
+            if not df:
+                df = file_df
+            else:
+                df = df.unionByName(file_df)
+
+        yearmo = file_name.split(".")[0].split("_")[-1]
+
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
+
+        final_df = df
+                        
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_PERFECTSTORE_SOS_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+        sheet_names     = Param[4]
+                        
+        df_schema = StructType([
+            StructField("Visit_DateTime", StringType()),
+            StructField("Region", StringType()),
+            StructField("JnJRKAM", StringType()),
+            StructField("JnJZM_Code", StringType()),
+            StructField("JNJ_ABI_Code", StringType()),
+            StructField("JnJSupervisor_Code", StringType()),
+            StructField("ISP_Code", StringType()),
+            StructField("JnJISP_Name", StringType()),
+            StructField("Month", StringType()),
+            StructField("Year", StringType()),
+            StructField("Format", StringType()),
+            StructField("Chain_Code", StringType()),
+            StructField("Chain", StringType()),
+            StructField("Store_Code", StringType()),
+            StructField("Store_Name", StringType()),
+            StructField("Category", StringType()),
+            StructField("Prod_Facings", StringType()),
+            StructField("Total_Facings", StringType()),
+            StructField("Facing_Contribution", StringType()),
+            StructField("Priority_Store", StringType())
+        ])
+
+        if sheet_names == "[]":
+            files_to_read = [file_name]
+        else:
+            files_to_read = sheet_names[1:-1].split(",")
+            files_to_read = [sh_name.strip("\"").replace("(", "").replace(")", "").replace(" ","_") + ".csv" for sh_name in files_to_read]
+        
+        df = None
+
+        for src_file in files_to_read:
+            
+            file_df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",1)\
+                .option("field_delimiter", "\u0001")\
+                .option("field_optionally_enclosed_by", "\"") \
+                .csv("@" + stage_name+"/"+temp_stage_path+"/"+src_file)
+            
+            if not df:
+                df = file_df
+            else:
+                df = df.unionByName(file_df)
+
+        yearmo = file_name.split(".")[0].split("_")[-1]
+
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
+                        
+        final_df = df
+                        
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_PERFECTSTORE_PROMO_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+        sheet_names     = Param[4]
+
+        df_schema = StructType([
+            StructField("Visit_ID", StringType()),
+            StructField("Visit_DateTime", StringType()),
+            StructField("Region", StringType()),
+            StructField("JnJRKAM", StringType()),
+            StructField("JnJZM_Code", StringType()),
+            StructField("JNJ_ABI_Code", StringType()),
+            StructField("JnJSupervisor_Code", StringType()),
+            StructField("ISP_Code", StringType()),
+            StructField("ISP_Name", StringType()),
+            StructField("Month", StringType()),
+            StructField("Year", StringType()),
+            StructField("Format", StringType()),
+            StructField("Chain_Code", StringType()),
+            StructField("Chain", StringType()),
+            StructField("Store_Code", StringType()),
+            StructField("Store_Name", StringType()),
+            StructField("Product_Category", StringType()),
+            StructField("Product_Brand", StringType()),
+            StructField("Promotion_Product_Code", StringType()),
+            StructField("Promotion_Product_Name", StringType()),
+            StructField("IsPromotionAvailable", StringType()),
+            StructField("PhotoPath", StringType()),
+            StructField("CountOfFacing", StringType()),
+            StructField("PromotionOfferType", StringType()),
+            StructField("NotAvailableReason", StringType()),
+            StructField("Price_Off", StringType()),
+            StructField("Priority_Store", StringType())        
+        ])
+
+        if sheet_names == "[]":
+            files_to_read = [file_name]
+        else:
+            files_to_read = sheet_names[1:-1].split(",")
+            files_to_read = [sh_name.strip("\"").replace("(", "").replace(")", "").replace(" ","_") + ".csv" for sh_name in files_to_read]
+        
+        df = None
+
+        for src_file in files_to_read:
+            
+            file_df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",1)\
+                .option("field_delimiter", "\u0001")\
+                .option("field_optionally_enclosed_by", "\"") \
+                .csv("@" + stage_name+"/"+temp_stage_path+"/"+src_file)
+            
+            if not df:
+                df = file_df
+            else:
+                df = df.unionByName(file_df)
+
+        yearmo = file_name.split(".")[0].split("_")[-1]
+
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
+
+        final_df = df
+                        
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+  
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_PERFECTSTORE_PAID_DISPLAY_PREPROCESSING("PARAM" ARRAY)RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+        sheet_names     = Param[4]
+                        
+        df_schema = StructType([
+            StructField("Visit_ID", StringType()),
+            StructField("Visit_DateTime", StringType()),
+            StructField("Region", StringType()),
+            StructField("JnJRKAM", StringType()),
+            StructField("JnJZM_Code", StringType()),
+            StructField("JNJ_ABI_Code", StringType()),
+            StructField("JnJSupervisor_Code", StringType()),
+            StructField("ISP_Code", StringType()),
+            StructField("ISP_Name", StringType()),
+            StructField("Month", StringType()),
+            StructField("Year", StringType()),
+            StructField("Format", StringType()),
+            StructField("Chain_Code", StringType()),
+            StructField("Chain", StringType()),
+            StructField("Store_Code", StringType()),
+            StructField("Store_Name", StringType()),
+            StructField("Asset", StringType()),
+            StructField("Product_Category", StringType()),
+            StructField("Prooduct_Brand", StringType()),
+            StructField("POSM_Brand", StringType()),
+            StructField("Start_Date", StringType()),
+            StructField("End_Date", StringType()),
+            StructField("Audit_Status", StringType()),
+            StructField("Is_Available", StringType()),
+            StructField("Availability_Points", StringType()),
+            StructField("Visibility_Type", StringType()),
+            StructField("Visibility_Condition", StringType()),
+            StructField("Is_Planogram_Availbale", StringType()),
+            StructField("Select_Brand", StringType()),
+            StructField("Is_Correct_Brand_Displayed", StringType()),
+            StructField("BrandAvailability_Points", StringType()),
+            StructField("Stock_Status", StringType()),
+            StructField("Stock_Points", StringType()),
+            StructField("Is_Near_Category", StringType()),
+            StructField("NearCategory_Points", StringType()),
+            StructField("Audit_Score", StringType()),
+            StructField("Paid_Visibility_Score", StringType()),
+            StructField("Reason", StringType()),
+            StructField("Priority_Store", StringType())
+        ])
+
+        if sheet_names == "[]":
+            files_to_read = [file_name]
+        else:
+            files_to_read = sheet_names[1:-1].split(",")
+            files_to_read = [sh_name.strip("\"").replace("(", "").replace(")", "").replace(" ","_") + ".csv" for sh_name in files_to_read]
+        
+        df = None
+
+        for src_file in files_to_read:
+            
+            file_df = session.read\
+                .schema(df_schema)\
+                .option("skip_header",1)\
+                .option("field_delimiter", "\u0001")\
+                .option("field_optionally_enclosed_by", "\"") \
+                .csv("@" + stage_name+"/"+temp_stage_path+"/"+src_file)
+            
+            if not df:
+                df = file_df
+            else:
+                df = df.unionByName(file_df)
+
+
+        yearmo = file_name.split(".")[0].split("_")[-1]
+
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
+
+        final_df = df
+                        
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
