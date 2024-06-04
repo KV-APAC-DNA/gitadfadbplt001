@@ -2153,7 +2153,7 @@ def main(session: snowpark.Session, Param):
         df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
 
         final_df = df.select( \
-            "CmpCode", "TLCode ", "DistrCode", \
+            "CmpCode", "TLCode", "DistrCode", \
             try_cast(col("DateOfJoin"), DateType()).alias("DateOfJoin"),  \
             "IsActive", "ModUserCode", try_cast(col("ModDt"), TimestampType()).alias("ModDt"),  \
             try_cast(col("CreatedDt"), TimestampType()).alias("CreatedDt"), \
