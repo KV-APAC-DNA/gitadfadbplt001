@@ -15,6 +15,7 @@
 -- 14/5/24  Thanish
 -- 22/5/24  Thanish
 -- 29/5/24  Thanish
+-- 06/6/24  Srihari     Header handled if sheetname is used instead of sheet_index
 
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
@@ -44,6 +45,8 @@ def main(session: snowpark.Session,Param):
         # ********   Variable  we need from ETL table : 
         # CURRENT_FILE , index , validation, val_file_name,val_file_extn
 
+        
+
 
         CURRENT_FILE        =  Param[0]
         index               =  Param[1]
@@ -55,6 +58,7 @@ def main(session: snowpark.Session,Param):
         stage_name     		=  Param[7]
         temp_stage_path		=  Param[8]
         header_reg          =  Param[9]
+        sheet_names         =  Param[10]
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
@@ -258,7 +262,29 @@ def main(session: snowpark.Session,Param):
                 with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
                     df_pandas=pd.read_excel(f)
                     header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            elif "WW_AV303_Stock_Status_Weekly" in CURRENT_FILE:
+                file_name=''Current_Week.csv''
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+            
+                df_pandas=df.to_pandas()
+                df_header=df_pandas.iloc[:,0:44]
+                header=df_header.iloc[int(file_header_row_num)].tolist()
                 
+
+            elif "Sellout_1" in CURRENT_FILE:
+                file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("field_delimiter", "|").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                
+            elif sheet_names != "[]":
+                file_name = sheet_names[1:-1].split(",")[0]
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")+".csv"
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()                
                        
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
@@ -312,6 +338,11 @@ def main(session: snowpark.Session,Param):
             elif stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name==''MT01P39R'':
                 result=list(filter(None,result_list))
                 filtered_list = [string.replace(''\\n'', '''') for string in result]
+
+            elif stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name==''WW_AV303_Stock_Status_Weekly'':
+                result_list=result_list[:45]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))] 
+
 
             elif stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name==''Weekly_Summary_Trexi_raw_data'':
                 result_list=result_list[:12]
@@ -461,6 +492,9 @@ def north_asia_processing(CURRENT_FILE):
 
     elif "NU_RI_ZON" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",2)
+
+    elif "KR_POS_GS_Super" in CURRENT_FILE:
+        file=CURRENT_FILE.rsplit("_",2)[0]
 
     else:
         file = CURRENT_FILE.replace(" ","_")
@@ -636,3 +670,4 @@ def file_header_validation(counter,final_val_header,file_header, hreg):
         
             
         return file_header_validation_status,counter';
+        
