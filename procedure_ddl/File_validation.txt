@@ -15,7 +15,7 @@
 -- 14/5/24  Thanish
 -- 22/5/24  Thanish
 -- 29/5/24  Thanish
--- 05/06/24 Thanish
+-- 05/06/24 SriHari
 # The Snowpark package is required for Python Worksheets. 
 # You can add more packages by selecting them using the Packages control and then importing them.
 
