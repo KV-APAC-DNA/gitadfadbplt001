@@ -3,7 +3,7 @@ DELETE FROM META_RAW.PROCESS
 WHERE PROCESS_ID IN(971,972,973);
 delete from meta_raw.Usecase
 where usecase_id = 218;
-update meta_raw.usecase_id
+update meta_raw.Usecase
 set SEQUENCE_ID = 3
 where id = 239;
 
