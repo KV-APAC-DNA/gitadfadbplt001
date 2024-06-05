@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_ID_PS_trigger",
+	"name": "IDN_MDS_trigger_4",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "35"
+					"category": "IDN_MDS"
 				}
 			}
 		],
@@ -19,11 +19,15 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-05-31T00:00:00",
+				"startTime": "2024-06-04T14:15:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						30
+					],
 					"hours": [
-						4
+						12,
+						17
 					]
 				}
 			}
