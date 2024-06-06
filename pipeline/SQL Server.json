@@ -2142,7 +2142,7 @@
 									"typeProperties": {
 										"variableName": "watermark_value",
 										"value": {
-											"value": "@formatDateTime(convertTimeZone(utcNow(),'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
+											"value": "@formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
 											"type": "Expression"
 										}
 									}
