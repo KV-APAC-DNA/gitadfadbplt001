@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PA_PHARMA"
+					"category": "PCF_PA_INV"
 				}
 			}
 		],
