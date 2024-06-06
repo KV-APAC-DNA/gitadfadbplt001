@@ -1679,7 +1679,10 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "SELECT MIN(TO_DATE(caldate))::STRING AS CM_WEEK_FROMDATE,\n             MAX(TO_DATE(caldate))::STRING AS CM_WEEK_TODATE\n      FROM INDEDW_INTEGRATION.EDW_RETAILER_CALENDAR_DIM\n      WHERE mth_mm IN (SELECT DISTINCT (year||lpad (MONTH,2,0))\n                       FROM INDITG_INTEGRATION.ITG_MDS_MONTH_END_DATES\n                       WHERE TO_DATE(convert_timezone('Asia/Kolkata',CURRENT_DATE())) <= TO_DATE(pathfinder_month_end))"
+										"text": {
+											"value": "@activity('read parameters').output.value[0].param_query",
+											"type": "Expression"
+										}
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
