@@ -2539,9 +2539,6 @@
 			},
 			"watermark_value": {
 				"type": "String"
-			},
-			"match_names": {
-				"type": "Boolean"
 			}
 		},
 		"folder": {
