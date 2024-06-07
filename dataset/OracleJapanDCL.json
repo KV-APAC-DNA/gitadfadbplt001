@@ -1,0 +1,15 @@
+{
+	"name": "OracleJapanDCL",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawsbmntkyl0021jnjcom",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": []
+	}
+}
