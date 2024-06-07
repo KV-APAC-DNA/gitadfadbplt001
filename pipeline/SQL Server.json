@@ -2436,7 +2436,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Extract_From_Source",
+						"referenceName": "Extract_From_DB",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
