@@ -7,6 +7,12 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
+						"activity": "load_with_load_method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "delete_original_file",
 						"dependencyConditions": [
 							"Succeeded"
@@ -2636,7 +2642,7 @@
 					{
 						"activity": "load_with_load_method",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
