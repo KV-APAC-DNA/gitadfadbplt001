@@ -17,6 +17,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "If Error Encountered during load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -2590,52 +2596,6 @@
 				}
 			},
 			{
-				"name": "delete_original_file_on_error",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "if_error_batch_no_batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "BinarySource",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@variables('container')",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@variables('landing_file_path')",
-								"type": "Expression"
-							},
-							"sourceFile": {
-								"value": "@variables('landing_file_name')",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
 				"name": "if_archive_batch_no_batch",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -3158,6 +3118,12 @@
 						"dependencyConditions": [
 							"Failed"
 						]
+					},
+					{
+						"activity": "if_archive_batch_no_batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -3209,11 +3175,11 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@variables('landing_file_path')",
+											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@variables('landing_file_name')",
+											"value": "@{variables('landing_file_name')}.gz",
 											"type": "Expression"
 										}
 									}
@@ -3293,11 +3259,11 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@variables('landing_file_path')",
+											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@variables('landing_file_name')",
+											"value": "@{variables('landing_file_name')}.gz",
 											"type": "Expression"
 										}
 									}
