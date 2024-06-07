@@ -7,7 +7,19 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
+						"activity": "load_with_load_method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
 						"activity": "delete_original_file",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "If Error Encountered during load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -2342,7 +2354,7 @@
 									"typeProperties": {
 										"variableName": "watermark_value",
 										"value": {
-											"value": "@formatDateTime(convertTimeZone(utcNow(),'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
+											"value": "@formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
 											"type": "Expression"
 										}
 									}
@@ -2758,6 +2770,7 @@
 					"timeout": "0.12:00:00",
 					"retry": 0,
 					"retryIntervalInSeconds": 30,
+
 					"secureOutput": false,
 					"secureInput": false
 				},
@@ -2796,7 +2809,7 @@
 					{
 						"activity": "load_with_load_method",
 						"dependencyConditions": [
-							"Succeeded"
+							"Completed"
 						]
 					}
 				],
@@ -3312,6 +3325,12 @@
 						"dependencyConditions": [
 							"Failed"
 						]
+					},
+					{
+						"activity": "if_archive_batch_no_batch",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"userProperties": [],
@@ -3363,11 +3382,11 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@variables('landing_file_path')",
+											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@variables('landing_file_name')",
+											"value": "@{variables('landing_file_name')}.gz",
 											"type": "Expression"
 										}
 									}
@@ -3447,11 +3466,11 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@variables('landing_file_path')",
+											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@variables('landing_file_name')",
+											"value": "@{variables('landing_file_name')}.gz",
 											"type": "Expression"
 										}
 									}
