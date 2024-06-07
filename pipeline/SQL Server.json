@@ -290,7 +290,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Extract_Source_Data",
+						"activity": "extract_source_data",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1092,7 +1092,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Extract_Source_Data",
+						"activity": "extract_source_data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -2216,7 +2216,7 @@
 				}
 			},
 			{
-				"name": "Extract_Source_Data",
+				"name": "extract_source_data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -2321,7 +2321,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Extract_Source_Data",
+						"activity": "extract_source_data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
