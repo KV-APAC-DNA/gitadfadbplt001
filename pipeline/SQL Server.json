@@ -2136,12 +2136,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "set_match_names",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"userProperties": [],
@@ -2175,7 +2169,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' RECORD_DELIMITER='\\r\\n' @{concat('',if(variables('match_names'),'PARSE_HEADER = TRUE','SKIP_HEADER = 1'))} ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None)\n@{concat('',if(variables('match_names'),'MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE',''))}\n;",
+													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' RECORD_DELIMITER='\\r\\n' @{concat('',if(equals(toLower(activity('read parameters').output.value[0].map_names),'y'),'PARSE_HEADER = TRUE','SKIP_HEADER = 1'))} ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None)\n@{concat('',if(variables('match_names'),'MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE',''))}\n;",
 													"type": "Expression"
 												}
 											}
@@ -2478,22 +2472,6 @@
 								}
 							]
 						}
-					],
-					"defaultActivities": [
-						{
-							"name": "blank",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "watermark_value",
-								"value": "NULL"
-							}
-						}
 					]
 				}
 			},
@@ -2762,30 +2740,6 @@
 							"value": "@pipeline().parameters.phase_id",
 							"type": "Expression"
 						}
-					}
-				}
-			},
-			{
-				"name": "set_match_names",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "read parameters",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "match_names",
-					"value": {
-						"value": "@equals(toLower(activity('read parameters').output.value[0].map_names),'y')",
-						"type": "Expression"
 					}
 				}
 			},
