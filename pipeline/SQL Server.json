@@ -2256,7 +2256,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"pipeline": {
-						"referenceName": "Extract_From_DB",
+						"referenceName": "DB_to_ADLS",
 						"type": "PipelineReference"
 					},
 					"waitOnCompletion": true,
