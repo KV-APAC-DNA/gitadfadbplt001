@@ -13,13 +13,13 @@
 						]
 					},
 					{
-						"activity": "delete_original_file",
+						"activity": "If Error Encountered during load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					},
 					{
-						"activity": "If Error Encountered during load",
+						"activity": "delete_after_archive",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -572,56 +572,6 @@
 							"value": "@pipeline().parameters.phase_id",
 							"type": "Expression"
 						}
-					}
-				}
-			},
-			{
-				"name": "delete_original_file",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "if_archive_batch_no_batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "BinarySource",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@variables('container')",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@variables('landing_file_path')",
-								"type": "Expression"
-							},
-							"sourceFile": {
-								"value": "@variables('landing_file_name')",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": false,
-						"wildcardFileName": {
-							"value": "@{variables('landing_file_name')}*",
-							"type": "Expression"
-						},
-						"enablePartitionDiscovery": false
 					}
 				}
 			},
@@ -1522,520 +1472,6 @@
 				}
 			},
 			{
-				"name": "if_archive_batch_no_batch",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "load_with_load_method",
-						"dependencyConditions": [
-							"Completed"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@endswith(activity('read parameters').output.value[0].DECIDE_SOURCE,'_batchread')",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "move_to_archive_nonbatch",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": false,
-										"deleteFilesAfterCompletion": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "BinarySource",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@variables('landing_file_path')",
-											"type": "Expression"
-										},
-										"sourceFile": {
-											"value": "@variables('landing_file_name')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "BinaryDestination_Archive",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
-											"type": "Expression"
-										},
-										"fileName": {
-											"value": "@concat(variables('landing_file_name'),'.gz')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"name": "audit fail - move_to_archive_no_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_nonbatch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"message": {
-										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "error log - move_to_archive_no_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_nonbatch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "@activity('move_to_archive_nonbatch').error?.message",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "@activity('move_to_archive_nonbatch').error?.errorCode",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "Send error - move_to_archive_no_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_nonbatch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "NotifiyTeamsChannelPipeline",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"subscription": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-										"type": "Expression"
-									},
-									"resourceGroup": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-										"type": "Expression"
-									},
-									"runId": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"triggerTime": {
-										"value": "@pipeline().TriggerTime",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"supportMessage": {
-										"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_nonbatch').error?.message}_",
-										"type": "Expression"
-									},
-									"isBusinessNotification": "No",
-									"isSupportNotification": "Yes",
-									"isError": "Yes"
-								}
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "move_to_archive_batch",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": false,
-										"wildcardFolderPath": {
-											"value": "@variables('landing_file_path')",
-											"type": "Expression"
-										},
-										"wildcardFileName": {
-											"value": "@{variables('landing_file_name')}*",
-											"type": "Expression"
-										},
-										"deleteFilesAfterCompletion": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings",
-										"copyBehavior": "PreserveHierarchy"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "BinarySource",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@variables('landing_file_path')",
-											"type": "Expression"
-										},
-										"sourceFile": {
-											"value": "@variables('landing_file_name')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "BinaryDestination_Archive_Batch",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"name": "audit fail - move_to_archive_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_batch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"message": {
-										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "error log - move_to_archive_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_batch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "@activity('move_to_archive_batch').error?.message",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "@activity('move_to_archive_batch').error?.errorCode",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "Send error - move_to_archive_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_batch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "NotifiyTeamsChannelPipeline",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"subscription": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-										"type": "Expression"
-									},
-									"resourceGroup": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-										"type": "Expression"
-									},
-									"runId": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"triggerTime": {
-										"value": "@pipeline().TriggerTime",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"supportMessage": {
-										"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_batch').error?.message}_",
-										"type": "Expression"
-									},
-									"isBusinessNotification": "No",
-									"isSupportNotification": "Yes",
-									"isError": "Yes"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "if_error_batch_no_batch",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -2046,7 +1482,7 @@
 						]
 					},
 					{
-						"activity": "if_archive_batch_no_batch",
+						"activity": "archive_files_after_load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -2460,6 +1896,592 @@
 						"isSupportNotification": "Yes",
 						"isError": "Yes"
 					}
+				}
+			},
+			{
+				"name": "archive_files_after_load",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "load_with_load_method",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@if(empty(activity('read parameters').output.value[0].load_method),'keep',if(endswith(activity('read parameters').output.value[0].DECIDE_SOURCE,'_batchread'),'batch','single'))",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "batch",
+							"activities": [
+								{
+									"name": "move_to_archive_batch",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"wildcardFolderPath": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												},
+												"wildcardFileName": {
+													"value": "@{variables('landing_file_name')}*",
+													"type": "Expression"
+												},
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@variables('landing_file_name')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination_Archive_Batch",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "audit fail - move_to_archive_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_batch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"message": {
+												"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error log - move_to_archive_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_batch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('move_to_archive_batch').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('move_to_archive_batch').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - move_to_archive_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_batch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_batch').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "single",
+							"activities": [
+								{
+									"name": "move_to_archive_nonbatch",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@variables('landing_file_name')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination_Archive",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@concat(variables('landing_file_name'),'.gz')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "audit fail - move_to_archive_no_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_nonbatch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"message": {
+												"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error log - move_to_archive_no_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_nonbatch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('move_to_archive_nonbatch').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('move_to_archive_nonbatch').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - move_to_archive_no_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_nonbatch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_nonbatch').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "delete_after_archive",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "archive_files_after_load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(empty(activity('read parameters').output.value[0].load_method))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "delete_original_file",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "BinarySource",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@variables('container')",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@variables('landing_file_path')",
+											"type": "Expression"
+										},
+										"sourceFile": {
+											"value": "@variables('landing_file_name')",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": false,
+									"wildcardFileName": {
+										"value": "@{variables('landing_file_name')}*",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								}
+							}
+						}
+					]
 				}
 			}
 		],
