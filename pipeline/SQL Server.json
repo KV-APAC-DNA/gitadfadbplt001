@@ -1912,7 +1912,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(empty(activity('read parameters').output.value[0].load_method),'keep',if(endswith(activity('read parameters').output.value[0].DECIDE_SOURCE,'_batchread'),'batch','single'))",
+						"value": "@if(equals(activity('read parameters').output.value[0].load_method, 'none'),'keep',if(endswith(activity('read parameters').output.value[0].DECIDE_SOURCE,'_batchread'),'batch','single'))",
 						"type": "Expression"
 					},
 					"cases": [
