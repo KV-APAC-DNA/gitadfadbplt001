@@ -10,10 +10,17 @@
 			"skipHostKeyValidation": true,
 			"authenticationType": "SshPublicKey",
 			"userName": "518007108_4",
-			"privateKeyPath": "F:\\\\\\adfirkey\\adfadbplt001lsmarketingcloudopsjpndcl"
+			"privateKeyContent": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsmarketingcloudopsjpndcl"
+			}
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt002",
+			"referenceName": "adfiradbplt001",
 			"type": "IntegrationRuntimeReference"
 		}
 	},
