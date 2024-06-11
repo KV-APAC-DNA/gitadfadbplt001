@@ -246,12 +246,19 @@
 							]
 						},
 						{
-							"value": "copy_japan",
+							"value": "copyJapanDCL",
 							"activities": [
 								{
 									"name": "load from file 2",
 									"type": "Script",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Wait1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -304,7 +311,14 @@
 								{
 									"name": "Set extracted date",
 									"type": "SetVariable",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Wait1",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"secureOutput": false,
 										"secureInput": false
@@ -382,6 +396,15 @@
 											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters').error?.message}",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
 									}
 								}
 							]
