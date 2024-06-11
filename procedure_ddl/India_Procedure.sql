@@ -754,7 +754,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -2511,6 +2511,8 @@ def main(session: snowpark.Session,Param):
 
         yearmo = file_name.split(".")[0].split("_")[-1]
 
+        df = df.na.drop(how='all')
+
         df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
@@ -2616,7 +2618,9 @@ def main(session: snowpark.Session,Param):
                 df = df.unionByName(file_df)
 
         yearmo = file_name.split(".")[0].split("_")[-1]
-
+        
+        df = df.na.drop(how='all')
+        
         df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
@@ -2730,6 +2734,8 @@ def main(session: snowpark.Session,Param):
 
         yearmo = file_name.split(".")[0].split("_")[-1]
 
+        df = df.na.drop(how='all')
+
         df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
@@ -2765,7 +2771,8 @@ def main(session: snowpark.Session,Param):
 $$;
 
 
-CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_PERFECTSTORE_PAID_DISPLAY_PREPROCESSING("PARAM" ARRAY)RETURNS VARCHAR(16777216)
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_PERFECTSTORE_PAID_DISPLAY_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
 PACKAGES = ('snowflake-snowpark-python')
@@ -2855,6 +2862,8 @@ def main(session: snowpark.Session,Param):
 
         yearmo = file_name.split(".")[0].split("_")[-1]
 
+        df = df.na.drop(how='all')
+
         df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
         df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
@@ -2867,6 +2876,225 @@ def main(session: snowpark.Session,Param):
         # Load Data to the target table
         final_df.write.mode("append").saveAsTable(target_table)
 
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_SKU_RECOM_FLAG_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+                        
+        df_schema = StructType([
+            StructField("PRODUCT", StringType()),
+            StructField("OUTLET", StringType()),
+            StructField("DISTRIBUTOR", StringType()),
+            StructField("OOS_FLAG", StringType()),
+            StructField("MS_FLAG", StringType()),
+            StructField("CS_FLAG", StringType()),
+            StructField("SOQ", StringType()),
+            StructField("URCCode", StringType()),
+            StructField("CsrtrCode", StringType()),
+            StructField("RT_Code", StringType()),
+            StructField("SM_Code", StringType())
+        ])
+        
+        df = session.read\
+            .schema(df_schema)\
+            .option("skip_header",1)\
+            .option("field_delimiter", "|")\
+            .option("field_optionally_enclosed_by", "\"") \
+            .csv("@" + stage_name + "/" + temp_stage_path + "/" + file_name)
+
+        yearmo = file_name.split("_")[1]
+        yearmo = yearmo[2:]+yearmo[:2]
+
+        df = df.withColumn("YEARMO",lit(yearmo).cast("string"))
+
+        final_df = df.select( \
+            "YEARMO", "PRODUCT", "OUTLET", "DISTRIBUTOR", "OOS_FLAG", "MS_FLAG", \
+            "CS_FLAG", "SOQ", "URCCode", "CsrtrCode", "RT_Code", "SM_Code" \
+        ).alias("final_df")
+                        
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_CSL_CLASSMASTER_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+                        
+        df_schema = StructType([
+            StructField("TableId", StringType()),
+            StructField("PKey", StringType()),
+            StructField("ClassId", StringType()),
+            StructField("ClassCode", StringType()),
+            StructField("ClassDesc", StringType()),
+            StructField("TurnOver", StringType()),
+            StructField("Availabilty", StringType()),
+            StructField("CreatedUserId", StringType()),
+            StructField("CreatedDate", StringType()),
+            StructField("DistHierarchyId", StringType())
+        ])
+        
+        df = session.read\
+            .schema(df_schema)\
+            .option("skip_header",1)\
+            .option("field_delimiter", "\u0001")\
+            .option("field_optionally_enclosed_by", None) \
+            .csv("@" + stage_name + "/" + temp_stage_path + "/" + file_name)
+        
+        df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+
+        final_df = df
+
+        if final_df.count()==0:
+            return "No Data in file"
+
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message
+$$;
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_SALESMAN_TARGET_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace,to_timestamp,when,trim,upper
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+                        
+        df_schema = StructType([
+            StructField("DistCode", StringType()),
+            StructField("SMCode", StringType()),
+            StructField("SM_Target", StringType()),
+            StructField("Brand_Focus", StringType()),
+            StructField("Measure_Type", StringType()),
+            StructField("Channel", StringType()),
+            StructField("YY", StringType()),
+            StructField("MM", StringType())
+        ])
+        
+        df = session.read\
+            .schema(df_schema)\
+            .option("skip_header",1)\
+            .option("field_delimiter", "\u0001")\
+            .option("field_optionally_enclosed_by", "\"") \
+            .csv("@" + stage_name + "/" + temp_stage_path + "/" + file_name)
+        
+        final_df = df
+
+        if final_df.count()==0:
+            return "No Data in file"
+
+        final_df.write.mode("append").saveAsTable(target_table)
         current_date = datetime.now()
         formatted_year = current_date.strftime("%Y")
         formatted_month = current_date.strftime("%m")

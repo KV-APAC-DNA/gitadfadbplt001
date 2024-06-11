@@ -100,6 +100,7 @@ def main(session: snowpark.Session, Param):
     orig_query       = Param[0]
     param_list      = Param[1]
     val_list = Param[2]
+    val_list = val_list.replace(":null",":\"null\"")
     val_dict = eval(val_list)
     params = param_list.split(',')
     return_query = orig_query
