@@ -246,7 +246,7 @@
 							]
 						},
 						{
-							"value": "copyJapanDCL",
+							"value": "JapanDCL",
 							"activities": [
 								{
 									"name": "load from file 2",
