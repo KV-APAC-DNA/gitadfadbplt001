@@ -1059,7 +1059,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "OdbcSource",
-						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl WHERE CAST(FISC_YR_NBR AS INT) > '2023_07'",
+						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl WHERE CAST(FISC_YR_NBR AS INT) > 2022 \nAND SUBSTRING(FISC_YR_MO_NUM, 6, 2) > 7",
 						"queryTimeout": "24:00:00"
 					},
 					"sink": {
