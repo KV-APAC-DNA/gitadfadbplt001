@@ -1,5 +1,5 @@
 delete from meta_raw.process
-where parameter_id in(1062
+where parameter_group_id in(1062
 ,1063
 ,1064
 ,1065
