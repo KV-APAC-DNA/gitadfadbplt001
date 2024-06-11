@@ -286,12 +286,6 @@
 											"dependencyConditions": [
 												"Failed"
 											]
-										},
-										{
-											"activity": "update etl parameters",
-											"dependencyConditions": [
-												"Failed"
-											]
 										}
 									],
 									"policy": {
@@ -319,7 +313,7 @@
 									"typeProperties": {
 										"variableName": "extractedDate",
 										"value": {
-											"value": "@take(replace(replace('filename', 'c_tbDMSndHist' ,'' ),'_',''),8)",
+											"value": "@take(replace(replace(pipeline().parameters.sourceFileName, pipeline().parameters.parameters.value[0].target_table,'' ),'_',''),8)",
 											"type": "Expression"
 										}
 									}
@@ -364,6 +358,30 @@
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message4",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters').error?.message}",
+											"type": "Expression"
+										}
 									}
 								}
 							]
