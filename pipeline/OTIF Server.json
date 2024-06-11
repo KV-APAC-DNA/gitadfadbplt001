@@ -1059,7 +1059,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "OdbcSource",
-						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl limit 10 ",
+						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl WHERE FISC_YR_MO_NUM ='2023_08'",
 						"queryTimeout": "24:00:00"
 					},
 					"sink": {
