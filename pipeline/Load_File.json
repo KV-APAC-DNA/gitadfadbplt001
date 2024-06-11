@@ -246,7 +246,7 @@
 							]
 						},
 						{
-							"value": "copy_update",
+							"value": "copy_japan",
 							"activities": [
 								{
 									"name": "load from file 2",
