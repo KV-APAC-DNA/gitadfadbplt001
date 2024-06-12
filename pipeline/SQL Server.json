@@ -2434,7 +2434,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(empty(activity('read parameters').output.value[0].load_method))",
+						"value": "@not(equals(activity('read parameters').output.value[0].load_method, 'none'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
