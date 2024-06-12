@@ -274,7 +274,7 @@
 									"typeProperties": {
 										"scripts": [
 											{
-												"type": "NonQuery",
+												"type": "Query",
 												"text": {
 													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
 													"type": "Expression"
@@ -358,7 +358,7 @@
 									"typeProperties": {
 										"scripts": [
 											{
-												"type": "NonQuery",
+												"type": "Query",
 												"text": {
 													"value": "alter session set  timezone ='Asia/Singapore';\nupdate  @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table} set SOURCE_FILE_DATE='@{variables('extractedDate')}', INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY='ETL_Batch',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='';",
 													"type": "Expression"
@@ -411,7 +411,7 @@
 									"typeProperties": {
 										"scripts": [
 											{
-												"type": "NonQuery",
+												"type": "Query",
 												"text": {
 													"value": "Select count(*) as old_count from @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table};",
 													"type": "Expression"
@@ -453,7 +453,7 @@
 									"typeProperties": {
 										"scripts": [
 											{
-												"type": "NonQuery",
+												"type": "Query",
 												"text": {
 													"value": "Select count(*) as updated_count from @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table};",
 													"type": "Expression"
