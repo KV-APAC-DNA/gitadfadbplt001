@@ -1,0 +1,22 @@
+{
+	"name": "adfadbplt001lsawsbmntkyl001y",
+	"properties": {
+		"description": "Linked Service to Japan DCL Oracle database",
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsawsbmntkyl001y"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
