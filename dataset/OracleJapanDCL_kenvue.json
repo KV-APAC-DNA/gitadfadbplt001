@@ -2,7 +2,7 @@
 	"name": "OracleJapanDCL_kenvue",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsawsbmntkyl0021jnjcom",
+			"referenceName": "adfadbplt001lsawsbmntkyl001y",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
