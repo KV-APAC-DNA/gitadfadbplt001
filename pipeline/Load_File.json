@@ -482,7 +482,7 @@
 									"typeProperties": {
 										"variableName": "countDifference",
 										"value": {
-											"value": "@sub(activity('updated record count').output.resultSets[0].updated_count, activity('old record count').output.resultSets[0].old_count)",
+											"value": "@sub(activity('updated record count').output.resultSets[0].rows[0].updated_count, activity('old record count').output.resultSets[0].rows[0].old_count)",
 											"type": "Expression"
 										}
 									}
