@@ -251,14 +251,7 @@
 								{
 									"name": "load from file 2",
 									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "old record count",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
 										"retry": 0,
@@ -311,14 +304,7 @@
 								{
 									"name": "Set extracted date",
 									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "old record count",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
+									"dependsOn": [],
 									"policy": {
 										"secureOutput": false,
 										"secureInput": false
@@ -334,95 +320,6 @@
 								},
 								{
 									"name": "update etl parameters",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set countDifference",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "alter session set  timezone ='Asia/Singapore';\nupdate  @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table} set SOURCE_FILE_DATE='@{variables('extractedDate')}', INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY='ETL_Batch',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='';",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								},
-								{
-									"name": "Set Error Message4",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "update etl parameters",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorMessage",
-										"value": {
-											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters').error?.message}",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "old record count",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "Select count(*) as old_count from @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table};",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								},
-								{
-									"name": "updated record count",
 									"type": "Script",
 									"dependsOn": [
 										{
@@ -455,7 +352,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "Select count(*) as updated_count from @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table};",
+													"value": "@if(greater(int(activity('load from file 2').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, 'set SOURCE_FILE_DATE=''',variables('extractedDate'),'''INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY=''ETL_Batch'',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='''';'),'Select ''no_update_needed'';')\n\n",
 													"type": "Expression"
 												}
 											}
@@ -464,13 +361,13 @@
 									}
 								},
 								{
-									"name": "Set countDifference",
+									"name": "Set Error Message4",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
-											"activity": "updated record count",
+											"activity": "update etl parameters",
 											"dependencyConditions": [
-												"Succeeded"
+												"Failed"
 											]
 										}
 									],
@@ -480,40 +377,11 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "countDifference",
+										"variableName": "errorMessage",
 										"value": {
-											"value": "@sub(activity('updated record count').output.resultSets[0].rows[0].updated_count, activity('old record count').output.resultSets[0].rows[0].old_count)",
+											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters').error?.message}",
 											"type": "Expression"
 										}
-									}
-								},
-								{
-									"name": "updated record count_copy1",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "NonQuery",
-												"text": {
-													"value": "Select count(*) as updated_count from @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table};",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
 									}
 								}
 							]
