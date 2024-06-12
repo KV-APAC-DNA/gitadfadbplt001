@@ -2075,37 +2075,28 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "REGIONAL"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 6
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 6
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"sourceFileName": {
-				"type": "string",
-				"defaultValue": "test"
+				"type": "string"
 			},
 			"parameters": {
 				"type": "object"
 			},
 			"sheetNames": {
-				"type": "array",
-				"defaultValue": [
-					"test"
-				]
+				"type": "array"
 			}
 		},
 		"variables": {
