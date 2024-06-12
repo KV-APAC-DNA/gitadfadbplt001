@@ -1,0 +1,36 @@
+{
+	"name": "S3_TO_ADLS_NA_MDS_TW_POS_IMS_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "s3_to_adls",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Group_id": "43"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-06-12T15:15:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						22,
+						23
+					]
+				}
+			}
+		}
+	}
+}
