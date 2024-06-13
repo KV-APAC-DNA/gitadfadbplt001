@@ -17,6 +17,7 @@
 -- 29/5/24  Thanish
 -- 06/6/24  Srihari     Header handled if sheetname is used instead of sheet_index
 -- 13/6/24  Srihari     Header handled if source is SFMC
+-- 13/6/24  Thanish     Header handled for HCP files
 
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
@@ -45,6 +46,7 @@ def main(session: snowpark.Session,Param):
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
         # CURRENT_FILE , index , validation, val_file_name,val_file_extn
+        #Param=[''IQVIA_ORSL_Indication_SEPT2023.xlsx'',''last'',''1-1-1'',''IQVIA_ORSL_Indication'',''xlsx'',''Zone|Product_Description|Brand|Diagnosis_Level_2'',1,''HCPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/iqvia/transaction/indication/'','''',''[]'']
 
         
 
@@ -279,7 +281,7 @@ def main(session: snowpark.Session,Param):
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("field_delimiter", "|").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
-            
+
             elif "HCPSDL_RAW" in stage_name and "/SFMC/" in temp_stage_path :
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
@@ -294,7 +296,9 @@ def main(session: snowpark.Session,Param):
                 file_name = file_name.strip("\\"").replace("(", "").replace(")", "").replace(" ","_")+".csv"
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                 df_pandas=df.to_pandas()
-                header=df_pandas.iloc[int(file_header_row_num)].tolist()                
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                
+                
                        
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
@@ -357,7 +361,14 @@ def main(session: snowpark.Session,Param):
             elif stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name==''Weekly_Summary_Trexi_raw_data'':
                 result_list=result_list[:12]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
-                
+
+            elif (stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name==''J_J'') or (stage_name.split(".")[0]=="HCPSDL_RAW" and val_file_name== ''IQVIA_ORSL_Brand''):
+                result_list=result_list[:5]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
+            elif stage_name.split(".")[0]=="HCPSDL_RAW" and (val_file_name== ''IQVIA_ORSL_Indication'' or val_file_name==''IQVIA_ORSL_Specialty''):
+                result_list=result_list[:4]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
             else:
                 result_list=list(filter(None,result_list))
@@ -506,6 +517,9 @@ def north_asia_processing(CURRENT_FILE):
     elif "KR_POS_GS_Super" in CURRENT_FILE:
         file=CURRENT_FILE.rsplit("_",2)[0]
 
+    elif "LOTTE_LOGISTICS_YANG_JU" in CURRENT_FILE:
+        file=CURRENT_FILE.rsplit("_",1)[0]
+
     else:
         file = CURRENT_FILE.replace(" ","_")
         print("FileName : ", file)
@@ -583,6 +597,20 @@ def file_validation(counter,extracted_filename,val_file_name):
 
                 else:
                     file_name_validation_status="File Name Valid, Invalid Date format- "+ "Expected ''YYYYMM'' but received " + file_name_date_format
+                    counter=1
+            else:
+                
+                file_name_validation_status="Invalid File Name"
+                counter=1
+
+        elif "Weekly_Summary_TCA_raw_data" in extracted_filename or "Weekly_Summary_Unitoa_raw_data" in extracted_filename:
+            file_name_date_format=extracted_filename.rsplit("_",1)[1]
+            if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
+                if len(file_name_date_format) == 8 and file_name_date_format.isdigit():
+                    file_name_validation_status=""
+
+                else:
+                    file_name_validation_status="File Name Valid, Invalid Date format- "+ "Expected ''YYYYMMDD'' but received " + file_name_date_format
                     counter=1
             else:
                 
