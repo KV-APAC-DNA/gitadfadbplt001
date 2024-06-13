@@ -14,7 +14,7 @@
 					"S3Directory": "raw_data_lake/IVY/",
 					"AdlsContainer": "idn",
 					"AdlsDirectory": "IVY/",
-					"IsToBeDeleted": "Y"
+					"IsToBeDeleted": "N"
 				}
 			}
 		],
