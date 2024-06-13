@@ -20,8 +20,9 @@
 			}
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt001",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
 		}
-	}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
 }
