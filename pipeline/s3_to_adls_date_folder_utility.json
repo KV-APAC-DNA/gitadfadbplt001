@@ -189,7 +189,7 @@
 			},
 			"IsToBeDeleted": {
 				"type": "string",
-				"defaultValue": "Y"
+				"defaultValue": "N"
 			}
 		},
 		"variables": {
