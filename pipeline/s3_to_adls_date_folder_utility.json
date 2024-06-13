@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(pipeline().parameters.IsToBeDeleted,'Y'),'DeleteAndMove','Move')",
+						"value": "@if(contains(pipeline().DataFactory,'prd'),if(equals(pipeline().parameters.IsToBeDeleted,'Y'),'DeleteAndMove','Move'),'')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -189,7 +189,7 @@
 			},
 			"IsToBeDeleted": {
 				"type": "string",
-				"defaultValue": "Y"
+				"defaultValue": "N"
 			}
 		},
 		"variables": {

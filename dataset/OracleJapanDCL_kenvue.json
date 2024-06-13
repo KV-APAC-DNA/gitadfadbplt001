@@ -1,0 +1,15 @@
+{
+	"name": "OracleJapanDCL_kenvue",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsawsbmntkyl001y",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "OracleTable",
+		"schema": []
+	}
+}

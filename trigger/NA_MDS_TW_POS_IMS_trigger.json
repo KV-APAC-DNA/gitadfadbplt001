@@ -1,20 +1,16 @@
 {
-	"name": "S3_TO_ADLS_DATE_ID_IVY_trigger",
+	"name": "NA_MDS_TW_POS_IMS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls_date_folder_utility",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"S3BucketName": "itx-arm-conapdna-indonesia-prod-kdp",
-					"S3Directory": "raw_data_lake/IVY/",
-					"AdlsContainer": "idn",
-					"AdlsDirectory": "IVY/",
-					"IsToBeDeleted": "N"
+					"category": "NA_MDS_TW_POS_IMS"
 				}
 			}
 		],
@@ -23,14 +19,15 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-04T00:00:00",
+				"startTime": "2024-06-11T12:02:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						50
+						0
 					],
 					"hours": [
-						4
+						0,
+						23
 					]
 				}
 			}

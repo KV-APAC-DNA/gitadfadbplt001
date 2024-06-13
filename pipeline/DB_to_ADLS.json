@@ -1,0 +1,1074 @@
+{
+	"name": "DB_to_ADLS",
+	"properties": {
+		"activities": [
+			{
+				"name": "DECIDE_SOURCE",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.source_name",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "sql_server_awswfqsgpw",
+							"activities": [
+								{
+									"name": "sql_server_to_adls",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "sql_server_awswfqsgpw",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_server_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.container",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.landing_file_path",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@pipeline().parameters.landing_file_name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "error log - move sql_server_to_alds",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('sql_server_to_adls').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('sql_server_to_adls').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - sql_server_to_alds",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{pipeline().parameters.source_query} \\n\n**CONTAINER**: @{pipeline().parameters.container} \\n\n**LANDING_FILE_PATH**: @{pipeline().parameters.landing_file_path} \\n\n**LANDING_FILE_NAME**: @{pipeline().parameters.landing_file_name} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								},
+								{
+									"name": "error",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "sql_server_to_adls: @{activity('sql_server_to_adls').error?.errorCode} @{activity('sql_server_to_adls').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								}
+							]
+						},
+						{
+							"value": "mysql_server_csngjnjreport",
+							"activities": [
+								{
+									"name": "mysql_to_adls",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 2,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "mysql_server_csngjnjreport",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_server_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.container",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.landing_file_path",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@pipeline().parameters.landing_file_name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "error log - move mysql_to_alds",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "mysql_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('mysql_to_adls').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('mysql_to_adls').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - mysql_to_adls",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "mysql_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{pipeline().parameters.source_query} \\n\n**CONTAINER**: @{pipeline().parameters.container} \\n\n**LANDING_FILE_PATH**: @{pipeline().parameters.landing_file_path} \\n\n**LANDING_FILE_NAME**: @{pipeline().parameters.landing_file_name} \\n\n**ERROR**: _@{activity('mysql_to_adls').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								},
+								{
+									"name": "error_mysql_to_adls",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "mysql_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "mysql_to_adls: @{activity('mysql_to_adls').error?.errorCode} @{activity('mysql_to_adls').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								}
+							]
+						},
+						{
+							"value": "sql_server_mds",
+							"activities": [
+								{
+									"name": "mds_sql_server_to_adls",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SqlServerSource",
+											"sqlReaderQuery": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											},
+											"queryTimeout": "02:00:00",
+											"partitionOption": "None"
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "sql_server_mds",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_server_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.container",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.landing_file_path",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@pipeline().parameters.landing_file_name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "error log - move mds_sql_server_to_adls",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "mds_sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('mds_sql_server_to_adls').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('mds_sql_server_to_adls').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - mds_sql_server_to_adls",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "mds_sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{pipeline().parameters.source_query} \\n\n**CONTAINER**: @{pipeline().parameters.container} \\n\n**LANDING_FILE_PATH**: @{pipeline().parameters.landing_file_path} \\n\n**LANDING_FILE_NAME**: @{pipeline().parameters.landing_file_name} \\n\n**ERROR**: _@{activity('mds_sql_server_to_adls').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								},
+								{
+									"name": "error_mds_sql_server",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "mds_sql_server_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "sql_server_to_adls: @{activity('mds_sql_server_to_adls').error?.errorCode} @{activity('mds_sql_server_to_adls').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								}
+							]
+						},
+						{
+							"value": "mysql_server_csngjnjreport_batchread",
+							"activities": [
+								{
+									"name": "mysql_to_adls_multifiles",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "Set landing_file_name_no_ext",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 4,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"maxRowsPerFile": 20000,
+												"fileNamePrefix": {
+													"value": "@variables('landing_file_name')",
+													"type": "Expression"
+												},
+												"quoteAllText": true,
+												"fileExtension": ".csv"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "mysql_server_csngjnjreport",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "mysql_server_sink_multifile",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.container",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.landing_file_path",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Set landing_file_name_no_ext",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "landing_file_name",
+										"value": {
+											"value": "@replace(pipeline().parameters.landing_file_name, '.csv', '')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "mysql_server_csngjnjreport_dbload",
+							"activities": [
+								{
+									"name": "mysql_to_adls_dbload",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 3,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "MySqlSource",
+											"query": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											}
+										},
+										"sink": {
+											"type": "SnowflakeSink",
+											"preCopyScript": {
+												"value": "@if(equals(pipeline().parameters.truncate_and_load,'Y'),concat('TRUNCATE TABLE ',pipeline().parameters.target_schema,'.',pipeline().parameters.target_table),'')",
+												"type": "Expression"
+											},
+											"importSettings": {
+												"type": "SnowflakeImportCopyCommand"
+											}
+										},
+										"enableStaging": true,
+										"stagingSettings": {
+											"linkedServiceName": {
+												"referenceName": "adfadbplt001lsdlsadbplt001_blob",
+												"type": "LinkedServiceReference"
+											},
+											"path": {
+												"value": "@{pipeline().parameters.container}/@{pipeline().parameters.landing_file_path}",
+												"type": "Expression"
+											},
+											"enableCompression": true
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "mysql_server_csngjnjreport",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "snowflake_sink_target",
+											"type": "DatasetReference",
+											"parameters": {
+												"tablename": {
+													"value": "@pipeline().parameters.target_table",
+													"type": "Expression"
+												},
+												"schemaname": {
+													"value": "@pipeline().parameters.target_schema",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "oracle_db",
+							"activities": [
+								{
+									"name": "oracle_to_adls",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "OracleSource",
+											"oracleReaderQuery": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											},
+											"partitionOption": "None",
+											"convertDecimalToInteger": false,
+											"queryTimeout": "02:00:00"
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"typeConversion": true,
+											"typeConversionSettings": {
+												"allowDataTruncation": true,
+												"treatBooleanAsNumber": false
+											}
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "OracleJapanDCL_kenvue",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_server_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.container",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@pipeline().parameters.landing_file_path",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@pipeline().parameters.landing_file_name",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "error log - move oracle_to_adls",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "oracle_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('oracle_to_adls').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('oracle_to_adls').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - oracle_to_adls",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "oracle_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with extracting data from oracle to adls : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{pipeline().parameters.source_query} \\n\n**CONTAINER**: @{pipeline().parameters.container} \\n\n**LANDING_FILE_PATH**: @{pipeline().parameters.landing_file_path} \\n\n**LANDING_FILE_NAME**: @{pipeline().parameters.landing_file_name} \\n\n**ERROR**: _@{activity('oracle_to_adls').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								},
+								{
+									"name": "error_oracle_to_adls",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "oracle_to_adls",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "oracle_to_adls: @{activity('oracle_to_adls').error?.errorCode} @{activity('oracle_to_adls').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Unknown source",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Unknown source type: @{pipeline().parameters.source_name}",
+									"type": "Expression"
+								},
+								"errorCode": "2000"
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"source_name": {
+				"type": "string"
+			},
+			"container": {
+				"type": "string"
+			},
+			"landing_file_path": {
+				"type": "string"
+			},
+			"landing_file_name": {
+				"type": "string"
+			},
+			"source_query": {
+				"type": "string"
+			},
+			"process_id": {
+				"type": "int"
+			},
+			"category": {
+				"type": "string"
+			},
+			"phase_id": {
+				"type": "int"
+			},
+			"usecase_id": {
+				"type": "int"
+			},
+			"sequence_id": {
+				"type": "int"
+			},
+			"target_table": {
+				"type": "string"
+			},
+			"target_schema": {
+				"type": "string"
+			},
+			"truncate_and_load": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"landing_file_name": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Ingestion/Sources/Utilities"
+		},
+		"annotations": []
+	}
+}
