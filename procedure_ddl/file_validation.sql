@@ -16,6 +16,7 @@
 -- 22/5/24  Thanish
 -- 29/5/24  Thanish
 -- 06/6/24  Srihari     Header handled if sheetname is used instead of sheet_index
+-- 13/6/24  Srihari     Header handled if source is SFMC
 
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
@@ -278,7 +279,16 @@ def main(session: snowpark.Session,Param):
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("field_delimiter", "|").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
-                
+            
+            elif "HCPSDL_RAW" in stage_name and "/SFMC/" in temp_stage_path :
+                file_name= CURRENT_FILE.replace("xlsx","csv")
+                file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
+                utf_encoding= ''UTF-16LE''
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("encoding",utf_encoding).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+
+                df_pandas=df.to_pandas()
+                header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
             elif sheet_names != "[]":
                 file_name = sheet_names[1:-1].split(",")[0]
                 file_name = file_name.strip("\\"").replace("(", "").replace(")", "").replace(" ","_")+".csv"
