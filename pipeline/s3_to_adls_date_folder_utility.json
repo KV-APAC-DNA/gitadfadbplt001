@@ -173,7 +173,7 @@
 		"parameters": {
 			"S3BucketName": {
 				"type": "string",
-				"defaultValue": "iitx-arm-conapdna-indonesia-prod-kdp"
+				"defaultValue": "itx-arm-conapdna-indonesia-prod-kdp"
 			},
 			"S3Directory": {
 				"type": "string",
