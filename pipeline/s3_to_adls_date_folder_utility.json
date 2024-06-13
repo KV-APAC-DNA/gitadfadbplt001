@@ -9,7 +9,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(pipeline().parameters.IsToBeDeleted,'Y'),'DeleteAndMove','Move')",
+						"value": "@if(contains(pipeline().DataFactory,'prd'),if(equals(pipeline().parameters.IsToBeDeleted,'Y'),'DeleteAndMove','Move'),'')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -173,7 +173,7 @@
 		"parameters": {
 			"S3BucketName": {
 				"type": "string",
-				"defaultValue": "itx-arm-conapdna-indonesia-prod-kdp"
+				"defaultValue": "iitx-arm-conapdna-indonesia-prod-kdp"
 			},
 			"S3Directory": {
 				"type": "string",
