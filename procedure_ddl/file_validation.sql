@@ -20,10 +20,10 @@
 -- 06/6/24  Srihari     Header handled if sheetname is used instead of sheet_index
 -- 13/6/24  Srihari     Header handled if source is SFMC
 -- 13/6/24  Thanish     Header handled for HCP files
-
+-- 14/6/24  Thanish     Added logic for index 'pre' for file name validation
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
-RETURNS VARCHAR(16777216)
+RETURNS TABLE ()
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
 PACKAGES = ('openpyxl==3.1.2','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
@@ -106,6 +106,9 @@ def main(session: snowpark.Session,Param):
         elif index.lower() == "full":
             extracted_filename = processed_file_name.rsplit(".", 1)[0]
             print(extracted_filename)
+        elif index.lower() == "pre":
+            extracted_filename = processed_file_name.split("_", 1)[1].split(".")[0]
+            print(extracted_filename)  
         elif index =="name_mmmyyyy.xlsx" or index =="name_yyyymmww.xlsx" or index =="name_yyyymmww.xls":
             extracted_filename=CURRENT_FILE.split(".")[0]
 
