@@ -21,6 +21,7 @@
 -- 13/6/24  Srihari     Header handled if source is SFMC
 -- 13/6/24  Thanish     Header handled for HCP files
 -- 14/6/24  Thanish     Added logic for index 'pre' for file name validation
+-- 14/6/24  Srihari     Added logic for splitting by ~
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS TABLE ()
@@ -400,6 +401,10 @@ def main(session: snowpark.Session,Param):
             tab_split=val_header.split("	")
             if len(tab_split) > 1:
                 final_val_header=tab_split
+            
+            tilda_split=val_header.split("~")
+            if len(tilda_split) > 1:
+                final_val_header=tilda_split
 
             header_reg = header_reg.lower()
             regex_list = header_reg.split(''^'')
