@@ -24,7 +24,7 @@
 -- 14/6/24  Srihari     Added logic for splitting by ~
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
-RETURNS TABLE ()
+RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
 PACKAGES = ('openpyxl==3.1.2','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
@@ -326,6 +326,7 @@ def main(session: snowpark.Session,Param):
                 
             else:
                 header_pipe_split = header[0].split(''|'')
+                header_tilda_split = header[0].split(''~'')
                 
             if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report'' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE and "TW_POS_PXCivilia" not in CURRENT_FILE and ''TW_POS_RTMart_RawData'' not in  CURRENT_FILE and "MT01P39R" not in CURRENT_FILE and "Weekly_Summary_Trexi_raw_data" not in CURRENT_FILE and "Naver_keyword" not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
@@ -334,6 +335,8 @@ def main(session: snowpark.Session,Param):
         
             elif len(header_pipe_split)>1:
                 result_list = header_pipe_split
+            elif len(header_tilda_split)>1:
+                result_list = header_tilda_split
             else:
                 result_list = header
 
@@ -402,7 +405,7 @@ def main(session: snowpark.Session,Param):
             if len(tab_split) > 1:
                 final_val_header=tab_split
             
-            tilda_split=val_header.split("~")
+            tilda_split=val_header.split(''~'')
             if len(tilda_split) > 1:
                 final_val_header=tilda_split
 
