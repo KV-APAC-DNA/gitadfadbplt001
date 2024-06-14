@@ -500,13 +500,8 @@ def aus_processing(CURRENT_FILE):
 
 
 def north_asia_processing(CURRENT_FILE):
-    var_1=CURRENT_FILE.find("_")
-    new_file=CURRENT_FILE[var_1+1:].split(".")[0]
-    bol_th_pos6=[i for i in ["pop_lists","product_lists_allocation","product_lists_pops","product_lists_products","pops","products","users"] if i == new_file]
-    if len(bol_th_pos6) >0:
-        file=("_").join(CURRENT_FILE.split("_")[1:])
 
-    elif "NU_RI_ZON" in CURRENT_FILE:
+    if "NU_RI_ZON" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",2)
 
     elif "KR_POS_GS_Super" in CURRENT_FILE:
