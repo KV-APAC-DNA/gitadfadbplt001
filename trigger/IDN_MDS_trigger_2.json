@@ -1,5 +1,5 @@
 {
-	"name": "PCF_PA_PHARMA_trigger",
+	"name": "IDN_MDS_trigger_2",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PA_INV"
+					"category": "IDN_MDS"
 				}
 			}
 		],
@@ -19,14 +19,15 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
+				"startTime": "2024-06-04T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						40
+						50
 					],
 					"hours": [
-						16
+						10,
+						15
 					]
 				}
 			}

@@ -27,7 +27,8 @@
 			"PipelineBillingEnabled": "true",
 			"factoryStagingLSReferenceName": "adfadbplt001lsdlsadbplt001_ir001",
 			"factoryStagingLSType": "LinkedServiceReference",
-			"factoryStagingFolderPath": "dataops"
+			"factoryStagingFolderPath": "dataops",
+			"PolicyValidationEnabled": "true"
 		}
 	},
 	"location": "southeastasia",

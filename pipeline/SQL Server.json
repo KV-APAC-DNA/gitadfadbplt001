@@ -7,7 +7,19 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "delete_original_file",
+						"activity": "load_with_load_method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "If Error Encountered during load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "delete_after_archive",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -109,7 +121,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select SNOWFLAKE_STAGE,IS_INCREMENTAL,WATERMARK_VALUE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\nCASE WHEN IS_INCREMENTAL = TRUE AND WATERMARK_VALUE IS NOT NULL\nTHEN\n    CONCAT(\"'ms_query'\",' ',REPLACE(ifnull(\"'incremental_filter'\",''), '{WATERMARK_VALUE}', WATERMARK_VALUE))\nELSE    \"'ms_query'\" END AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nifnull(\"'param_list'\",'') AS param_list,\n\"'param_query'\" AS param_query,\nlower(ifnull(\"'load_method'\",'copy')) AS load_method,\n\"'sp_name'\" AS SP_NAME,\n\"'next_incremental_value'\" AS next_incremental_value,\nifnull(\"'map_names'\",'N') AS map_names\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT, IS_INCREMENTAL,WATERMARK_VALUE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS P USING (PARAMETER_GROUP_ID)\nLEFT JOIN (SELECT PROCESS_ID,WATERMARK_VALUE FROM META_RAW.INCREMENTAL_WATERMARK\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND LOAD_STATUS = 'SUCCESS'\nQUALIFY ROW_NUMBER() OVER(PARTITION BY PROCESS_ID ORDER BY INSERT_TIMESTAMP DESC) = 1) I USING(PROCESS_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source',\n'param_list',\n'param_query',\n'incremental_filter',\n'load_method',\n'sp_name',\n'next_incremental_value',\n'map_names'\n));",
+							"value": "Select SNOWFLAKE_STAGE,IS_INCREMENTAL,WATERMARK_VALUE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_table'\" AS target_table,\n\"'target_schema'\" AS target_schema,\nREPLACE(CASE WHEN IS_INCREMENTAL = TRUE AND WATERMARK_VALUE IS NOT NULL\nTHEN\n    CONCAT(\"'ms_query'\",' ',REPLACE(ifnull(\"'incremental_filter'\",''), '{WATERMARK_VALUE}', WATERMARK_VALUE))\nELSE    \"'ms_query'\" END, '{JOB_START_TIME}', '@{formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')}') AS ms_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nifnull(\"'param_list'\",'') AS param_list,\n\"'param_query'\" AS param_query,\nlower(ifnull(\"'load_method'\",'copy')) AS load_method,\n\"'sp_name'\" AS SP_NAME,\n\"'next_incremental_value'\" AS next_incremental_value,\nifnull(\"'map_names'\",'N') AS map_names\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT, IS_INCREMENTAL,WATERMARK_VALUE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS P USING (PARAMETER_GROUP_ID)\nLEFT JOIN (SELECT PROCESS_ID,WATERMARK_VALUE FROM META_RAW.INCREMENTAL_WATERMARK\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND LOAD_STATUS = 'SUCCESS'\nQUALIFY ROW_NUMBER() OVER(PARTITION BY PROCESS_ID ORDER BY INSERT_TIMESTAMP DESC) = 1) I USING(PROCESS_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_table',\n'target_schema',\n'ms_query',\n'truncate_and_load',\n'decide_source',\n'param_list',\n'param_query',\n'incremental_filter',\n'load_method',\n'sp_name',\n'next_incremental_value',\n'map_names'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -278,7 +290,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "DECIDE_SOURCE",
+						"activity": "extract_source_data",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -504,1039 +516,11 @@
 				}
 			},
 			{
-				"name": "DECIDE_SOURCE",
-				"type": "Switch",
-				"dependsOn": [
-					{
-						"activity": "Set landing_file_name",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set FILE_PATH",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set SDL_TABLE",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set container",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "Set SOURCE_TABLE",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "parameter_replace",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"on": {
-						"value": "@activity('read parameters').output.value[0].DECIDE_SOURCE",
-						"type": "Expression"
-					},
-					"cases": [
-						{
-							"value": "sql_server_awswfqsgpw",
-							"activities": [
-								{
-									"name": "sql_server_to_adls",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SqlServerSource",
-											"sqlReaderQuery": {
-												"value": "@variables('ms_query')",
-												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "sql_server_awswfqsgpw",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "sql_server_sink",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": {
-													"value": "@variables('container')",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@variables('landing_file_path')",
-													"type": "Expression"
-												},
-												"file": {
-													"value": "@variables('landing_file_name')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "error log - move sql_server_to_alds",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "sql_server_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "write_error_log",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"process_id": {
-												"value": "@pipeline().parameters.process_id",
-												"type": "Expression"
-											},
-											"job_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"error_message": {
-												"value": "@activity('sql_server_to_adls').error?.message",
-												"type": "Expression"
-											},
-											"run_id": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"category": {
-												"value": "@pipeline().parameters.category",
-												"type": "Expression"
-											},
-											"phase_id": {
-												"value": "@pipeline().parameters.phase_id",
-												"type": "Expression"
-											},
-											"error_code": {
-												"value": "@activity('sql_server_to_adls').error?.errorCode",
-												"type": "Expression"
-											},
-											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "Send error - sql_server_to_alds",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "sql_server_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "NotifiyTeamsChannelPipeline",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"subscription": {
-												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-												"type": "Expression"
-											},
-											"resourceGroup": {
-												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-												"type": "Expression"
-											},
-											"runId": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"triggerTime": {
-												"value": "@pipeline().TriggerTime",
-												"type": "Expression"
-											},
-											"status": "FAIL",
-											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{activity('read parameters').output.value[0].ms_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
-												"type": "Expression"
-											},
-											"isBusinessNotification": "No",
-											"isSupportNotification": "Yes",
-											"isError": "Yes"
-										}
-									}
-								},
-								{
-									"name": "error",
-									"type": "Fail",
-									"dependsOn": [
-										{
-											"activity": "sql_server_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "sql_server_to_adls: @{activity('sql_server_to_adls').error?.errorCode} @{activity('sql_server_to_adls').error?.message}",
-											"type": "Expression"
-										},
-										"errorCode": "2000"
-									}
-								}
-							]
-						},
-						{
-							"value": "mysql_server_csngjnjreport",
-							"activities": [
-								{
-									"name": "mysql_to_adls",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 2,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "MySqlSource",
-											"query": {
-												"value": "@variables('ms_query')",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "mysql_server_csngjnjreport",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "sql_server_sink",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": {
-													"value": "@variables('container')",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@variables('landing_file_path')",
-													"type": "Expression"
-												},
-												"file": {
-													"value": "@variables('landing_file_name')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "error log - move mysql_to_alds",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "mysql_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "write_error_log",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"process_id": {
-												"value": "@pipeline().parameters.process_id",
-												"type": "Expression"
-											},
-											"job_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"error_message": {
-												"value": "@activity('mysql_to_adls').error?.message",
-												"type": "Expression"
-											},
-											"run_id": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"category": {
-												"value": "@pipeline().parameters.category",
-												"type": "Expression"
-											},
-											"phase_id": {
-												"value": "@pipeline().parameters.phase_id",
-												"type": "Expression"
-											},
-											"error_code": {
-												"value": "@activity('mysql_to_adls').error?.errorCode",
-												"type": "Expression"
-											},
-											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "Send error - mysql_to_adls",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "mysql_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "NotifiyTeamsChannelPipeline",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"subscription": {
-												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-												"type": "Expression"
-											},
-											"resourceGroup": {
-												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-												"type": "Expression"
-											},
-											"runId": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"triggerTime": {
-												"value": "@pipeline().TriggerTime",
-												"type": "Expression"
-											},
-											"status": "FAIL",
-											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{activity('read parameters').output.value[0].ms_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('mysql_to_adls').error?.message}_",
-												"type": "Expression"
-											},
-											"isBusinessNotification": "No",
-											"isSupportNotification": "Yes",
-											"isError": "Yes"
-										}
-									}
-								},
-								{
-									"name": "error_mysql_to_adls",
-									"type": "Fail",
-									"dependsOn": [
-										{
-											"activity": "mysql_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "mysql_to_adls: @{activity('mysql_to_adls').error?.errorCode} @{activity('mysql_to_adls').error?.message}",
-											"type": "Expression"
-										},
-										"errorCode": "2000"
-									}
-								}
-							]
-						},
-						{
-							"value": "sql_server_mds",
-							"activities": [
-								{
-									"name": "mds_sql_server_to_adls",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SqlServerSource",
-											"sqlReaderQuery": {
-												"value": "@variables('ms_query')",
-												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "sql_server_mds",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "sql_server_sink",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": {
-													"value": "@variables('container')",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@variables('landing_file_path')",
-													"type": "Expression"
-												},
-												"file": {
-													"value": "@variables('landing_file_name')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "error log - move mds_sql_server_to_adls",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "mds_sql_server_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "write_error_log",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"process_id": {
-												"value": "@pipeline().parameters.process_id",
-												"type": "Expression"
-											},
-											"job_name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"error_message": {
-												"value": "@activity('mds_sql_server_to_adls').error?.message",
-												"type": "Expression"
-											},
-											"run_id": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"category": {
-												"value": "@pipeline().parameters.category",
-												"type": "Expression"
-											},
-											"phase_id": {
-												"value": "@pipeline().parameters.phase_id",
-												"type": "Expression"
-											},
-											"error_code": {
-												"value": "@activity('mds_sql_server_to_adls').error?.errorCode",
-												"type": "Expression"
-											},
-											"job_id": {
-												"value": "@pipeline()?.TriggeredByPipelineRunId",
-												"type": "Expression"
-											}
-										}
-									}
-								},
-								{
-									"name": "Send error - mds_sql_server_to_adls",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "mds_sql_server_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "NotifiyTeamsChannelPipeline",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"subscription": {
-												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-												"type": "Expression"
-											},
-											"resourceGroup": {
-												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-												"type": "Expression"
-											},
-											"runId": {
-												"value": "@pipeline().RunId",
-												"type": "Expression"
-											},
-											"name": {
-												"value": "@pipeline().Pipeline",
-												"type": "Expression"
-											},
-											"triggerTime": {
-												"value": "@pipeline().TriggerTime",
-												"type": "Expression"
-											},
-											"status": "FAIL",
-											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{activity('read parameters').output.value[0].ms_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('mds_sql_server_to_adls').error?.message}_",
-												"type": "Expression"
-											},
-											"isBusinessNotification": "No",
-											"isSupportNotification": "Yes",
-											"isError": "Yes"
-										}
-									}
-								},
-								{
-									"name": "error_mds_sql_server",
-									"type": "Fail",
-									"dependsOn": [
-										{
-											"activity": "mds_sql_server_to_adls",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"userProperties": [],
-									"typeProperties": {
-										"message": {
-											"value": "sql_server_to_adls: @{activity('mds_sql_server_to_adls').error?.errorCode} @{activity('mds_sql_server_to_adls').error?.message}",
-											"type": "Expression"
-										},
-										"errorCode": "2000"
-									}
-								}
-							]
-						},
-						{
-							"value": "mysql_server_csngjnjreport_batchread",
-							"activities": [
-								{
-									"name": "mysql_to_adls_multifiles",
-									"type": "Copy",
-									"dependsOn": [
-										{
-											"activity": "Set landing_file_name_no_ext",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 4,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "MySqlSource",
-											"query": {
-												"value": "@variables('ms_query')",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"maxRowsPerFile": 20000,
-												"fileNamePrefix": {
-													"value": "@variables('landing_file_name')",
-													"type": "Expression"
-												},
-												"quoteAllText": true,
-												"fileExtension": ".csv"
-											}
-										},
-										"enableStaging": false,
-										"translator": {
-											"type": "TabularTranslator",
-											"typeConversion": true,
-											"typeConversionSettings": {
-												"allowDataTruncation": true,
-												"treatBooleanAsNumber": false
-											}
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "mysql_server_csngjnjreport",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "mysql_server_sink_multifile",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": {
-													"value": "@variables('container')",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@variables('landing_file_path')",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
-									"name": "Set landing_file_name_no_ext",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "landing_file_name",
-										"value": {
-											"value": "@concat(concat(activity('read parameters').output.value[0].landing_file_name, '_', formatDateTime(convertTimeZone(UTCnow(),'UTC','Singapore Standard Time'), 'yyyyMMddHHmmss')))\n",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"value": "mysql_server_csngjnjreport_dbload",
-							"activities": [
-								{
-									"name": "mysql_to_adls_dbload",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 3,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "MySqlSource",
-											"query": {
-												"value": "@variables('ms_query')",
-												"type": "Expression"
-											}
-										},
-										"sink": {
-											"type": "SnowflakeSink",
-											"preCopyScript": {
-												"value": "@if(equals(activity('read parameters').output.value[0].truncate_and_load,'Y'),concat('TRUNCATE TABLE ',activity('read parameters').output.value[0].target_schema,'.',activity('read parameters').output.value[0].target_table),'')",
-												"type": "Expression"
-											},
-											"importSettings": {
-												"type": "SnowflakeImportCopyCommand"
-											}
-										},
-										"enableStaging": true,
-										"stagingSettings": {
-											"linkedServiceName": {
-												"referenceName": "adfadbplt001lsdlsadbplt001_blob",
-												"type": "LinkedServiceReference"
-											},
-											"path": {
-												"value": "@{variables('container')}/@{variables('landing_file_path')}",
-												"type": "Expression"
-											},
-											"enableCompression": true
-										}
-									},
-									"inputs": [
-										{
-											"referenceName": "mysql_server_csngjnjreport",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "snowflake_sink_target",
-											"type": "DatasetReference",
-											"parameters": {
-												"tablename": {
-													"value": "@activity('read parameters').output.value[0].target_table",
-													"type": "Expression"
-												},
-												"schemaname": {
-													"value": "@activity('read parameters').output.value[0].target_schema",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								}
-							]
-						}
-					],
-					"defaultActivities": [
-						{
-							"name": "Unknown source",
-							"type": "Fail",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"message": {
-									"value": "Unknown source type: @{activity('read parameters').output.value[0].DECIDE_SOURCE}",
-									"type": "Expression"
-								},
-								"errorCode": "2000"
-							}
-						}
-					]
-				}
-			},
-			{
-				"name": "Truncate_Target",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "DECIDE_SOURCE",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@and(equals(activity('read parameters').output.value[0].TRUNCATE_AND_LOAD, 'Y'),\nnot(endswith(activity('read parameters').output.value[0].decide_source,'dbload')))",
-						"type": "Expression"
-					},
-					"ifTrueActivities": [
-						{
-							"name": "truncate table",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnaload",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "truncate table  @{variables('sdl_table')} ;",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
-						},
-						{
-							"name": "error log - Truncate_Target",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "truncate table",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "@activity('truncate table').error?.message",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "@activity('truncate table').error?.errorCode",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "Send error - Truncate_Target",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "truncate table",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "NotifiyTeamsChannelPipeline",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"subscription": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-										"type": "Expression"
-									},
-									"resourceGroup": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-										"type": "Expression"
-									},
-									"runId": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"triggerTime": {
-										"value": "@pipeline().TriggerTime",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"supportMessage": {
-										"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('truncate table').error?.message}_",
-										"type": "Expression"
-									},
-									"isBusinessNotification": "No",
-									"isSupportNotification": "Yes",
-									"isError": "Yes"
-								}
-							}
-						},
-						{
-							"name": "fail_on_truncate",
-							"type": "Fail",
-							"dependsOn": [
-								{
-									"activity": "truncate table",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"message": {
-									"value": "@activity('truncate table').error?.message",
-									"type": "Expression"
-								},
-								"errorCode": "1500"
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "audit fail - Truncate_Target",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Truncate_Target",
+						"activity": "truncate_target_table",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1592,56 +576,6 @@
 				}
 			},
 			{
-				"name": "delete_original_file",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "if_archive_batch_no_batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "BinarySource",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@variables('container')",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@variables('landing_file_path')",
-								"type": "Expression"
-							},
-							"sourceFile": {
-								"value": "@variables('landing_file_name')",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": false,
-						"wildcardFileName": {
-							"value": "@{variables('landing_file_name')}*",
-							"type": "Expression"
-						},
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
 				"name": "parameter_replace",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -1679,7 +613,10 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "SELECT MIN(TO_DATE(caldate))::STRING AS CM_WEEK_FROMDATE,\n             MAX(TO_DATE(caldate))::STRING AS CM_WEEK_TODATE\n      FROM INDEDW_INTEGRATION.EDW_RETAILER_CALENDAR_DIM\n      WHERE mth_mm IN (SELECT DISTINCT (year||lpad (MONTH,2,0))\n                       FROM INDITG_INTEGRATION.ITG_MDS_MONTH_END_DATES\n                       WHERE TO_DATE(convert_timezone('Asia/Kolkata',CURRENT_DATE())) <= TO_DATE(pathfinder_month_end))"
+										"text": {
+											"value": "@activity('read parameters').output.value[0].param_query",
+											"type": "Expression"
+										}
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
@@ -1923,13 +860,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Truncate_Target",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					},
-					{
-						"activity": "set_match_names",
+						"activity": "truncate_target_table",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1966,7 +897,7 @@
 											{
 												"type": "NonQuery",
 												"text": {
-													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' RECORD_DELIMITER='\\r\\n' @{concat('',if(variables('match_names'),'PARSE_HEADER = TRUE','SKIP_HEADER = 1'))} ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None)\n@{concat('',if(variables('match_names'),'MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE',''))}\n;",
+													"value": "COPY INTO @{variables('sdl_table')} FROM \n'@{concat('@', activity('read parameters').output.value[0].SNOWFLAKE_STAGE, '/', variables('landing_file_path'), '/',variables('landing_file_name'))}' \nFILE_FORMAT = (TYPE = 'CSV' FIELD_DELIMITER = '\\u0001' RECORD_DELIMITER='\\r\\n' @{concat('',if(equals(toLower(activity('read parameters').output.value[0].map_names),'y'),'PARSE_HEADER = TRUE','SKIP_HEADER = 1'))} ERROR_ON_COLUMN_COUNT_MISMATCH = FALSE, FIELD_OPTIONALLY_ENCLOSED_BY = None)\n@{concat('',if(equals(toLower(activity('read parameters').output.value[0].map_names),'y'),'MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE',''))}\n;",
 													"type": "Expression"
 												}
 											}
@@ -2111,7 +1042,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "DECIDE_SOURCE",
+						"activity": "extract_source_data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -2139,7 +1070,7 @@
 									"typeProperties": {
 										"variableName": "watermark_value",
 										"value": {
-											"value": "@formatDateTime(convertTimeZone(utcNow(),'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
+											"value": "@formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
 											"type": "Expression"
 										}
 									}
@@ -2268,22 +1199,6 @@
 									}
 								}
 							]
-						}
-					],
-					"defaultActivities": [
-						{
-							"name": "blank",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "watermark_value",
-								"value": "NULL"
-							}
 						}
 					]
 				}
@@ -2557,590 +1472,6 @@
 				}
 			},
 			{
-				"name": "set_match_names",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "read parameters",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "match_names",
-					"value": {
-						"value": "@equals(toLower(activity('read parameters').output.value[0].map_names),'y')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "delete_original_file_on_error",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "if_error_batch_no_batch",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "BinarySource",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@variables('container')",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@variables('landing_file_path')",
-								"type": "Expression"
-							},
-							"sourceFile": {
-								"value": "@variables('landing_file_name')",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
-				"name": "if_archive_batch_no_batch",
-				"type": "IfCondition",
-				"dependsOn": [
-					{
-						"activity": "load_with_load_method",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"expression": {
-						"value": "@endswith(activity('read parameters').output.value[0].DECIDE_SOURCE,'_batchread')",
-						"type": "Expression"
-					},
-					"ifFalseActivities": [
-						{
-							"name": "move_to_archive_nonbatch",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": false,
-										"deleteFilesAfterCompletion": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "BinarySource",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@variables('landing_file_path')",
-											"type": "Expression"
-										},
-										"sourceFile": {
-											"value": "@variables('landing_file_name')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "BinaryDestination_Archive",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
-											"type": "Expression"
-										},
-										"fileName": {
-											"value": "@concat(variables('landing_file_name'),'.gz')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"name": "audit fail - move_to_archive_no_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_nonbatch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"message": {
-										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "error log - move_to_archive_no_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_nonbatch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "@activity('move_to_archive_nonbatch').error?.message",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "@activity('move_to_archive_nonbatch').error?.errorCode",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "Send error - move_to_archive_no_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_nonbatch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "NotifiyTeamsChannelPipeline",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"subscription": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-										"type": "Expression"
-									},
-									"resourceGroup": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-										"type": "Expression"
-									},
-									"runId": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"triggerTime": {
-										"value": "@pipeline().TriggerTime",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"supportMessage": {
-										"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_nonbatch').error?.message}_",
-										"type": "Expression"
-									},
-									"isBusinessNotification": "No",
-									"isSupportNotification": "Yes",
-									"isError": "Yes"
-								}
-							}
-						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "move_to_archive_batch",
-							"type": "Copy",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"source": {
-									"type": "BinarySource",
-									"storeSettings": {
-										"type": "AzureBlobFSReadSettings",
-										"recursive": false,
-										"wildcardFolderPath": {
-											"value": "@variables('landing_file_path')",
-											"type": "Expression"
-										},
-										"wildcardFileName": {
-											"value": "@{variables('landing_file_name')}*",
-											"type": "Expression"
-										},
-										"deleteFilesAfterCompletion": false
-									},
-									"formatSettings": {
-										"type": "BinaryReadSettings"
-									}
-								},
-								"sink": {
-									"type": "BinarySink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings",
-										"copyBehavior": "PreserveHierarchy"
-									}
-								},
-								"enableStaging": false
-							},
-							"inputs": [
-								{
-									"referenceName": "BinarySource",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@variables('landing_file_path')",
-											"type": "Expression"
-										},
-										"sourceFile": {
-											"value": "@variables('landing_file_name')",
-											"type": "Expression"
-										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "BinaryDestination_Archive_Batch",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@variables('container')",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"name": "audit fail - move_to_archive_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_batch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"message": {
-										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "error log - move_to_archive_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_batch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_error_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"job_name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"error_message": {
-										"value": "@activity('move_to_archive_batch').error?.message",
-										"type": "Expression"
-									},
-									"run_id": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"error_code": {
-										"value": "@activity('move_to_archive_batch').error?.errorCode",
-										"type": "Expression"
-									},
-									"job_id": {
-										"value": "@pipeline()?.TriggeredByPipelineRunId",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
-							"name": "Send error - move_to_archive_batch",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "move_to_archive_batch",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "NotifiyTeamsChannelPipeline",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"subscription": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-										"type": "Expression"
-									},
-									"resourceGroup": {
-										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-										"type": "Expression"
-									},
-									"runId": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"name": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"triggerTime": {
-										"value": "@pipeline().TriggerTime",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"supportMessage": {
-										"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_batch').error?.message}_",
-										"type": "Expression"
-									},
-									"isBusinessNotification": "No",
-									"isSupportNotification": "Yes",
-									"isError": "Yes"
-								}
-							}
-						}
-					]
-				}
-			},
-			{
 				"name": "if_error_batch_no_batch",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -3148,6 +1479,12 @@
 						"activity": "load_with_load_method",
 						"dependencyConditions": [
 							"Failed"
+						]
+					},
+					{
+						"activity": "archive_files_after_load",
+						"dependencyConditions": [
+							"Succeeded"
 						]
 					}
 				],
@@ -3200,11 +1537,11 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@variables('landing_file_path')",
+											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@variables('landing_file_name')",
+											"value": "@{variables('landing_file_name')}.gz",
 											"type": "Expression"
 										}
 									}
@@ -3284,11 +1621,11 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@variables('landing_file_path')",
+											"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
 											"type": "Expression"
 										},
 										"sourceFile": {
-											"value": "@variables('landing_file_name')",
+											"value": "@{variables('landing_file_name')}.gz",
 											"type": "Expression"
 										}
 									}
@@ -3310,6 +1647,839 @@
 									}
 								}
 							]
+						}
+					]
+				}
+			},
+			{
+				"name": "extract_source_data",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "parameter_replace",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set landing_file_name",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set FILE_PATH",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set SDL_TABLE",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set container",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "DB_to_ADLS",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"source_name": {
+							"value": "@activity('read parameters').output.value[0].DECIDE_SOURCE",
+							"type": "Expression"
+						},
+						"container": {
+							"value": "@variables('container')",
+							"type": "Expression"
+						},
+						"landing_file_path": {
+							"value": "@variables('landing_file_path')",
+							"type": "Expression"
+						},
+						"landing_file_name": {
+							"value": "@variables('landing_file_name')",
+							"type": "Expression"
+						},
+						"source_query": {
+							"value": "@variables('ms_query')",
+							"type": "Expression"
+						},
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"sequence_id": {
+							"value": "@pipeline().parameters.sequence_id",
+							"type": "Expression"
+						},
+						"target_table": {
+							"value": "@activity('read parameters').output.value[0].TARGET_SCHEMA",
+							"type": "Expression"
+						},
+						"target_schema": {
+							"value": "@activity('read parameters').output.value[0].TARGET_TABLE",
+							"type": "Expression"
+						},
+						"truncate_and_load": {
+							"value": "@activity('read parameters').output.value[0].TRUNCATE_AND_LOAD",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "truncate_target_table",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "extract_source_data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@if(and(equals(activity('read parameters').output.value[0].TRUNCATE_AND_LOAD, 'Y'),\nnot(endswith(activity('read parameters').output.value[0].decide_source,'dbload'))),\nconcat('truncate table  ',variables('sdl_table')),'SELECT NULL AS DUMMY')",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "error log - truncate_target",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "truncate_target_table",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "@activity('truncate_target_table').error?.message",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "@activity('truncate_target_table').error?.errorCode",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Send error - truncate_target",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "truncate_target_table",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"supportMessage": {
+							"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**LANDING_FILE_PATH**: @{activity('read parameters').output.value[0].landing_file_path} \\n\n**LANDING_FILE_NAME**: @{activity('read parameters').output.value[0].landing_file_name} \\n\n**ERROR**: _@{activity('truncate_target_table').error?.message}_",
+							"type": "Expression"
+						},
+						"isBusinessNotification": "No",
+						"isSupportNotification": "Yes",
+						"isError": "Yes"
+					}
+				}
+			},
+			{
+				"name": "archive_files_after_load",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "load_with_load_method",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@if(equals(activity('read parameters').output.value[0].load_method, 'none'),'keep',if(endswith(activity('read parameters').output.value[0].DECIDE_SOURCE,'_batchread'),'batch','single'))",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "batch",
+							"activities": [
+								{
+									"name": "move_to_archive_batch",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"wildcardFolderPath": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												},
+												"wildcardFileName": {
+													"value": "@{variables('landing_file_name')}*",
+													"type": "Expression"
+												},
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings",
+												"copyBehavior": "PreserveHierarchy"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@variables('landing_file_name')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination_Archive_Batch",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "audit fail - move_to_archive_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_batch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"message": {
+												"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error log - move_to_archive_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_batch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('move_to_archive_batch').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('move_to_archive_batch').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - move_to_archive_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_batch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_batch').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "single",
+							"activities": [
+								{
+									"name": "move_to_archive_nonbatch",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@variables('landing_file_path')",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@variables('landing_file_name')",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination_Archive",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@variables('container')",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{variables('landing_file_path')}/archive/@{formatDateTime(convertTimeZone(utcNow(), 'UTC', 'Singapore Standard Time'),'yyyy/MM')}",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@concat(variables('landing_file_name'),'.gz')",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "audit fail - move_to_archive_no_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_nonbatch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_audit_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"input_row_count": 0,
+											"output_row_count": 0,
+											"jobname": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"message": {
+												"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+												"type": "Expression"
+											},
+											"runid": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"pipeline_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"usecase_id": {
+												"value": "@pipeline().parameters.usecase_id",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "error log - move_to_archive_no_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_nonbatch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('move_to_archive_nonbatch').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('move_to_archive_nonbatch').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - move_to_archive_no_batch",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "move_to_archive_nonbatch",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_nonbatch').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "delete_after_archive",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "archive_files_after_load",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(activity('read parameters').output.value[0].load_method, 'none'))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "delete_original_file",
+							"type": "Delete",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "BinarySource",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@variables('container')",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@variables('landing_file_path')",
+											"type": "Expression"
+										},
+										"sourceFile": {
+											"value": "@variables('landing_file_name')",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": false,
+									"wildcardFileName": {
+										"value": "@{variables('landing_file_name')}*",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								}
+							}
 						}
 					]
 				}
@@ -3357,9 +2527,6 @@
 			},
 			"watermark_value": {
 				"type": "String"
-			},
-			"match_names": {
-				"type": "Boolean"
 			}
 		},
 		"folder": {

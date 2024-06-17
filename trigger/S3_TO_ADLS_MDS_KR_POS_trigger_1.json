@@ -1,16 +1,16 @@
 {
-	"name": "PCF_PA_PHARMA_trigger",
+	"name": "S3_TO_ADLS_MDS_KR_POS_trigger_1",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "master",
+					"referenceName": "s3_to_adls",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PA_INV"
+					"Group_id": "42"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
+				"startTime": "2024-06-12T15:14:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						40
+						50
 					],
 					"hours": [
-						16
+						6
 					]
 				}
 			}

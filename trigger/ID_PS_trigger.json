@@ -20,10 +20,10 @@
 				"frequency": "Day",
 				"interval": 1,
 				"startTime": "2024-05-31T14:59:00",
-				"timeZone": "India Standard Time",
+				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						15
 					],
 					"hours": [
 						4
