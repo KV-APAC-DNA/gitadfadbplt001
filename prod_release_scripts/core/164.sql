@@ -1,4 +1,5 @@
 create or replace view prod_DNA_CORE.INDEDW_ACCESS.EDW_SKU_RECOM as
+  select
 cust_cd as "cust_cd",
 retailer_cd as "retailer_cd",
 product_code as "product_code",
