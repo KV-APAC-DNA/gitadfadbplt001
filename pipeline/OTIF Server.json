@@ -1059,7 +1059,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "OdbcSource",
-						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl",
+						"query": "SELECT * from delv.otif_d_cnsmr_attr_detl\nWHERE CAST(FISC_YR_NBR AS INT) > 2023\nAND DAI_CRT_DTTM  >= (DATEADD(DAY, -90, GETDATE()))\nLIMIT 10",
 						"queryTimeout": "24:00:00"
 					},
 					"sink": {
