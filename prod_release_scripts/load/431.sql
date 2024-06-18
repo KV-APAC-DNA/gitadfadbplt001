@@ -5888,7 +5888,7 @@ create table if not exists SDL_TW_STRATEGIC_CUST_HIER (
 CREATE TABLE sdl_vmimst_header (
     header character varying(500)
 )
-
+;
 create table if not exists SDL_VMIMST_LINE (
 	LINE_DATA VARCHAR(16777216)
 );
