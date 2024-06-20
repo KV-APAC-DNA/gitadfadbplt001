@@ -2,7 +2,7 @@
 	"name": "DS_SINK_EMAIL_FILES",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+			"referenceName": "adfadbplt001lsdlsadbplt001_ir001_sp",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
