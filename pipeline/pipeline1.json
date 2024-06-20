@@ -1,0 +1,297 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy marketingcloudopsjpndcl",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "SftpReadSettings",
+							"recursive": true,
+							"disableChunking": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "BinarySFTPmarketingcloudopsjpndcl",
+						"type": "DatasetReference",
+						"parameters": {
+							"directory": "Export/System/Prod",
+							"filename": "ci-labo_productByCategoryFeed_for_DnA_20240619.csv"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sftp_adls_sink_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": "jpn",
+							"adls_path": "dev/DCL"
+						}
+					}
+				]
+			},
+			{
+				"name": "Unzip File",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy marketingcloudopsjpndcl",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings",
+							"compressionProperties": {
+								"type": "ZipDeflateReadSettings"
+							}
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings",
+							"copyBehavior": "PreserveHierarchy"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "sftp_adls_source_binary_zip",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@pipeline().parameters.AdlsPath",
+								"type": "Expression"
+							},
+							"file_name": {
+								"value": "@pipeline().parameters.FtpFileName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "adls_sink_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@{pipeline().parameters.AdlsPath}/temp",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Unzip File",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "BinarySource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"deleteFilesAfterCompletion": false
+						},
+						"formatSettings": {
+							"type": "BinaryReadSettings"
+						}
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "sftp_adls_source_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sftp_adls_sink_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@{pipeline().parameters.AdlsPath}",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Delete temp location",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "sftp_adls_source_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@{pipeline().parameters.AdlsPath}/temp",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			},
+			{
+				"name": "Delete adls zip",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Copy data1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "sftp_adls_source_binary",
+						"type": "DatasetReference",
+						"parameters": {
+							"adls_container": {
+								"value": "@pipeline().parameters.AdlsContainer",
+								"type": "Expression"
+							},
+							"adls_path": {
+								"value": "@{pipeline().parameters.AdlsPath}/@{pipeline().parameters.FtpFileName}",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
+			}
+		],
+		"annotations": []
+	}
+}
