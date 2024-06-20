@@ -1,0 +1,149 @@
+{
+	"name": "PL_COPY_EMAIL_TO_ADLS",
+	"properties": {
+		"activities": [
+			{
+				"name": "Copy data1",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "Office365Source",
+						"dateFilterColumn": "receivedDateTime",
+						"startTime": "2024-06-20T03:00:00.000Z",
+						"endTime": "2024-06-22T00:00:00.000Z",
+						"outputColumns": [
+							{
+								"name": "receivedDateTime"
+							},
+							{
+								"name": "sentDateTime"
+							},
+							{
+								"name": "hasAttachments"
+							},
+							{
+								"name": "internetMessageId"
+							},
+							{
+								"name": "subject"
+							},
+							{
+								"name": "importance"
+							},
+							{
+								"name": "parentFolderId"
+							},
+							{
+								"name": "sender"
+							},
+							{
+								"name": "from"
+							},
+							{
+								"name": "toRecipients"
+							},
+							{
+								"name": "ccRecipients"
+							},
+							{
+								"name": "bccRecipients"
+							},
+							{
+								"name": "replyTo"
+							},
+							{
+								"name": "conversationId"
+							},
+							{
+								"name": "uniqueBody"
+							},
+							{
+								"name": "isDeliveryReceiptRequested"
+							},
+							{
+								"name": "isReadReceiptRequested"
+							},
+							{
+								"name": "isRead"
+							},
+							{
+								"name": "isDraft"
+							},
+							{
+								"name": "webLink"
+							},
+							{
+								"name": "createdDateTime"
+							},
+							{
+								"name": "lastModifiedDateTime"
+							},
+							{
+								"name": "changeKey"
+							},
+							{
+								"name": "categories"
+							},
+							{
+								"name": "id"
+							},
+							{
+								"name": "attachments"
+							},
+							{
+								"name": "inferenceClassification"
+							},
+							{
+								"name": "flag"
+							},
+							{
+								"name": "body"
+							},
+							{
+								"name": "bodyPreview"
+							},
+							{
+								"name": "internetMessageHeaders"
+							},
+							{
+								"name": "conversationIndex"
+							}
+						]
+					},
+					"sink": {
+						"type": "BinarySink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_SOURCE_EMAIL_FILES",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_SINK_EMAIL_FILES",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
