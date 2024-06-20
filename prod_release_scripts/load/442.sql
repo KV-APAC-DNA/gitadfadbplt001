@@ -2,7 +2,7 @@ use schema meta_raw;
 
 Create or replace table usecase_2006 as select * from usecase;
 Create or replace table process_2006 as select * from process;
-Create or replace table parameter_2006 as select * from parameter;
+Create or replace table parameters_2006 as select * from parameters;
 
 update  usecase set usecase_name='ETL_XDM_GTSALES_SCHEME_LOAD' where usecase_id=208;
 update  process set usecase_id=217 where usecase_id=208 and Process_name like '%mds%';
