@@ -1,0 +1,18 @@
+{
+	"name": "DS_SOURCE_EMAIL_FILES",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lso365tha001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": [],
+		"type": "Office365Table",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "BasicDataSet_v0.OutlookMailActivity_v0"
+		}
+	}
+}
