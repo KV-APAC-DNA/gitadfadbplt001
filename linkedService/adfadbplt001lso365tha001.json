@@ -1,0 +1,25 @@
+{
+	"name": "adfadbplt001lso365tha001",
+	"properties": {
+		"description": "linked service to ms 0365 to read email attachments",
+		"annotations": [],
+		"type": "Office365",
+		"typeProperties": {
+			"office365TenantId": "7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56",
+			"servicePrincipalTenantId": "7ba64ac2-8a2b-417e-9b8f-fcf8238f2a56",
+			"servicePrincipalId": "ff5033e2-3df1-4e9c-817c-2f6e806be7be",
+			"servicePrincipalKey": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lso365tha001"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
