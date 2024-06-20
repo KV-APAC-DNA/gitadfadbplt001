@@ -1,0 +1,35 @@
+{
+	"name": "ETL_XDM_TLRSR_LOAD_TRIGGER",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "ETL_XDM_TLRSR_LOAD"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-06-20T14:26:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						5
+					],
+					"hours": [
+						1
+					]
+				}
+			}
+		}
+	}
+}
