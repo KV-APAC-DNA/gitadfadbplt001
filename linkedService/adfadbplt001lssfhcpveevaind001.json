@@ -5,7 +5,25 @@
 		"annotations": [],
 		"type": "Salesforce",
 		"typeProperties": {
-			"environmentUrl": "https://iconnect-consumer.my.salesforce.com",
+			"environmentUrl": "https://login.salesforce.com",
+			"username": "consumerdna@its.jnj.com",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsindhcpveeva001"
+			},
+			"securityToken": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsindhcpveeva001-sectoken"
+			},
+			"apiVersion": "46.0",
 			"clientId": "dummy",
 			"clientSecret": {
 				"type": "AzureKeyVaultSecret",
@@ -15,11 +33,10 @@
 				},
 				"secretName": "adfadbplt001lsindhcpveeva001"
 			},
-			"apiVersion": "47.0",
 			"authenticationType": "OAuth2ClientCredential"
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt001",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
