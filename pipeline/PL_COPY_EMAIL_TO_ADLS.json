@@ -17,113 +17,95 @@
 				"typeProperties": {
 					"source": {
 						"type": "Office365Source",
-						"dateFilterColumn": "receivedDateTime",
+						"dateFilterColumn": "ReceivedDateTime",
 						"startTime": "2024-06-18T03:00:00.000Z",
 						"endTime": "2024-06-22T00:00:00.000Z",
 						"userScopeFilterUri": "https://graph.microsoft.com/v1.0/users?$filter=mail eq 'RA-JX2-sa-jx2-kdp@kenvue.com'",
 						"outputColumns": [
 							{
-								"name": "receivedDateTime"
+								"name": "ReceivedDateTime"
 							},
 							{
-								"name": "sentDateTime"
+								"name": "SentDateTime"
 							},
 							{
-								"name": "hasAttachments"
+								"name": "HasAttachments"
 							},
 							{
-								"name": "internetMessageId"
+								"name": "InternetMessageId"
 							},
 							{
-								"name": "subject"
+								"name": "Subject"
 							},
 							{
-								"name": "importance"
+								"name": "Importance"
 							},
 							{
-								"name": "parentFolderId"
+								"name": "ParentFolderId"
 							},
 							{
-								"name": "sender"
+								"name": "Sender"
 							},
 							{
-								"name": "from"
+								"name": "From"
 							},
 							{
-								"name": "toRecipients"
+								"name": "ToRecipients"
 							},
 							{
-								"name": "ccRecipients"
+								"name": "CcRecipients"
 							},
 							{
-								"name": "bccRecipients"
+								"name": "BccRecipients"
 							},
 							{
-								"name": "replyTo"
+								"name": "ReplyTo"
 							},
 							{
-								"name": "conversationId"
+								"name": "ConversationId"
 							},
 							{
-								"name": "uniqueBody"
+								"name": "UniqueBody"
 							},
 							{
-								"name": "isDeliveryReceiptRequested"
+								"name": "IsDeliveryReceiptRequested"
 							},
 							{
-								"name": "isReadReceiptRequested"
+								"name": "IsReadReceiptRequested"
 							},
 							{
-								"name": "isRead"
+								"name": "IsRead"
 							},
 							{
-								"name": "isDraft"
+								"name": "IsDraft"
 							},
 							{
-								"name": "webLink"
+								"name": "WebLink"
 							},
 							{
-								"name": "createdDateTime"
+								"name": "CreatedDateTime"
 							},
 							{
-								"name": "lastModifiedDateTime"
+								"name": "LastModifiedDateTime"
 							},
 							{
-								"name": "changeKey"
+								"name": "ChangeKey"
 							},
 							{
-								"name": "categories"
+								"name": "Categories"
 							},
 							{
-								"name": "id"
+								"name": "Id"
 							},
 							{
-								"name": "attachments"
-							},
-							{
-								"name": "inferenceClassification"
-							},
-							{
-								"name": "flag"
-							},
-							{
-								"name": "body"
-							},
-							{
-								"name": "bodyPreview"
-							},
-							{
-								"name": "internetMessageHeaders"
-							},
-							{
-								"name": "conversationIndex"
+								"name": "Attachments"
 							}
 						]
 					},
 					"sink": {
 						"type": "BinarySink",
 						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
+							"type": "AzureBlobStorageWriteSettings"
 						}
 					},
 					"enableStaging": false
