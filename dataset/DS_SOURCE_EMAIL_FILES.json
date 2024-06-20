@@ -12,7 +12,7 @@
 		"type": "Office365Table",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "BasicDataSet_v0.OutlookMailActivity_v0"
+			"tableName": "BasicDataSet_v0.Message_v1"
 		}
 	}
 }
