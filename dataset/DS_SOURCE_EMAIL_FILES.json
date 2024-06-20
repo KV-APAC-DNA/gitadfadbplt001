@@ -12,7 +12,7 @@
 		"type": "Office365Table",
 		"schema": [],
 		"typeProperties": {
-			"tableName": "BasicDataSet_v0.Message_v1"
+			"tableName": "BasicDataSet_v0.Message_v0"
 		}
 	}
 }
