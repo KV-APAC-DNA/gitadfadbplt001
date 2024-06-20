@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "linked services to india market HCP VEEVA source",
 		"annotations": [],
-		"type": "SalesforceV2",
+		"type": "Salesforce",
 		"typeProperties": {
 			"environmentUrl": "https://iconnect-consumer.my.salesforce.com",
 			"clientId": "dummy",
