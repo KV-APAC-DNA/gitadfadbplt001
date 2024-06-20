@@ -13,16 +13,7 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": [
-					{
-						"name": "Source",
-						"value": "BasicDataSet_v0.Message_v1"
-					},
-					{
-						"name": "Destination",
-						"value": "dataops/tmp/"
-					}
-				],
+				"userProperties": [],
 				"typeProperties": {
 					"source": {
 						"type": "Office365Source",
@@ -32,7 +23,100 @@
 						"userScopeFilterUri": "https://graph.microsoft.com/v1.0/users?$filter=mail eq 'RA-JX2-sa-jx2-kdp@kenvue.com'",
 						"outputColumns": [
 							{
+								"name": "receivedDateTime"
+							},
+							{
+								"name": "sentDateTime"
+							},
+							{
+								"name": "hasAttachments"
+							},
+							{
+								"name": "internetMessageId"
+							},
+							{
+								"name": "subject"
+							},
+							{
+								"name": "importance"
+							},
+							{
+								"name": "parentFolderId"
+							},
+							{
+								"name": "sender"
+							},
+							{
+								"name": "from"
+							},
+							{
+								"name": "toRecipients"
+							},
+							{
+								"name": "ccRecipients"
+							},
+							{
+								"name": "bccRecipients"
+							},
+							{
+								"name": "replyTo"
+							},
+							{
+								"name": "conversationId"
+							},
+							{
+								"name": "uniqueBody"
+							},
+							{
+								"name": "isDeliveryReceiptRequested"
+							},
+							{
+								"name": "isReadReceiptRequested"
+							},
+							{
+								"name": "isRead"
+							},
+							{
+								"name": "isDraft"
+							},
+							{
+								"name": "webLink"
+							},
+							{
+								"name": "createdDateTime"
+							},
+							{
+								"name": "lastModifiedDateTime"
+							},
+							{
+								"name": "changeKey"
+							},
+							{
+								"name": "categories"
+							},
+							{
+								"name": "id"
+							},
+							{
 								"name": "attachments"
+							},
+							{
+								"name": "inferenceClassification"
+							},
+							{
+								"name": "flag"
+							},
+							{
+								"name": "body"
+							},
+							{
+								"name": "bodyPreview"
+							},
+							{
+								"name": "internetMessageHeaders"
+							},
+							{
+								"name": "conversationIndex"
 							}
 						]
 					},
