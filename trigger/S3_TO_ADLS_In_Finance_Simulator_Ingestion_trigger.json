@@ -1,0 +1,35 @@
+{
+	"name": "S3_TO_ADLS_In_Finance_Simulator_Ingestion_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "s3_to_adls",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Group_id": "51"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-06-20T14:31:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						9
+					]
+				}
+			}
+		}
+	}
+}
