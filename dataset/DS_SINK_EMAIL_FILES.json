@@ -1,0 +1,21 @@
+{
+	"name": "DS_SINK_EMAIL_FILES",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001_ir001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "tmp",
+				"fileSystem": "dataops"
+			}
+		}
+	}
+}
