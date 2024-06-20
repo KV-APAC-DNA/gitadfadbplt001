@@ -4,8 +4,8 @@ Create or replace table usecase_2006 as select * from usecase;
 Create or replace table process_2006 as select * from process;
 Create or replace table parameter_2006 as select * from parameter;
 
-update  usecase set usecase_name='ETL_XDM_GTSALES_SCHEME_LOAD' where usecase_id=208
-update  process set usecase_id=217 where usecase_id=208 and Process_name like '%mds%'
+update  usecase set usecase_name='ETL_XDM_GTSALES_SCHEME_LOAD' where usecase_id=208;
+update  process set usecase_id=217 where usecase_id=208 and Process_name like '%mds%';
 
 INSERT INTO USECASE (USECASE_ID, USECASE_NAME,CATEGORY,USECASE_DESCRIPTION,IS_ACTIVE,SEQUENCE_ID) VALUES (265,'j_india_generic_source_excel_sdl_data_ingestion','j_india_generic_source_excel_sdl_data_ingestion','j_india_generic_source_excel_sdl_data_ingestion_desc','TRUE',1);
 
