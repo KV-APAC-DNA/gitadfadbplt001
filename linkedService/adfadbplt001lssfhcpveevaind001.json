@@ -1,0 +1,26 @@
+{
+	"name": "adfadbplt001lssfhcpveevaind001",
+	"properties": {
+		"description": "linked services to india market HCP VEEVA source",
+		"annotations": [],
+		"type": "SalesforceV2",
+		"typeProperties": {
+			"environmentUrl": "https://iconnect-consumer.my.salesforce.com",
+			"clientId": "dummy",
+			"clientSecret": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsindhcpveeva001"
+			},
+			"apiVersion": "47.0",
+			"authenticationType": "OAuth2ClientCredential"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
