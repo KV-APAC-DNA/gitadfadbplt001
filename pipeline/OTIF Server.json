@@ -1059,7 +1059,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "OdbcSource",
-						"query": "@variables('ms_query')",
+						"query": {
+							"value": "@variables('ms_query')\n\n",
+							"type": "Expression"
+						},
 						"queryTimeout": "24:00:00"
 					},
 					"sink": {
