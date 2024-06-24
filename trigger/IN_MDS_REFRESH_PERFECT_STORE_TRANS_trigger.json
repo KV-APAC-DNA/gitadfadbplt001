@@ -1,5 +1,5 @@
 {
-	"name": "PCF_PA_PHARMA_trigger",
+	"name": "IN_MDS_REFRESH_PERFECT_STORE_TRANS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PA_INV"
+					"category": "IN_MDS_REFRESH_PERFECT_STORE_TRANS"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
+				"startTime": "2024-06-20T14:27:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						40
+						0
 					],
 					"hours": [
-						16
+						1
 					]
 				}
 			}

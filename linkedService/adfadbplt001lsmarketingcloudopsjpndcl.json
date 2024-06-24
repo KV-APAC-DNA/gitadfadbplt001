@@ -1,0 +1,28 @@
+{
+	"name": "adfadbplt001lsmarketingcloudopsjpndcl",
+	"properties": {
+		"description": "Linked Service to SFTP server for Japan DCL sales force",
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "mcnvnrvjjt-90nt78v6wpjkyzvp8.ftp.marketingcloudops.com",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "SshPublicKey",
+			"userName": "518007108_4",
+			"privateKeyContent": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsmarketingcloudopsjpndcl"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/linkedservices"
+}

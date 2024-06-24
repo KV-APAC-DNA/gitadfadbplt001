@@ -1,5 +1,5 @@
 {
-	"name": "PCF_PA_PHARMA_trigger",
+	"name": "In_Finance_Simulator_Ingestion_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PCF_PA_INV"
+					"category": "In_Finance_Simulator_Ingestion"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-22T00:00:00",
+				"startTime": "2024-06-20T14:25:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						40
+						0
 					],
 					"hours": [
-						16
+						10
 					]
 				}
 			}
