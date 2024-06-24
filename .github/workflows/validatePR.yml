@@ -52,10 +52,10 @@ jobs:
         name: adf-artifact
         path: ${{github.workspace}}/build/adf-artifact
 
-    - name: Display structure of downloaded files
-      run: ls -R ${{github.workspace}}/build/adf-artifact
+    #- name: Display structure of downloaded files
+    #  run: ls -R ${{github.workspace}}/build/adf-artifact
 
-    - name: Install from PSGallery
+    - name: Install Az from PSGallery
       shell: pwsh
       run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
@@ -76,7 +76,7 @@ jobs:
        $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
         if (Test-Path $scriptPath) {
             Write-Output "Running script: $scriptPath"
-            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment:$True -deleteDeployment:$False
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment:$True -deleteDeployment:$False
         } else {
             Write-Error "Script not found at: $scriptPath"
             exit 1
@@ -88,11 +88,23 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        template: ARMTemplateForFactory.json
-        parameters: ./build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        template: ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json
+        parameters: ${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
     - name: Run Post-deployment script adfadbdev001-live
-      uses: Azure/powershell@v2
-      with:
-        inlineScript: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
-        azPSVersion: "latest"
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment:$False -deleteDeployment:$True
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
+        
+#    - name: Run Post-deployment script adfadbdev001-live
+#      uses: Azure/powershell@v2
+#      with:
+#        inlineScript: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -#armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
+#        azPSVersion: "latest"
