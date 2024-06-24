@@ -46,11 +46,11 @@ jobs:
     steps:
     
  # Download the previously uploaded artifact to leverage it later in the release job     
- #  - name: Download a Build Artifact
- #    uses: actions/download-artifact@v4
- #     with:
- #       name: adf-artifact
- #       path: actions/download-artifact@v4
+    - name: Download a Build Artifact
+      uses: actions/download-artifact@v4
+      with:
+        name: adf-artifact
+        path: ${{github.workspace}}/build/adf-artifact
 
     - name: Login via Az module
       uses: azure/login@v2
@@ -62,7 +62,7 @@ jobs:
       
     - name: Run Pre-deployment script adfadbdev001-live
       shell: pwsh
-      run: ${{github.workspace}}/scripts/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/scripts/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+      run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
 
     - name: Run ARM deploy adfadbdev001-live
       uses: azure/arm-deploy@v1
