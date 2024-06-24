@@ -23,6 +23,7 @@
 -- 14/6/24  Thanish     Added logic for index 'pre' for file name validation
 -- 14/6/24  Srihari     Added logic for splitting by ~
 -- 24/06/24 Thanish  Pop6 logic added to read csv file
+-- 24/06/24 Srihari     Added logic for multi sheets different header validation
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -299,6 +300,17 @@ def main(session: snowpark.Session,Param):
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
 
+            elif sheet_names != "[]" and "iConnectUsers" in CURRENT_FILE:
+                print("double sheet")
+                sheets = sheet_names[1:-1].split(",")
+                tmp_header= []
+                for sheet in sheets:
+                    file_name = sheet.strip("\\"").replace("(", "").replace(")", "").replace(" ","_")+".csv"
+                    df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+                    df_pandas=df.to_pandas()
+                    tmp_header= tmp_header + df_pandas.iloc[int(file_header_row_num)].tolist()
+                header = ["\\x01".join(tmp_header)]
+            
             elif sheet_names != "[]":
                 file_name = sheet_names[1:-1].split(",")[0]
                 file_name = file_name.strip("\\"").replace("(", "").replace(")", "").replace(" ","_")+".csv"
@@ -336,6 +348,7 @@ def main(session: snowpark.Session,Param):
                 
             else:
                 header_pipe_split = header[0].split(''|'')
+                header_tilda_split = header[0].split(''~'') 
                 
             if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report'' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE and "TW_POS_PXCivilia" not in CURRENT_FILE and ''TW_POS_RTMart_RawData'' not in  CURRENT_FILE and "MT01P39R" not in CURRENT_FILE and "Weekly_Summary_Trexi_raw_data" not in CURRENT_FILE and "Naver_keyword" not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
@@ -344,6 +357,8 @@ def main(session: snowpark.Session,Param):
         
             elif len(header_pipe_split)>1:
                 result_list = header_pipe_split
+            elif len(header_tilda_split)>1:
+                result_list = header_tilda_split
             else:
                 result_list = header
 
