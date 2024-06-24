@@ -17,13 +17,47 @@
             }
         },
         "location": "=",
-        "identity": {            
+        "identity": {
             "type": "=",
             "userAssignedIdentities": "="
         }
     },
     "Microsoft.DataFactory/factories/pipelines": {},
-    "Microsoft.DataFactory/factories/integrationRuntimes": {},
+    "Microsoft.DataFactory/factories/integrationRuntimes": {
+        "properties": {
+            "typeProperties": {
+                "ssisProperties": {
+                    "catalogInfo": {
+                        "catalogServerEndpoint": "=",
+                        "catalogAdminUserName": "=",
+                        "catalogAdminPassword": {
+                            "value": "-::secureString"
+                        }
+                    },
+                    "customSetupScriptProperties": {
+                        "sasToken": {
+                            "value": "-::secureString"
+                        }
+                    }
+                },
+                "linkedInfo": {
+                    "key": {
+                        "value": "-::secureString"
+                    },
+                    "resourceId": "="
+                },
+                "computeProperties": {
+                    "dataFlowProperties": {
+                        "externalComputeInfo": [
+                            {
+                                "accessToken": "-::secureString"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    },
     "Microsoft.DataFactory/factories/triggers": {
         "properties": {
             "pipelines": [
@@ -134,7 +168,15 @@
             }
         }
     },
-    "Microsoft.DataFactory/factories/credentials": {},
+    "Microsoft.DataFactory/factories/credentials": {
+        "*": {
+            "properties": {
+                "typeProperties": {
+                    "token": "="
+                }
+            }
+        }
+    },
     "Microsoft.DataFactory/factories/managedVirtualNetworks/managedPrivateEndpoints": {
         "properties": {
             "privateLinkResourceId": "=",
