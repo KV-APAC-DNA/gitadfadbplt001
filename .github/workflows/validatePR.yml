@@ -67,9 +67,9 @@ jobs:
       shell: pwsh
       run: |
         ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 
-        -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" `
-        -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
-        -DataFactoryName "adfadbdev001" `
+        -armTemplate ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json `
+        -ResourceGroupName ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }} `
+        -DataFactoryName adfadbdev001 `
         -predeployment $true `
         -deleteDeployment $false
       #shell: pwsh
