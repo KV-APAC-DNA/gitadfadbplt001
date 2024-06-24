@@ -69,12 +69,7 @@ jobs:
        $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
         if (Test-Path $scriptPath) {
             Write-Output "Running script: $scriptPath"
-            pwsh -File $scriptPath `
-              -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" `
-              -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
-              -DataFactoryName "adfadbdev001" `
-              -predeployment 1 `
-              -deleteDeployment 0
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $True -deleteDeployment $False
         } else {
             Write-Error "Script not found at: $scriptPath"
             exit 1
