@@ -24,11 +24,11 @@ jobs:
  
 # Validates all of the Data Factory resources in the repository.
     - name: Validate
-      run: npm run start validate ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001
+      run: npm run build validate ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001
       working-directory: ${{github.workspace}}/build
  
     - name: Export ARM template
-      run: npm run start export ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001 adf-artifact 
+      run: npm run build export ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001 adf-artifact 
       working-directory: ${{github.workspace}}/build
    
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
