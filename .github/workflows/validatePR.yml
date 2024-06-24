@@ -66,12 +66,19 @@ jobs:
     - name: Run Pre-deployment script adfadbdev001-live
       shell: pwsh
       run: |
-        ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 
-        -armTemplate ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json `
-        -ResourceGroupName ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }} `
-        -DataFactoryName adfadbdev001 `
-        -predeployment $true `
-        -deleteDeployment $false
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath `
+              -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" `
+              -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
+              -DataFactoryName "adfadbdev001" `
+              -predeployment $true `
+              -deleteDeployment $false
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
       #shell: pwsh
       #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
 
