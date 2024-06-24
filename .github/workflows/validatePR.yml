@@ -44,6 +44,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+
+    - name: Upgrade pwsh (Linux)
+      run: sudo apt-get install --only-upgrade powershell
     
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
