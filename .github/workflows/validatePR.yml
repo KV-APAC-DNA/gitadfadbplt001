@@ -65,7 +65,15 @@ jobs:
       
     - name: Run Pre-deployment script adfadbdev001-live
       shell: pwsh
-      run: ./${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+      run: |
+        ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 
+        -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" `
+        -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
+        -DataFactoryName "adfadbdev001" `
+        -predeployment $true `
+        -deleteDeployment $false
+      #shell: pwsh
+      #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
 
     - name: Run ARM deploy adfadbdev001-live
       uses: azure/arm-deploy@v1
