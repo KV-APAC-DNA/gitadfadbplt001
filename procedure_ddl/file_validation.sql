@@ -22,6 +22,7 @@
 -- 13/6/24  Thanish     Header handled for HCP files
 -- 14/6/24  Thanish     Added logic for index 'pre' for file name validation
 -- 14/6/24  Srihari     Added logic for splitting by ~
+-- 24/06/24 Thanish  Pop6 logic added to read csv file
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -49,7 +50,8 @@ def main(session: snowpark.Session,Param):
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
         # CURRENT_FILE , index , validation, val_file_name,val_file_extn
-        #Param=[''IQVIA_ORSL_Indication_SEPT2023.xlsx'',''last'',''1-1-1'',''IQVIA_ORSL_Indication'',''xlsx'',''Zone|Product_Description|Brand|Diagnosis_Level_2'',1,''HCPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/iqvia/transaction/indication/'','''',''[]'']
+        #Param=[''IQVIA_ORSL_Sales_Brand_OCT2023.xlsx'',''last'',''1-1-1'',''IQVIA_ORSL_Sales_Brand'',''xlsx'',''State|Region|Product|Product_Grp|Pack|Cateogry'',1,''HCPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/iqvia/transaction/sales/'','''',''[]'']
+        #Param=[''20240620_service_levels.csv'',''pre'',''1-1-1'',''service_levels'',''csv'',''Customer,Customer_Grade,Team,Visit_Frequency,Estimated_Visit_Duration,Date'',0,''NTASDL_RAW.DEV_LOAD_STAGE_ADLS_HKG'',''dev/pop6/transaction/visitdata/'','''',''[]'']
 
         
 
@@ -303,13 +305,21 @@ def main(session: snowpark.Session,Param):
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
+
+            
+
+            elif "pop6/transaction" in temp_stage_path:
+                full_path = "@"+stage_name+"/"+temp_stage_path+"/"+CURRENT_FILE
+                with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
+                    df_pandas=pd.read_csv(f)
+                    header=df_pandas.columns
                 
                 
                        
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
-                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").option("REPLACE_INVALID_CHARACTERS",True).csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+                df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
             
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
@@ -326,7 +336,6 @@ def main(session: snowpark.Session,Param):
                 
             else:
                 header_pipe_split = header[0].split(''|'')
-                header_tilda_split = header[0].split(''~'')
                 
             if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report'' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE and "TW_POS_PXCivilia" not in CURRENT_FILE and ''TW_POS_RTMart_RawData'' not in  CURRENT_FILE and "MT01P39R" not in CURRENT_FILE and "Weekly_Summary_Trexi_raw_data" not in CURRENT_FILE and "Naver_keyword" not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
@@ -335,8 +344,6 @@ def main(session: snowpark.Session,Param):
         
             elif len(header_pipe_split)>1:
                 result_list = header_pipe_split
-            elif len(header_tilda_split)>1:
-                result_list = header_tilda_split
             else:
                 result_list = header
 
@@ -379,6 +386,10 @@ def main(session: snowpark.Session,Param):
                 result_list=result_list[:4]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
+            elif stage_name.split(".")[0]=="HCPSDL_RAW" and val_file_name== ''IQVIA_ORSL_Sales_Brand'':
+                result_list=result_list[:6]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
             else:
                 result_list=list(filter(None,result_list))
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
@@ -404,8 +415,8 @@ def main(session: snowpark.Session,Param):
             tab_split=val_header.split("	")
             if len(tab_split) > 1:
                 final_val_header=tab_split
-            
-            tilda_split=val_header.split(''~'')
+
+            tilda_split=val_header.split("~")
             if len(tilda_split) > 1:
                 final_val_header=tilda_split
 
