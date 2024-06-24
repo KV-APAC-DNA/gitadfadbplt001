@@ -61,10 +61,8 @@ jobs:
         enable-AzPSSession: true 
       
     - name: Run Pre-deployment script adfadbdev001-live
-      uses: Azure/powershell@v2
-      with:
-        inlineScript: ${{github.workspace}}/scripts/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/scripts/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
-        azPSVersion: "latest"
+      shell: pwsh
+      run: ${{github.workspace}}/scripts/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/scripts/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
 
     - name: Run ARM deploy adfadbdev001-live
       uses: azure/arm-deploy@v1
