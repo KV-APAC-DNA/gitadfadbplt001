@@ -1,16 +1,16 @@
 {
-	"name": "SAP_BW_INVENTORY_trigger",
+	"name": "S3_TO_ADLS_India_RT_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "master",
+					"referenceName": "s3_to_adls",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_INVENTORY"
+					"Group_id": "49"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-19T00:00:00",
+				"startTime": "2024-06-20T14:29:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						50
 					],
 					"hours": [
-						8
+						1
 					]
 				}
 			}

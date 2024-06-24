@@ -1,16 +1,16 @@
 {
-	"name": "rg_mds_to_dna_refresh_trigger",
+	"name": "S3_TO_ADLS_INDIA_SDLITG_PWC_KAS_TBL_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "master",
+					"referenceName": "s3_to_adls",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "REGIONAL_MDS"
+					"Group_id": "50"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-15T13:44:00",
+				"startTime": "2024-06-20T14:30:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						20
 					],
 					"hours": [
-						21
+						7
 					]
 				}
 			}

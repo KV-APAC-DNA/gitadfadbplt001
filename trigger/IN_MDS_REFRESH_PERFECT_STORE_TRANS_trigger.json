@@ -1,8 +1,8 @@
 {
-	"name": "SAP_ECC_MASTER_SUN_trigger",
+	"name": "IN_MDS_REFRESH_PERFECT_STORE_TRANS_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -10,26 +10,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_ECC_MASTER"
+					"category": "IN_MDS_REFRESH_PERFECT_STORE_TRANS"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Week",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-19T00:00:00",
-				"timeZone": "India Standard Time",
+				"startTime": "2024-06-20T14:27:00",
+				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						0
 					],
 					"hours": [
-						16
-					],
-					"weekDays": [
-						"Sunday"
+						1
 					]
 				}
 			}

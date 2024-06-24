@@ -1,8 +1,8 @@
 {
-	"name": "SAP_BW_MATERIAL_UOM_trigger",
+	"name": "India_RT_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_MATERIAL_UOM"
+					"category": "India_RT"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-19T00:00:00",
+				"startTime": "2024-06-20T14:23:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						0
 					],
 					"hours": [
-						23
+						2
 					]
 				}
 			}

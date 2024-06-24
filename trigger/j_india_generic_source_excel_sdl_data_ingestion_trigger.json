@@ -1,8 +1,8 @@
 {
-	"name": "SAP_BW_MASTER_AND_ACCT_ATTR_trigger",
+	"name": "j_india_generic_source_excel_sdl_data_ingestion_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -10,31 +10,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_MASTER_AND_ACCT_ATTR"
+					"category": "j_india_generic_source_excel_sdl_data_ingestion"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Week",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-18T00:00:00",
+				"startTime": "2024-06-20T14:28:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						15
+						0
 					],
 					"hours": [
-						1
-					],
-					"weekDays": [
-						"Monday",
-						"Tuesday",
-						"Wednesday",
-						"Thursday",
-						"Friday",
-						"Saturday"
+						21
 					]
 				}
 			}

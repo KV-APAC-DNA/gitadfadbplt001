@@ -1,8 +1,8 @@
 {
-	"name": "SAP_BW_COPA10_trigger",
+	"name": "IN_MI_DASHBOARD_DATAMART",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -10,31 +10,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_COPA10"
+					"category": "IN_MI_DASHBOARD_DATAMART"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Week",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-19T00:00:00",
+				"startTime": "2024-06-24T12:48:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						3
-					],
-					"weekDays": [
-						"Monday",
-						"Tuesday",
-						"Wednesday",
-						"Thursday",
-						"Friday",
-						"Saturday"
+						11
 					]
 				}
 			}

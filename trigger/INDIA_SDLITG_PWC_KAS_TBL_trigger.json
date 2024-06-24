@@ -1,8 +1,8 @@
 {
-	"name": "SAP_BW_BILLING_trigger",
+	"name": "INDIA_SDLITG_PWC_KAS_TBL_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_BILLING"
+					"category": "INDIA_SDLITG_PWC_KAS_TBL"
 				}
 			}
 		],
@@ -19,12 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-18T00:00:00",
+				"startTime": "2024-06-20T14:23:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						30
+					],
 					"hours": [
-						1,
-						9
+						7
 					]
 				}
 			}

@@ -71,7 +71,7 @@ jobs:
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
         template: ARMTemplateForFactory.json
-        parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        parameters: ./ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
     - name: Run Post-deployment script adfadbdev001-live
       uses: Azure/powershell@v1.4.0

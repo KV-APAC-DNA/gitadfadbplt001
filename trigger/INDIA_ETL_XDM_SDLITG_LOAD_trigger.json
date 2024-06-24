@@ -1,8 +1,8 @@
 {
-	"name": "SAP_BW_INVOICE_trigger",
+	"name": "INDIA_ETL_XDM_SDLITG_LOAD_trigger",
 	"properties": {
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -10,31 +10,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_INVOICE"
+					"category": "INDIA_ETL_XDM_SDLITG_LOAD"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Week",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-19T00:00:00",
+				"startTime": "2024-06-20T14:25:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						15
 					],
 					"hours": [
-						2
-					],
-					"weekDays": [
-						"Monday",
-						"Tuesday",
-						"Wednesday",
-						"Thursday",
-						"Friday",
-						"Saturday"
+						6
 					]
 				}
 			}
