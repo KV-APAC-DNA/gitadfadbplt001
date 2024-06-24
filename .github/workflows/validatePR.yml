@@ -44,9 +44,6 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-
-    - name: Upgrade pwsh (Linux)
-      run: sudo apt-get install --only-upgrade powershell
     
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
@@ -58,6 +55,13 @@ jobs:
     - name: Display structure of downloaded files
       run: ls -R ${{github.workspace}}/build/adf-artifact
 
+    - name: Install from PSGallery
+      shell: pwsh
+      run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Az
+          Import-Module Az
+          
     - name: Login via Az module
       uses: azure/login@v2
       with:
