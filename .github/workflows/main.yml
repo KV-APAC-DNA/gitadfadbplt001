@@ -9,11 +9,12 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v3
-# Installs Node and the npm packages saved in your package.json file in the build
+    - name: Check Out
+      uses: actions/checkout@v3
+
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.4.1
       with:
@@ -21,39 +22,44 @@ jobs:
         
     - name: install ADF Utilities package
       run: npm install
-      working-directory: ${{github.workspace}}/build  #
+      working-directory: ${{github.workspace}}/build
         
 # Validates all of the Data Factory resources in the repository.
     - name: Validate
       run: npm run build validate ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001
       working-directory: ${{github.workspace}}/build
  
-
-    - name: Validate and Generate ARM template
-      run: npm run build export ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001 "ExportedArmTemplate" 
+    - name: Export ARM template
+      run: npm run build export ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001 adf-artifact 
       working-directory: ${{github.workspace}}/build
- 
+   
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
     - name: upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
-        path: ${{github.workspace}}/build/ExportedArmTemplate
+        name: adf-artifact # (4) use the same artifact name you used in the previous export step
+        path: ${{github.workspace}}/build/adf-artifact
+        if-no-files-found: error
 
   release:
     needs: build
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
-
-    - name: Check Out
-      uses: actions/checkout@v3
-
+    
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.2
+      uses: actions/download-artifact@v4
       with:
-        name: ExportedArmTemplate # (5) Artifact name 
+        name: adf-artifact
+        path: ${{github.workspace}}/build/adf-artifact
 
+    - name: Install Az from PSGallery
+      shell: pwsh
+      run: |
+          Set-PSRepository PSGallery -InstallationPolicy Trusted
+          Install-Module Az
+          Import-Module Az
+          
     - name: Login via Az module
       uses: azure/login@v2
       with:
@@ -61,41 +67,70 @@ jobs:
         tenant-id: ${{ secrets.AZURE_TENANT_ID }}
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
-
+      
     - name: Run Pre-deployment script adfadbdev001-live
-      uses: Azure/powershell@v1.4.0
-      with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
-        azPSVersion: "latest"
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment:$True -deleteDeployment:$False
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
+      #shell: pwsh
+      #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
 
     - name: Run ARM deploy adfadbdev001-live
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        template: ARMTemplateForFactory.json
-        parameters: ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        template: ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json
+        parameters: ${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
     - name: Run Post-deployment script adfadbdev001-live
-      uses: Azure/powershell@v1.4.0
-      with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
-        azPSVersion: "latest"
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment:$False -deleteDeployment:$True
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
 
-    - name: Run Pre-deployment script adfadbprd001-live
-      uses: Azure/powershell@v1.4.0
-      with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbprd001" -predeployment $true -deleteDeployment $false
-        azPSVersion: "latest"
+######
+    - name: Run Pre-deployment script prd001-live
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbprd001" -predeployment:$True -deleteDeployment:$False
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
+      #shell: pwsh
+      #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbprd001" -predeployment $true -deleteDeployment $false
 
-    - name: Run ARM deploy adfadbprd001-live
+    - name: Run ARM deploy prd001-live
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        template: ARMTemplateForFactory.json
-        parameters: ARMTemplateParametersForFactory.json factoryName=${{ vars.ADF_PROD_FACTORYNAME }} adfadbplt001lssnfkpltdnacore_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE }} adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_password_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002PWD }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_password_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002PWD }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_user=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002USER }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_user=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002USER }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_role=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002ROLE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_role=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002ROLE }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_database=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002DATABASE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_database=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002DATABASE }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_warehouse=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002WAREHOUSE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_warehouse=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD00WAREHOUSE }} adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003 }} adfadbsbx001lsazrweksgpw0003_properties_typeProperties_authHeaders_x-cdata-authtoken_secretName=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003TOKEN }} adfadbplt001lspltbitabap_properties_typeProperties_url=${{ vars.ADFADBPLT001LSPLTBITABAP }}
+        template: ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json
+        parameters: ${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=${{ vars.ADF_PROD_FACTORYNAME }} adfadbplt001lssnfkpltdnacore_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE }} adfadbplt001lssnfkpltdnaload_properties_typeProperties_connectionString_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_password_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002PWD }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_password_secretName=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002PWD }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_user=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002USER }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_user=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002USER }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_role=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002ROLE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_role=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002ROLE }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_database=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002DATABASE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_database=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD002DATABASE }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_warehouse=${{ vars.ADFADBPLT001LSSNFKPLTDNACORE002WAREHOUSE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_warehouse=${{ vars.ADFADBPLT001LSSNFKPLTDNALOAD00WAREHOUSE }} adfadbsbx001lsazrweksgpw0003_properties_typeProperties_url=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003 }} adfadbsbx001lsazrweksgpw0003_properties_typeProperties_authHeaders_x-cdata-authtoken_secretName=${{ vars.ADFADBSBX001LSAZRWEKSGPW0003TOKEN }} adfadbplt001lspltbitabap_properties_typeProperties_url=${{ vars.ADFADBPLT001LSPLTBITABAP }}
         
     - name: Run Post-deployment script adfadbprd001-live
-      uses: Azure/powershell@v1.4.0
-      with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbprd001' -predeployment $false -deleteDeployment $true
-        azPSVersion: "latest"
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbprd001" -predeployment:$False -deleteDeployment:$True
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
