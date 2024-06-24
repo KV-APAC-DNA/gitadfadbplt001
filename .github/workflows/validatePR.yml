@@ -11,8 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-    - uses: actions/checkout@v3
-# Installs Node and the npm packages saved in your package.json file in the build
+    - name: Check Out
+      uses: actions/checkout@v3
+
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.4.1
       with:
@@ -43,15 +44,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-
-    - name: Check Out
-      uses: actions/checkout@v3
     
  # Download the previously uploaded artifact to leverage it later in the release job     
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: adf-artifact
+ #  - name: Download a Build Artifact
+ #    uses: actions/download-artifact@v4
+ #     with:
+ #       name: adf-artifact
+ #       path: actions/download-artifact@v4
 
     - name: Login via Az module
       uses: azure/login@v2
