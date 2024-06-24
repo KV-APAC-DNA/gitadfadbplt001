@@ -62,9 +62,9 @@ jobs:
         enable-AzPSSession: true 
       
     - name: Run Pre-deployment script adfadbdev001-live
-      uses: Azure/powershell@v1.4.0
+      uses: Azure/powershell@v2
       with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
         azPSVersion: "latest"
 
     - name: Run ARM deploy adfadbdev001-live
@@ -72,10 +72,10 @@ jobs:
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
         template: ARMTemplateForFactory.json
-        parameters: ./adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        parameters: ./build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
     - name: Run Post-deployment script adfadbdev001-live
-      uses: Azure/powershell@v1.4.0
+      uses: Azure/powershell@v2
       with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./build/adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
         azPSVersion: "latest"
