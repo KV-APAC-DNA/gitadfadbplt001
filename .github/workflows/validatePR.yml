@@ -73,8 +73,8 @@ jobs:
               -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" `
               -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" `
               -DataFactoryName "adfadbdev001" `
-              -predeployment $true `
-              -deleteDeployment $false
+              -predeployment 1 `
+              -deleteDeployment 0
         } else {
             Write-Error "Script not found at: $scriptPath"
             exit 1
