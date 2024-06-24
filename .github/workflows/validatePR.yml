@@ -24,19 +24,20 @@ jobs:
  
 # Validates all of the Data Factory resources in the repository.
     - name: Validate
-      run: npm run build validate ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001
+      run: npm run start validate ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001
       working-directory: ${{github.workspace}}/build
  
-    - name: Validate and Generate ARM template
-      run: npm run build export ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001 "ExportedArmTemplate" 
+    - name: Export ARM template
+      run: npm run start export ${{github.workspace}}/ /subscriptions/${{ secrets.AZURE_SUBSCRIPTION_ID }}/resourceGroups/${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}/providers/Microsoft.DataFactory/factories/adfadbdev001 adf-artifact 
       working-directory: ${{github.workspace}}/build
    
 # In order to leverage the artifact in another job, we need to upload it with the upload action 
     - name: upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: ExportedArmTemplate # (4) use the same artifact name you used in the previous export step
-        path: ${{github.workspace}}/build/ExportedArmTemplate
+        name: adf-artifact # (4) use the same artifact name you used in the previous export step
+        path: ${{github.workspace}}/build/adf-artifact
+        if-no-files-found: error
 
   release:
     needs: build
@@ -48,9 +49,9 @@ jobs:
     
  # Download the previously uploaded artifact to leverage it later in the release job     
     - name: Download a Build Artifact
-      uses: actions/download-artifact@v3.0.2
+      uses: actions/download-artifact@v4
       with:
-        name: ExportedArmTemplate # (5) Artifact name 
+        name: adf-artifact
 
     - name: Login via Az module
       uses: azure/login@v2
@@ -63,7 +64,7 @@ jobs:
     - name: Run Pre-deployment script adfadbdev001-live
       uses: Azure/powershell@v1.4.0
       with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -armTemplate "./adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
         azPSVersion: "latest"
 
     - name: Run ARM deploy adfadbdev001-live
@@ -71,10 +72,10 @@ jobs:
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
         template: ARMTemplateForFactory.json
-        parameters: ./ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        parameters: ./adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
     - name: Run Post-deployment script adfadbdev001-live
       uses: Azure/powershell@v1.4.0
       with:
-        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
+        inlineScript: ./scripts/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -armTemplate "./adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
         azPSVersion: "latest"
