@@ -1,9 +1,12 @@
 {
-	"name": "SalesforceObject1",
+	"name": "Salesforce_Object_Veeva",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssfhcpveevaind001",
 			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
 		},
 		"annotations": [],
 		"type": "SalesforceObject",
