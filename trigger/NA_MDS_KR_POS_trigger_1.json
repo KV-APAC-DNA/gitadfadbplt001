@@ -1,7 +1,6 @@
 {
-	"name": "Customer360_Tab_Refresh_Trigger",
+	"name": "NA_MDS_KR_POS_trigger_1",
 	"properties": {
-		"description": "Refresh Customer360 tableau datasources",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -11,8 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "CUSTOMER360_refresh",
-					"force_rerun": false
+					"category": "NA_MDS_KR_POS"
 				}
 			}
 		],
@@ -21,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T15:55:00",
+				"startTime": "2024-06-11T11:59:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						13
+						7
 					]
 				}
 			}

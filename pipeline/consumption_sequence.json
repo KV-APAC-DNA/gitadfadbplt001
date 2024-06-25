@@ -113,27 +113,6 @@
 												}
 											}
 										]
-									},
-									{
-										"value": "Power BI",
-										"activities": [
-											{
-												"name": "power bi refresh",
-												"type": "ExecutePipeline",
-												"dependsOn": [],
-												"policy": {
-													"secureInput": false
-												},
-												"userProperties": [],
-												"typeProperties": {
-													"pipeline": {
-														"referenceName": "Power BI",
-														"type": "PipelineReference"
-													},
-													"waitOnCompletion": true
-												}
-											}
-										]
 									}
 								],
 								"defaultActivities": [

@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_MDS_KR_POS_trigger_1",
+	"name": "KR_TRADE_PROMOTION_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "42"
+					"category": "KR_TRADE_PROMOTION"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-12T15:14:00",
+				"startTime": "2024-06-25T12:29:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						50
+						0
 					],
 					"hours": [
-						6
+						7
 					]
 				}
 			}
