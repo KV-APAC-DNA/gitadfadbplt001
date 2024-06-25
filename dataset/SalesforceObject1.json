@@ -2,14 +2,11 @@
 	"name": "SalesforceObject1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "dummySFLS",
+			"referenceName": "adfadbplt001lssfhcpveevaind001",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
 		"type": "SalesforceObject",
-		"schema": [],
-		"typeProperties": {
-			"objectApiName": "placeholder"
-		}
+		"schema": []
 	}
 }
