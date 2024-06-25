@@ -1,0 +1,35 @@
+{
+	"name": "s3_to_adls_coupang_ppm_file _trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "s3_to_adls",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"Group_id": "55"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-06-25T12:40:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						50
+					],
+					"hours": [
+						7
+					]
+				}
+			}
+		}
+	}
+}
