@@ -51,9 +51,6 @@ def main(session: snowpark.Session,Param):
         # Return value will appear in the Results tab
         # ********   Variable  we need from ETL table : 
         # CURRENT_FILE , index , validation, val_file_name,val_file_extn
-        #Param=[''IQVIA_ORSL_Sales_Brand_OCT2023.xlsx'',''last'',''1-1-1'',''IQVIA_ORSL_Sales_Brand'',''xlsx'',''State|Region|Product|Product_Grp|Pack|Cateogry'',1,''HCPSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/iqvia/transaction/sales/'','''',''[]'']
-        #Param=[''20240620_service_levels.csv'',''pre'',''1-1-1'',''service_levels'',''csv'',''Customer,Customer_Grade,Team,Visit_Frequency,Estimated_Visit_Duration,Date'',0,''NTASDL_RAW.DEV_LOAD_STAGE_ADLS_HKG'',''dev/pop6/transaction/visitdata/'','''',''[]'']
-
         
 
 
@@ -309,14 +306,16 @@ def main(session: snowpark.Session,Param):
                     df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                     df_pandas=df.to_pandas()
                     tmp_header= tmp_header + df_pandas.iloc[int(file_header_row_num)].tolist()
-                header = ["\\x01".join(tmp_header)]
-            
+                header = ["\\\\x01".join(tmp_header)]
+                
+
             elif sheet_names != "[]":
                 file_name = sheet_names[1:-1].split(",")[0]
                 file_name = file_name.strip("\\"").replace("(", "").replace(")", "").replace(" ","_")+".csv"
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
+                    
 
             
 
@@ -357,8 +356,10 @@ def main(session: snowpark.Session,Param):
         
             elif len(header_pipe_split)>1:
                 result_list = header_pipe_split
+
             elif len(header_tilda_split)>1:
                 result_list = header_tilda_split
+                
             else:
                 result_list = header
 
@@ -393,11 +394,11 @@ def main(session: snowpark.Session,Param):
                 result_list=result_list[:12]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
-            elif (stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name==''J_J'') or (stage_name.split(".")[0]=="HCPSDL_RAW" and val_file_name== ''IQVIA_ORSL_Brand''):
+            elif (stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name==''J_J'') or (stage_name.split(".")[0]=="HCPSDL_RAW" and val_file_name== ''IQVIA_ORSL_Brand'') or (stage_name.split(".")[0]=="HCPSDL_RAW" and val_file_name==''IQVIA_AVEENO_Specialty''):
                 result_list=result_list[:5]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
-            elif stage_name.split(".")[0]=="HCPSDL_RAW" and (val_file_name== ''IQVIA_ORSL_Indication'' or val_file_name==''IQVIA_ORSL_Specialty''):
+            elif stage_name.split(".")[0]=="HCPSDL_RAW" and (val_file_name== ''IQVIA_ORSL_Indication'' or val_file_name==''IQVIA_ORSL_Specialty'' or val_file_name==''IQVIA_AVEENO_Sales_Brand'' or val_file_name==''IQVIA_AVEENO_Brand''):
                 result_list=result_list[:4]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
