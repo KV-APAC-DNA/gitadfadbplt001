@@ -1334,7 +1334,7 @@
 									}
 								},
 								{
-									"name": "Send error - salesforce_to_adls_copy1",
+									"name": "Send error - rs_cpivosyuhhmf_to_adls",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -1387,7 +1387,7 @@
 									}
 								},
 								{
-									"name": "error_salesforce_to_adls_copy1",
+									"name": "error_rs_cpivosyuhhmf_to_adls",
 									"type": "Fail",
 									"dependsOn": [
 										{
