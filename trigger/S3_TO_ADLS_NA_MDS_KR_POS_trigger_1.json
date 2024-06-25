@@ -1,5 +1,5 @@
 {
-	"name": "S3_TO_ADLS_MDS_KR_POS_trigger_1",
+	"name": "S3_TO_ADLS_NA_MDS_KR_POS_trigger_1",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
