@@ -5,8 +5,6 @@
 			{
 				"name": "Script - Run Query",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set query with params",
@@ -79,8 +77,6 @@
 			{
 				"name": "Script Unload to stage",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script - Run Query",
@@ -106,7 +102,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(activity('Script - Run Query').output.resultSets[0].rows[0].QUERY,';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000;",
+								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(variables('query'),';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000;",
 								"type": "Expression"
 							}
 						}
@@ -117,11 +113,9 @@
 			{
 				"name": "Script Fetch presigned url",
 				"type": "Script",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Script Unload to stage",
+						"activity": "Set temp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -144,7 +138,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
+								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
 								"type": "Expression"
 							}
 						}
@@ -240,6 +234,30 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Set temp",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Script Unload to stage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "temp",
+					"value": {
+						"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -252,16 +270,19 @@
 			"query": {
 				"type": "String"
 			},
-			"currentTime": {
-				"type": "String"
-			},
-			"currentMonth": {
-				"type": "String"
-			},
 			"currentYear": {
 				"type": "String"
 			},
 			"currentTimestamp": {
+				"type": "String"
+			},
+			"temp": {
+				"type": "String"
+			},
+			"currentTime": {
+				"type": "String"
+			},
+			"currentMonth": {
 				"type": "String"
 			}
 		},
