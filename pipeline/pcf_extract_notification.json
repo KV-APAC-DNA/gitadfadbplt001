@@ -71,7 +71,7 @@
 				"typeProperties": {
 					"variableName": "query",
 					"value": {
-						"value": "@replace(replace(pipeline().parameters.query,'{CurrYear}' , '2024'),'{CurrMonth}', 'June')",
+						"value": "@replace(replace(pipeline().parameters.query,'{CurrYear}' , variables('currentYear')),'{CurrMonth}', variables('currentMonth'))",
 						"type": "Expression"
 					}
 				}
@@ -195,7 +195,7 @@
 				"typeProperties": {
 					"variableName": "currentMonth",
 					"value": {
-						"value": "@formatDateTime(variables('currentTimestamp'),'mmm')",
+						"value": "@formatDateTime(variables('currentTimestamp'),'MMMM')",
 						"type": "Expression"
 					}
 				}
