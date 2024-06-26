@@ -5,6 +5,8 @@
 			{
 				"name": "Script - Run Query",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set query with params",
@@ -57,7 +59,7 @@
 				"typeProperties": {
 					"variableName": "query",
 					"value": {
-						"value": "@pipeline().parameters.query",
+						"value": "@replace(replace(pipeline().parameters.query,'{CurrYear}' , '2024'),'{CurrMonth}', 'June')",
 						"type": "Expression"
 					}
 				}
@@ -65,6 +67,8 @@
 			{
 				"name": "Script Unload to stage",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script - Run Query",
@@ -101,6 +105,8 @@
 			{
 				"name": "Script Fetch presigned url",
 				"type": "Script",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Script Unload to stage",
@@ -155,7 +161,7 @@
 		"parameters": {
 			"query": {
 				"type": "string",
-				"defaultValue": "select rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id,sum(future_gts_val),sum(fut_sls_qty),sum(unspp_qty) from PCFEDW_INTEGRATION.edw_invoice_analysis where to_ccy='USD'and jj_mnth_long='June' and jj_year='2024' group by rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id;"
+				"defaultValue": "select rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id,sum(future_gts_val),sum(fut_sls_qty),sum(unspp_qty) from PCFEDW_INTEGRATION.edw_invoice_analysis where to_ccy='USD'and jj_mnth_long='{CurrMonth}' and jj_year='{CurrYear}' group by rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id;"
 			}
 		},
 		"variables": {
