@@ -45,7 +45,13 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set currentTime",
+						"activity": "Set currentMonth",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set currentYear",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -150,9 +156,57 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "currentTime",
+					"variableName": "currentMonth",
 					"value": {
 						"value": "@formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentMonth",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentMonth",
+					"value": {
+						"value": "@formatDateTime(variables('currentTime'),'mmm')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentYear",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentYear",
+					"value": {
+						"value": "@formatDateTime(variables('currentTime'),'yyyy')",
 						"type": "Expression"
 					}
 				}
@@ -169,6 +223,12 @@
 				"type": "String"
 			},
 			"currentTime": {
+				"type": "String"
+			},
+			"currentMonth": {
+				"type": "String"
+			},
+			"currentYear": {
 				"type": "String"
 			}
 		},
