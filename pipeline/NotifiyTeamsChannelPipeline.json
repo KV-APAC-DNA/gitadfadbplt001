@@ -268,8 +268,6 @@
 						{
 							"name": "Invoke Teams Webhook URL business success",
 							"type": "WebActivity",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Set JSON Schema business success",
