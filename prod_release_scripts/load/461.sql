@@ -1,3 +1,4 @@
+USE SCHEMA NTASDL_RAW;
 CREATE OR REPLACE TABLE sdl_mds_na_vmimst_header (
     changetrackingmask INTEGER,
     code  VARCHAR(500),
@@ -16,7 +17,7 @@ CREATE OR REPLACE TABLE sdl_mds_na_vmimst_header (
     versionflag VARCHAR(100),
     versionname VARCHAR(100),
     versionnumber INTEGER
-)
+);
 CREATE OR REPLACE TABLE sdl_mds_na_pos_prc_condition_map (
     changetrackingmask INTEGER,
     cnd_type VARCHAR(200),
@@ -46,7 +47,7 @@ CREATE OR REPLACE TABLE sdl_mds_na_pos_prc_condition_map (
     sold_to_cust_cd VARCHAR(200),
     vld_frm TIMESTAMP_TZ,
     vld_to TIMESTAMP_TZ
-)
+);
 CREATE OR REPLACE TABLE sdl_mds_na_vmimst_line (
     changetrackingmask INTEGER,
     code  VARCHAR(500),
@@ -65,7 +66,7 @@ CREATE OR REPLACE TABLE sdl_mds_na_vmimst_line (
     versionflag VARCHAR(100),
     versionname VARCHAR(100),
     versionnumber INTEGER
-)
+);
 create or replace TABLE DEV_DNA_LOAD.NTASDL_RAW.SDL_MDS_HK_LE_TARGETS (
 	APR NUMBER(28,0),
 	AUG NUMBER(28,0),
@@ -135,4 +136,4 @@ CREATE OR REPLACE TABLE SDL_MDS_KR_SUB_CUSTOMER_MASTER
    LastChgUserName VARCHAR(500),
    LastChgVersionNumber NUMBER(18,0),
    ValidationStatus VARCHAR(500)
-   )
+   );
