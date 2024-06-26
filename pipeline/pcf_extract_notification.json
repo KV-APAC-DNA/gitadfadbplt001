@@ -115,7 +115,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Set temp",
+						"activity": "Script Unload to stage",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -236,26 +236,60 @@
 				}
 			},
 			{
-				"name": "Set temp",
-				"type": "SetVariable",
+				"name": "Send export notification",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Script Unload to stage",
+						"activity": "Script Fetch presigned url",
 						"dependencyConditions": [
 							"Succeeded"
 						]
 					}
 				],
 				"policy": {
-					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "temp",
-					"value": {
-						"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
-						"type": "Expression"
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "EXPORT",
+						"isBusinessNotification": "Yes",
+						"isSupportNotification": "No",
+						"businessMessage": {
+							"value": "Please find the attached file for export of the table -  **edw_invoice_analysis** \\n\n**QUERY**: @{variables('query')} \\n\n**MESSAGE**: _Please find the records of the above query in the attached file @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_ \\n ",
+							"type": "Expression"
+						},
+						"isError": "No",
+						"container": "pcf",
+						"fileUrl": {
+							"value": "@{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
+							"type": "Expression"
+						}
 					}
 				}
 			}
