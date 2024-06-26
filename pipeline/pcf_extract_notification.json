@@ -281,7 +281,7 @@
 						"isBusinessNotification": "Yes",
 						"isSupportNotification": "No",
 						"businessMessage": {
-							"value": "Please find the attached file for export of the table -  **edw_invoice_analysis** \\n\n**MESSAGE**: _Please find the records of the above query in the attached file below._ \\n ",
+							"value": "Please find the attached file for **export** of the table -  **edw_invoice_analysis** \\n",
 							"type": "Expression"
 						},
 						"isError": "No",
