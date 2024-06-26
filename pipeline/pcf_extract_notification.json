@@ -55,6 +55,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "Set currentTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -149,26 +155,9 @@
 			{
 				"name": "Set currentTime",
 				"type": "SetVariable",
-				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "currentMonth",
-					"value": {
-						"value": "@formatDateTime(convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set currentMonth",
-				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set currentTime",
+						"activity": "Set currentTimestamp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -182,7 +171,31 @@
 				"typeProperties": {
 					"variableName": "currentMonth",
 					"value": {
-						"value": "@formatDateTime(variables('currentTime'),'mmm')",
+						"value": "@formatDateTime(variables('currentTimestamp'),'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentMonth",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentTimestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentMonth",
+					"value": {
+						"value": "@formatDateTime(variables('currentTimestamp'),'mmm')",
 						"type": "Expression"
 					}
 				}
@@ -192,7 +205,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set currentTime",
+						"activity": "Set currentTimestamp",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -206,7 +219,24 @@
 				"typeProperties": {
 					"variableName": "currentYear",
 					"value": {
-						"value": "@formatDateTime(variables('currentTime'),'yyyy')",
+						"value": "@formatDateTime(variables('currentTimestamp'),'yyyy')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentTimestamp",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentTimestamp",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')",
 						"type": "Expression"
 					}
 				}
@@ -229,6 +259,9 @@
 				"type": "String"
 			},
 			"currentYear": {
+				"type": "String"
+			},
+			"currentTimestamp": {
 				"type": "String"
 			}
 		},
