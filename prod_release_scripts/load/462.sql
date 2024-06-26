@@ -67,7 +67,7 @@ CREATE OR REPLACE TABLE sdl_mds_na_vmimst_line (
     versionname VARCHAR(100),
     versionnumber INTEGER
 );
-create or replace TABLE DEV_DNA_LOAD.NTASDL_RAW.SDL_MDS_HK_LE_TARGETS (
+create or replace TABLE NTASDL_RAW.SDL_MDS_HK_LE_TARGETS (
 	APR NUMBER(28,0),
 	AUG NUMBER(28,0),
 	BRAND_CODE VARCHAR(500),
