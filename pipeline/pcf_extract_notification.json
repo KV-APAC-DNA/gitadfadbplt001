@@ -281,7 +281,7 @@
 						"isBusinessNotification": "Yes",
 						"isSupportNotification": "No",
 						"businessMessage": {
-							"value": "Please find the attached file for **export** of the table -  **edw_invoice_analysis** \\n",
+							"value": "Please find the attached file for **export** of the table -  **edw_invoice_analysis** \\n\n**Report Name** : Pacific - Open Order Detail Report.",
 							"type": "Expression"
 						},
 						"isError": "No",
