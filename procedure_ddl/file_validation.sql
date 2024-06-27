@@ -322,7 +322,7 @@ def main(session: snowpark.Session,Param):
             elif "pop6/transaction" in temp_stage_path:
                 full_path = "@"+stage_name+"/"+temp_stage_path+"/"+CURRENT_FILE
                 with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
-                    df_pandas=pd.read_csv(f)
+                    df_pandas=pd.read_csv(f,sep="|")
                     header=df_pandas.columns
                 
                 
@@ -347,7 +347,8 @@ def main(session: snowpark.Session,Param):
                 
             else:
                 header_pipe_split = header[0].split(''|'')
-                header_tilda_split = header[0].split(''~'') 
+                header_tilda_split = header[0].split(''~'')
+                header_comma_split=header[0].split(",")
                 
             if (val_file_extn==''xlsx'' or val_file_extn==''xls'') and ''Weekly Sales Report'' not in val_file_name and CURRENT_FILE[0:3]!="ROB" and CURRENT_FILE[0:2]!="SS" and "FSSI_Week" not in CURRENT_FILE and "JJ_KPI_Status" not in CURRENT_FILE and "TW_POS_PXCivilia" not in CURRENT_FILE and ''TW_POS_RTMart_RawData'' not in  CURRENT_FILE and "MT01P39R" not in CURRENT_FILE and "Weekly_Summary_Trexi_raw_data" not in CURRENT_FILE and "Naver_keyword" not in CURRENT_FILE:
                 result_list = header[0].split(''\\x01'')
@@ -359,6 +360,9 @@ def main(session: snowpark.Session,Param):
 
             elif len(header_tilda_split)>1:
                 result_list = header_tilda_split
+
+            elif len(header_comma_split)>1:
+                result_list=header_comma_split
                 
             else:
                 result_list = header
