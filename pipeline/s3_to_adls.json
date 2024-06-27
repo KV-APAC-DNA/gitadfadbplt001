@@ -303,7 +303,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "@concat('SELECT AD.*,IFNULL(ADL.RUN_AT,''2000-01-01 01:00:00'') AS LAST_MODIFIED from meta_raw.s3_to_adls  AD \nLEFT JOIN \n(\nSELECT \n    MAX(RUN_AT) RUN_AT,\n    S3_TO_ADLS_ID\nFROM META_RAW.S3_TO_ADLS_AUDIT_LOG\nWHERE\n    STATUS = ''SUCCESS''\nGROUP BY S3_TO_ADLS_ID\n) ADL\nON AD.ID = ADL.S3_TO_ADLS_ID where isactive=''TRUE'' and AD.GROUP_ID=',pipeline().parameters.Group_id)",
+							"value": "@concat('SELECT AD.*,IFNULL(ADL.RUN_AT,''2000-01-01 01:00:00'') AS LAST_MODIFIED from meta_raw.s3_to_adls  AD \nLEFT JOIN \n(\nSELECT \n    MAX(RUN_AT) RUN_AT,\n    S3_TO_ADLS_ID\nFROM META_RAW.S3_TO_ADLS_AUDIT_LOG\nWHERE\n    STATUS = ''SUCCESS'' \nGROUP BY S3_TO_ADLS_ID\n) ADL\nON AD.ID = ADL.S3_TO_ADLS_ID where isactive=''TRUE'' and AD.GROUP_ID=',pipeline().parameters.Group_id)",
 							"type": "Expression"
 						},
 						"exportSettings": {
