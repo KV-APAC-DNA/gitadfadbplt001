@@ -23,7 +23,7 @@
 				},
 				"secretName": "adfadbplt001lsindhcpveeva001-sectoken"
 			},
-			"apiVersion": "48.0",
+			"apiVersion": "61.0",
 			"clientId": "dummy",
 			"clientSecret": {
 				"type": "AzureKeyVaultSecret",
