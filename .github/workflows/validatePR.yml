@@ -81,15 +81,13 @@ jobs:
             Write-Error "Script not found at: $scriptPath"
             exit 1
         }
-      #shell: pwsh
-      #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
-
+        
     - name: Run ARM deploy adfadbdev001-live
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
-        template: ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json
-        parameters: ${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
+        template: ${{github.workspace}}/build/adf-artifact/linkedTemplates/ArmTemplate_master.json
+        parameters: ${{github.workspace}}/build/adf-artifact/linkedTemplates/ArmTemplateParameters_master.json factoryName=adfadbdev001 containerUri=${{ secrets.AZURE_DATAFACTORY_LINKEDTEMPLATE_CONTAINERURI }} containerSasToken=${{ secrets.AZURE_DATAFACTORY_LINKEDTEMPLATE_CONTAINERTOKEN }}
         
     - name: Run Post-deployment script adfadbdev001-live
       shell: pwsh
@@ -102,9 +100,3 @@ jobs:
             Write-Error "Script not found at: $scriptPath"
             exit 1
         }
-        
-#    - name: Run Post-deployment script adfadbdev001-live
-#      uses: Azure/powershell@v2
-#      with:
-#        inlineScript: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -#armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
-#        azPSVersion: "latest"
