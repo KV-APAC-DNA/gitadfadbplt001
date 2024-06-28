@@ -164,7 +164,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}','@{pipeline().parameters.parameters.value[0].val_file_header}']);\n",
+												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
 												"type": "Expression"
 											},
 											"exportSettings": {
