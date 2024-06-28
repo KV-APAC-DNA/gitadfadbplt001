@@ -24,6 +24,7 @@
 -- 14/6/24  Srihari     Added logic for splitting by ~
 -- 24/06/24 Thanish  Pop6 logic added to read csv file
 -- 24/06/24 Srihari     Added logic for multi sheets different header validation
+-- 28/06/24 Srihari     Added logic for header validation of zip source files.
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -42,6 +43,8 @@ import math
 import regex
 import pandas as pd
 from datetime import datetime
+import zipfile
+
 
 def main(session: snowpark.Session,Param):
     try:
@@ -288,7 +291,7 @@ def main(session: snowpark.Session,Param):
                 df_pandas=df.to_pandas()
                 header=df_pandas.iloc[int(file_header_row_num)].tolist()
 
-            elif "HCPSDL_RAW" in stage_name and "/SFMC/" in temp_stage_path :
+            elif "HCPSDL_RAW" in stage_name and "SFMC/" in temp_stage_path :
                 file_name= CURRENT_FILE.replace("xlsx","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 utf_encoding= ''UTF-16LE''
@@ -325,7 +328,15 @@ def main(session: snowpark.Session,Param):
                     df_pandas=pd.read_csv(f,sep="|")
                     header=df_pandas.columns
                 
-                
+
+            elif "ventasys/transaction" in temp_stage_path and val_file_extn == "zip":
+                full_path = "@"+stage_name+"/"+temp_stage_path+"/"+CURRENT_FILE
+                with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
+                    with zipfile.ZipFile(f,"r") as zip_ref:
+                        for i_file_name in zip_ref.namelist():
+                            with zip_ref.open(i_file_name) as file:
+                                df_pandas = pd.read_csv(file, delimiter="~", header =file_header_row_num, nrows = file_header_row_num+1)
+                                header=list(df_pandas)
                        
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
