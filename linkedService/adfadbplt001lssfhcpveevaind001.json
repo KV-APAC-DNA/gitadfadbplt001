@@ -36,7 +36,7 @@
 			"authenticationType": "OAuth2ClientCredential"
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt001",
+			"referenceName": "adfiradbplt002",
 			"type": "IntegrationRuntimeReference"
 		}
 	}
