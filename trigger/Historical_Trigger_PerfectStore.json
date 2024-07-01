@@ -1,7 +1,6 @@
 {
 	"name": "Historical_Trigger_PerfectStore",
 	"properties": {
-		"description": "For historical load - Regional",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -21,7 +20,7 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-14T13:55:00",
+				"startTime": "2024-06-25T13:28:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [

@@ -1,5 +1,5 @@
 {
-	"name": "ETL_XDM_TLRSR_LOAD_TRIGGER",
+	"name": "KR_TRADE_PROMOTION_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "ETL_XDM_TLRSR_LOAD"
+					"category": "KR_TRADE_PROMOTION"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-20T14:26:00",
+				"startTime": "2024-06-25T12:29:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						35
+						0
 					],
 					"hours": [
-						1
+						7
 					]
 				}
 			}

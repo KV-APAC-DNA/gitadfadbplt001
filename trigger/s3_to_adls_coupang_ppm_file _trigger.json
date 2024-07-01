@@ -1,5 +1,5 @@
 {
-	"name": "S3_TO_ADLS_MDS_KR_POS_trigger_1",
+	"name": "s3_to_adls_coupang_ppm_file _trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "42"
+					"Group_id": "55"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-12T15:14:00",
+				"startTime": "2024-06-25T12:40:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						50
 					],
 					"hours": [
-						6
+						7
 					]
 				}
 			}

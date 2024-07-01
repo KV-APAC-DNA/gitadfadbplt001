@@ -1,0 +1,328 @@
+{
+	"name": "pcf_extract_notification",
+	"properties": {
+		"activities": [
+			{
+				"name": "Script - Run Query",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Set query with params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@variables('query')",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Set query with params",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentMonth",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set currentYear",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Set currentTime",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "query",
+					"value": {
+						"value": "@replace(replace(pipeline().parameters.query,'{CurrYear}' , variables('currentYear')),'{CurrMonth}', variables('currentMonth'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Script Unload to stage",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Script - Run Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(variables('query'),';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000;",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Script Fetch presigned url",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "Script Unload to stage",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Set currentTime",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentTimestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentTime",
+					"value": {
+						"value": "@formatDateTime(variables('currentTimestamp'),'yyyyMMdd_HHmmss')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentMonth",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentTimestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentMonth",
+					"value": {
+						"value": "@formatDateTime(variables('currentTimestamp'),'MMMM')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentYear",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set currentTimestamp",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentYear",
+					"value": {
+						"value": "@formatDateTime(variables('currentTimestamp'),'yyyy')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Set currentTimestamp",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "currentTimestamp",
+					"value": {
+						"value": "@convertTimeZone(utcnow(), 'UTC', 'Singapore Standard Time')",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "Send export notification",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Script Fetch presigned url",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "EXPORT",
+						"isBusinessNotification": "Yes",
+						"isSupportNotification": "No",
+						"businessMessage": {
+							"value": "Please find the attached file for **export** of the table -  **edw_invoice_analysis** \\n\n**Report Name** : Pacific - Open Order Detail Report.",
+							"type": "Expression"
+						},
+						"isError": "No",
+						"container": "pac",
+						"fileUrl": {
+							"value": "@{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}",
+							"type": "Expression"
+						}
+					}
+				}
+			}
+		],
+		"parameters": {
+			"query": {
+				"type": "string",
+				"defaultValue": "select rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id,sum(future_gts_val),sum(fut_sls_qty),sum(unspp_qty) from PCFEDW_INTEGRATION.edw_invoice_analysis where to_ccy='USD'and jj_mnth_long='{CurrMonth}' and jj_year='{CurrYear}' group by rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id;"
+			}
+		},
+		"variables": {
+			"query": {
+				"type": "String"
+			},
+			"currentYear": {
+				"type": "String"
+			},
+			"currentTimestamp": {
+				"type": "String"
+			},
+			"temp": {
+				"type": "String"
+			},
+			"currentTime": {
+				"type": "String"
+			},
+			"currentMonth": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
