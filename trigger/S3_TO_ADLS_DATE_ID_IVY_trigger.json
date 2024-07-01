@@ -3,21 +3,7 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
-		"pipelines": [
-			{
-				"pipelineReference": {
-					"referenceName": "s3_to_adls_date_folder_utility",
-					"type": "PipelineReference"
-				},
-				"parameters": {
-					"S3BucketName": "itx-arm-conapdna-indonesia-prod-kdp",
-					"S3Directory": "raw_data_lake/IVY/",
-					"AdlsContainer": "idn",
-					"AdlsDirectory": "IVY/",
-					"IsToBeDeleted": "N"
-				}
-			}
-		],
+		"pipelines": [],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
