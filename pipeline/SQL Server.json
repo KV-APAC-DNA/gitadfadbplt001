@@ -1217,7 +1217,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('read parameters').output.value[0].is_incremental",
+						"value": "@and(activity('read parameters').output.value[0].is_incremental,\nnot(empty(variables('watermark_value'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -2520,6 +2520,9 @@
 				"defaultValue": "NO"
 			},
 			"watermark_value": {
+				"type": "String"
+			},
+			"trueval": {
 				"type": "String"
 			}
 		},
