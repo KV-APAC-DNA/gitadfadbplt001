@@ -1,0 +1,35 @@
+{
+	"name": "DS_JJS3",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsmftappvkenvuecom",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"folderName": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/DS_TMP_KVADLS_TO_JJS3"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "SftpLocation",
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folderName",
+					"type": "Expression"
+				}
+			}
+		}
+	}
+}

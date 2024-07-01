@@ -1,0 +1,28 @@
+{
+	"name": "adfadbplt001lssnfksbxdnalab1001",
+	"properties": {
+		"description": "Linked Service to Snowflake sandbox database",
+		"annotations": [],
+		"type": "SnowflakeV2",
+		"typeProperties": {
+			"authenticationType": "Basic",
+			"accountIdentifier": "yw48356.southeast-asia.azure",
+			"user": "SA-DNA-LAB1-MYSBI-SBX",
+			"database": "SBX_DNA_LAB1",
+			"warehouse": "SBX_DNA_LAB1_APP1_WH",
+			"role": "SBX_DNA_LAB1_DEVELOPER_FR",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lssnfksbxdnalab1001"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt001",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

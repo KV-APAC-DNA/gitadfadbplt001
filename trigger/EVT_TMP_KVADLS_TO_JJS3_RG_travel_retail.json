@@ -1,0 +1,29 @@
+{
+	"name": "EVT_TMP_KVADLS_TO_JJS3_RG_travel_retail",
+	"properties": {
+		"description": "Event Trigger for ID 1-7, 16 in PROD_DNA_LOAD.meta_raw.s3_to_adl\nMFT - kdp_conapdna_aspac_prod_travel_retail",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "PL_KVADLS_TO_JJS3",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"folderPath": "@triggerBody().folderPath",
+					"fileName": "@triggerBody().fileName"
+				}
+			}
+		],
+		"type": "BlobEventsTrigger",
+		"typeProperties": {
+			"blobPathBeginsWith": "/asp/blobs/prd/transactional/",
+			"ignoreEmptyBlobs": true,
+			"scope": "/subscriptions/00ab5361-0cd5-44b3-b4df-8f24e00fe1df/resourceGroups/AZR-WEK-rg-dls-adb-001/providers/Microsoft.Storage/storageAccounts/dlsadbplt001",
+			"events": [
+				"Microsoft.Storage.BlobCreated"
+			]
+		}
+	}
+}

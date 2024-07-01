@@ -1,0 +1,64 @@
+{
+	"name": "DS_KVSNFK",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lssnfksbxdnalab1001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/DS_TMP_KVADLS_TO_JJS3"
+		},
+		"annotations": [],
+		"type": "SnowflakeV2Table",
+		"schema": [
+			{
+				"name": "ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "GROUP_ID",
+				"type": "NUMBER",
+				"precision": 38,
+				"scale": 0
+			},
+			{
+				"name": "COUNTRY",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "S3_BUCKET",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "S3_PATH",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "S3_FILE",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ADLS_CONTAINER",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ADLS_PATH",
+				"type": "VARCHAR"
+			},
+			{
+				"name": "ISACTIVE",
+				"type": "BOOLEAN"
+			},
+			{
+				"name": "DELETE_SOURCE_FILE",
+				"type": "VARCHAR"
+			}
+		],
+		"typeProperties": {
+			"schema": "META_RAW",
+			"table": "S3_TO_ADLS"
+		}
+	}
+}
