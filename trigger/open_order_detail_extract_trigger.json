@@ -1,0 +1,32 @@
+{
+	"name": "open_order_detail_extract_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pcf_extract_notification",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"query": "select rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id,sum(future_gts_val),sum(fut_sls_qty),sum(unspp_qty) from PCFEDW_INTEGRATION.edw_invoice_analysis where to_ccy='USD'and jj_mnth_long='{CurrMonth}' and jj_year='{CurrYear}' group by rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id;"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-01T00:00:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"hours": [
+						4
+					]
+				}
+			}
+		}
+	}
+}
