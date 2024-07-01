@@ -1,7 +1,7 @@
 truncate table pcfitg_integration.itg_perenso_over_and_above_points;
  
  
-inset into pcfitg_integration.itg_perenso_over_and_above_points
+insert into pcfitg_integration.itg_perenso_over_and_above_points
 
 select 
 
