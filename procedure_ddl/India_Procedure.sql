@@ -636,8 +636,8 @@ def main(session: snowpark.Session,Param):
         df = session.read\\
             .schema(df_schema)\\
             .option("skip_header",1)\\
-            .option("field_delimiter", "|")\\
-            .option("field_optionally_enclosed_by", None) \\
+            .option("field_delimiter", "\\u0001")\\
+            .option("field_optionally_enclosed_by", "\\"") \\
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -3211,7 +3211,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema) \\
             .option("skip_header", 1) \\
             .option("field_delimiter", "") \\
-            .option("field_optionally_enclosed_by", None) \\
+            .option("field_optionally_enclosed_by", "\\"") \\
             .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
 
         df = df.na.drop("all")
@@ -3411,7 +3411,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema) \\
             .option("skip_header", 1) \\
             .option("field_delimiter", "") \\
-            .option("field_optionally_enclosed_by", None) \\
+            .option("field_optionally_enclosed_by", "\\"") \\
             .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
 
         df = df.na.drop("all")
@@ -3579,7 +3579,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema) \\
             .option("skip_header", 1) \\
             .option("field_delimiter", "") \\
-            .option("field_optionally_enclosed_by", None) \\
+            .option("field_optionally_enclosed_by", "\\"") \\
             .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
 
         df = df.na.drop("all")
@@ -3697,7 +3697,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema) \\
             .option("skip_header", 1) \\
             .option("field_delimiter", "") \\
-            .option("field_optionally_enclosed_by", None) \\
+            .option("field_optionally_enclosed_by", "\\"") \\
             .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
 
         df = df.na.drop("all")
@@ -3835,7 +3835,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema) \\
             .option("skip_header", 1) \\
             .option("field_delimiter", "") \\
-            .option("field_optionally_enclosed_by", None) \\
+            .option("field_optionally_enclosed_by", "\\"") \\
             .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
 
         df = df.na.drop("all")
@@ -3970,7 +3970,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema)\\
             .option("skip_header",1)\\
             .option("field_delimiter", "")\\
-            .option("field_optionally_enclosed_by", None)\\
+            .option("field_optionally_enclosed_by", "\\"")\\
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
         
         df = df.na.drop("all")
@@ -4673,7 +4673,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema)\\
             .option("skip_header", 1)\\
             .option("field_delimiter","\\u0001")\\
-            .option("field_optionally_enclosed_by", None)\\
+            .option("field_optionally_enclosed_by", "\\"")\\
             .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
 
         df = df.na.drop("all")
@@ -4808,7 +4808,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema)\\
             .option("skip_header",1)\\
             .option("field_delimiter", "")\\
-            .option("field_optionally_enclosed_by", None)\\
+            .option("field_optionally_enclosed_by", "\\"")\\
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
         
         df = df.na.drop("all")
@@ -4898,7 +4898,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema)\\
             .option("skip_header",1)\\
             .option("field_delimiter", "")\\
-            .option("field_optionally_enclosed_by", None)\\
+            .option("field_optionally_enclosed_by", "\\"")\\
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
         
         df = df.na.drop("all")
@@ -5009,7 +5009,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema)\\
             .option("skip_header",1)\\
             .option("field_delimiter", "")\\
-            .option("field_optionally_enclosed_by", None)\\
+            .option("field_optionally_enclosed_by", "\\"")\\
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
         
         df = df.na.drop("all")
