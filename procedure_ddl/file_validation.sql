@@ -335,7 +335,7 @@ def main(session: snowpark.Session,Param):
                     with zipfile.ZipFile(f,"r") as zip_ref:
                         for i_file_name in zip_ref.namelist():
                             with zip_ref.open(i_file_name) as file:
-                                df_pandas = pd.read_csv(file, delimiter="~", header =file_header_row_num, nrows = file_header_row_num+1)
+                                df_pandas = pd.read_csv(file, delimiter="~", header =file_header_row_num, nrows = file_header_row_num+1, encoding_errors = "replace", quoting=3, na_filter=False)
                                 header=list(df_pandas)
                        
             else:
