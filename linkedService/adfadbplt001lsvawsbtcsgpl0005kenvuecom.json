@@ -1,0 +1,22 @@
+{
+	"name": "adfadbplt001lsvawsbtcsgpl0005kenvuecom",
+	"properties": {
+		"description": "linked service to japan awsbtcsgpl0005.kenvue.com",
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsvawsbtcsgpl0005kenvuecom"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
