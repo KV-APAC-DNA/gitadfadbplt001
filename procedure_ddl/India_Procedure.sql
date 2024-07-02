@@ -1,4 +1,4 @@
-SET ENV ='DEV';
+SET ENV ='PROD';
 
 SET DB = $ENV||'_DNA_LOAD';
 
