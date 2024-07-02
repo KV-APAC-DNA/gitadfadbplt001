@@ -474,6 +474,18 @@
 											"dependencyConditions": [
 												"Succeeded"
 											]
+										},
+										{
+											"activity": "Set upload_date",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set upload_time",
+											"dependencyConditions": [
+												"Succeeded"
+											]
 										}
 									],
 									"policy": {
@@ -523,6 +535,34 @@
 											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters japan').error?.message}",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Set upload_date",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "upload_date",
+										"value": "sds"
+									}
+								},
+								{
+									"name": "Set upload_time",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "upload_time",
+										"value": "dsd"
 									}
 								}
 							]
@@ -2270,6 +2310,12 @@
 			},
 			"countDifference": {
 				"type": "Integer"
+			},
+			"upload_date": {
+				"type": "String"
+			},
+			"upload_time": {
+				"type": "String"
 			}
 		},
 		"folder": {
