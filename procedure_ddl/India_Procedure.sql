@@ -637,7 +637,7 @@ def main(session: snowpark.Session,Param):
             .schema(df_schema)\\
             .option("skip_header",1)\\
             .option("field_delimiter", "|")\\
-            .option("field_optionally_enclosed_by", "\\"") \\
+            .option("field_optionally_enclosed_by", None) \\
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
 
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -840,7 +840,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -928,7 +928,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1010,7 +1010,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1092,7 +1092,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1254,7 +1254,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1363,7 +1363,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1467,7 +1467,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1513,7 +1513,7 @@ $$
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType, DoubleType,TimestampType
-from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right
+from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right, when
 import pandas as pd
 from datetime import datetime
 import pytz
@@ -1564,7 +1564,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -1605,7 +1605,7 @@ $$
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType, DoubleType,TimestampType
-from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right
+from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right, when
 import pandas as pd
 from datetime import datetime
 import pytz
@@ -1649,7 +1649,7 @@ def main(session: snowpark.Session, Param):
             .option("skip_header",1)\
             .option("field_delimiter", "\u0001")\
             .option("skip_blank_lines", True) \
-            .option("field_optionally_enclosed_by", "\"") \
+            .option("field_optionally_enclosed_by", None) \
             .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
     
         df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
@@ -3116,3 +3116,1969 @@ def main(session: snowpark.Session,Param):
         error_message = f"Error: {str(e)}" +str(df.columns)
         return error_message
 $$;
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.CSL_DAILYSALES_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import pandas as pd
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = ["dailysales20240523061554.csv","INDSDL_RAW.DEV_LOAD_STAGE_ADLS","dev/india_xdm/transaction/dailysales","SDL_CSL_DAILYSALES"]
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("salinvno", StringType(), True),
+            StructField("salinvdate", StringType(), True),
+            StructField("saldlvdate", StringType(), True),
+            StructField("salgrossamt", StringType(), True),
+            StructField("salspldiscamt", StringType(), True),
+            StructField("salschdiscamt", StringType(), True),
+            StructField("salcashdiscamt", StringType(), True),
+            StructField("saldbdiscamt", StringType(), True),
+            StructField("saltaxamt", StringType(), True),
+            StructField("salwdsamt", StringType(), True),
+            StructField("saldbadjamt", StringType(), True),
+            StructField("salcradjamt", StringType(), True),
+            StructField("salonaccountamt", StringType(), True),
+            StructField("salmktretamt", StringType(), True),
+            StructField("salreplaceamt", StringType(), True),
+            StructField("salotherchargesamt", StringType(), True),
+            StructField("salinvleveldiscamt", StringType(), True),
+            StructField("saltotdedn", StringType(), True),
+            StructField("saltotaddn", StringType(), True),
+            StructField("salroundoffamt", StringType(), True),
+            StructField("salnetamt", StringType(), True),
+            StructField("lcncode", StringType(), True),
+            StructField("salesmancode", StringType(), True),
+            StructField("salesmanname", StringType(), True),
+            StructField("salesroutecode", StringType(), True),
+            StructField("salesroutename", StringType(), True),
+            StructField("rtrcode", StringType(), True),
+            StructField("rtrname", StringType(), True),
+            StructField("deliveryroutecode", StringType(), True),
+            StructField("deliveryroutename", StringType(), True),
+            StructField("prdcode", StringType(), True),
+            StructField("prdbatcde", StringType(), True),
+            StructField("prdqty", StringType(), True),
+            StructField("prdselratebeforetax", StringType(), True),
+            StructField("prdselrateaftertax", StringType(), True),
+            StructField("prdfreeqty", StringType(), True),
+            StructField("prdgrossamt", StringType(), True),
+            StructField("prdspldiscamt", StringType(), True),
+            StructField("prdschdiscamt", StringType(), True),
+            StructField("prdcashdiscamt", StringType(), True),
+            StructField("prddbdiscamt", StringType(), True),
+            StructField("prdtaxamt", StringType(), True),
+            StructField("prdnetamt", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("mrp", StringType(), True),
+            StructField("salfreeqtyvalue", StringType(), True),
+            StructField("nrvalue", StringType(), True),
+            StructField("vcpschemeamount", StringType(), True),
+            StructField("rtrurccode", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("creditnoteamt", StringType(), True),
+            StructField("modifieddate", StringType(), True),
+            StructField("salinvmode", StringType(), True),
+            StructField("salinvtype", StringType(), True),
+            StructField("vechname", StringType(), True),
+            StructField("dlvboyname", StringType(), True),
+            StructField("createduserid", StringType(), True),
+            StructField("salinvlinecount", StringType(), True),
+            StructField("mrpcs", StringType(), True),
+            StructField("lpvalue", StringType(), True),
+            StructField("createddt", StringType(), True)
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema) \\
+            .option("skip_header", 1) \\
+            .option("field_delimiter", "") \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn("lcnid", lit(None)).withColumn("rtrid", lit(None)).withColumn("uploadflag", lit(None)).withColumn("migrationflag", lit(None))
+
+        df = df.withColumn(''filename'',lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "distcode",
+            "salinvno",
+            "salinvdate",
+            "saldlvdate",
+            "salinvmode",
+            "salinvtype",
+            "salgrossamt",
+            "salspldiscamt",
+            "salschdiscamt",
+            "salcashdiscamt",
+            "saldbdiscamt",
+            "saltaxamt",
+            "salwdsamt",
+            "saldbadjamt",
+            "salcradjamt",
+            "salonaccountamt",
+            "salmktretamt",
+            "salreplaceamt",
+            "salotherchargesamt",
+            "salinvleveldiscamt",
+            "saltotdedn",
+            "saltotaddn",
+            "salroundoffamt",
+            "salnetamt",
+            "lcnid",
+            "lcncode",
+            "salesmancode",
+            "salesmanname",
+            "salesroutecode",
+            "salesroutename",
+            "rtrid",
+            "rtrcode",
+            "rtrname",
+            "vechname",
+            "dlvboyname",
+            "deliveryroutecode",
+            "deliveryroutename",
+            "prdcode",
+            "prdbatcde",
+            "prdqty",
+            "prdselratebeforetax",
+            "prdselrateaftertax",
+            "prdfreeqty",
+            "prdgrossamt",
+            "prdspldiscamt",
+            "prdschdiscamt",
+            "prdcashdiscamt",
+            "prddbdiscamt",
+            "prdtaxamt",
+            "prdnetamt",
+            "uploadflag",
+            "createduserid",
+            "createddate",
+            "migrationflag",
+            "salinvlinecount",
+            "mrp",
+            "syncid",
+            "creditnoteamt",
+            "salfreeqtyvalue",
+            "nrvalue",
+            "vcpschemeamount",
+            "modifieddate",
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.CSL_DAILYSALES_UNDELIVERED_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import pandas as pd
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = ["dailysales_undelivered20240523061916.csv","INDSDL_RAW.DEV_LOAD_STAGE_ADLS","dev/india_xdm/transaction/dailysales_undelivered","SDL_CSL_DAILYSALES_UNDELIVERED"]
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("salinvno", StringType(), True),
+            StructField("salinvdate", StringType(), True),
+            StructField("saldlvdate", StringType(), True),
+            StructField("salgrossamt", StringType(), True),
+            StructField("salspldiscamt", StringType(), True),
+            StructField("salschdiscamt", StringType(), True),
+            StructField("salcashdiscamt", StringType(), True),
+            StructField("saldbdiscamt", StringType(), True),
+            StructField("saltaxamt", StringType(), True),
+            StructField("salwdsamt", StringType(), True),
+            StructField("saldbadjamt", StringType(), True),
+            StructField("salcradjamt", StringType(), True),
+            StructField("salonaccountamt", StringType(), True),
+            StructField("salmktretamt", StringType(), True),
+            StructField("salreplaceamt", StringType(), True),
+            StructField("salotherchargesamt", StringType(), True),
+            StructField("salinvleveldiscamt", StringType(), True),
+            StructField("saltotdedn", StringType(), True),
+            StructField("saltotaddn", StringType(), True),
+            StructField("salroundoffamt", StringType(), True),
+            StructField("salnetamt", StringType(), True),
+            StructField("lcncode", StringType(), True),
+            StructField("salesmancode", StringType(), True),
+            StructField("salesmanname", StringType(), True),
+            StructField("salesroutecode", StringType(), True),
+            StructField("salesroutename", StringType(), True),
+            StructField("rtrcode", StringType(), True),
+            StructField("rtrname", StringType(), True),
+            StructField("vechname", StringType(), True),
+            StructField("dlvboyname", StringType(), True),
+            StructField("deliveryroutecode", StringType(), True),
+            StructField("deliveryroutename", StringType(), True),
+            StructField("prdcode", StringType(), True),
+            StructField("prdbatcde", StringType(), True),
+            StructField("prdqty", StringType(), True),
+            StructField("prdselratebeforetax", StringType(), True),
+            StructField("prdselrateaftertax", StringType(), True),
+            StructField("prdfreeqty", StringType(), True),
+            StructField("prdgrossamt", StringType(), True),
+            StructField("prdspldiscamt", StringType(), True),
+            StructField("prdschdiscamt", StringType(), True),
+            StructField("prdcashdiscamt", StringType(), True),
+            StructField("prddbdiscamt", StringType(), True),
+            StructField("prdtaxamt", StringType(), True),
+            StructField("prdnetamt", StringType(), True),
+            StructField("salinvlvldiscper", StringType(), True),
+            StructField("billstatus", StringType(), True),
+            StructField("mrp", StringType(), True),
+            StructField("nrvalue", StringType(), True),
+            StructField("rtrurccode", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("salinvmode", StringType(), True),
+            StructField("salinvtype", StringType(), True),
+            StructField("salinvlinecount", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("modifieddate", StringType(), True),
+            StructField("createddt", StringType(), True)
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema) \\
+            .option("skip_header", 1) \\
+            .option("field_delimiter", "") \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn("lcnid", lit(None)).withColumn("rtrid", lit(None)).withColumn("uploadflag", lit(None)).withColumn("uploadeddate", lit(None))
+
+        df = df.withColumn(''filename'',lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "distcode",
+            "salinvno",
+            "salinvdate",
+            "saldlvdate",
+            "salinvmode",
+            "salinvtype",
+            "salgrossamt",
+            "salspldiscamt",
+            "salschdiscamt",
+            "salcashdiscamt",
+            "saldbdiscamt",
+            "saltaxamt",
+            "salwdsamt",
+            "saldbadjamt",
+            "salcradjamt",
+            "salonaccountamt",
+            "salmktretamt",
+            "salreplaceamt",
+            "salotherchargesamt",
+            "salinvleveldiscamt",
+            "saltotdedn",
+            "saltotaddn",
+            "salroundoffamt",
+            "salnetamt",
+            "lcnid",
+            "lcncode",
+            "salesmancode",
+            "salesmanname",
+            "salesroutecode",
+            "salesroutename",
+            "rtrid",
+            "rtrcode",
+            "rtrname",
+            "vechname",
+            "dlvboyname",
+            "deliveryroutecode",
+            "deliveryroutename",
+            "prdcode",
+            "prdbatcde",
+            "prdqty",
+            "prdselratebeforetax",
+            "prdselrateaftertax",
+            "prdfreeqty",
+            "prdgrossamt",
+            "prdspldiscamt",
+            "prdschdiscamt",
+            "prdcashdiscamt",
+            "prddbdiscamt",
+            "prdtaxamt",
+            "prdnetamt",
+            "uploadflag",
+            "salinvlinecount",
+            "salinvlvldiscper",
+            "billstatus",
+            "uploadeddate",
+            "syncid",
+            "createddate",
+            "mrp",
+            "nrvalue",
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True,file_format_name=''my_csv_format'')
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.CSL_ORDERBOOKING_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit, col
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pandas as pd
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = [''orderbooking20240527061541.csv'',''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/india_xdm/transaction/orderbooking'',''SDL_CSL_ORDERBOOKING'']
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("orderno", StringType(), True),
+            StructField("orderdate", StringType(), True),
+            StructField("orddlvdate", StringType(), True),
+            StructField("allowbackorder", StringType(), True),
+            StructField("ordtype", StringType(), True),
+            StructField("ordpriority", StringType(), True),
+            StructField("orddocref", StringType(), True),
+            StructField("remarks", StringType(), True),
+            StructField("roundoffamt", StringType(), True),
+            StructField("ordtotalamt", StringType(), True),
+            StructField("salesmancode", StringType(), True),
+            StructField("salesmanname", StringType(), True),
+            StructField("salesroutecode", StringType(), True),
+            StructField("salesroutename", StringType(), True),
+            StructField("urccode", StringType(), True),
+            StructField("rtrcode", StringType(), True),
+            StructField("rtrname", StringType(), True),
+            StructField("prdcode", StringType(), True),
+            StructField("prdbatcde", StringType(), True),
+            StructField("prdqty", StringType(), True),
+            StructField("prdbilledqty", StringType(), True),
+            StructField("prdselrate", StringType(), True),
+            StructField("prdgrossamt", StringType(), True),
+            StructField("recorddate", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("recommendedsku", StringType(), True),
+            StructField("createddt", StringType(), True),
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema) \\
+            .option("skip_header", 1) \\
+            .option("field_delimiter", "") \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        # Rename the column urccode to RtrId
+        df = df.withColumnRenamed("urccode", "RtrId")
+        df = df.withColumn("uploadflag", lit(None))
+
+        df = df.withColumn(''filename'', lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+        snowdf = df.select(
+            "distcode", 
+            "orderno", 
+            "orderdate", 
+            "orddlvdate", 
+            "allowbackorder", 
+            "ordtype", 
+            "ordpriority", 
+            "orddocref", 
+            "remarks", 
+            "roundoffamt", 
+            "ordtotalamt", 
+            "salesmancode", 
+            "salesmanname", 
+            "salesroutecode", 
+            "salesroutename", 
+            "RtrId", 
+            "rtrcode", 
+            "rtrname", 
+            "prdcode", 
+            "prdbatcde", 
+            "prdqty", 
+            "prdbilledqty", 
+            "prdselrate", 
+            "prdgrossamt",
+            "uploadflag",
+            "recorddate", 
+            "createddate", 
+            "syncid", 
+            "recommendedsku", 
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name = file_name.split(".")[0] + "_" + datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        # Move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location(f"@{stage_name}/{temp_stage_path}/processed/success/{formatted_year}/{formatted_month}/{file_name}", header=True, OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message
+';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.CSL_SALESINVOICEORDERS_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit, col
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pandas as pd
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = [''salesinvoiceorders20240527061541.csv'',''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/india_xdm/transaction/salesinvoiceorders'',''SDL_CSL_SALESINVOICEORDERS'']
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("salinvno", StringType(), True),
+            StructField("orderno", StringType(), True),
+            StructField("orderdate", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("createddt", StringType(), True),
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema) \\
+            .option("skip_header", 1) \\
+            .option("field_delimiter", "") \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn("uploadflag", lit(None))
+
+        df = df.withColumn(''filename'', lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+        snowdf = df.select(
+            "distcode", 
+            "salinvno", 
+            "orderno", 
+            "orderdate", 
+            "uploadflag",
+            "createddate", 
+            "syncid", 
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name = file_name.split(".")[0] + "_" + datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        # Move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location(f"@{stage_name}/{temp_stage_path}/processed/success/{formatted_year}/{formatted_month}/{file_name}", header=True, OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message
+';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.CSL_SALESRETURN_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import pandas as pd
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = ["salesreturn20240523062035.csv","INDSDL_RAW.DEV_LOAD_STAGE_ADLS","dev/india_xdm/transaction/salesreturn","SDL_CSL_SALESRETURN"]
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("srnrefno", StringType(), True),
+            StructField("srnreftype", StringType(), True),
+            StructField("srndate", StringType(), True),
+            StructField("srnmode", StringType(), True),
+            StructField("srntype", StringType(), True),
+            StructField("srngrossamt", StringType(), True),
+            StructField("srnspldiscamt", StringType(), True),
+            StructField("srnschdiscamt", StringType(), True),
+            StructField("srncashdiscamt", StringType(), True),
+            StructField("srndbdiscamt", StringType(), True),
+            StructField("srntaxamt", StringType(), True),
+            StructField("srnroundoffamt", StringType(), True),
+            StructField("srnnetamt", StringType(), True),
+            StructField("salesmanname", StringType(), True),
+            StructField("salesroutename", StringType(), True),
+            StructField("rtrcode", StringType(), True),
+            StructField("rtrname", StringType(), True),
+            StructField("prdsalinvno", StringType(), True),
+            StructField("prdlcncode", StringType(), True),
+            StructField("prdcode", StringType(), True),
+            StructField("prdbatcde", StringType(), True),
+            StructField("prdsalqty", StringType(), True),
+            StructField("prdunsalqty", StringType(), True),
+            StructField("prdofferqty", StringType(), True),
+            StructField("prdselrate", StringType(), True),
+            StructField("prdgrossamt", StringType(), True),
+            StructField("prdspldiscamt", StringType(), True),
+            StructField("prdschdiscamt", StringType(), True),
+            StructField("prdcashdiscamt", StringType(), True),
+            StructField("prddbdiscamt", StringType(), True),
+            StructField("prdtaxamt", StringType(), True),
+            StructField("prdnetamt", StringType(), True),
+            StructField("mrp", StringType(), True),
+            StructField("rtnfreeqtyvalue", StringType(), True),
+            StructField("referencetype", StringType(), True),
+            StructField("salesmancode", StringType(), True),
+            StructField("salesroutecode", StringType(), True),
+            StructField("nrvalue", StringType(), True),
+            StructField("prdselrateaftertax", StringType(), True),
+            StructField("mrpcs", StringType(), True),
+            StructField("lpvalue", StringType(), True),
+            StructField("rtnwindowdisplayamt", StringType(), True),
+            StructField("cradjamt", StringType(), True),
+            StructField("rtrurccode", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("modifieddate", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("rtnlinecount", StringType(), True),
+            StructField("createddt", StringType(), True)
+            
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema) \\
+            .option("skip_header", 1) \\
+            .option("field_delimiter", "") \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn("rtrid", lit(None)).withColumn("prdlcnid", lit(None)).withColumn("uploadflag", lit(None)).withColumn("createduserid", lit(None)).withColumn("migrationflag", lit(None))
+
+        df = df.withColumn(''filename'',lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+             "distcode", 
+            "srnrefno", 
+            "srnreftype", 
+            "srndate", 
+            "srnmode", 
+            "srntype", 
+            "srngrossamt", 
+            "srnspldiscamt", 
+            "srnschdiscamt", 
+            "srncashdiscamt", 
+            "srndbdiscamt", 
+            "srntaxamt", 
+            "srnroundoffamt", 
+            "srnnetamt", 
+            "salesmanname", 
+            "salesroutename", 
+            "rtrid",
+            "rtrcode", 
+            "rtrname", 
+            "prdsalinvno", 
+            "prdlcnid",
+            "prdlcncode", 
+            "prdcode", 
+            "prdbatcde", 
+            "prdsalqty", 
+            "prdunsalqty", 
+            "prdofferqty", 
+            "prdselrate", 
+            "prdgrossamt", 
+            "prdspldiscamt", 
+            "prdschdiscamt", 
+            "prdcashdiscamt", 
+            "prddbdiscamt", 
+            "prdtaxamt", 
+            "prdnetamt",
+            "uploadflag",
+            "createduserid",
+            "createddate", 
+            "migrationflag",
+            "mrp",
+            "syncid", 
+            "rtnfreeqtyvalue", 
+            "rtnlinecount",
+            "referencetype", 
+            "salesmancode", 
+            "salesroutecode", 
+            "nrvalue", 
+            "prdselrateaftertax", 
+            "modifieddate",  
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True,file_format_name=''my_csv_format'')
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message';
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.CSL_UDCDETAILS_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, length, to_timestamp, when, substring, upper
+from snowflake.snowpark.types import StringType, StructType, StructField
+import pandas as pd
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param=["udcdetails20240523062403.csv","INDSDL_RAW.DEV_LOAD_STAGE_ADLS","dev/india_xdm/master/udcdetails","SDL_CSL_UDCDETAILS"]
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+        
+        df_schema = StructType([
+            StructField("cmpcode", StringType(), True),
+            StructField("distcode", StringType(), True),     
+            StructField("mastername", StringType(), True),
+            StructField("mastervaluecode", StringType(), True),
+            StructField("columnname", StringType(), True),
+            StructField("columnvalue", StringType(), True),
+            StructField("isdefault", StringType(), True),
+            StructField("createddt", StringType(), True)
+        ])
+        
+        df = session.read\\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "")\\
+            .option("field_optionally_enclosed_by", None)\\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+        
+        df = df.na.drop("all")
+        
+        if df.count() == 0:
+            return "No Data in file"
+
+        df = df.withColumn("master_id", lit(None)).withColumn("sync_id", lit(None)).withColumn("mastervaluename", lit(None)).withColumn("uploadflag", lit(None))
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn("mastervaluecode", substring("mastervaluecode", 7, length("mastervaluecode")))
+        
+        df = df.withColumn(''filename'',lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+        snowdf = df.select( 
+                  "distcode",
+                  "master_id",
+                  "mastername", 
+                  "mastervaluecode",
+                  "mastervaluename",
+                  "columnname", 
+                  "columnvalue",
+                  "uploadflag",
+                  "createddt",
+                  "sync_id",
+                  "run_id",
+                  "crtd_dttm",
+                  "filename"
+            )
+
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message
+';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_DAILYSALES_DEL_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import pandas as pd
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = [''dailysales_del20240523061554.csv'',''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/india_xdm/transaction/dailysales_del'',''SDL_DAILYSALES_DEL'']
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("salinvno", StringType(), True),
+            StructField("salinvdate", StringType(), True),
+            StructField("saldlvdate", StringType(), True),
+            StructField("salgrossamt", StringType(), True),
+            StructField("salspldiscamt", StringType(), True),
+            StructField("salschdiscamt", StringType(), True),
+            StructField("salcashdiscamt", StringType(), True),
+            StructField("saldbdiscamt", StringType(), True),
+            StructField("saltaxamt", StringType(), True),
+            StructField("salwdsamt", StringType(), True),
+            StructField("saldbadjamt", StringType(), True),
+            StructField("salcradjamt", StringType(), True),
+            StructField("salonaccountamt", StringType(), True),
+            StructField("salmktretamt", StringType(), True),
+            StructField("salreplaceamt", StringType(), True),
+            StructField("salotherchargesamt", StringType(), True),
+            StructField("salinvleveldiscamt", StringType(), True),
+            StructField("saltotdedn", StringType(), True),
+            StructField("saltotaddn", StringType(), True),
+            StructField("salroundoffamt", StringType(), True),
+            StructField("salnetamt", StringType(), True),
+            StructField("lcncode", StringType(), True),
+            StructField("salesmancode", StringType(), True),
+            StructField("salesmanname", StringType(), True),
+            StructField("salesroutecode", StringType(), True),
+            StructField("salesroutename", StringType(), True),
+            StructField("rtrcode", StringType(), True),
+            StructField("rtrname", StringType(), True),
+            StructField("deliveryroutecode", StringType(), True),
+            StructField("deliveryroutename", StringType(), True),
+            StructField("prdcode", StringType(), True),
+            StructField("prdbatcde", StringType(), True),
+            StructField("prdqty", StringType(), True),
+            StructField("prdselratebeforetax", StringType(), True),
+            StructField("prdselrateaftertax", StringType(), True),
+            StructField("prdfreeqty", StringType(), True),
+            StructField("prdgrossamt", StringType(), True),
+            StructField("prdspldiscamt", StringType(), True),
+            StructField("prdschdiscamt", StringType(), True),
+            StructField("prdcashdiscamt", StringType(), True),
+            StructField("prddbdiscamt", StringType(), True),
+            StructField("prdtaxamt", StringType(), True),
+            StructField("prdnetamt", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("mrp", StringType(), True),
+            StructField("salfreeqtyvalue", StringType(), True),
+            StructField("nrvalue", StringType(), True),
+            StructField("vcpschemeamount", StringType(), True),
+            StructField("rtrurccode", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("creditnoteamt", StringType(), True),
+            StructField("modifieddate", StringType(), True),
+            StructField("salinvmode", StringType(), True),
+            StructField("salinvtype", StringType(), True),
+            StructField("vechname", StringType(), True),
+            StructField("dlvboyname", StringType(), True),
+            StructField("createduserid", StringType(), True),
+            StructField("salinvlinecount", StringType(), True),
+            StructField("mrpcs", StringType(), True),
+            StructField("lpvalue", StringType(), True),
+            StructField("createddt", StringType(), True)
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema) \\
+            .option("skip_header", 1) \\
+            .option("field_delimiter", "") \\
+            .option("field_optionally_enclosed_by", "\\"") \\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn(''filename'',lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "distcode",
+            "salinvno",
+            "salinvdate",
+            "saldlvdate",
+            "salgrossamt",
+            "salspldiscamt",
+            "salschdiscamt",
+            "salcashdiscamt",
+            "saldbdiscamt",
+            "saltaxamt",
+            "salwdsamt",
+            "saldbadjamt",
+            "salcradjamt",
+            "salonaccountamt",
+            "salmktretamt",
+            "salreplaceamt",
+            "salotherchargesamt",
+            "salinvleveldiscamt",
+            "saltotdedn",
+            "saltotaddn",
+            "salroundoffamt",
+            "salnetamt",
+            "lcncode",
+            "salesmancode",
+            "salesmanname",
+            "salesroutecode",
+            "salesroutename",
+            "rtrcode",
+            "rtrname",
+            "deliveryroutecode",
+            "deliveryroutename",
+            "prdcode",
+            "prdbatcde",
+            "prdqty",
+            "prdselratebeforetax",
+            "prdselrateaftertax",
+            "prdfreeqty",
+            "prdgrossamt",
+            "prdspldiscamt",
+            "prdschdiscamt",
+            "prdcashdiscamt",
+            "prddbdiscamt",
+            "prdtaxamt",
+            "prdnetamt",
+            "createddate",
+            "mrp",
+            "salfreeqtyvalue",
+            "nrvalue",
+            "vcpschemeamount",
+            "rtrurccode", 
+            "syncid", 
+            "creditnoteamt", 
+            "modifieddate", 
+            "salinvmode", 
+            "salinvtype", 
+            "vechname", 
+            "dlvboyname", 
+            "createduserid", 
+            "salinvlinecount", 
+            "mrpcs", 
+            "lpvalue", 
+            "createddt", 
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_GEO_HEIRARCHY_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS '
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType, DoubleType,TimestampType,DecimalType
+from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right
+import pandas as pd
+from datetime import datetime
+import pytz
+
+def main(session: snowpark.Session,Param): 
+
+    try:
+    
+        # Param = [
+        #     ''geohierarchy'',
+        #     ''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',
+        #     ''dev/india_dna/master/geoheirarchy/in_geoheirarchy'',
+        #     ''sdl_xdm_geohierarchy''
+        # ]
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split(''.'')[0]
+        target_table    = sch_name+"."+Param[3]
+    
+        df_schema=StructType([
+                StructField(''STATECODE'', StringType()),
+                StructField(''STATENAME'', StringType()),
+                StructField(''DISTRICTCODE'', StringType()),
+                StructField(''DISTRICTNAME'', StringType()),
+                StructField(''THESILCODE'', StringType()),
+                StructField(''THESILNAME'', StringType()),
+                StructField(''CITYCODE'', StringType()),
+                StructField(''CITYNAME'', StringType()),
+                StructField(''DISTRIBUTORCODE'', StringType()),
+                StructField(''DISTRIBUTORNAME'', StringType()),
+                StructField(''CREATEDDT'', StringType())
+                ])
+    
+        df = session.read \\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "\\u0001")\\
+            .option("skip_blank_lines", True) \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+    
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")))
+
+                                    
+        final_df = df.select(\\
+            trim(col(''STATECODE'')).alias(''STATECODE''),
+            trim(col(''STATENAME'')).alias(''STATENAME''),
+            trim(col(''DISTRICTCODE'')).alias(''DISTRICTCODE''),
+            trim(col(''DISTRICTNAME'')).alias(''DISTRICTNAME''),
+            trim(col(''THESILCODE'')).alias(''THESILCODE''),
+            trim(col(''THESILNAME'')).alias(''THESILNAME''),
+            trim(col(''CITYCODE'')).alias(''CITYCODE''),
+            trim(col(''CITYNAME'')).alias(''CITYNAME''),
+            trim(col(''DISTRIBUTORCODE'')).alias(''DISTRIBUTORCODE''),
+            trim(col(''DISTRIBUTORNAME'')).alias(''DISTRIBUTORNAME''),
+            try_cast(col("CREATEDDT"), TimestampType()).alias("CREATEDDT"),\\
+            "FILE_NAME", "RUN_ID",
+            try_cast(col("CRT_DTTM"), TimestampType()).alias("CRT_DTTM")
+        ).alias("final_df")
+        
+        final_df.write.mode("append").saveAsTable(target_table)
+                                    
+        return "Success"
+        
+    except KeyError as key_error:
+        # Handle KeyError (missing columns) here
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        # Handle exceptions here
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message';
+
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_SALESMANSKUMAPPING_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS '
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType, DoubleType,TimestampType,DecimalType
+from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right
+import pandas as pd
+from datetime import datetime
+import pytz
+
+def main(session: snowpark.Session,Param): 
+
+    try:
+    
+        # Param = [
+        #     ''salesmanskulinemapping'',
+        #     ''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',
+        #     ''dev/india_dna/master/salesmanskulinemapping/in_salesmanskulinemapping'',
+        #     ''sdl_xdm_salesmanskulinemapping''
+        # ]
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split(''.'')[0]
+        target_table    = sch_name+"."+Param[3]
+    
+        df_schema=StructType([
+                StructField(''CMPCODE'', StringType()),
+                StructField(''DISTRCODE'', StringType()),
+                StructField(''DISTRBRCODE'', StringType()),
+                StructField(''SALESMANCODE'', StringType()),
+                StructField(''SKULINE'', StringType()),
+                StructField(''SKUHIERLEVELCODE'', StringType()),
+                StructField(''SKUHIERVALUECODE'', StringType()),
+                StructField(''MODDT'', StringType()),
+                StructField(''CREATEDDT'', StringType()),
+                StructField(''MOTHERSKUCODE'', StringType())
+                ])
+    
+        df = session.read \\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "\\u0001")\\
+            .option("skip_blank_lines", True) \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+    
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")))
+
+                                    
+        final_df = df.select(\\
+            trim(col(''CMPCODE'')).alias(''CMPCODE''),
+            trim(col(''DISTRCODE'')).alias(''DISTRCODE''),
+            trim(col(''DISTRBRCODE'')).alias(''DISTRBRCODE''),
+            trim(col(''SALESMANCODE'')).alias(''SALESMANCODE''),
+            trim(col(''SKULINE'')).alias(''SKULINE''),
+            try_cast(col(''SKUHIERLEVELCODE''),IntegerType()).alias(''SKUHIERLEVELCODE''),
+            trim(col(''SKUHIERVALUECODE'')).alias(''SKUHIERVALUECODE''),
+            trim(col(''MODDT'')).alias(''MODDT''),
+            try_cast(col("CREATEDDT"), TimestampType()).alias("CREATEDDT"),\\
+            trim(col(''MOTHERSKUCODE'')).alias(''MOTHERSKUCODE''),
+            "FILE_NAME", "RUN_ID",
+            try_cast(col("CRT_DTTM"), TimestampType()).alias("CRT_DTTM")
+        ).alias("final_df")
+        
+        final_df.write.mode("append").saveAsTable(target_table)
+                                    
+        return "Success"
+        
+    except KeyError as key_error:
+        # Handle KeyError (missing columns) here
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        # Handle exceptions here
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message';
+    
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_SALES_HEIRARCHY_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS '
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType, DoubleType,TimestampType,DecimalType
+from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right
+import pandas as pd
+from datetime import datetime
+import pytz
+
+def main(session: snowpark.Session,Param): 
+
+    try:
+    
+        # Param = [
+        #     ''salesheirarchy'',
+        #     ''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',
+        #     ''dev/india_dna/master/salesheirarchy/in_salesheirarchy'',
+        #     ''sdl_xdm_salesheirarchy''
+        # ]
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split(''.'')[0]
+        target_table    = sch_name+"."+Param[3]
+    
+        df_schema=StructType([
+                StructField(''RSMCODE'', StringType()),
+                StructField(''RSMNAME'', StringType()),
+                StructField(''RSM_FLMASMCODE'', StringType()),
+                StructField(''FLMASMCODE'', StringType()),
+                StructField(''FLMASMNAME'', StringType()),
+                StructField(''FLMASM_ABICODE'', StringType()),
+                StructField(''ABICODE'', StringType()),
+                StructField(''ABINAME'', StringType()),
+                StructField(''ABI_DISTRIBUTORCODE'', StringType()),
+                StructField(''DISTRIBUTORCODE'', StringType()),
+                StructField(''DISTRIBUTORNAME'', StringType()),
+                StructField(''CREATEDDT'', StringType()),
+                ])
+    
+        df = session.read \\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "\\u0001")\\
+            .option("skip_blank_lines", True) \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+    
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")))
+
+                                    
+        final_df = df.select(\\
+            trim(col(''RSMCODE'')).alias(''RSMCODE''),\\
+            trim(col(''RSMNAME'')).alias(''RSMNAME''),\\
+            trim(col(''RSM_FLMASMCODE'')).alias(''RSM_FLMASMCODE''),\\
+            trim(col(''FLMASMCODE'')).alias(''FLMASMCODE''),\\
+            trim(col(''FLMASMNAME'')).alias(''FLMASMNAME''),\\
+            trim(col(''FLMASM_ABICODE'')).alias(''FLMASM_ABICODE''),\\
+            trim(col(''ABICODE'')).alias(''ABICODE''),\\
+            trim(col(''ABINAME'')).alias(''ABINAME''),\\
+            trim(col(''ABI_DISTRIBUTORCODE'')).alias(''ABI_DISTRIBUTORCODE''),\\
+            trim(col(''DISTRIBUTORCODE'')).alias(''DISTRIBUTORCODE''),\\
+            trim(col(''DISTRIBUTORNAME'')).alias(''DISTRIBUTORNAME''),\\
+            try_cast(col("CREATEDDT"), TimestampType()).alias("CREATEDDT"),\\
+            "FILE_NAME", "RUN_ID",
+            try_cast(col("CRT_DTTM"), TimestampType()).alias("CRT_DTTM")
+        ).alias("final_df")
+        
+        final_df.write.mode("append").saveAsTable(target_table)
+                                    
+        return "Success"
+        
+    except KeyError as key_error:
+        # Handle KeyError (missing columns) here
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        # Handle exceptions here
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message';
+    
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.IN_SUPPLIER_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS '
+import snowflake.snowpark as snowpark
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DateType, DoubleType,TimestampType,DecimalType
+from snowflake.snowpark.functions import col,lit,date_format, try_cast, trim, to_date, left,  right
+import pandas as pd
+from datetime import datetime
+import pytz
+
+def main(session: snowpark.Session,Param): 
+
+    try:
+    
+        # Param = [
+        #     ''supplier'',
+        #     ''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',
+        #     ''dev/india_dna/master/supplier/in_supplier'',
+        #     ''sdl_xdm_supplier''
+        # ]
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split(''.'')[0]
+        target_table    = sch_name+"."+Param[3]
+    
+        df_schema=StructType([
+                StructField(''CMPCODE'', StringType()),
+                StructField(''SUPCODE'', StringType()),
+                StructField(''SUPTYPE'', StringType()),
+                StructField(''SUPNAME'', StringType()),
+                StructField(''SUPADDR1'', StringType()),
+                StructField(''SUPADDR2'', StringType()),
+                StructField(''SUPADDR3'', StringType()),
+                StructField(''CITY'', StringType()),
+                StructField(''STATE'', StringType()),
+                StructField(''COUNTRY'', StringType()),
+                StructField(''GSTSTATECODE'', StringType()),
+                StructField(''SUPPLIERGSTIN'', StringType()),
+                StructField(''CREATEDDT'', StringType())
+                ])
+    
+        df = session.read \\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "\\u0001")\\
+            .option("skip_blank_lines", True) \\
+            .option("field_optionally_enclosed_by", None) \\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+    
+        df = df.withColumn("FILE_NAME",lit(file_name).cast("string"))
+        df = df.withColumn("RUN_ID",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y%m%d%H%M%S")))
+        df = df.withColumn("CRT_DTTM",lit(datetime.now(pytz.timezone("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")))
+
+                                    
+        final_df = df.select(\\
+            trim(col(''CMPCODE'')).alias(''CMPCODE''),\\
+            trim(col(''SUPCODE'')).alias(''SUPCODE''),\\
+            trim(col(''SUPTYPE'')).alias(''SUPTYPE''),\\
+            trim(col(''SUPNAME'')).alias(''SUPNAME''),\\
+            trim(col(''SUPADDR1'')).alias(''SUPADDR1''),\\
+            trim(col(''SUPADDR2'')).alias(''SUPADDR2''),\\
+            trim(col(''SUPADDR3'')).alias(''SUPADDR3''),\\
+            trim(col(''CITY'')).alias(''CITY''),\\
+            trim(col(''STATE'')).alias(''STATE''),\\
+            trim(col(''COUNTRY'')).alias(''COUNTRY''),\\
+            trim(col(''GSTSTATECODE'')).alias(''GSTSTATECODE''),\\
+            trim(col(''SUPPLIERGSTIN'')).alias(''SUPPLIERGSTIN''),\\
+            try_cast(col("CREATEDDT"), TimestampType()).alias("CREATEDDT"),\\
+            "FILE_NAME", "RUN_ID",
+            try_cast(col("CRT_DTTM"), TimestampType()).alias("CRT_DTTM")
+        ).alias("final_df")
+        
+        final_df.write.mode("append").saveAsTable(target_table)
+                                    
+        return "Success"
+        
+    except KeyError as key_error:
+        # Handle KeyError (missing columns) here
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        # Handle exceptions here
+        error_message = f"Error: {str(e)}" +str(df.columns)
+        return error_message';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.SALESRETURN_DEL_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import lit
+from snowflake.snowpark.types import StringType, StructType, StructField
+from datetime import datetime
+import pandas as pd
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param = ["salesreturn_del20240523062035.csv","INDSDL_RAW.DEV_LOAD_STAGE_ADLS","dev/india_xdm/transaction/salesreturn_del","SDL_SALESRETURN_DEL"]
+
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+
+        # Define schema
+        df_schema = StructType([
+            StructField("distcode", StringType(), True),
+            StructField("srnrefno", StringType(), True),
+            StructField("srnreftype", StringType(), True),
+            StructField("srndate", StringType(), True),
+            StructField("srnmode", StringType(), True),
+            StructField("srntype", StringType(), True),
+            StructField("srngrossamt", StringType(), True),
+            StructField("srnspldiscamt", StringType(), True),
+            StructField("srnschdiscamt", StringType(), True),
+            StructField("srncashdiscamt", StringType(), True),
+            StructField("srndbdiscamt", StringType(), True),
+            StructField("srntaxamt", StringType(), True),
+            StructField("srnroundoffamt", StringType(), True),
+            StructField("srnnetamt", StringType(), True),
+            StructField("salesmanname", StringType(), True),
+            StructField("salesroutename", StringType(), True),
+            StructField("rtrcode", StringType(), True),
+            StructField("rtrname", StringType(), True),
+            StructField("prdsalinvno", StringType(), True),
+            StructField("prdlcncode", StringType(), True),
+            StructField("prdcode", StringType(), True),
+            StructField("prdbatcde", StringType(), True),
+            StructField("prdsalqty", StringType(), True),
+            StructField("prdunsalqty", StringType(), True),
+            StructField("prdofferqty", StringType(), True),
+            StructField("prdselrate", StringType(), True),
+            StructField("prdgrossamt", StringType(), True),
+            StructField("prdspldiscamt", StringType(), True),
+            StructField("prdschdiscamt", StringType(), True),
+            StructField("prdcashdiscamt", StringType(), True),
+            StructField("prddbdiscamt", StringType(), True),
+            StructField("prdtaxamt", StringType(), True),
+            StructField("prdnetamt", StringType(), True),
+            StructField("mrp", StringType(), True),
+            StructField("rtnfreeqtyvalue", StringType(), True),
+            StructField("referencetype", StringType(), True),
+            StructField("salesmancode", StringType(), True),
+            StructField("salesroutecode", StringType(), True),
+            StructField("nrvalue", StringType(), True),
+            StructField("prdselrateaftertax", StringType(), True),
+            StructField("mrpcs", StringType(), True),
+            StructField("lpvalue", StringType(), True),
+            StructField("rtnwindowdisplayamt", StringType(), True),
+            StructField("cradjamt", StringType(), True),
+            StructField("rtrurccode", StringType(), True),
+            StructField("createddate", StringType(), True),
+            StructField("modifieddate", StringType(), True),
+            StructField("syncid", StringType(), True),
+            StructField("rtnlinecount", StringType(), True),
+            StructField("createddt", StringType(), True)
+            
+        ])
+
+        # Read the CSV file into a Snowflake DataFrame
+        df = session.read \\
+            .schema(df_schema)\\
+            .option("skip_header", 1)\\
+            .option("field_delimiter","\\u0001")\\
+            .option("field_optionally_enclosed_by", None)\\
+            .csv(f"@{stage_name}/{temp_stage_path}/{file_name}")
+
+        df = df.na.drop("all")
+
+        if df.count() == 0:
+            return "No Data in file"
+
+        def removecsv(file_name):
+            return file_name.split(''.'')[0] 
+
+        df = df.withColumn("rtrid", lit(None)).withColumn("prdlcnid", lit(None)).withColumn("uploadflag", lit(None)).withColumn("createduserid", lit(None)).withColumn("migrationflag", lit(None))
+
+        df = df.withColumn(''filename'',lit(removecsv(file_name)))  
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "distcode", 
+            "srnrefno", 
+            "srnreftype", 
+            "srndate", 
+            "srnmode", 
+            "srntype", 
+            "srngrossamt", 
+            "srnspldiscamt", 
+            "srnschdiscamt", 
+            "srncashdiscamt", 
+            "srndbdiscamt", 
+            "srntaxamt", 
+            "srnroundoffamt", 
+            "srnnetamt", 
+            "salesmanname", 
+            "salesroutename", 
+            "rtrcode", 
+            "rtrname", 
+            "prdsalinvno", 
+            "prdlcncode", 
+            "prdcode", 
+            "prdbatcde", 
+            "prdsalqty", 
+            "prdunsalqty", 
+            "prdofferqty", 
+            "prdselrate", 
+            "prdgrossamt", 
+            "prdspldiscamt", 
+            "prdschdiscamt", 
+            "prdcashdiscamt", 
+            "prddbdiscamt", 
+            "prdtaxamt", 
+            "prdnetamt", 
+            "mrp", 
+            "rtnfreeqtyvalue", 
+            "referencetype", 
+            "salesmancode", 
+            "salesroutecode", 
+            "nrvalue", 
+            "prdselrateaftertax", 
+            "mrpcs", 
+            "lpvalue", 
+            "rtnwindowdisplayamt", 
+            "cradjamt", 
+            "rtrurccode", 
+            "createddate", 
+            "modifieddate", 
+            "syncid", 
+            "rtnlinecount", 
+            "createddt",  
+            "run_id",
+            "crtd_dttm",
+            "filename"  
+        )
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.XDM_DISTRIBUTOR_SUPPLIER_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace, to_timestamp, when, trim, upper
+from snowflake.snowpark.types import StringType, StructType, StructField
+import pandas as pd
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param=[''distributorsupplier_20240603033304.csv'',''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/india_dna/master/distributorsupplier/in_distributor_supplier'',''SDL_XDM_DISTRIBUTOR_SUPPLIER'']
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+        
+        df_schema = StructType([
+            StructField("cmpcode", StringType(), True),
+            StructField("distrcode", StringType(), True),     
+            StructField("supcode", StringType(), True),
+            StructField("isdefault", StringType(), True),
+            StructField("modusercode", StringType(), True),
+            StructField("moddt", StringType(), True),
+            StructField("createddt", StringType(), True),
+            
+        ])
+        
+        df = session.read\\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "")\\
+            .option("field_optionally_enclosed_by", None)\\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+        
+        df = df.na.drop("all")
+        
+        if df.count() == 0:
+            return "No Data in file"
+
+
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("filename", lit(file_name))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "cmpcode", 
+            "distrcode",      
+            "supcode", 
+            "isdefault", 
+            "modusercode", 
+            "moddt", 
+            "createddt",  
+            "filename",
+            "run_id",
+            "crtd_dttm"
+            )
+
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message
+';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.XDM_PRODUCTUOM_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace, to_timestamp, when, trim, upper
+from snowflake.snowpark.types import StringType, StructType, StructField
+import pandas as pd
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param=[''productuom_20240604033400.csv'',''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/india_dna/master/productuom/in_product_uom'',''SDL_XDM_PRODUCTUOM'']
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+        
+        df_schema = StructType([
+            StructField("cmpcode", StringType(), True),
+            StructField("prodcode", StringType(), True),     
+            StructField("uomcode", StringType(), True),
+            StructField("uomconvfactor", StringType(), True),
+            StructField("modusercode", StringType(), True),
+            StructField("moddt", StringType(), True),
+            StructField("createddt", StringType(), True),
+        
+        ])
+        
+        df = session.read\\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "")\\
+            .option("field_optionally_enclosed_by", None)\\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+        
+        df = df.na.drop("all")
+        
+        if df.count() == 0:
+            return "No Data in file"
+
+
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("filename", lit(file_name))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "cmpcode", 
+            "prodcode",      
+            "uomcode", 
+            "uomconvfactor", 
+            "modusercode", 
+            "moddt", 
+            "createddt",  
+            "filename",
+            "run_id",
+            "crtd_dttm"
+            )
+
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message
+';
+
+CREATE OR REPLACE PROCEDURE INDSDL_RAW.XDM_PRODUCT_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS 'from snowflake.snowpark.functions import col, lit, date_format, current_timestamp, to_date, year, month, concat, format_number, regexp_replace, to_timestamp, when, trim, upper
+from snowflake.snowpark.types import StringType, StructType, StructField
+import pandas as pd
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+def main(session: snowpark.Session,Param):
+    # Param=[''product_20240604033403.csv'',''INDSDL_RAW.DEV_LOAD_STAGE_ADLS'',''dev/india_dna/master/product/in_product'',''SDL_XDM_PRODUCT'']
+    try:
+        file_name = Param[0]
+        stage_name = Param[1]
+        temp_stage_path = Param[2]
+        target_table = Param[3]
+        
+        df_schema = StructType([
+            StructField("prodcompany", StringType(), True),
+            StructField("productcode", StringType(), True),     
+            StructField("productuom", StringType(), True),
+            StructField("uomconvfactor", StringType(), True),
+            StructField("prodhierarchylvl", StringType(), True),
+            StructField("prodhierarchyval", StringType(), True),
+            StructField("productname", StringType(), True),
+            StructField("prodshortname", StringType(), True),
+            StructField("productcmpcode", StringType(), True),     
+            StructField("stockcovdays", StringType(), True),
+            StructField("productweight", StringType(), True),
+            StructField("productunit", StringType(), True),
+            StructField("productstatus", StringType(), True),
+            StructField("productdrugtype", StringType(), True),
+            StructField("serialno", StringType(), True),
+            StructField("shelflife", StringType(), True),
+            StructField("franchisecode", StringType(), True),
+            StructField("franchisename", StringType(), True),
+            StructField("brandcode", StringType(), True),     
+            StructField("brandname", StringType(), True),
+            StructField("product_code", StringType(), True),
+            StructField("product_name", StringType(), True),
+            StructField("variantcode", StringType(), True),
+            StructField("variantname", StringType(), True),
+            StructField("motherskucode", StringType(), True),     
+            StructField("motherskuname", StringType(), True),
+            StructField("eanno", StringType(), True),
+            StructField("createddt", StringType(), True),
+    
+        ])
+        
+        df = session.read\\
+            .schema(df_schema)\\
+            .option("skip_header",1)\\
+            .option("field_delimiter", "")\\
+            .option("field_optionally_enclosed_by", None)\\
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+        
+        df = df.na.drop("all")
+        
+        if df.count() == 0:
+            return "No Data in file"
+
+       
+        df = df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        df = df.withColumn("filename", lit(file_name))
+        df = df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+
+        snowdf = df.select(
+            "prodcompany",
+            "productcode",     
+            "productuom",
+            "uomconvfactor",
+            "prodhierarchylvl",
+            "prodhierarchyval",
+            "productname",
+            "prodshortname",
+            "productcmpcode",     
+            "stockcovdays",
+            "productweight",
+            "productunit",
+            "productstatus",
+            "productdrugtype",
+            "serialno",
+            "shelflife",
+            "franchisecode",
+            "franchisename",
+            "brandcode",     
+            "brandname",
+            "product_code",
+            "product_name",
+            "variantcode",
+            "variantname",
+            "motherskucode",     
+            "motherskuname",
+            "eanno",
+            "createddt",
+            "filename",
+            "run_id",
+            "crtd_dttm"
+            )
+
+
+        file_name=file_name.split(".")[0]+"_"+ datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")
+        
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+        
+        #move to success
+        snowdf.write.mode("append").saveAsTable(stage_name.split(".")[0] + "." + target_table)
+        # snowdf.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/"+"processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,header=True,OVERWRITE=True)
+        
+        return "Success"
+
+    except KeyError as key_error:
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+
+    except pd.errors.MergeError as merge_error:
+        error_message = f"DataFrame merging error: {str(merge_error)}"
+        return error_message
+
+    except Exception as e:
+        error_message = f"Error: {str(e)}"
+        return error_message
+';
