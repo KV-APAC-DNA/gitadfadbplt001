@@ -1042,7 +1042,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "extract_source_data",
+						"activity": "If Error Encountered during load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1212,18 +1212,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "load_with_load_method",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('read parameters').output.value[0].is_incremental",
+						"value": "@and(activity('read parameters').output.value[0].is_incremental,\nnot(empty(variables('watermark_value'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -2526,6 +2520,9 @@
 				"defaultValue": "NO"
 			},
 			"watermark_value": {
+				"type": "String"
+			},
+			"trueval": {
 				"type": "String"
 			}
 		},
