@@ -1,0 +1,35 @@
+{
+	"name": "TW_IMS_DISTRIBUTOR_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "TW_IMS_DISTRIBUTOR"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-03T15:36:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						30
+					],
+					"hours": [
+						23
+					]
+				}
+			}
+		}
+	}
+}

@@ -1,0 +1,35 @@
+{
+	"name": "POP6_MASTER_TRASACTION_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "POP6_MASTER_TRASACTION"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-03T15:37:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						3
+					]
+				}
+			}
+		}
+	}
+}
