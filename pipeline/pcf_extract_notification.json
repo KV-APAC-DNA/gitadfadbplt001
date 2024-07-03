@@ -138,7 +138,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
+								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat('OpenOrderDetail_',variables('currentTime'),'.csv')}', 604800) as URL;",
 								"type": "Expression"
 							}
 						}
