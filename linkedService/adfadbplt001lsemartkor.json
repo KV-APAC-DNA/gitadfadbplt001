@@ -1,0 +1,22 @@
+{
+	"name": "adfadbplt001lsemartkor",
+	"properties": {
+		"description": "Linked Service to Emart Korea",
+		"annotations": [],
+		"type": "AmazonRdsForOracle",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsemartkor"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
