@@ -25,6 +25,7 @@
 -- 24/06/24 Thanish  Pop6 logic added to read csv file
 -- 24/06/24 Srihari     Added logic for multi sheets different header validation
 -- 28/06/24 Srihari     Added logic for header validation of zip source files.
+-- 04/07/24 Thanish   Added logic for file name date validation
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -653,7 +654,7 @@ def file_validation(counter,extracted_filename,val_file_name):
                 file_name_validation_status="Invalid File Name"
                 counter=1
 
-        elif "Weekly_Summary_TCA_raw_data" in extracted_filename or "Weekly_Summary_Unitoa_raw_data" in extracted_filename:
+        elif "Weekly_Summary_TCA_raw_data" in extracted_filename or "Weekly_Summary_Unitoa_raw_data" in extracted_filename or "SAP_BW_KR_LIST_PRICE" in extracted_filename:
             file_name_date_format=extracted_filename.rsplit("_",1)[1]
             if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
                 if len(file_name_date_format) == 8 and file_name_date_format.isdigit():
