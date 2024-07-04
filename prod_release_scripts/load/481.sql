@@ -1,3 +1,4 @@
+use database PROD_DNA_LOAD;
 use schema META_RAW;
 
 delete from parameters where parameter_id in (10727,11855,
