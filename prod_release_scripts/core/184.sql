@@ -1,0 +1,2 @@
+create table prod_dna_core.aspitg_integration.itg_copa_trans_20240705 clone prod_dna_core.aspitg_integration.itg_copa_trans;
+create table prod_dna_core.aspedw_integration.edw_copa_trans_fact_20240705 clone prod_dna_core.aspedw_integration.edw_copa_trans_fact;
