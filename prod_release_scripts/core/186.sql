@@ -1,0 +1,3 @@
+create table prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_temp_20240708 clone prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_temp;
+delete from prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_temp
+where snap_shot_dt = '2024-07-07 00:00:00.000';
