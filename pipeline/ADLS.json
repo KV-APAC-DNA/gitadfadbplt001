@@ -752,7 +752,7 @@
 									{
 										"type": "NonQuery",
 										"text": {
-											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema}.@{activity('read parameters').output.value[0].target_table};",
+											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema}.@{join(split(activity('read parameters').output.value[0].target_table,':'),concat(';\nTRUNCATE TABLE ',activity('read parameters').output.value[0].target_schema,'.'))};",
 											"type": "Expression"
 										}
 									}
@@ -812,7 +812,11 @@
 						},
 						"isBusinessNotification": "No",
 						"isSupportNotification": "Yes",
-						"isError": "Yes"
+						"isError": "Yes",
+						"container": {
+							"value": "@activity('read parameters').output.value[0].CONTAINER",
+							"type": "Expression"
+						}
 					}
 				}
 			},

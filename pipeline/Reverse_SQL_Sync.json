@@ -97,7 +97,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Script Target Count",
+						"activity": "If Truncate Target",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -262,7 +262,10 @@
 												"type": "Expression"
 											},
 											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
 											}
 										},
 										"sink": {
@@ -890,7 +893,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Truncate Source",
+						"activity": "Switch Source",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1066,12 +1069,12 @@
 				}
 			},
 			{
-				"name": "If Truncate Source",
+				"name": "If Truncate Target",
 				"description": "",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Switch Source",
+						"activity": "Script Target Count",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1097,7 +1100,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lsawswdvsgpw0006",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -1105,7 +1108,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].source_schema_table}",
+											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema_table}",
 											"type": "Expression"
 										}
 									}
