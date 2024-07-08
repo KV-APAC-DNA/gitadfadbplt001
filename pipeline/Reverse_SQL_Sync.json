@@ -1210,8 +1210,8 @@
 				"defaultValue": []
 			},
 			"sourceCount2": {
-				"type": "String",
-				"defaultValue": "0"
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"folder": {
