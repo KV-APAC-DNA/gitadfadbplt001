@@ -454,7 +454,7 @@
 									"typeProperties": {
 										"variableName": "extractedDate",
 										"value": {
-											"value": "@take(replace(replace(pipeline().parameters.sourceFileName, pipeline().parameters.parameters.value[0].FILE_SPEC,'' ),'_',''),8)",
+											"value": "@if(contains(pipeline().parameters.parameters.value[0].FILE_SPEC,'OTHERS'),split(pipeline().parameters.sourceFileName, '_')[2],split(pipeline().parameters.sourceFileName,'_')[1])",
 											"type": "Expression"
 										}
 									}
