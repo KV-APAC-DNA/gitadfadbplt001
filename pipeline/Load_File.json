@@ -137,8 +137,8 @@
 									}
 								},
 								{
-									"name": "Set queryOnSource",
-									"type": "SetVariable",
+									"name": "Execute Pipeline RunQueryOnSource",
+									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
 											"activity": "load from file",
@@ -148,52 +148,21 @@
 										}
 									],
 									"policy": {
-										"secureOutput": false,
 										"secureInput": false
 									},
 									"userProperties": [],
 									"typeProperties": {
-										"variableName": "queryOnSource",
-										"value": {
-											"value": "@{pipeline().parameters.parameters.value[0].QueryOnSource}",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "Script Run Query on Source",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "Set queryOnSource",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lsvmcitsapl002fjx2com",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@variables('queryOnSource')",
-													"type": "Expression"
-												}
+										"pipeline": {
+											"referenceName": "runQueryOnSource",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"QueryOnSource": {
+												"value": "@pipeline().parameters.parameters.value[0].QueryOnSource",
+												"type": "Expression"
 											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
+										}
 									}
 								}
 							]
