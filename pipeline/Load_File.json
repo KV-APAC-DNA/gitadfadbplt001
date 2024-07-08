@@ -135,35 +135,6 @@
 											"type": "Expression"
 										}
 									}
-								},
-								{
-									"name": "Execute Pipeline RunQueryOnSource",
-									"type": "ExecutePipeline",
-									"dependsOn": [
-										{
-											"activity": "load from file",
-											"dependencyConditions": [
-												"Succeeded"
-											]
-										}
-									],
-									"policy": {
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"pipeline": {
-											"referenceName": "runQueryOnSource",
-											"type": "PipelineReference"
-										},
-										"waitOnCompletion": true,
-										"parameters": {
-											"QueryOnSource": {
-												"value": "@pipeline().parameters.parameters.value[0].QueryOnSource",
-												"type": "Expression"
-											}
-										}
-									}
 								}
 							]
 						},
