@@ -165,6 +165,66 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Get flagDataPresent",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set sourceCount",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@{activity('read parameters').output.value[0].source_query} LIMIT 2;",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set sourceCount2",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get flagDataPresent",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "sourceCount2",
+										"value": {
+											"value": "@activity('Get flagDataPresent').output.resultSetCount",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -235,7 +295,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('sourceCount'),0),activity('read parameters').output.value[0].decide_source,'noDataLoad')",
+						"value": "@if(and(greater(variables('sourceCount'),0),greater(variables('sourceCount2'),0)),activity('read parameters').output.value[0].decide_source,'noDataLoad')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -1153,6 +1213,10 @@
 			"emptyArray": {
 				"type": "Array",
 				"defaultValue": []
+			},
+			"sourceCount2": {
+				"type": "String",
+				"defaultValue": "0"
 			}
 		},
 		"folder": {
