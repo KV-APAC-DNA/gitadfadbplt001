@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_PCF_PERENSO_METCASH",
+	"name": "POP6_MASTER_TRASACTION_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "20"
+					"category": "POP6_MASTER_TRASACTION"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-05-30T00:00:00",
+				"startTime": "2024-07-03T15:37:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						50
+						0
 					],
 					"hours": [
-						5
+						3
 					]
 				}
 			}

@@ -352,7 +352,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@if(greater(int(activity('load from file 2').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY=''ETL_Batch'',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='''';'),'Select ''no_update_needed'';')\n\n",
+													"value": "@if(greater(int(activity('load from file 2').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY=''ETL_Batch'',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='''' where SOURCE_FILE_DATE is null;'),'Select ''no_update_needed'';')\n\n",
 													"type": "Expression"
 												}
 											}
@@ -380,6 +380,193 @@
 										"variableName": "errorMessage",
 										"value": {
 											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters').error?.message}",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "Japan",
+							"activities": [
+								{
+									"name": "load from file 2 japan",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message5",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "load from file 2 japan",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('load from file 2 japan').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set extracted date japan",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "extractedDate",
+										"value": {
+											"value": "@take(replace(replace(pipeline().parameters.sourceFileName, pipeline().parameters.parameters.value[0].FILE_SPEC,'' ),'_',''),8)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "update etl parameters japan",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "load from file 2 japan",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set extracted date japan",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set upload_date tokyo",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										},
+										{
+											"activity": "Set upload_time tokyo",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@if(greater(int(activity('load from file 2 japan').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',upload_dt=''',variables('upload_date'),''',upload_time=''',variables('upload_time'),''' where SOURCE_FILE_DATE is null;'),'Select ''no_update_needed'';')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message6",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters japan",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters japan').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set upload_date tokyo",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "upload_date",
+										"value": {
+											"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'MM-dd-yyyy')",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Set upload_time tokyo",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "upload_time",
+										"value": {
+											"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'HH:mm:ss')",
 											"type": "Expression"
 										}
 									}
@@ -2129,6 +2316,12 @@
 			},
 			"countDifference": {
 				"type": "Integer"
+			},
+			"upload_date": {
+				"type": "String"
+			},
+			"upload_time": {
+				"type": "String"
 			}
 		},
 		"folder": {

@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_PH_NON_POS_trigger",
+	"name": "j_tw_sell_in_forecast_transaction_data_ingestion_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "27"
+					"category": "j_tw_sell_in_forecast_transaction_data_ingestion"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-05-03T00:00:00",
+				"startTime": "2024-07-03T15:35:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						50
+						30
 					],
 					"hours": [
-						14
+						10
 					]
 				}
 			}

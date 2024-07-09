@@ -1,16 +1,16 @@
 {
-	"name": "S3_TO_ADLS_KR_MDS_COUPANG_PREMIUM_trigger",
+	"name": "KR_OTC_INV_ETL_FRAMEWORK_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "s3_to_adls",
+					"referenceName": "master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"Group_id": "47"
+					"category": "KR_OTC_INV_ETL_FRAMEWORK"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-12T15:19:00",
+				"startTime": "2024-07-03T15:37:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						50
+						0
 					],
 					"hours": [
-						12
+						18
 					]
 				}
 			}

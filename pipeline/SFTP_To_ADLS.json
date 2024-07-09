@@ -1571,7 +1571,7 @@
 											"type": "Expression"
 										},
 										"adls_path": {
-											"value": "@{pipeline().parameters.AdlsPath}/temp",
+											"value": "@{pipeline().parameters.AdlsPath}/@{pipeline().parameters.FtpFileName}_temp",
 											"type": "Expression"
 										}
 									}
@@ -1627,7 +1627,7 @@
 											"type": "Expression"
 										},
 										"adls_path": {
-											"value": "@{pipeline().parameters.AdlsPath}/temp/@{pipeline().parameters.FtpFileName}",
+											"value": "@{pipeline().parameters.AdlsPath}/@{pipeline().parameters.FtpFileName}_temp/@{pipeline().parameters.FtpFileName}",
 											"type": "Expression"
 										}
 									}
@@ -1679,7 +1679,7 @@
 											"type": "Expression"
 										},
 										"adls_path": {
-											"value": "@{pipeline().parameters.AdlsPath}/temp",
+											"value": "@{pipeline().parameters.AdlsPath}/@{pipeline().parameters.FtpFileName}_temp",
 											"type": "Expression"
 										}
 									}

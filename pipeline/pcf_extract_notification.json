@@ -102,7 +102,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(variables('query'),';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000;",
+								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/OpenOrderDetail_',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(variables('query'),';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000\noverwrite = true;",
 								"type": "Expression"
 							}
 						}
@@ -138,7 +138,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat('pcf/edw_invoice_analysis_extract/',variables('currentTime'),'.csv')}', 604800) as URL;",
+								"value": "SELECT GET_PRESIGNED_URL( @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION')},'@{concat('OpenOrderDetail_',variables('currentTime'),'.csv')}', 604800) as URL;",
 								"type": "Expression"
 							}
 						}
@@ -165,7 +165,7 @@
 				"typeProperties": {
 					"variableName": "currentTime",
 					"value": {
-						"value": "@formatDateTime(variables('currentTimestamp'),'yyyyMMdd_HHmmss')",
+						"value": "@formatDateTime(variables('currentTimestamp'),'yyyy-MM-dd')",
 						"type": "Expression"
 					}
 				}
@@ -297,7 +297,7 @@
 		"parameters": {
 			"query": {
 				"type": "string",
-				"defaultValue": "select rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id,sum(future_gts_val),sum(fut_sls_qty),sum(unspp_qty) from PCFEDW_INTEGRATION.edw_invoice_analysis where to_ccy='USD'and jj_mnth_long='{CurrMonth}' and jj_year='{CurrYear}' group by rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id;"
+				"defaultValue": "select TO_CHAR(rqst_delv_dt, 'MM/DD/YY') AS \"Requested Del. Date\",channel_desc AS \"Channel\",ship_name AS \"Ship to Name\",sls_doc AS \"Sales Doc\",matl_id AS \"Material Code\", matl_desc AS \"Material\", TO_CHAR(ROUND(sum(future_gts_val), 2), 'FM$999,999,999.00') AS \"Future GTS\",ROUND(sum(fut_sls_qty), 2) AS \"Future Qty\",ROUND(sum(unspp_qty), 2) AS \"Unsupplied Qty\" from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_INVOICE_ANALYSIS where to_ccy='USD'and jj_mnth_long='{CurrMonth}' and jj_year='{CurrYear}' and NTS_VAL!=0 group by rqst_delv_dt,channel_desc,ship_name,sls_doc,matl_id, matl_desc having sum(fut_sls_qty) != 0  and sum(NTS_VAL) !=0;"
 			}
 		},
 		"variables": {
