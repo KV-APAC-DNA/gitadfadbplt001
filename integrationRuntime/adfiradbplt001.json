@@ -13,7 +13,7 @@
 					"customProperties": []
 				},
 				"copyComputeScaleProperties": {
-					"dataIntegrationUnit": 256,
+					"dataIntegrationUnit": 16,
 					"timeToLive": 30
 				},
 				"pipelineExternalComputeScaleProperties": {
