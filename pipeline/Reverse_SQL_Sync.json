@@ -97,7 +97,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "Script Target Count",
+						"activity": "If Truncate Target",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -162,6 +162,66 @@
 										"variableName": "sourceCount",
 										"value": {
 											"value": "@int(activity('Script Source Count Core').output.resultSets[0].rows[0].count)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Get flagDataPresent",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set sourceCount",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@{activity('read parameters').output.value[0].source_query} LIMIT 2;",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set sourceCount2",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get flagDataPresent",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "sourceCount2",
+										"value": {
+											"value": "@activity('Get flagDataPresent').output.resultSetCount",
 											"type": "Expression"
 										}
 									}
@@ -235,7 +295,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(variables('sourceCount'),0),activity('read parameters').output.value[0].decide_source,'noDataLoad')",
+						"value": "@if(and(greater(variables('sourceCount'),0),greater(variables('sourceCount2'),0)),activity('read parameters').output.value[0].decide_source,'noDataLoad')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -262,7 +322,10 @@
 												"type": "Expression"
 											},
 											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
 											}
 										},
 										"sink": {
@@ -890,7 +953,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Truncate Source",
+						"activity": "Switch Source",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1066,12 +1129,12 @@
 				}
 			},
 			{
-				"name": "If Truncate Source",
+				"name": "If Truncate Target",
 				"description": "",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Switch Source",
+						"activity": "Script Target Count",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1097,7 +1160,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lsawswdvsgpw0006",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -1105,7 +1168,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].source_schema_table}",
+											"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].target_schema_table}",
 											"type": "Expression"
 										}
 									}
@@ -1119,24 +1182,19 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "test"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 239
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 976
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			}
 		},
 		"variables": {
@@ -1150,6 +1208,10 @@
 			"emptyArray": {
 				"type": "Array",
 				"defaultValue": []
+			},
+			"sourceCount2": {
+				"type": "Integer",
+				"defaultValue": 0
 			}
 		},
 		"folder": {
