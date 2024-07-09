@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "Event Trigger for ID 1-7, 16 in PROD_DNA_LOAD.meta_raw.s3_to_adl\nMFT - kdp_conapdna_aspac_prod_travel_retail",
 		"annotations": [],
-		"runtimeState": "Started",
+		"runtimeState": "Stopped",
 		"pipelines": [
 			{
 				"pipelineReference": {
