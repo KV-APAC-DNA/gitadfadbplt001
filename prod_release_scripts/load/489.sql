@@ -1,0 +1,5 @@
+use schema meta_raw;
+INSERT INTO s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (502,60,'INDIA','itx-arm-conapdna-india-prod-kdp','raw-data-lake/sku_recommender/','SKURecommendation','ind','sku_recommender/transaction/',TRUE,'Y');
+INSERT INTO s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (503,62,'INDIA','itx-arm-conapdna-india-prod-kdp','raw-data-lake/master-customer/','RDS Size','ind','master_customer/transaction/',TRUE,'Y');
+INSERT INTO s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (504,62,'INDIA','itx-arm-conapdna-india-prod-kdp','raw-data-lake/master-target/','IT Target','ind','master_target/Refernce',TRUE,'Y');
+INSERT INTO s3_to_adls(id,group_id,country,s3_bucket,s3_path,s3_file,adls_container,adls_path,Isactive,DELETE_SOURCE_FILE) VALUES (505,61,'INDIA','itx-arm-conapdna-india-prod-kdp','raw-data-lake/sss_scorecard/source/','sss_scorecard','ind','sss_scorecard/transaction',TRUE,'Y');
