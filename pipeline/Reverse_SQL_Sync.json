@@ -232,12 +232,116 @@
 							"value": "dna_load",
 							"activities": [
 								{
-									"name": "LogicToBeAddedInFuture",
-									"type": "Wait",
+									"name": "Script Source Count Load",
+									"type": "Script",
 									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "SELECT count(*) AS \"count\" FROM @{activity('read parameters').output.value[0].source_schema_table}",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set sourceCount load",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Script Source Count Load",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
 									"userProperties": [],
 									"typeProperties": {
-										"waitTimeInSeconds": 1
+										"variableName": "sourceCount",
+										"value": {
+											"value": "@int(activity('Script Source Count Load').output.resultSets[0].rows[0].count)",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Get flagDataPresent load",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "Set sourceCount load",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@{activity('read parameters').output.value[0].source_query} LIMIT 2;",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set sourceCount2 load",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "Get flagDataPresent load",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "sourceCount2",
+										"value": {
+											"value": "@activity('Get flagDataPresent load').output.resultSetCount",
+											"type": "Expression"
+										}
 									}
 								}
 							]
