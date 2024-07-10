@@ -1,0 +1,7 @@
+update META_RAW.HISTORICAL_OBJ_METADATA
+set target_schema='PCFITG_INTEGRATION'
+where id='5012';
+
+update META_RAW.HISTORICAL_OBJ_METADATA
+set target_table='ITG_IRI_SCAN_SALES_TEMP'
+where id='5012';
