@@ -102,3 +102,98 @@ def main(session: snowpark.Session,Param):
         error_message = f"Error: {str(e)}"
         return error_message
         ';
+
+
+CREATE OR REPLACE PROCEDURE NTASDL_RAW.KR_POS_HOMEPLUS_ONLINE_PREPROCESSING("PARAM" ARRAY)
+RETURNS VARCHAR(16777216)
+LANGUAGE PYTHON
+RUNTIME_VERSION = '3.11'
+PACKAGES = ('snowflake-snowpark-python')
+HANDLER = 'main'
+EXECUTE AS OWNER
+AS
+$$
+from snowflake.snowpark.functions import not_, col, lit, date_format, current_timestamp, to_date, concat, try_cast, to_timestamp, when, trim, lower
+from snowflake.snowpark.types import IntegerType, StringType, StructType, StructField, DecimalType,DateType
+from datetime import datetime
+import snowflake.snowpark as snowpark
+import pytz
+
+
+def main(session: snowpark.Session,Param):
+    try:
+        file_name       = Param[0]
+        stage_name      = Param[1]
+        temp_stage_path = Param[2]
+        sch_name        = stage_name.split('.')[0]
+        target_table    = sch_name+"."+Param[3]
+        
+        df_schema = StructType([
+                    StructField("posdate", StringType()),
+                    StructField("Store_Category", StringType()),
+                    StructField("Store_Code", StringType()),
+                    StructField("StoreName", StringType()),
+                    StructField("bar_code", StringType()),
+                    StructField("TPNB", StringType()),
+                    StructField("product_name", StringType()),
+                    StructField("size", StringType()),
+                    StructField("color", StringType()),
+                    StructField("number_of_sales", StringType()),
+                    StructField("Total", StringType()),
+                    StructField("Employee_discount_amount", StringType()),
+                    StructField("sales_revenue", StringType()),
+                    StructField("Online_Sales_Quantity", StringType()),
+                    StructField("Online_Sales_Amount", StringType())
+                ])
+
+        df = session.read\
+            .schema(df_schema)\
+            .option("skip_header",5)\
+            .option("field_delimiter", "\u0001")\
+            .option("field_optionally_enclosed_by", "\"") \
+            .csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
+ 
+
+        valid_df=df.filter(not_(col("posdate").like("일합계"))) and df.filter(not_(col("posdate").like("총합계"))) and df.filter(lower(col("Store_Category")) == lit("hyper"))
+        
+        valid_df = valid_df.withColumn("crtd_dttm", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y-%m-%d %H:%M:%S")))
+        valid_df = valid_df.withColumn("filename", lit(file_name))
+        valid_df = valid_df.withColumn("run_id", lit(datetime.now(pytz.timezone("Asia/Singapore")).strftime("%Y%m%d%H%M%S")))
+
+        final_df = valid_df.select( 
+                    try_cast(col("posdate"), DateType()).alias("posdate"),\
+                    "store_code",\
+                    when(col("storename").is_not_null(), concat(trim(col("storename")),lit("_online"))).alias("storename"), \
+                    "bar_code"  ,\
+                    lit(None).as_("unit_price"), \
+                    "Online_Sales_Quantity" ,\
+                    "Online_Sales_Amount", "filename", "run_id", "crtd_dttm", lit(None).as_("updt_dttm")).alias("final_df")
+
+        if final_df.count()==0:
+            return "No Data in file"
+        
+        # Load Data to the target table
+        final_df.write.mode("append").saveAsTable(target_table)
+
+        current_date = datetime.now()
+        formatted_year = current_date.strftime("%Y")
+        formatted_month = current_date.strftime("%m")
+
+        # write to success folder
+    
+        file_name=file_name.split(".")[0] + '_' + datetime.now().strftime("%Y%m%d%H%M%S")
+        final_df.write.copy_into_location("@"+stage_name+"/"+temp_stage_path+"/processed/success/"+formatted_year+"/"+formatted_month+"/"+file_name,file_format_type="csv",OVERWRITE=True,header=True)
+   
+        return "Success"
+        
+    except KeyError as key_error:
+        
+        error_message = f"KeyError: {str(key_error)}. Ensure all required columns are present in the DataFrame."
+        return error_message
+        
+    except Exception as e:
+        
+        error_message = f"Error: {str(e)}"
+        return error_message
+$$;
+
