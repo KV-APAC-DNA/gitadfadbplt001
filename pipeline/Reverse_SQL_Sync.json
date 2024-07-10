@@ -473,7 +473,7 @@
 									]
 								},
 								{
-									"name": "error log - move dna_core_to_adls_copy1",
+									"name": "error log - move dna_core_to_adls",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -530,7 +530,7 @@
 									}
 								},
 								{
-									"name": "Send error - mds_sf_core_to_adls_copy1",
+									"name": "Send error - mds_sf_core_to_adls",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
