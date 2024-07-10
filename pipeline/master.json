@@ -717,7 +717,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"on": {
-									"value": "@if(greater(indexOf(variables('deps_status'),'STOP:'),0) ,'STOP',\nif(greater(indexOf(variables('deps_status'),'WAIT:'),0),'WAIT',\nif(greater(indexOf(variables('deps_status'),'NOTIFY:'),0),'NOTIFY',\n'PROCEED')))",
+									"value": "@if(greater(indexOf(variables('deps_status'),'STOP:'),0) ,'STOP',\nif(greater(indexOf(variables('deps_status'),'FAIL:'),0) ,'FAIL',\nif(greater(indexOf(variables('deps_status'),'WAIT:'),0),'WAIT',\nif(greater(indexOf(variables('deps_status'),'NOTIFY:'),0),'NOTIFY',\n'PROCEED'))))",
 									"type": "Expression"
 								},
 								"cases": [
@@ -821,6 +821,24 @@
 														"isSupportNotification": "Yes",
 														"isError": "No"
 													}
+												}
+											}
+										]
+									},
+									{
+										"value": "FAIL",
+										"activities": [
+											{
+												"name": "Fail_Execution",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "One or more of the dependent processes has failed in latest run, please re-run that process, @{variables('deps_status')}, then run this. If you want to ignore the dependent processes, re-run this process with ignore_deps as True",
+														"type": "Expression"
+													},
+													"errorCode": "1000"
 												}
 											}
 										]
