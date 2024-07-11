@@ -1,10 +1,15 @@
 {
 	"name": "HttpServer1",
 	"properties": {
+		"parameters": {
+			"url": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://www.thepopsystem.com/",
+			"url": "@{linkedService().url}",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous"
 		},
