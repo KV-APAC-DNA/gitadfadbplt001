@@ -1,0 +1,18 @@
+{
+	"name": "Odbc_databricks_adfadbplt001lsazrwbudbx_copyOdbcTable1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsazrwbudbxprod",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ODBC_Dataset"
+		},
+		"annotations": [],
+		"type": "OdbcTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`delv`.`otif_d_cnsmr_attr_detl`"
+		}
+	}
+}
