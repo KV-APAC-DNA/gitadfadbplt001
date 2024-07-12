@@ -2012,7 +2012,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"message": {
-											"value": "sql_server_to_adls: @{activity('mds_sql_server_to_adls').error?.errorCode} @{activity('mds_sql_server_to_adls').error?.message}",
+											"value": "otif_server_to_adls_copy: @{activity('otif_server_to_adls_copy').error?.errorCode} @{activity('otif_server_to_adls_copy').error?.message}",
 											"type": "Expression"
 										},
 										"errorCode": "2000"
