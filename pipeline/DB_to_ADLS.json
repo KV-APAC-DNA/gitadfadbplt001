@@ -1880,7 +1880,7 @@
 									]
 								},
 								{
-									"name": "error log - move otif_sql_server_to_adls_copy",
+									"name": "error log - adls_to_snowflake",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -1969,7 +1969,7 @@
 									}
 								},
 								{
-									"name": "error_otif_sql_server_copy",
+									"name": "error_otif_to_adls",
 									"type": "Fail",
 									"dependsOn": [
 										{
@@ -1981,10 +1981,7 @@
 									],
 									"userProperties": [],
 									"typeProperties": {
-										"message": {
-											"value": "otif_server_to_adls_copy: @{activity('otif_server_to_adls_copy').error?.errorCode} @{activity('otif_server_to_adls_copy').error?.message}",
-											"type": "Expression"
-										},
+										"message": "sql_server_to_adls: @{activity('sql_server_to_adls').error?.errorCode} @{activity('sql_server_to_adls').error?.message}",
 										"errorCode": "2000"
 									}
 								}
