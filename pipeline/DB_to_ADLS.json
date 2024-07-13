@@ -1821,7 +1821,7 @@
 							]
 						},
 						{
-							"value": "otif_server",
+							"value": "OTIF_Server",
 							"activities": [
 								{
 									"name": "otif_server_to_adls_copy",
