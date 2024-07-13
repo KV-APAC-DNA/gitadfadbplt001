@@ -1838,7 +1838,10 @@
 									"typeProperties": {
 										"source": {
 											"type": "OdbcSource",
-											"query": "@pipeline().parameters.source_query",
+											"query": {
+												"value": "@pipeline().parameters.source_query",
+												"type": "Expression"
+											},
 											"queryTimeout": "24:00:00"
 										},
 										"sink": {
@@ -1890,7 +1893,7 @@
 									]
 								},
 								{
-									"name": "error log - move sql_server_to_alds_copy1",
+									"name": "error log - move otif_server_to_alds_copy",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -1920,7 +1923,7 @@
 												"type": "Expression"
 											},
 											"error_message": {
-												"value": "@activity('sql_server_to_adls').error?.message",
+												"value": "@activity('otif_server_to_adls_copy').error?.message",
 												"type": "Expression"
 											},
 											"run_id": {
@@ -1936,7 +1939,7 @@
 												"type": "Expression"
 											},
 											"error_code": {
-												"value": "@activity('sql_server_to_adls').error?.errorCode",
+												"value": "@activity('otif_server_to_adls_copy').error?.errorCode",
 												"type": "Expression"
 											},
 											"job_id": {
@@ -1947,7 +1950,7 @@
 									}
 								},
 								{
-									"name": "Send error - sql_server_to_alds_copy1",
+									"name": "Send error - otif_server_to_alds_copy",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
@@ -1990,7 +1993,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{pipeline().parameters.source_query} \\n\n**CONTAINER**: @{pipeline().parameters.container} \\n\n**LANDING_FILE_PATH**: @{pipeline().parameters.landing_file_path} \\n\n**LANDING_FILE_NAME**: @{pipeline().parameters.landing_file_name} \\n\n**ERROR**: _@{activity('sql_server_to_adls').error?.message}_",
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**MS_QUERY**: @{pipeline().parameters.source_query} \\n\n**CONTAINER**: @{pipeline().parameters.container} \\n\n**LANDING_FILE_PATH**: @{pipeline().parameters.landing_file_path} \\n\n**LANDING_FILE_NAME**: @{pipeline().parameters.landing_file_name} \\n\n**ERROR**: _@{activity('otif_server_to_adls_copy').error?.message}_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
@@ -2000,7 +2003,7 @@
 									}
 								},
 								{
-									"name": "error_copy1",
+									"name": "otif_error_copy",
 									"type": "Fail",
 									"dependsOn": [
 										{
@@ -2013,7 +2016,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"message": {
-											"value": "sql_server_to_adls: @{activity('sql_server_to_adls').error?.errorCode} @{activity('sql_server_to_adls').error?.message}",
+											"value": "otif_server_to_adls_copy: @{activity('otif_server_to_adls_copy').error?.errorCode} @{activity('otif_server_to_adls_copy').error?.message}",
 											"type": "Expression"
 										},
 										"errorCode": "2000"
