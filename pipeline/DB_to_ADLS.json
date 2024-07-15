@@ -2041,7 +2041,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "OracleSource",
+											"type": "AmazonRdsForOracleSource",
 											"oracleReaderQuery": {
 												"value": "@pipeline().parameters.source_query",
 												"type": "Expression"
@@ -2073,7 +2073,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "OracleNA",
+											"referenceName": "AmazonRdsForOracleNA",
 											"type": "DatasetReference"
 										}
 									],
