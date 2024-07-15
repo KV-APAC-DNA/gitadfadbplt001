@@ -102,7 +102,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/OpenOrderDetail_',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(variables('query'),';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000\noverwrite = true;",
+								"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/OpenOrderDetail_',variables('currentTime'),'.csv')} \nFROM (\n  @{replace(variables('query'),';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE',\n  FIELD_OPTIONALLY_ENCLOSED_BY ='\"'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000\noverwrite = true;",
 								"type": "Expression"
 							}
 						}

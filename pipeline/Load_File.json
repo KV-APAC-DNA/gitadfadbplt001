@@ -454,7 +454,7 @@
 									"typeProperties": {
 										"variableName": "extractedDate",
 										"value": {
-											"value": "@take(replace(replace(pipeline().parameters.sourceFileName, pipeline().parameters.parameters.value[0].FILE_SPEC,'' ),'_',''),8)",
+											"value": "@if(contains(pipeline().parameters.parameters.value[0].FILE_SPEC,'OTHERS'),split(pipeline().parameters.sourceFileName, '_')[2],split(pipeline().parameters.sourceFileName,'_')[1])",
 											"type": "Expression"
 										}
 									}
@@ -1726,6 +1726,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
+					},
+					{
+						"activity": "If  japan 002fjx2",
+						"dependencyConditions": [
+							"Succeeded"
+						]
 					}
 				],
 				"policy": {
@@ -2266,6 +2272,58 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "If  japan 002fjx2",
+				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "Check load method",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(pipeline().parameters.parameters.value[0].QueryOnSource, 'NA' ))",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Script Run Query on Source",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lsvmcitsapl002fjx2com",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@pipeline().parameters.parameters.value[0].QueryOnSource",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -2321,6 +2379,9 @@
 				"type": "String"
 			},
 			"upload_time": {
+				"type": "String"
+			},
+			"queryOnSource": {
 				"type": "String"
 			}
 		},
