@@ -1867,7 +1867,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "Odbc_databricks_copy",
+											"referenceName": "Odbc_databricks",
 											"type": "DatasetReference"
 										}
 									],
