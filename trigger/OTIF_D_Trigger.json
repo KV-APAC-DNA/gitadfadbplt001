@@ -1,0 +1,37 @@
+{
+	"name": "OTIF_D_Trigger",
+	"properties": {
+		"description": "OTIF Ingestion",
+		"annotations": [],
+		"runtimeState": "Stopped",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "OTIF_D_Data_Load",
+					"force_rerun": false
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-16T05:42:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						15
+					]
+				}
+			}
+		}
+	}
+}
