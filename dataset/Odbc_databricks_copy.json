@@ -10,9 +10,6 @@
 		},
 		"annotations": [],
 		"type": "OdbcTable",
-		"schema": [],
-		"typeProperties": {
-			"tableName": "`delv`.`otif_d_cnsmr_attr_detl`"
-		}
+		"schema": []
 	}
 }
