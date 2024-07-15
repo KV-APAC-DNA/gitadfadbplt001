@@ -12,7 +12,7 @@
 				},
 				"parameters": {
 					"category": "OTIF_D_Data_Load",
-					"force_rerun": "flase"
+					"force_rerun": false
 				}
 			}
 		],
