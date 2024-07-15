@@ -1,5 +1,5 @@
 {
-	"name": "Odbc_databricks_copy",
+	"name": "Odbc_databricks",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsazrwbudbxprod",
