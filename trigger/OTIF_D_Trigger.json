@@ -9,6 +9,10 @@
 				"pipelineReference": {
 					"referenceName": "master",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "OTIF_D_Data_Load",
+					"force_rerun": "flase"
 				}
 			}
 		],
