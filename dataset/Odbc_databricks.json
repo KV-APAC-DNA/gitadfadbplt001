@@ -1,0 +1,15 @@
+{
+	"name": "Odbc_databricks",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsazrwbudbxprod",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ODBC_Dataset"
+		},
+		"annotations": [],
+		"type": "OdbcTable",
+		"schema": []
+	}
+}
