@@ -1,0 +1,15 @@
+{
+	"name": "AmazonRdsForOracleNA",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsemartkor",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "AmazonRdsForOracleTable",
+		"schema": []
+	}
+}

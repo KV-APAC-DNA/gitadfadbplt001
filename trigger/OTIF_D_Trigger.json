@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "OTIF Ingestion",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
@@ -28,7 +28,7 @@
 						0
 					],
 					"hours": [
-						15
+						13
 					]
 				}
 			}
