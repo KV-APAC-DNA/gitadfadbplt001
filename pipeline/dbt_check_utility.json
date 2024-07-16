@@ -526,6 +526,8 @@
 						{
 							"name": "audit failure of dq check copy cmd",
 							"type": "ExecutePipeline",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "Script Unload to stage",
