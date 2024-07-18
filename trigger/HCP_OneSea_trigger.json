@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "HCPOneSea"
+					"category": "HCP_OneSea"
 				}
 			}
 		],
