@@ -26,6 +26,7 @@
 -- 24/06/24 Srihari     Added logic for multi sheets different header validation
 -- 28/06/24 Srihari     Added logic for header validation of zip source files.
 -- 04/07/24 Thanish   Added logic for file name date validation
+-- 18/7/24  Thanish    Fixed logic for header validation
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -34,8 +35,7 @@ RUNTIME_VERSION = '3.11'
 PACKAGES = ('openpyxl==3.1.2','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
 HANDLER = 'main'
 EXECUTE AS OWNER
-AS '# The Snowpark package is required for Python Worksheets. 
-# You can add more packages by selecting them using the Packages control and then importing them.
+AS '
 
 import snowflake.snowpark as snowpark
 from snowflake.snowpark.functions import col
@@ -50,11 +50,7 @@ import zipfile
 def main(session: snowpark.Session,Param):
     try:
 
-        # Example input
-        # Your code goes here, inside the "main" handler.
-        # Return value will appear in the Results tab
-        # ********   Variable  we need from ETL table : 
-        # CURRENT_FILE , index , validation, val_file_name,val_file_extn
+        
         
 
 
@@ -69,6 +65,7 @@ def main(session: snowpark.Session,Param):
         temp_stage_path		=  Param[8]
         header_reg          =  Param[9]
         sheet_names         =  Param[10]
+        schema              =  Param[7].split(".")[0]
 
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
@@ -78,12 +75,12 @@ def main(session: snowpark.Session,Param):
             
         
     
-        # If the File belongs to Regional, then it enters the function
+        
     
         if stage_name.split(".")[0]=="ASPSDL_RAW":
             processed_file_name=rg_travel_validation(CURRENT_FILE)
             
-        # If the File belongs to Thailand, then it enters the function
+        
         elif stage_name.split(".")[0]=="THASDL_RAW": 
             processed_file_name=thailand_processing(CURRENT_FILE)
 
@@ -100,7 +97,7 @@ def main(session: snowpark.Session,Param):
             processed_file_name=CURRENT_FILE
 
     
-        #Extracting the filename based on index variable
+        
         
         if index.lower() == "last":
             extracted_filename = processed_file_name.rsplit("_", 1)[0]
@@ -119,15 +116,15 @@ def main(session: snowpark.Session,Param):
 
     
     
-        # Check for File name Validation
+        
     
         if FileNameValidation=="1":
-            file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name)
+            file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name,schema)
         else :
             print("File Name Validation not required")
     
     
-        # Check for  File extension validation
+        
     
         if FileExtnValidation == "1":
             file_ext_validation_status,counter=file_extn_validation(counter,CURRENT_FILE,val_file_extn)
@@ -135,12 +132,11 @@ def main(session: snowpark.Session,Param):
             print("File extension Validation not required")
     
     
-        # Check for File Header Validation
+        
     
         if FileHeaderValidation == "1" and counter==0:
 
-            # Converting the extension from xlsx to csv
-            # Extracting the Header from the file
+            
             
             if "NTUC" in CURRENT_FILE:
                 # if Core
@@ -251,7 +247,7 @@ def main(session: snowpark.Session,Param):
                 df_header=df_pandas.iloc[:,0:14]
                 header=df_header.iloc[int(file_header_row_num)].tolist()
 
-            elif "BU_" in CURRENT_FILE or "BP_" in CURRENT_FILE :
+            elif ("BU_" in CURRENT_FILE and "bu_forecast/sku/" in temp_stage_path) or "BP_" in CURRENT_FILE :
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
                 file_name = file_name.replace("(", "").replace(")", "").replace(" ","_")
                 df = session.read.option("INFER_SCHEMA", True).option("field_optionally_enclosed_by", "\\"").csv("@"+stage_name+"/"+temp_stage_path+"/"+file_name)
@@ -420,6 +416,10 @@ def main(session: snowpark.Session,Param):
 
             elif stage_name.split(".")[0]=="HCPSDL_RAW" and val_file_name== ''IQVIA_ORSL_Sales_Brand'':
                 result_list=result_list[:6]
+                filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
+
+            elif stage_name.split(".")[0]=="NTASDL_RAW" and val_file_name=="JNJ":
+                result_list=result_list[:21]
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
             else:
@@ -592,7 +592,7 @@ def indonesia_processing(CURRENT_FILE):
 
 # Function to Perform File name validation
 
-def file_validation(counter,extracted_filename,val_file_name):
+def file_validation(counter,extracted_filename,val_file_name,schema):
 
 
         if "Coop_Sell_In" in extracted_filename:
@@ -627,7 +627,7 @@ def file_validation(counter,extracted_filename,val_file_name):
                 file_name_validation_status="Invalid File Name"
                 counter=1
 
-        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfmidi" in extracted_filename or "Stock_Alfmidi" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename:
+        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfmidi" in extracted_filename or "Stock_Alfmidi" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename or ("JNJ" in extracted_filename and schema=="NTASDL_RAW"):
             file_name_date_format=extracted_filename.rsplit("_",1)[1]
             if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
                 if len(file_name_date_format) == 6 and file_name_date_format.isdigit():
@@ -666,6 +666,15 @@ def file_validation(counter,extracted_filename,val_file_name):
             else:
                 
                 file_name_validation_status="Invalid File Name"
+                counter=1
+
+        elif "KR_eCom_sku_level" in extracted_filename:
+            file_length=len(extracted_filename)
+            if len(extracted_filename)==26 and val_file_name.upper() == extracted_filename.rsplit("_",2)[0].upper():
+                file_name_validation_status=""
+                print("file_name_validation_status is successful")
+            else:
+                file_name_validation_status="Invalid File Name, Length of FileName did not match "+ "Expected ''26'' but received " + str(file_length)
                 counter=1
 
         elif val_file_name.upper() == extracted_filename.upper():
