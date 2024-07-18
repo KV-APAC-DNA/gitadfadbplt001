@@ -1,5 +1,5 @@
 {
-	"name": "MALAYSIA_WATSONS_INV_trigger",
+	"name": "KR_onpack_target_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_WATSONS_INV"
+					"category": "KR_onpack_target"
 				}
 			}
 		],
@@ -19,13 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-28T00:00:00",
+				"startTime": "2024-07-18T15:23:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						15
+					],
 					"hours": [
-						17,
-						18,
-						21
+						23
 					]
 				}
 			}

@@ -1,5 +1,5 @@
 {
-	"name": "PH_J_RG_WATSONS_INV_INGESTION_trigger",
+	"name": "j_kr_tw_sales_target_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PH_J_RG_WATSONS_INV_INGESTION"
+					"category": "j_kr_tw_sales_target"
 				}
 			}
 		],
@@ -19,16 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-29T00:00:00",
+				"startTime": "2024-07-18T15:24:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						40
 					],
 					"hours": [
-						17,
-						18,
-						21
+						23
 					]
 				}
 			}

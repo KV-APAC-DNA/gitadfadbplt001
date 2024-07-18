@@ -1,5 +1,5 @@
 {
-	"name": "HCP_OneSea_trigger",
+	"name": "j_kr_pos_prc_condition_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "HCP_OneSea"
+					"category": "j_kr_pos_prc_condition"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-07-17T13:38:00",
+				"startTime": "2024-07-18T15:25:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						0
+						8
 					]
 				}
 			}
