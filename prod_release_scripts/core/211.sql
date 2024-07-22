@@ -930,14 +930,14 @@ CREATE OR REPLACE TABLE HCPOSEEDW_INTEGRATION.FACT_COACHING_REPORT		--// CREATE 
 	,jj_core_country_code VARCHAR(10)  		--//  ENCODE zstd
 	,jj_core_lock VARCHAR(20)  		--//  ENCODE zstd
 	,jj_core_no_of_visits VARCHAR(10)  		--//  ENCODE zstd
-	,employee_review_and_ackCURRENT_TIMESTAMP()ledged VARCHAR(5)  		--// 	,employee_review_and_acknowledged VARCHAR(5)   ENCODE zstd //  ENCODE zstd
+	,employee_review_and_acknowledged VARCHAR(5)  		--// 	,employee_review_and_acknowledged VARCHAR(5)   ENCODE zstd //  ENCODE zstd
 	,employee_comments VARCHAR(2000)  		--//  ENCODE zstd
 	,simp_manager_comments VARCHAR(65535)  		--//  ENCODE zstd
 	,simp_objectives VARCHAR(65535)  		--//  ENCODE zstd
 	,simp_rep_comments_long VARCHAR(65535)  		--//  ENCODE zstd
 	,simp_sg_overall_rating NUMERIC(18,1)  		--//  ENCODE delta
 	,simp_long_comments VARCHAR(5000)  		--//  ENCODE zstd
-	,kCURRENT_TIMESTAMP()ledge_strategy_overall_rating NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating NUMERIC(18,1)   ENCODE delta //  ENCODE delta
+	,knowledge_strategy_overall_rating NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating NUMERIC(18,1)   ENCODE delta //  ENCODE delta
 	,selling_skills_overall_rating NUMERIC(18,1)  		--//  ENCODE delta
 	,my_call_type VARCHAR(255)  		--//  ENCODE zstd
 	,my_location VARCHAR(255)  		--//  ENCODE zstd
