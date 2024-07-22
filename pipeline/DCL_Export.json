@@ -1,0 +1,208 @@
+{
+	"name": "DCL_Export",
+	"properties": {
+		"activities": [
+			{
+				"name": "Audit_Start",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Audit_Finish_Success",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "REFRESH STARTED SEPARATELY",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is completed for use case ', string(pipeline().parameters.category), '. Check status from Tableau Refresh Status pipeline.')",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "read parameters",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Set parentFolder",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauSourceName'\" AS tableauSourceName,\n\"'waitTime'\" AS waitTime,\n\"'refreshType'\" AS refreshType,\n\"'container'\" AS container,\nIFNULL(\"'isSuccessNotification'\",'N') AS isSuccessNotification\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauSourceName',\n'waitTime',\n'refreshType',\n'container',\n'isSuccessNotification'\n));",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "Set parentFolder",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Audit_Start",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "parentFolder",
+					"value": {
+						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"category": {
+				"type": "string"
+			},
+			"usecase_id": {
+				"type": "int"
+			},
+			"phase_id": {
+				"type": "int"
+			},
+			"sequence_id": {
+				"type": "int"
+			},
+			"process_id": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"parentFolder": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Consumption/Consumption Systems"
+		},
+		"annotations": [],
+		"lastPublishTime": "2023-11-23T12:26:48Z"
+	}
+}
