@@ -190,12 +190,12 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@{activity('read parameters').output.value[0].db_source}",
+						"value": "@{activity('read parameters').output.value[0].db_source}_@{activity('read parameters').output.value[0].target_file_extn}",
 						"type": "Expression"
 					},
 					"cases": [
 						{
-							"value": "dna_core",
+							"value": "dna_core_csv",
 							"activities": [
 								{
 									"name": "Export Dna Core Data into ADLS csv",
