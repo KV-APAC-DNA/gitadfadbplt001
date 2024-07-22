@@ -1949,14 +1949,14 @@ CREATE OR REPLACE TABLE HCPOSEITG_INTEGRATION.ITG_COACHING_REPORT		--// CREATE T
 	,jj_core_country_code VARCHAR(10)  		--//  ENCODE zstd
 	,jj_core_lock VARCHAR(20)  		--//  ENCODE zstd
 	,jj_core_no_of_visits VARCHAR(10)  		--//  ENCODE zstd
-	,jj_employee_review_and_ackCURRENT_TIMESTAMP()ledged VARCHAR(5)  		--// 	,jj_employee_review_and_acknowledged VARCHAR(5)   ENCODE zstd //  ENCODE zstd
+	,jj_employee_review_and_acknowledged VARCHAR(5)  		--// 	,jj_employee_review_and_acknowledged VARCHAR(5)   ENCODE zstd //  ENCODE zstd
 	,jj_employee_comments VARCHAR(2000)  		--//  ENCODE zstd
 	,jj_simp_manager_comments VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_objectives VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_rep_comments_long VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_sg_overall_rating NUMERIC(18,1)  		--//  ENCODE delta
 	,jj_simp_long_comments VARCHAR(5000)  		--//  ENCODE zstd
-	,kCURRENT_TIMESTAMP()ledge_strategy_overall_rating NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating NUMERIC(18,1)   ENCODE delta //  ENCODE delta
+	,kknowledge_strategy_overall_rating NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating NUMERIC(18,1)   ENCODE delta //  ENCODE delta
 	,selling_skills_overall_rating NUMERIC(18,1)  		--//  ENCODE delta
 	,jj_my_call_type VARCHAR(255)  		--//  ENCODE zstd
 	,jj_my_location VARCHAR(255)  		--//  ENCODE zstd
@@ -3328,14 +3328,14 @@ CREATE OR REPLACE TABLE HCPOSEWKS_INTEGRATION.WKS_HCP_OSEA_COACHING_REPORT		--//
 	,jj_core_country_code__c VARCHAR(10)  		--//  ENCODE zstd
 	,jj_core_lock__c VARCHAR(20)  		--//  ENCODE zstd
 	,jj_core_no_of_visits__c VARCHAR(10)  		--//  ENCODE zstd
-	,jj_employee_review_and_ackCURRENT_TIMESTAMP()ledged__c VARCHAR(5)  		--// 	,jj_employee_review_and_acknowledged__c VARCHAR(5)   ENCODE zstd //  ENCODE zstd
+	,jj_employee_review_and_acknowledged__c VARCHAR(5)  		--// 	,jj_employee_review_and_acknowledged__c VARCHAR(5)   ENCODE zstd //  ENCODE zstd
 	,jj_employee_comments__c VARCHAR(2000)  		--//  ENCODE zstd
 	,jj_simp_manager_comments_long__c VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_objectives__c VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_rep_comments_long__c VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_sg_overall_rating__c NUMERIC(18,1)  		--//  ENCODE delta
 	,jj_simp_long_comments__c VARCHAR(5000)  		--//  ENCODE zstd
-	,kCURRENT_TIMESTAMP()ledge_strategy_overall_rating__c NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating__c NUMERIC(18,1)   ENCODE delta //  ENCODE delta
+	,knowledge_strategy_overall_rating__c NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating__c NUMERIC(18,1)   ENCODE delta //  ENCODE delta
 	,selling_skills_overall_rating__c NUMERIC(18,1)  		--//  ENCODE delta
 	,jj_my_call_type__c VARCHAR(255)  		--//  ENCODE zstd
 	,jj_my_location__c VARCHAR(255)  		--//  ENCODE zstd
@@ -4502,14 +4502,14 @@ CREATE OR REPLACE TABLE HCPOSEITG_INTEGRATION.SDL_RAW_HCP_OSEA_COACHING_REPORT		
 	,jj_core_country_code__c VARCHAR(10)  		--//  ENCODE zstd
 	,jj_core_lock__c VARCHAR(20)  		--//  ENCODE zstd
 	,jj_core_no_of_visits__c VARCHAR(10)  		--//  ENCODE zstd
-	,jj_employee_review_and_ackCURRENT_TIMESTAMP()ledged__c VARCHAR(5)  		--// 	,jj_employee_review_and_acknowledged__c VARCHAR(5)   ENCODE zstd //  ENCODE zstd
+	,jj_employee_review_and_acknowledged__c VARCHAR(5)  		--// 	,jj_employee_review_and_acknowledged__c VARCHAR(5)   ENCODE zstd //  ENCODE zstd
 	,jj_employee_comments__c VARCHAR(2000)  		--//  ENCODE zstd
 	,jj_simp_manager_comments_long__c VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_objectives__c VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_rep_comments_long__c VARCHAR(65535)  		--//  ENCODE zstd
 	,jj_simp_sg_overall_rating__c NUMERIC(18,1)  		--//  ENCODE delta
 	,jj_simp_long_comments__c VARCHAR(5000)  		--//  ENCODE zstd
-	,kCURRENT_TIMESTAMP()ledge_strategy_overall_rating__c NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating__c NUMERIC(18,1)   ENCODE delta //  ENCODE delta
+	,knowledge_strategy_overall_rating__c NUMERIC(18,1)  		--// 	,knowledge_strategy_overall_rating__c NUMERIC(18,1)   ENCODE delta //  ENCODE delta
 	,selling_skills_overall_rating__c NUMERIC(18,1)  		--//  ENCODE delta
 	,jj_my_call_type__c VARCHAR(255)  		--//  ENCODE zstd
 	,jj_my_location__c VARCHAR(255)  		--//  ENCODE zstd
