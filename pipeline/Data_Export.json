@@ -210,8 +210,24 @@
 									},
 									"userProperties": [],
 									"typeProperties": {
+										"source": {
+											"type": "SnowflakeSource",
+											"query": {
+												"value": "@{activity('read parameters').output.value[0].unloading_query}",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand"
+											}
+										},
 										"enableStaging": false
-									}
+									},
+									"inputs": [
+										{
+											"referenceName": "DNA_CORE_Dataset",
+											"type": "DatasetReference"
+										}
+									]
 								},
 								{
 									"name": "error log - move dna_core_to_adls",
