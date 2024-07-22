@@ -198,7 +198,7 @@
 							"value": "dna_core_csv",
 							"activities": [
 								{
-									"name": "Export Dna Core Data into ADLS csv",
+									"name": "Export Dna Core Data into ADLS csv2",
 									"type": "Copy",
 									"dependsOn": [],
 									"policy": {
@@ -265,6 +265,12 @@
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
+											"activity": "Export Dna Core Data into ADLS csv2",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
 											"activity": "Export Dna Core Data into ADLS csv",
 											"dependencyConditions": [
 												"Failed"
@@ -322,6 +328,12 @@
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
+											"activity": "Export Dna Core Data into ADLS csv2",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
 											"activity": "Export Dna Core Data into ADLS csv",
 											"dependencyConditions": [
 												"Failed"
@@ -375,6 +387,12 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
+											"activity": "Export Dna Core Data into ADLS csv2",
+											"dependencyConditions": [
+												"Failed"
+											]
+										},
+										{
 											"activity": "Export Dna Core Data into ADLS csv",
 											"dependencyConditions": [
 												"Failed"
@@ -389,6 +407,72 @@
 										},
 										"errorCode": "2000"
 									}
+								},
+								{
+									"name": "Export Dna Core Data into ADLS csv",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeSource",
+											"query": {
+												"value": "@{activity('read parameters').output.value[0].unloading_query}",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "DNA_CORE_Dataset",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "csv_blob_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@{activity('read parameters').output.value[0].container}",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						}
