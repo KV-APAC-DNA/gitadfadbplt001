@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "sign out",
+						"activity": "Sign Out",
 						"dependencyConditions": [
 							"Succeeded",
 							"Failed"
@@ -277,7 +277,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseSignIn.json"
@@ -391,7 +391,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseDetails.json"
@@ -439,7 +439,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseSignIn.json"
@@ -488,7 +488,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseDetails.json"
@@ -570,7 +570,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
@@ -618,7 +618,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
@@ -1958,22 +1958,6 @@
 				}
 			},
 			{
-				"name": "sign out",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "copy data to windows shared",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
-			{
 				"name": "Send Error notification writing data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
@@ -2025,6 +2009,79 @@
 						"isError": "Yes"
 					}
 				}
+			},
+			{
+				"name": "Sign Out",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "copy data to windows shared",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:05:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"additionalHeaders": {
+							"x-tableau-auth": {
+								"value": "@pipeline().parameters.token",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "auth/signout"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "tableauResponseSignOut.json",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
