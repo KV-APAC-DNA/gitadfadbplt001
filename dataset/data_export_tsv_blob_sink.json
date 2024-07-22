@@ -17,7 +17,7 @@
 			}
 		},
 		"folder": {
-			"name": "ADF_Framework_Datasets/SQL"
+			"name": "ADF_Framework_Datasets/export"
 		},
 		"annotations": [],
 		"type": "DelimitedText",
