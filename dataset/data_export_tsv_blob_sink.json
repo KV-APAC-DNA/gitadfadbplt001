@@ -38,6 +38,7 @@
 				}
 			},
 			"columnDelimiter": "\t",
+			"rowDelimiter": "\r\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": ""
