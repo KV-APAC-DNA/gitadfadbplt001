@@ -62,7 +62,8 @@
 					{
 						"activity": "sign out",
 						"dependencyConditions": [
-							"Succeeded"
+							"Succeeded",
+							"Failed"
 						]
 					}
 				],
