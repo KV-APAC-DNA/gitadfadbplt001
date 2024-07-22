@@ -116,7 +116,7 @@
 				}
 			},
 			{
-				"name": "Audit_Finish_Fail",
+				"name": "Audit_Finish_Fail_8",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -1056,7 +1056,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Trigger Tableau Refresh Status').error?.message",
+							"value": "@activity('copy data to windows shared').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -1072,7 +1072,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Trigger Tableau Refresh Status').error?.errorCode",
+							"value": "@activity('copy data to windows shared').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
