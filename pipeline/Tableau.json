@@ -2044,24 +2044,19 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "TEST VNM REFRESH"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 7
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 3
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 294
+				"type": "int"
 			}
 		},
 		"variables": {
