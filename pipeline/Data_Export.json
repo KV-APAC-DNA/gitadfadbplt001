@@ -220,12 +220,43 @@
 												"type": "SnowflakeExportCopyCommand"
 											}
 										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
 										"enableStaging": false
 									},
 									"inputs": [
 										{
 											"referenceName": "DNA_CORE_Dataset",
 											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "sql_server_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@{activity('read parameters').output.value[0].container}",
+													"type": "Expression"
+												},
+												"path": {
+													"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
+													"type": "Expression"
+												}
+											}
 										}
 									]
 								},
