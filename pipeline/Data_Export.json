@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "read parameters",
+						"activity": "Switch db source",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -138,7 +138,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauSourceName'\" AS tableauSourceName,\n\"'waitTime'\" AS waitTime,\n\"'refreshType'\" AS refreshType,\n\"'container'\" AS container,\nIFNULL(\"'isSuccessNotification'\",'N') AS isSuccessNotification\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauSourceName',\n'waitTime',\n'refreshType',\n'container',\n'isSuccessNotification'\n));",
+							"value": "Select \n\"'db_source'\" AS db_source,\n\"'target_folder_path'\" AS target_folder_path,\n\"'target_file_name'\" AS target_file_name,\n\"'target_file_extn'\" AS target_file_extn,\n\"'unloading_query'\" AS unloading_query,\n\"'container'\" AS container,\nIFNULL(\"'additionalParams'\",'N') AS additionalParams\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'db_source',\n'target_folder_path',\n'target_file_name',\n'target_file_extn',\n'unloading_query',\n'container',\n'additionalParams'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -174,6 +174,193 @@
 						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
 						"type": "Expression"
 					}
+				}
+			},
+			{
+				"name": "Switch db source",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@{activity('read parameters').output.value[0].db_source}",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "dna_core",
+							"activities": [
+								{
+									"name": "Export Dna Core Data into ADLS",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"enableStaging": false
+									}
+								},
+								{
+									"name": "error log - move dna_core_to_adls",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Export Dna Core Data into ADLS",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "write_error_log",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"process_id": {
+												"value": "@pipeline().parameters.process_id",
+												"type": "Expression"
+											},
+											"job_name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"error_message": {
+												"value": "@activity('Export Dna Core Data into ADLS').error?.message",
+												"type": "Expression"
+											},
+											"run_id": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"category": {
+												"value": "@pipeline().parameters.category",
+												"type": "Expression"
+											},
+											"phase_id": {
+												"value": "@pipeline().parameters.phase_id",
+												"type": "Expression"
+											},
+											"error_code": {
+												"value": "@activity('Export Dna Core Data into ADLS').error?.errorCode",
+												"type": "Expression"
+											},
+											"job_id": {
+												"value": "@pipeline()?.TriggeredByPipelineRunId",
+												"type": "Expression"
+											}
+										}
+									}
+								},
+								{
+									"name": "Send error - Export Dna Core Data into ADLS",
+									"type": "ExecutePipeline",
+									"dependsOn": [
+										{
+											"activity": "Export Dna Core Data into ADLS",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"pipeline": {
+											"referenceName": "NotifiyTeamsChannelPipeline",
+											"type": "PipelineReference"
+										},
+										"waitOnCompletion": true,
+										"parameters": {
+											"subscription": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+												"type": "Expression"
+											},
+											"resourceGroup": {
+												"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+												"type": "Expression"
+											},
+											"runId": {
+												"value": "@pipeline().RunId",
+												"type": "Expression"
+											},
+											"name": {
+												"value": "@pipeline().Pipeline",
+												"type": "Expression"
+											},
+											"triggerTime": {
+												"value": "@pipeline().TriggerTime",
+												"type": "Expression"
+											},
+											"status": "FAIL",
+											"supportMessage": {
+												"value": "There is some issue while exporting data from dna core into ADLS : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**unloading_query**: @{activity('read parameters').output.value[0].unloading_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**TARGET_FILE_PATH**: @{activity('read parameters').output.value[0].target_folder_path} \\n\n**TARGET_FILE_NAME**: @{activity('read parameters').output.value[0].target_file_name} \\n\n**ERROR**: _@{activity('Export Dna Core Data into ADLS').error?.message}_",
+												"type": "Expression"
+											},
+											"isBusinessNotification": "No",
+											"isSupportNotification": "Yes",
+											"isError": "Yes"
+										}
+									}
+								},
+								{
+									"name": "Export Dna Core Data into ADLS error",
+									"type": "Fail",
+									"dependsOn": [
+										{
+											"activity": "Export Dna Core Data into ADLS",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "Error While Exporting Dna Core Data into ADLS: @{activity('Export Dna Core Data into ADLS').error?.errorCode} @{activity('Export Dna Core Data into ADLS').error?.message}",
+											"type": "Expression"
+										},
+										"errorCode": "2000"
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "Unknown source",
+							"type": "Fail",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Unknown source type: @{activity('read parameters').output.value[0].db_source}",
+									"type": "Expression"
+								},
+								"errorCode": "2000"
+							}
+						}
+					]
 				}
 			}
 		],
