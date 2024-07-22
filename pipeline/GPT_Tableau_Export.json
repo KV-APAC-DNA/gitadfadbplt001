@@ -2037,7 +2037,7 @@
 						"requestMethod": "POST",
 						"additionalHeaders": {
 							"x-tableau-auth": {
-								"value": "@pipeline().parameters.token",
+								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
 								"type": "Expression"
 							}
 						}
