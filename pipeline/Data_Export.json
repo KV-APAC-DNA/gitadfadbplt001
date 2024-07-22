@@ -198,78 +198,9 @@
 							"value": "dna_core_csv",
 							"activities": [
 								{
-									"name": "Export Dna Core Data into ADLS csv2",
-									"type": "Copy",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "@{activity('read parameters').output.value[0].unloading_query}",
-												"type": "Expression"
-											},
-											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
-											}
-										},
-										"sink": {
-											"type": "DelimitedTextSink",
-											"storeSettings": {
-												"type": "AzureBlobFSWriteSettings"
-											},
-											"formatSettings": {
-												"type": "DelimitedTextWriteSettings",
-												"quoteAllText": true,
-												"fileExtension": ".txt"
-											}
-										},
-										"enableStaging": false
-									},
-									"inputs": [
-										{
-											"referenceName": "DNA_CORE_Dataset",
-											"type": "DatasetReference"
-										}
-									],
-									"outputs": [
-										{
-											"referenceName": "sql_server_sink",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": {
-													"value": "@{activity('read parameters').output.value[0].container}",
-													"type": "Expression"
-												},
-												"path": {
-													"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
-													"type": "Expression"
-												},
-												"file": {
-													"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
-													"type": "Expression"
-												}
-											}
-										}
-									]
-								},
-								{
 									"name": "error log - move dna_core_to_adls csv",
 									"type": "ExecutePipeline",
 									"dependsOn": [
-										{
-											"activity": "Export Dna Core Data into ADLS csv2",
-											"dependencyConditions": [
-												"Failed"
-											]
-										},
 										{
 											"activity": "Export Dna Core Data into ADLS csv",
 											"dependencyConditions": [
@@ -328,12 +259,6 @@
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
-											"activity": "Export Dna Core Data into ADLS csv2",
-											"dependencyConditions": [
-												"Failed"
-											]
-										},
-										{
 											"activity": "Export Dna Core Data into ADLS csv",
 											"dependencyConditions": [
 												"Failed"
@@ -386,12 +311,6 @@
 									"name": "Export Dna Core Data into ADLS csv error",
 									"type": "Fail",
 									"dependsOn": [
-										{
-											"activity": "Export Dna Core Data into ADLS csv2",
-											"dependencyConditions": [
-												"Failed"
-											]
-										},
 										{
 											"activity": "Export Dna Core Data into ADLS csv",
 											"dependencyConditions": [
@@ -455,7 +374,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "csv_blob_sink",
+											"referenceName": "data_export_csv_blob_sink",
 											"type": "DatasetReference",
 											"parameters": {
 												"container": {
