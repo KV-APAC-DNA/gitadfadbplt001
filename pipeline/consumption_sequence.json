@@ -127,7 +127,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
-														"referenceName": "GPT_Tableau_Export",
+														"referenceName": "Tableau_View_Export",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,
