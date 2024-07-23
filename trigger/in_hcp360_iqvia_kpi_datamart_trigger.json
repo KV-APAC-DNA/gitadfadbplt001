@@ -1,5 +1,5 @@
 {
-	"name": "In_Finance_Simulator_Ingestion_trigger",
+	"name": "in_hcp360_iqvia_kpi_datamart_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,27 +10,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "In_Finance_Simulator_Ingestion"
+					"category": "in_hcp360_iqvia_kpi_datamart"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Month",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-20T14:25:00",
+				"startTime": "2024-07-22T20:55:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						30
 					],
 					"hours": [
-						10
-					],
-					"monthDays": [
-						7,
-						21
+						9
 					]
 				}
 			}
