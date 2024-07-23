@@ -2539,7 +2539,7 @@
 												"type": "Expression"
 											},
 											"error_message": {
-												"value": "@activity('awsbrasgpw0001_sql_to_adls').error?.message",
+												"value": "@activity('capturesqlrds_to_adls').error?.message",
 												"type": "Expression"
 											},
 											"run_id": {
@@ -2555,7 +2555,7 @@
 												"type": "Expression"
 											},
 											"error_code": {
-												"value": "@activity('awsbrasgpw0001_sql_to_adls').error?.errorCode",
+												"value": "@activity('capturesqlrds_to_adls').error?.errorCode",
 												"type": "Expression"
 											},
 											"job_id": {
