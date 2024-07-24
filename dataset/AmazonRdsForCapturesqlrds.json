@@ -1,0 +1,15 @@
+{
+	"name": "AmazonRdsForCapturesqlrds",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbdev001lsardsbpanorama001",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "AmazonRdsForSqlServerTable",
+		"schema": []
+	}
+}
