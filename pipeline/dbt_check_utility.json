@@ -524,63 +524,6 @@
 							}
 						},
 						{
-							"name": "audit failure of dq check copy cmd",
-							"type": "ExecutePipeline",
-							"dependsOn": [
-								{
-									"activity": "Script Unload to stage",
-									"dependencyConditions": [
-										"Failed"
-									]
-								}
-							],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"status": "FAIL",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": "dbt",
-									"message": {
-										"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().parameters.dbt_runid",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline().parameters.parent_seq_run_id",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									}
-								}
-							}
-						},
-						{
 							"name": "error dbt dq check copy cmd",
 							"type": "ExecutePipeline",
 							"dependsOn": [

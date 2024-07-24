@@ -1,36 +1,34 @@
 {
-	"name": "In_Finance_Simulator_Ingestion_trigger",
+	"name": "kr_pos_emart_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
-					"referenceName": "master",
+					"referenceName": "ingestion_master",
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "In_Finance_Simulator_Ingestion"
+					"usecase_id": 343,
+					"phase_id": 1,
+					"category": "kr_pos_emart"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Month",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-20T14:25:00",
+				"startTime": "2024-07-16T13:42:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						45
 					],
 					"hours": [
-						10
-					],
-					"monthDays": [
-						7,
-						21
+						6
 					]
 				}
 			}

@@ -1,0 +1,28 @@
+{
+	"name": "adfadbdev001lsardsbpanorama001",
+	"properties": {
+		"description": "Linked Service for bpanorama from global",
+		"annotations": [],
+		"type": "AmazonRdsForSqlServer",
+		"typeProperties": {
+			"server": "capturesqlrds.cqf2mpbmddin.us-east-1.rds.amazonaws.com",
+			"database": "bpanorama",
+			"encrypt": "optional",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "bpservreadonly",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbdev001lsardsbpanorama001"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

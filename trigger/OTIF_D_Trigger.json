@@ -1,6 +1,7 @@
 {
-	"name": "In_Finance_Simulator_Ingestion_trigger",
+	"name": "OTIF_D_Trigger",
 	"properties": {
+		"description": "OTIF Ingestion",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -10,27 +11,24 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "In_Finance_Simulator_Ingestion"
+					"category": "OTIF_D_Data_Load",
+					"force_rerun": false
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Month",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-20T14:25:00",
+				"startTime": "2024-07-16T05:42:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						10
-					],
-					"monthDays": [
-						7,
-						21
+						15
 					]
 				}
 			}
