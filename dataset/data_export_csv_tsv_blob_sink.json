@@ -1,5 +1,5 @@
 {
-	"name": "data_export_csv_blob_sink",
+	"name": "data_export_csv_tsv_blob_sink",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001_blob",
@@ -13,6 +13,15 @@
 				"type": "string"
 			},
 			"file": {
+				"type": "string"
+			},
+			"quotesEnclosed": {
+				"type": "string"
+			},
+			"headerNeeded": {
+				"type": "string"
+			},
+			"delimeter": {
 				"type": "string"
 			}
 		},
@@ -37,11 +46,19 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": ",",
-			"rowDelimiter": "\r\n",
+			"columnDelimiter": {
+				"value": "@dataset().delimeter",
+				"type": "Expression"
+			},
 			"escapeChar": "\\",
-			"firstRowAsHeader": true,
-			"quoteChar": ""
+			"firstRowAsHeader": {
+				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
+				"type": "Expression"
+			},
+			"quoteChar": {
+				"value": "@if(equals(dataset().quotesEnclosed,'Y'),'\"','')",
+				"type": "Expression"
+			}
 		},
 		"schema": []
 	}
