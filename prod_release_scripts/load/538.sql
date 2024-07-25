@@ -2,7 +2,7 @@
 
 create or replace stage JPDCLSDL_RAW.PROD_LOAD_STAGE_ADLS_JPDCL
  storage_integration =  PROD_DNA_LOAD_AZURE25_SI
- url = 'azure://dlsadbplt001.blob.core.windows.net/jpn/
+ url = 'azure://dlsadbplt001.blob.core.windows.net/jpn/;
 
 USE SCHEMA META_RAW;
 INSERT INTO USECASE (USECASE_ID, USECASE_NAME,CATEGORY,USECASE_DESCRIPTION,IS_ACTIVE,SEQUENCE_ID) VALUES (249,'JP_DCL_MDS_Refresh','JP_DCL_MDS','Japan DCL MDS Refresh','TRUE',1);
