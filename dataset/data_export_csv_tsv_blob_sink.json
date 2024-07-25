@@ -50,6 +50,7 @@
 				"value": "@dataset().delimeter",
 				"type": "Expression"
 			},
+			"rowDelimiter": "\r\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": {
 				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
