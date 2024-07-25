@@ -1,0 +1,22 @@
+{
+	"name": "adfadbpl001lshttpserver001",
+	"properties": {
+		"parameters": {
+			"url": {
+				"type": "string",
+				"defaultValue": "https://www.thepopsystem.com"
+			}
+		},
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "@{linkedService().url}",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
