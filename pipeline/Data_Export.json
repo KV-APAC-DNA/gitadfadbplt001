@@ -388,6 +388,18 @@
 												"file": {
 													"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
 													"type": "Expression"
+												},
+												"quotesEnclosed": {
+													"value": "@activity('read parameters').output.value[0].quotesEnclosed",
+													"type": "Expression"
+												},
+												"headerNeeded": {
+													"value": "@activity('read parameters').output.value[0].headerNeeded",
+													"type": "Expression"
+												},
+												"delimeter": {
+													"value": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')",
+													"type": "Expression"
 												}
 											}
 										}
