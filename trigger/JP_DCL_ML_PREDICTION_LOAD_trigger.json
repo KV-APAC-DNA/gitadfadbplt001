@@ -1,0 +1,35 @@
+{
+	"name": "JP_DCL_ML_PREDICTION_LOAD_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "JP_DCL_ML_PREDICTION_LOAD"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-25T12:45:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						21
+					]
+				}
+			}
+		}
+	}
+}
