@@ -1,0 +1,35 @@
+{
+	"name": "JP_DCL_MDS_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "JP_DCL_MDS"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-25T12:33:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						1
+					],
+					"hours": [
+						0
+					]
+				}
+			}
+		}
+	}
+}

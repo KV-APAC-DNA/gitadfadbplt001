@@ -1,0 +1,27 @@
+{
+	"name": "JP_DCL_GENERIC_EXTRACTION_2_FILESETUP_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "JP_DCL_GENERIC_EXTRACTION_2_FILESETUP"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 30,
+				"startTime": "2024-07-26T00:00:00",
+				"timeZone": "Singapore Standard Time"
+			}
+		}
+	}
+}
