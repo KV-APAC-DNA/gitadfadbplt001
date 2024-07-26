@@ -598,6 +598,8 @@
 											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}\n",
 											"type": "Expression"
 										},
+										"quotesEnclosed": "d",
+										"headerNeeded": "d",
 										"delimeter": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')"
 									}
 								}
