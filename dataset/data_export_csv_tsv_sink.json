@@ -56,7 +56,10 @@
 				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
 				"type": "Expression"
 			},
-			"quoteChar": ""
+			"quoteChar": {
+				"value": "@if(equals(dataset().quotesEnclosed,'Y'),'\"','')",
+				"type": "Expression"
+			}
 		},
 		"schema": []
 	}
