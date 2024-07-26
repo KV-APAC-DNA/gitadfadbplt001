@@ -489,7 +489,7 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "test1891"
+				"defaultValue": "test1886"
 			},
 			"usecase_id": {
 				"type": "int",
@@ -501,11 +501,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 7
+				"defaultValue": 2
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 1891
+				"defaultValue": 1886
 			}
 		},
 		"variables": {
