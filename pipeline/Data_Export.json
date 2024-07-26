@@ -354,8 +354,7 @@
 												"type": "SnowflakeExportCopyCommand",
 												"additionalCopyOptions": {
 													"MAX_FILE_SIZE": "524288000",
-													"OVERWRITE": "TRUE",
-													"FIELD_OPTIONALLY_ENCLOSED_BY": "\""
+													"OVERWRITE": "TRUE"
 												}
 											}
 										},
@@ -395,10 +394,7 @@
 													"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
 													"type": "Expression"
 												},
-												"quotesEnclosed": {
-													"value": "@activity('read parameters').output.value[0].quotesEnclosed",
-													"type": "Expression"
-												},
+												"quotesEnclosed": "Y",
 												"headerNeeded": {
 													"value": "@activity('read parameters').output.value[0].headerNeeded",
 													"type": "Expression"
