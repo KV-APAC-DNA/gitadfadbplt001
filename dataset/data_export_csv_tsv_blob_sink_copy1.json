@@ -2,7 +2,7 @@
 	"name": "data_export_csv_tsv_blob_sink_copy1",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lsdlsadbplt001_blob",
+			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -32,7 +32,7 @@
 		"type": "DelimitedText",
 		"typeProperties": {
 			"location": {
-				"type": "AzureBlobStorageLocation",
+				"type": "AzureBlobFSLocation",
 				"fileName": {
 					"value": "@dataset().file",
 					"type": "Expression"
@@ -41,7 +41,7 @@
 					"value": "@dataset().directory",
 					"type": "Expression"
 				},
-				"container": {
+				"fileSystem": {
 					"value": "@dataset().container",
 					"type": "Expression"
 				}
