@@ -569,10 +569,7 @@
 											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}",
 											"type": "Expression"
 										},
-										"quotesEnclosed": {
-											"value": "@activity('read parameters').output.value[0].quotesEnclosed",
-											"type": "Expression"
-										},
+										"quotesEnclosed": "Y",
 										"headerNeeded": {
 											"value": "@activity('read parameters').output.value[0].headerNeeded",
 											"type": "Expression"
