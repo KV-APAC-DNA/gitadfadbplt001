@@ -583,7 +583,7 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "data_export_csv_tsv_blob_sink",
+									"referenceName": "data_export_csv_tsv_blob_sink_copy1",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": {
@@ -591,25 +591,14 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}\n",
 											"type": "Expression"
 										},
 										"file": {
-											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}",
+											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}\n",
 											"type": "Expression"
 										},
-										"quotesEnclosed": {
-											"value": "@activity('read parameters').output.value[0].quotesEnclosed",
-											"type": "Expression"
-										},
-										"headerNeeded": {
-											"value": "@activity('read parameters').output.value[0].headerNeeded",
-											"type": "Expression"
-										},
-										"delimeter": {
-											"value": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')",
-											"type": "Expression"
-										}
+										"delimeter": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')"
 									}
 								}
 							]
