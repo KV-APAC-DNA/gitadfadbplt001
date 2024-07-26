@@ -52,7 +52,7 @@
 						"referenceName": "adls_src",
 						"type": "DatasetReference",
 						"parameters": {
-							"src_path": "dev/DCL/jjrnki/DCL/jjrnki/Container_Collection_Unload",
+							"src_path": "dev/DCL/jjrnki/Container_Collection_Unload",
 							"src_container": "jpn",
 							"src_filename": "Container_Collection.tsv"
 						}
