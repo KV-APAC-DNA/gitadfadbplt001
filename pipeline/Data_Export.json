@@ -489,11 +489,11 @@
 		"parameters": {
 			"category": {
 				"type": "string",
-				"defaultValue": "test1886"
+				"defaultValue": "test"
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 358
+				"defaultValue": 359
 			},
 			"phase_id": {
 				"type": "int",
@@ -501,11 +501,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 2
+				"defaultValue": 1
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 1886
+				"defaultValue": 1899
 			}
 		},
 		"variables": {
