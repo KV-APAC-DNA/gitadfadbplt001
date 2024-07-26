@@ -536,26 +536,7 @@
 										"type": "DelimitedTextReadSettings"
 									}
 								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
-									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
+								"enableStaging": false
 							},
 							"inputs": [
 								{
@@ -583,29 +564,6 @@
 											"value": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')",
 											"type": "Expression"
 										}
-									}
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "data_export_csv_tsv_blob_sink_copy1",
-									"type": "DatasetReference",
-									"parameters": {
-										"container": {
-											"value": "@{activity('read parameters').output.value[0].container}",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}\n",
-											"type": "Expression"
-										},
-										"file": {
-											"value": "@{activity('read parameters').output.value[0].target_file_name}_test.@{activity('read parameters').output.value[0].target_file_extn}\n",
-											"type": "Expression"
-										},
-										"quotesEnclosed": "d",
-										"headerNeeded": "d",
-										"delimeter": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')"
 									}
 								}
 							]
