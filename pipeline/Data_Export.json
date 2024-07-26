@@ -64,7 +64,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Switch db source",
+						"activity": "If no quotes",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -491,6 +491,137 @@
 							"type": "Expression"
 						}
 					}
+				}
+			},
+			{
+				"name": "If no quotes",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Switch db source",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(equals(activity('read parameters').output.value[0].quotesEnclosed,'N'),true, false)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Export ADLS to ADLS no quote",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "data_export_csv_tsv_blob_sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}",
+											"type": "Expression"
+										},
+										"quotesEnclosed": {
+											"value": "@activity('read parameters').output.value[0].quotesEnclosed",
+											"type": "Expression"
+										},
+										"headerNeeded": {
+											"value": "@activity('read parameters').output.value[0].headerNeeded",
+											"type": "Expression"
+										},
+										"delimeter": {
+											"value": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "data_export_csv_tsv_blob_sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+											"type": "Expression"
+										},
+										"file": {
+											"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
+											"type": "Expression"
+										},
+										"quotesEnclosed": {
+											"value": "@activity('read parameters').output.value[0].quotesEnclosed",
+											"type": "Expression"
+										},
+										"headerNeeded": {
+											"value": "@activity('read parameters').output.value[0].headerNeeded",
+											"type": "Expression"
+										},
+										"delimeter": {
+											"value": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
 				}
 			}
 		],
