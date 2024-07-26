@@ -534,7 +534,7 @@
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
+										"type": "AzureBlobFSWriteSettings"
 									},
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
@@ -595,7 +595,7 @@
 											"type": "Expression"
 										},
 										"file": {
-											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}\n",
+											"value": "@{activity('read parameters').output.value[0].target_file_name}_test.@{activity('read parameters').output.value[0].target_file_extn}\n",
 											"type": "Expression"
 										},
 										"quotesEnclosed": "d",
