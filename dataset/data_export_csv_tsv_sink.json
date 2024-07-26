@@ -1,5 +1,5 @@
 {
-	"name": "data_export_csv_tsv_sink_copy1",
+	"name": "data_export_csv_tsv_sink",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
