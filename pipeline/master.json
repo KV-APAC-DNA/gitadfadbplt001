@@ -717,7 +717,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"on": {
-									"value": "@if(greater(indexOf(variables('deps_status'),'STOP:'),0) ,'STOP',\nif(greater(indexOf(variables('deps_status'),'FAIL:'),0) ,'FAIL',\nif(greater(indexOf(variables('deps_status'),'WAIT:'),0),'WAIT',\nif(greater(indexOf(variables('deps_status'),'NOTIFY:'),0),'NOTIFY',\n'PROCEED'))))",
+									"value": "@if(greater(indexOf(variables('deps_status'),'STOP:'),0) ,'STOP',\nif(greater(indexOf(variables('deps_status'),'FAIL:'),0) ,'FAIL',\nif(greater(indexOf(variables('deps_status'),'WAIT:'),0),'WAIT',\nif(greater(indexOf(variables('deps_status'),'NOTIFY:'),0),'NOTIFY',\nif(greater(indexOf(toUpper(variables('deps_status')),'ERROR:'),0),'ERROR',\n'PROCEED')))))",
 									"type": "Expression"
 								},
 								"cases": [
@@ -842,6 +842,24 @@
 												}
 											}
 										]
+									},
+									{
+										"value": "ERROR",
+										"activities": [
+											{
+												"name": "Error_out_execution",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "the procedure to check dependent processes has failed. Please check and fix if necessary, then re-run this. @{variables('deps_status')}",
+														"type": "Expression"
+													},
+													"errorCode": "1000"
+												}
+											}
+										]
 									}
 								]
 							}
@@ -906,6 +924,30 @@
 											"variableName": "deps_status",
 											"value": {
 												"value": "@activity('check_dependent_job').output.resultSets[0].rows[0].CHECK_DEPENDENT_JOB_STATUS",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "set_dependent_status_error",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "check_dependent_job",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "deps_status",
+											"value": {
+												"value": "ERROR: @{activity('check_dependent_job').error?.message}",
 												"type": "Expression"
 											}
 										}
