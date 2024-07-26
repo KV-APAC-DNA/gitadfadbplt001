@@ -52,7 +52,7 @@
 			},
 			"rowDelimiter": "\n",
 			"escapeChar": "\\",
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
