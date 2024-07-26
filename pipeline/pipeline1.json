@@ -49,19 +49,17 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "adls_src",
-						"type": "DatasetReference",
-						"parameters": {
-							"src_path": "dev/DCL/jjrnki/Container_Collection_Unload",
-							"src_container": "jpn",
-							"src_filename": "Container_Collection.tsv"
-						}
+						"referenceName": "csvQuote",
+						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "DelimitedText1",
-						"type": "DatasetReference"
+						"referenceName": "csv_noQuote",
+						"type": "DatasetReference",
+						"parameters": {
+							"name": "POINT_2.tsv"
+						}
 					}
 				]
 			}
