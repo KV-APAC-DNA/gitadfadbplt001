@@ -46,10 +46,7 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": {
-				"value": "@dataset().delimeter",
-				"type": "Expression"
-			},
+			"columnDelimiter": ",",
 			"rowDelimiter": "\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": {
