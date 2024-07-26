@@ -53,7 +53,7 @@
 				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
 				"type": "Expression"
 			},
-			"quoteChar": ""
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
