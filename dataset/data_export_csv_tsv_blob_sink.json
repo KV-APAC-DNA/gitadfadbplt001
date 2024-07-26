@@ -51,7 +51,7 @@
 				"type": "Expression"
 			},
 			"rowDelimiter": "\n",
-			"escapeChar": "\\",
+			"escapeChar": "\"",
 			"firstRowAsHeader": {
 				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
 				"type": "Expression"
