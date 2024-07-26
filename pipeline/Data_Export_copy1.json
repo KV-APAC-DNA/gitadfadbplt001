@@ -567,7 +567,7 @@
 										},
 										"quotesEnclosed": "N",
 										"headerNeeded": "@activity('read parameters').output.value[0].headerNeeded",
-										"delimeter": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')"
+										"delimeter": "\\t"
 									}
 								}
 							]
