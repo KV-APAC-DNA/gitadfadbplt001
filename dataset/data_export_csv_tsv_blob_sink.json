@@ -57,7 +57,7 @@
 				"type": "Expression"
 			},
 			"quoteChar": {
-				"value": "@if(equals(dataset().quotesEnclosed,'Y'),'\"','')",
+				"value": "@if(equals(dataset().quotesEnclosed,'Y'),'\"','\"')",
 				"type": "Expression"
 			}
 		},
