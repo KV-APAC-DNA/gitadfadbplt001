@@ -379,33 +379,15 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "data_export_csv_tsv_blob_sink",
+											"referenceName": "data_export_csv_tsv_blob_sink_copy1",
 											"type": "DatasetReference",
 											"parameters": {
-												"container": {
-													"value": "@{activity('read parameters').output.value[0].container}",
-													"type": "Expression"
-												},
-												"directory": {
-													"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
-													"type": "Expression"
-												},
-												"file": {
-													"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
-													"type": "Expression"
-												},
-												"quotesEnclosed": {
-													"value": "@activity('read parameters').output.value[0].quotesEnclosed",
-													"type": "Expression"
-												},
-												"headerNeeded": {
-													"value": "@activity('read parameters').output.value[0].headerNeeded",
-													"type": "Expression"
-												},
-												"delimeter": {
-													"value": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')",
-													"type": "Expression"
-												}
+												"container": "@{activity('read parameters').output.value[0].container}",
+												"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+												"file": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
+												"quotesEnclosed": "Y",
+												"headerNeeded": "@activity('read parameters').output.value[0].headerNeeded",
+												"delimeter": "@if(equals(activity('read parameters').output.value[0].target_file_extn,'csv'),',','\\t')"
 											}
 										}
 									]
