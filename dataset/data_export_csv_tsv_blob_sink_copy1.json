@@ -46,14 +46,17 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": "\t",
+			"columnDelimiter": {
+				"value": "@dataset().delimeter",
+				"type": "Expression"
+			},
 			"rowDelimiter": "\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": {
 				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
 				"type": "Expression"
 			},
-			"quoteChar": "\""
+			"quoteChar": ""
 		},
 		"schema": []
 	}
