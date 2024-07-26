@@ -46,20 +46,14 @@
 					"type": "Expression"
 				}
 			},
-			"columnDelimiter": {
-				"value": "@dataset().delimeter",
-				"type": "Expression"
-			},
+			"columnDelimiter": ",",
 			"rowDelimiter": "\n",
 			"escapeChar": "\\",
 			"firstRowAsHeader": {
 				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
 				"type": "Expression"
 			},
-			"quoteChar": {
-				"value": "@if(equals(dataset().quotesEnclosed,'Y'),'\"','')",
-				"type": "Expression"
-			}
+			"quoteChar": "\""
 		},
 		"schema": []
 	}
