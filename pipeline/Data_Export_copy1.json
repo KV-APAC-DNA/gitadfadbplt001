@@ -547,27 +547,21 @@
 										"file": {
 											"value": "@{activity('read parameters').output.value[0].target_file_name}.@{activity('read parameters').output.value[0].target_file_extn}",
 											"type": "Expression"
-										},
-										"quotesEnclosed": "Y",
-										"headerNeeded": "@activity('read parameters').output.value[0].headerNeeded",
-										"delimeter": ","
+										}
 									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "data_export_csv_tsv_sink",
+									"referenceName": "data_export_csv_tsv_sink_copy1",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "@{activity('read parameters').output.value[0].container}",
 										"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
 										"file": {
-											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}",
+											"value": "@{activity('read parameters').output.value[0].target_file_name}_1.@{activity('read parameters').output.value[0].target_file_extn}\n",
 											"type": "Expression"
-										},
-										"quotesEnclosed": "N",
-										"headerNeeded": "@activity('read parameters').output.value[0].headerNeeded",
-										"delimeter": "\\t"
+										}
 									}
 								}
 							]
