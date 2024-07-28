@@ -86,7 +86,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "COPY INTO 'azure://dlsadbplt001.blob.core.windows.net/jpn/dev/DCL/test' FROM (Select 1;)) STORAGE_INTEGRATION = DEV_LOAD_STAGE_ADLS_JPDCL;",
+								"value": "COPY INTO 'azure://dlsadbplt001.blob.core.windows.net/jpn/dev/DCL/test' FROM (Select 1)) STORAGE_INTEGRATION = DEV_LOAD_STAGE_ADLS_JPDCL;",
 								"type": "Expression"
 							}
 						}
