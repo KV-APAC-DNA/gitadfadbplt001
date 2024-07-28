@@ -346,7 +346,7 @@
 									"typeProperties": {
 										"source": {
 											"type": "SnowflakeSource",
-											"query": "ELECT JPDCLEDW_INTEGRATION.encryption(LPAD(USRID,10,'0'))  AS KOKYANO FROM   JPDCLEDW_INTEGRATION.KR_THIS_STAGE_POINT_MONTHLY limit 10;",
+											"query": "SELECT JPDCLEDW_INTEGRATION.encryption(LPAD(USRID,10,'0'))  AS KOKYANO FROM   JPDCLEDW_INTEGRATION.KR_THIS_STAGE_POINT_MONTHLY limit 10;",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand",
 												"additionalCopyOptions": {
