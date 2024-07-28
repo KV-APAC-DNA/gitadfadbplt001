@@ -93,7 +93,7 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"encoding": "windows-31j",
+							"encoding": "shift_jis",
 							"name": "11_ocl_単発主データ"
 						}
 					}
