@@ -8,6 +8,9 @@
 		"parameters": {
 			"encoding": {
 				"type": "string"
+			},
+			"name": {
+				"type": "string"
 			}
 		},
 		"annotations": [],
@@ -15,7 +18,10 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "ocl_単発主データ.csv",
+				"fileName": {
+					"value": "@{dataset().name}.csv",
+					"type": "Expression"
+				},
 				"folderPath": "dev/DCL/jjrnki/out_call_unload",
 				"fileSystem": "jpn"
 			},
