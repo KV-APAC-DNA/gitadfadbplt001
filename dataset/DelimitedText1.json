@@ -5,6 +5,11 @@
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"encoding": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "DelimitedText",
 		"typeProperties": {
@@ -15,7 +20,10 @@
 				"fileSystem": "jpn"
 			},
 			"columnDelimiter": ",",
-			"encodingName": "windows-31j",
+			"encodingName": {
+				"value": "@dataset().encoding",
+				"type": "Expression"
+			},
 			"escapeChar": "\\",
 			"firstRowAsHeader": false,
 			"quoteChar": "\""
