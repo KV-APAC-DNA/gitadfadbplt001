@@ -347,7 +347,7 @@
 										"source": {
 											"type": "SnowflakeSource",
 											"query": {
-												"value": "(Select 1;)",
+												"value": "@{activity('read parameters').output.value[0].unloading_query}",
 												"type": "Expression"
 											},
 											"exportSettings": {
