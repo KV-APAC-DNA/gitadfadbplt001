@@ -358,7 +358,7 @@
 												},
 												"additionalFormatOptions": {
 													"EMPTY_FIELD_AS_NULL ": "TRUE",
-													"FIELD_OPTIONALLY_ENCLOSED_BY ": "\""
+													"FIELD_OPTIONALLY_ENCLOSED_BY ": "\"\""
 												}
 											}
 										},
