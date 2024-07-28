@@ -86,7 +86,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "COPY INTO 'azure://dlsadbplt001.blob.core.windows.net/jpn/dev/DCL/test' FROM (Select 1)) STORAGE_INTEGRATION = DEV_LOAD_STAGE_ADLS_JPDCL;",
+								"value": "\nCOPY INTO @JPDCLSDL_RAW.DEV_LOAD_STAGE_ADLS_JPDCL/testFile\nFROM (\n  -- Your SQL query goes here\n  SELECT 1\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n)\nOVERWRITE = TRUE;",
 								"type": "Expression"
 							}
 						}
