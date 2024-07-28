@@ -93,7 +93,7 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"encoding": "MS932",
+							"encoding": "cp932",
 							"name": "11_ocl_単発主データ"
 						}
 					}
