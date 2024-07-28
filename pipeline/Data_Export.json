@@ -355,6 +355,9 @@
 												"additionalCopyOptions": {
 													"MAX_FILE_SIZE": "524288000",
 													"OVERWRITE": "TRUE"
+												},
+												"additionalFormatOptions": {
+													"FIELD_OPTIONALLY_ENCLOSED_BY ": "\""
 												}
 											}
 										},
