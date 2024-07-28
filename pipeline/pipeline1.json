@@ -78,7 +78,7 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
