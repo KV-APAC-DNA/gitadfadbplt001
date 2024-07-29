@@ -247,7 +247,7 @@
 				"type": "Wait",
 				"dependsOn": [
 					{
-						"activity": "read parameters",
+						"activity": "If prefix or suffix",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -256,6 +256,87 @@
 				"userProperties": [],
 				"typeProperties": {
 					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "If prefix or suffix",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Set dateCYYMMDD",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('read parameters').output.value[0].prefix_flag,'Y')",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set fileNameWithDateSuffix",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameWithDate",
+								"value": {
+									"value": "@{activity('read parameters').output.value[0].target_file_name}_@{variables('dateCCYYMMDD')}",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set fileNameWithDatePrefix",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "fileNameWithDate",
+								"value": {
+									"value": "@{variables('dateCCYYMMDD')}_@{activity('read parameters').output.value[0].target_file_name}",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "Set dateCYYMMDD",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "dateCCYYMMDD",
+					"value": {
+						"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyy-MM-dd')",
+						"type": "Expression"
+					}
 				}
 			}
 		],
@@ -278,6 +359,12 @@
 		},
 		"variables": {
 			"parentFolder": {
+				"type": "String"
+			},
+			"fileNameWithDate": {
+				"type": "String"
+			},
+			"dateCCYYMMDD": {
 				"type": "String"
 			}
 		},
