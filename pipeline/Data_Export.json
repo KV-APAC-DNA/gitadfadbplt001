@@ -579,7 +579,7 @@
 			},
 			"usecase_id": {
 				"type": "int",
-				"defaultValue": 358
+				"defaultValue": 359
 			},
 			"phase_id": {
 				"type": "int",
@@ -587,11 +587,11 @@
 			},
 			"sequence_id": {
 				"type": "int",
-				"defaultValue": 13
+				"defaultValue": 1
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 1897
+				"defaultValue": 1899
 			}
 		},
 		"variables": {
