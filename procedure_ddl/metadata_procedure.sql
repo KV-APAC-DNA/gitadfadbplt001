@@ -58,6 +58,8 @@ $$
             
             IF (dep_proc_status = 'NONE') THEN
                 return_val := :return_val || ',STOP:'||:dep_proc_id ;
+            ELSEIF (dep_proc_status = 'FAIL') THEN
+                return_val := :return_val || ',FAIL:'||:dep_proc_id ;
             ELSEIF (dep_proc_status = 'START') THEN
                 return_val := :return_val ||',WAIT:'||:dep_proc_id ;
             ELSEIF (dep_proc_status = 'FINISH') THEN
@@ -67,6 +69,8 @@ $$
                     CONTINUE;
                 ELSEIF (proc_time < dep_proc_time) THEN
                     CONTINUE;
+                ELSEIF ((DATEDIFF('min',dep_proc_time,current_timestamp())/60) > 24) THEN
+                    return_val := :return_val || ',STOP:'||:dep_proc_id ;
                 ELSE
                     return_val := :return_val || ',NOTIFY:'||:dep_proc_id;
                 END IF;
