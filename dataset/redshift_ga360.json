@@ -1,0 +1,15 @@
+{
+	"name": "redshift_ga360",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsarsprdcon360",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
+		},
+		"annotations": [],
+		"type": "AmazonRedshiftTable",
+		"schema": []
+	}
+}

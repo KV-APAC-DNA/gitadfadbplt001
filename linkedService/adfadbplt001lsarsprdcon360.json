@@ -1,0 +1,26 @@
+{
+	"name": "adfadbplt001lsarsprdcon360",
+	"properties": {
+		"description": "Linked Service to Con360 redshift",
+		"annotations": [],
+		"type": "AmazonRedshift",
+		"typeProperties": {
+			"server": "capture.cpivosyuhhmf.us-east-1.redshift.amazonaws.com",
+			"database": "conglobalprod",
+			"port": 5439,
+			"username": "digitalecosystemuserp",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsarsprdcon360"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

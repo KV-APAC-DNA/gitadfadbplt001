@@ -359,8 +359,7 @@
 				"defaultValue": "Yes"
 			},
 			"container": {
-				"type": "string",
-				"defaultValue": "asp"
+				"type": "string"
 			},
 			"fileUrl": {
 				"type": "string"

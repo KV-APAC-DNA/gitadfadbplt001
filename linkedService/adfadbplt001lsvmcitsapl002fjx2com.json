@@ -1,0 +1,22 @@
+{
+	"name": "adfadbplt001lsvmcitsapl002fjx2com",
+	"properties": {
+		"description": "Linked Service to japan dcl vmcitsapl002f",
+		"annotations": [],
+		"type": "Oracle",
+		"typeProperties": {
+			"connectionString": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsvmcitsapl002fjx2com"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

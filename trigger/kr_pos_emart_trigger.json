@@ -1,0 +1,37 @@
+{
+	"name": "kr_pos_emart_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "ingestion_master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"usecase_id": 343,
+					"phase_id": 1,
+					"category": "kr_pos_emart"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-07-16T13:42:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						6
+					]
+				}
+			}
+		}
+	}
+}

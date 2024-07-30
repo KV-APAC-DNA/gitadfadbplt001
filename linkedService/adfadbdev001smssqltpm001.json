@@ -1,0 +1,28 @@
+{
+	"name": "adfadbdev001smssqltpm001",
+	"properties": {
+		"description": "linked service to regional TPM ms sql server",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "awsbrasgpw0001.jx2.com",
+			"database": "JNJ_TPM",
+			"encrypt": "optional",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "DNA_PRO_X",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbdev001smssqltpm001"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

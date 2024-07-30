@@ -1042,7 +1042,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "extract_source_data",
+						"activity": "If Error Encountered during load",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1070,7 +1070,7 @@
 									"typeProperties": {
 										"variableName": "watermark_value",
 										"value": {
-											"value": "@formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss')",
+											"value": "@if(equals(variables('container'),'jpn'),formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Tokyo Standard Time'), 'yyyy-MM-dd HH:mm:ss'),formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss'))",
 											"type": "Expression"
 										}
 									}
@@ -1212,18 +1212,12 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "load_with_load_method",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@activity('read parameters').output.value[0].is_incremental",
+						"value": "@and(activity('read parameters').output.value[0].is_incremental,\nnot(empty(variables('watermark_value'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -2158,7 +2152,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_batch').error?.message}_",
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{variables('landing_file_path')} \\n\n**ERROR**: _@{activity('move_to_archive_batch').error?.message}_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
@@ -2406,7 +2400,7 @@
 											},
 											"status": "FAIL",
 											"supportMessage": {
-												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('move_to_archive_nonbatch').error?.message}_",
+												"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{variables('landing_file_path')} \\n\n**ERROR**: _@{activity('move_to_archive_nonbatch').error?.message}_",
 												"type": "Expression"
 											},
 											"isBusinessNotification": "No",
@@ -2526,6 +2520,9 @@
 				"defaultValue": "NO"
 			},
 			"watermark_value": {
+				"type": "String"
+			},
+			"trueval": {
 				"type": "String"
 			}
 		},
