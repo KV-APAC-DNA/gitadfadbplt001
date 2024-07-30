@@ -4,8 +4,8 @@
 		"annotations": [],
 		"type": "SalesforceV2",
 		"typeProperties": {
-			"environmentUrl": "https://iconnect-consumer--fullref23.sandbox.my.salesforce.com/",
-			"clientId": "3MVG9plE98f2IjfbBsgnaPpEv7GBWaIks8wSttzur2tgjCIDn6spbH0UcVm0X1Scf1ZWG0VVsy3AsyGUmiT_I",
+			"environmentUrl": "https://iconnect-consumer.my.salesforce.com/",
+			"clientId": "3MVG97quAmFZJfVy1Z4Us.i6dz4FDuElcBdgw4cAR5n.grxXhlMnH6Plo4pBVvqwj4f5OUXA_SgZb3XMD2f9s",
 			"clientSecret": {
 				"type": "AzureKeyVaultSecret",
 				"store": {
