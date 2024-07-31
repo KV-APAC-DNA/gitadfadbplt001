@@ -93,7 +93,7 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"encoding": "ISO2022JP",
+							"encoding": "ISO-2022-JP",
 							"name": "11_ocl_単発主データ"
 						}
 					}
