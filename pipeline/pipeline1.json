@@ -93,8 +93,8 @@
 						"referenceName": "DelimitedText1",
 						"type": "DatasetReference",
 						"parameters": {
-							"encoding": "SHIFT-JIS",
-							"name": "ocl_単発主データ_ShifftJisEncoded"
+							"encoding": "ISO-2022-JP",
+							"name": "ocl_単発主データ_Iso2022JpEncoded"
 						}
 					}
 				]
