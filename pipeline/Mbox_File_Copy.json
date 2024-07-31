@@ -449,7 +449,29 @@
 							"outputs": [
 								{
 									"referenceName": "Mbox_File_Copy_adls",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('read parameters').output.value[0].container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@activity('read parameters').output.value[0].target_folder_path",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@{variables('fileNameWithDate')}.@{activity('read parameters').output.value[0].file_extn}",
+											"type": "Expression"
+										},
+										"encoding": {
+											"value": "@activity('read parameters').output.value[0].encoding",
+											"type": "Expression"
+										},
+										"delimeter": {
+											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
