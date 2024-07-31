@@ -20,9 +20,6 @@
 			},
 			"delimeter": {
 				"type": "string"
-			},
-			"splitFile": {
-				"type": "string"
 			}
 		},
 		"folder": {
