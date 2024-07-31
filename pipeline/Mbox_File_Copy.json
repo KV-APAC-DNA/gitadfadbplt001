@@ -404,6 +404,10 @@
 									},
 									"formatSettings": {
 										"type": "DelimitedTextWriteSettings",
+										"maxRowsPerFile": {
+											"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),2000,5000000)",
+											"type": "Expression"
+										},
 										"quoteAllText": true,
 										"fileExtension": ".txt"
 									}
