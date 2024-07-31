@@ -386,8 +386,72 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"enableStaging": false
-							}
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Mbox_File_Copy_adls",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('read parameters').output.value[0].container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@activity('read parameters').output.value[0].source_folder_path",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
+											"type": "Expression"
+										},
+										"encoding": {
+											"value": "@activity('read parameters').output.value[0].encoding",
+											"type": "Expression"
+										},
+										"delimeter": {
+											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Mbox_File_Copy_adls",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
