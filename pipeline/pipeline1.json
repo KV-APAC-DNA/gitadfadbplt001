@@ -94,7 +94,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"encoding": "SHIFT-JIS",
-							"name": "11_ocl_単発主データ"
+							"name": "ocl_単発主データ_ShifftJisEncoded"
 						}
 					}
 				]
