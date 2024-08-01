@@ -213,7 +213,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@activity('read parameters').output.value[0].encoding",
+						"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),'splitCase',activity('read parameters').output.value[0].encoding)",
 						"type": "Expression"
 					},
 					"cases": [
@@ -230,6 +230,9 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "splitCase"
 						}
 					],
 					"defaultActivities": [
