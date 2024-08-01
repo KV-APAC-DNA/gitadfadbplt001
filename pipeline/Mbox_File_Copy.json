@@ -739,6 +739,46 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Delete source",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Move to Achive",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "AdlsFileDataset",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "@activity('read parameters').output.value[0].container",
+							"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
+							"fileName": {
+								"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
+								"type": "Expression"
+							}
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
 			}
 		],
 		"parameters": {
