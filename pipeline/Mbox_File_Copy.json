@@ -194,7 +194,7 @@
 				"typeProperties": {
 					"variableName": "dateCCYYMMDD",
 					"value": {
-						"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyy-MM-dd')",
+						"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')",
 						"type": "Expression"
 					}
 				}
@@ -416,7 +416,7 @@
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive",
+								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive/@{variables('dateCCYYMMDD')}",
 								"type": "Expression"
 							},
 							"fileName": {
