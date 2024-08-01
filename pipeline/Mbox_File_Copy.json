@@ -499,6 +499,8 @@
 								{
 									"name": "Delete old name file",
 									"type": "Delete",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Backup with new name",
