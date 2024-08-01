@@ -595,7 +595,7 @@
 							"delimeter": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')"
 						}
 					},
-					"enableLogging": true,
+					"enableLogging": false,
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"recursive": true,
