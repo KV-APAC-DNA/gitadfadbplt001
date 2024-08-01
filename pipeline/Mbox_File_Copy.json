@@ -744,6 +744,8 @@
 			{
 				"name": "Delete source",
 				"type": "Delete",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Move to Achive",
