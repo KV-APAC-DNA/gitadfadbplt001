@@ -98,6 +98,40 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Delete source file",
+				"type": "Delete",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Mbox_File_Copy_adls",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "@activity('read parameters').output.value[0].container",
+							"directory": "@activity('read parameters').output.value[0].source_folder_path",
+							"fileName": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
+							"encoding": "UTF-8",
+							"delimeter": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')"
+						}
+					},
+					"enableLogging": false,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
+				}
 			}
 		],
 		"folder": {
