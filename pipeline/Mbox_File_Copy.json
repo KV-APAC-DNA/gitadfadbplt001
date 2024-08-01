@@ -293,7 +293,7 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@activity('read parameters').output.value[0].source_folder_path",
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
 											"type": "Expression"
 										},
 										"fileName": {
@@ -318,7 +318,7 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@activity('read parameters').output.value[0].target_folder_path",
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
 											"type": "Expression"
 										},
 										"fileName": {
@@ -399,7 +399,7 @@
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@activity('read parameters').output.value[0].source_folder_path",
+								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
 								"type": "Expression"
 							},
 							"fileName": {
@@ -424,7 +424,7 @@
 								"type": "Expression"
 							},
 							"directory": {
-								"value": "@{activity('read parameters').output.value[0].source_folder_path}/archive",
+								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive",
 								"type": "Expression"
 							},
 							"fileName": {
