@@ -361,7 +361,7 @@
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
 												"maxRowsPerFile": 2000,
-												"fileNamePrefix": "abc*",
+												"fileNamePrefix": "",
 												"quoteAllText": true,
 												"fileExtension": {
 													"value": ".@{activity('read parameters').output.value[0].file_extn}",
@@ -526,7 +526,7 @@
 												"fileName": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}"
 											}
 										},
-										"enableLogging": true,
+										"enableLogging": false,
 										"storeSettings": {
 											"type": "AzureBlobFSReadSettings",
 											"recursive": true,
