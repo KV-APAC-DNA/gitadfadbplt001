@@ -353,7 +353,7 @@
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
 												"maxRowsPerFile": 2000,
-												"fileNamePrefix": "",
+												"fileNamePrefix": "abc*",
 												"quoteAllText": true,
 												"fileExtension": {
 													"value": ".@{activity('read parameters').output.value[0].file_extn}",
