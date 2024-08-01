@@ -64,7 +64,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Delete source file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -187,7 +187,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "Wait1",
+						"activity": "Delete source file",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -240,22 +240,6 @@
 							"type": "Expression"
 						}
 					}
-				}
-			},
-			{
-				"name": "Wait1",
-				"type": "Wait",
-				"dependsOn": [
-					{
-						"activity": "Switch For Encoding",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
 				}
 			},
 			{
@@ -440,10 +424,7 @@
 											"value": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
 											"type": "Expression"
 										},
-										"encoding": {
-											"value": "@activity('read parameters').output.value[0].encoding",
-											"type": "Expression"
-										},
+										"encoding": "UTF-8",
 										"delimeter": {
 											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
 											"type": "Expression"
@@ -468,10 +449,7 @@
 											"value": "@{variables('fileNameWithDate')}.@{activity('read parameters').output.value[0].file_extn}",
 											"type": "Expression"
 										},
-										"encoding": {
-											"value": "@activity('read parameters').output.value[0].encoding",
-											"type": "Expression"
-										},
+										"encoding": "@activity('read parameters').output.value[0].encoding",
 										"delimeter": {
 											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
 											"type": "Expression"
@@ -481,6 +459,148 @@
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "Move to Achive",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Switch For Encoding",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "Mbox_File_Copy_adls",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@activity('read parameters').output.value[0].container",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@activity('read parameters').output.value[0].source_folder_path",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
+								"type": "Expression"
+							},
+							"encoding": "UTF-8",
+							"delimeter": {
+								"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "Mbox_File_Copy_adls",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@activity('read parameters').output.value[0].container",
+								"type": "Expression"
+							},
+							"directory": {
+								"value": "@{activity('read parameters').output.value[0].source_folder_path}/archive",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@{variables('fileNameWithDate')}.@{activity('read parameters').output.value[0].file_extn}",
+								"type": "Expression"
+							},
+							"encoding": "UTF-8",
+							"delimeter": {
+								"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Delete source file",
+				"type": "Delete",
+				"dependsOn": [
+					{
+						"activity": "Move to Achive ",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "Mbox_File_Copy_adls",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "@activity('read parameters').output.value[0].container",
+							"directory": "@activity('read parameters').output.value[0].source_folder_path",
+							"fileName": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
+							"encoding": "UTF-8",
+							"delimeter": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')"
+						}
+					},
+					"enableLogging": true,
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					}
 				}
 			}
 		],
