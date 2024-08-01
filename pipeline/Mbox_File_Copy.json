@@ -321,10 +321,6 @@
 											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
 											"type": "Expression"
 										},
-										"fileName": {
-											"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),'',concat(variables('fileNameWithDate'),activity('read parameters').output.value[0].file_extn))",
-											"type": "Expression"
-										},
 										"encoding": "@activity('read parameters').output.value[0].encoding",
 										"delimeter": {
 											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
