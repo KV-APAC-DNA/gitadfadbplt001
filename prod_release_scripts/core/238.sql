@@ -1,1 +1,31 @@
+CREATE or replace TABLE PROD_DNA_CORE.INDEDW_INTEGRATION.EDW_PRODUCT_DIM_SYNC (		
+    product_code varchar(50),		
+    product_name varchar(50),		
+    product_desc varchar(100),		
+    franchise_name varchar(50),		
+    brand_name varchar(50),		
+    product_category_name varchar(150),		
+    variant_name varchar(150),		
+    mothersku_name varchar(150),		
+    uom numeric(18,0),		
+    std_nr numeric(18,2),	
+    case_lot numeric(18,2),	
+    sale_uom numeric(18,0),	
+    sale_conversion_factor numeric(18,0),		
+    base_uom numeric(18,0),		
+    int_uom numeric(18,0),		
+    gross_wt numeric(13,3),		
+    net_wt numeric(13,3),		
+    active_flag character(1),		
+    delete_flag character(1),		
+    shelf_life numeric(18,0),		
+    crt_dttm timestamp without time zone,		
+    updt_dttm timestamp without time zone,		
+    franchise_code varchar(50),
+    brand_code varchar(50),		
+    product_category_code varchar(50),		
+    variant_code varchar(50),		
+    mothersku_code varchar(50)		
+)
+
 
