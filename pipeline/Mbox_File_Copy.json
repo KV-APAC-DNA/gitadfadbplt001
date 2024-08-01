@@ -268,7 +268,10 @@
 												"maxRowsPerFile": 2000,
 												"fileNamePrefix": "",
 												"quoteAllText": true,
-												"fileExtension": ".txt"
+												"fileExtension": {
+													"value": ".@{activity('read parameters').output.value[0].file_extn}",
+													"type": "Expression"
+												}
 											}
 										},
 										"enableStaging": false,
