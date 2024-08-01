@@ -464,51 +464,17 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "Mbox_File_Copy_adls",
-											"type": "DatasetReference",
-											"parameters": {
-												"container": {
-													"value": "@activity('read parameters').output.value[0].container",
-													"type": "Expression"
-												},
-												"directory": {
-													"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
-													"type": "Expression"
-												},
-												"fileName": {
-													"value": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
-													"type": "Expression"
-												},
-												"encoding": "UTF-8",
-												"delimeter": {
-													"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
-													"type": "Expression"
-												}
-											}
+											"referenceName": "AdlsFileDataset",
+											"type": "DatasetReference"
 										}
 									],
 									"outputs": [
 										{
-											"referenceName": "Mbox_File_Copy_adls",
+											"referenceName": "AdlsFileDataset",
 											"type": "DatasetReference",
 											"parameters": {
-												"container": {
-													"value": "@activity('read parameters').output.value[0].container",
-													"type": "Expression"
-												},
-												"directory": {
-													"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
-													"type": "Expression"
-												},
-												"fileName": {
-													"value": "@{variables('fileNameWithDate')}.@{activity('read parameters').output.value[0].file_extn}",
-													"type": "Expression"
-												},
-												"encoding": "UTF-8",
-												"delimeter": {
-													"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
-													"type": "Expression"
-												}
+												"container": "@activity('read parameters').output.value[0].container",
+												"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}"
 											}
 										}
 									]
