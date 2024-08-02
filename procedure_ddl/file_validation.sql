@@ -27,6 +27,7 @@
 -- 28/06/24 Srihari     Added logic for header validation of zip source files.
 -- 04/07/24 Thanish   Added logic for file name date validation
 -- 18/7/24  Thanish    Fixed logic for header validation
+-- 2/8/24   Thanish    Added file name validation logic for EOM
 
 CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
@@ -569,7 +570,7 @@ def north_asia_processing(CURRENT_FILE):
         file=CURRENT_FILE.rsplit("_",2)[0]
 
     elif "LOTTE_LOGISTICS_YANG_JU" in CURRENT_FILE:
-        file=CURRENT_FILE.rsplit("_",1)[0]
+        file=CURRENT_FILE.replace("_"," ")
 
     else:
         file = CURRENT_FILE.replace(" ","_")
@@ -627,7 +628,7 @@ def file_validation(counter,extracted_filename,val_file_name,schema):
                 file_name_validation_status="Invalid File Name"
                 counter=1
 
-        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfmidi" in extracted_filename or "Stock_Alfmidi" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename or ("JNJ" in extracted_filename and schema=="NTASDL_RAW"):
+        elif "Sellout_Superindo" in extracted_filename or "Stock_Superindo" in extracted_filename or "Sellout_Alfmidi" in extracted_filename or "Stock_Alfmidi" in extracted_filename or "Sellout_Alfamart" in extracted_filename or "Stock_Alfamart" in extracted_filename  or "Sellout_Carrefour" in extracted_filename or "Stock_Carrefour" in extracted_filename or "Diamond" in extracted_filename or "Stock_Guardian" in extracted_filename or "Indomaret" in extracted_filename or "Indogrosir" in extracted_filename or ("JNJ" in extracted_filename and schema=="NTASDL_RAW") or "6P_AI_Calculated" in extracted_filename:
             file_name_date_format=extracted_filename.rsplit("_",1)[1]
             if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
                 if len(file_name_date_format) == 6 and file_name_date_format.isdigit():
@@ -662,6 +663,21 @@ def file_validation(counter,extracted_filename,val_file_name,schema):
 
                 else:
                     file_name_validation_status="File Name Valid, Invalid Date format- "+ "Expected ''YYYYMMDD'' but received " + file_name_date_format
+                    counter=1
+            else:
+                
+                file_name_validation_status="Invalid File Name"
+                counter=1
+
+
+        elif "OKR_Alteryx" in extracted_filename:
+            file_name_date_format=extracted_filename.rsplit("_",1)[1]
+            if val_file_name.upper() == extracted_filename.rsplit("_",1)[0].upper():
+                if len(file_name_date_format) == 14 and file_name_date_format.isdigit():
+                    file_name_validation_status=""
+
+                else:
+                    file_name_validation_status="File Name Valid, Invalid Date format- "+ "Expected ''YYYYMMDDHHmmss'' but received " + file_name_date_format
                     counter=1
             else:
                 
