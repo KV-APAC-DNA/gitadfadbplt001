@@ -1,0 +1,66 @@
+{
+	"name": "data_export_csv_tsv_blob_sink",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001_blob",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"directory": {
+				"type": "string"
+			},
+			"file": {
+				"type": "string"
+			},
+			"quotesEnclosed": {
+				"type": "string"
+			},
+			"headerNeeded": {
+				"type": "string"
+			},
+			"delimeter": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/export"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@dataset().file",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().directory",
+					"type": "Expression"
+				},
+				"container": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
+			},
+			"columnDelimiter": {
+				"value": "@dataset().delimeter",
+				"type": "Expression"
+			},
+			"rowDelimiter": "\n",
+			"escapeChar": "\\",
+			"firstRowAsHeader": {
+				"value": "@if(equals(dataset().headerNeeded,'Y'),true,false)",
+				"type": "Expression"
+			},
+			"quoteChar": {
+				"value": "@if(equals(dataset().quotesEnclosed,'Y'),'\"','')",
+				"type": "Expression"
+			}
+		},
+		"schema": []
+	}
+}
