@@ -1,5 +1,5 @@
 delete from PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos where ctry_cd='TW' and pos_dt like '2024-06%' AND src_sys_cd = 'EC';
-create or replace PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos_temp clone PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos;
+create or replace table PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos_temp clone PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos;
 
 create or replace transient table PROD_DNA_CORE.NTAWKS_INTEGRATION.wks_itg_pos_ec
          as
