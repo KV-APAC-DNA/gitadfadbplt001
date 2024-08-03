@@ -2,7 +2,7 @@ delete from PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos where ctry_cd='TW' and pos_
 create or replace table PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos_temp clone PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_pos;
 
 create or replace transient table PROD_DNA_CORE.NTAWKS_INTEGRATION.wks_itg_pos_ec
-         as
+         as(
         with source as (
     select * from PROD_DNA_LOAD.ntasdl_raw.sdl_tw_pos_ec
 ),
