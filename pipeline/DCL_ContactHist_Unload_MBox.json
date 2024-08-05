@@ -330,7 +330,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "@activity('read parameters').output.value[0].container",
-										"directory": "dev/DCL/jjrnki/contact_hist/unloads",
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+											"type": "Expression"
+										},
 										"file": "@{variables('date_yyyyMMddHHmmss')}.@{activity('read parameters').output.value[0].fileExtn}",
 										"quotesEnclosed": "N",
 										"headerNeeded": "Y",
@@ -423,8 +426,8 @@
 				}
 			},
 			{
-				"name": "zip files",
-				"type": "Copy",
+				"name": "If Files Generated",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
 						"activity": "For every chno",
@@ -433,84 +436,98 @@
 						]
 					}
 				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"wildcardFolderPath": {
-								"value": "@activity('read parameters').output.value[0].target_folder_path",
-								"type": "Expression"
-							},
-							"wildcardFileName": {
-								"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*",
-								"type": "Expression"
-							},
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
+					"expression": {
+						"value": "@greater(activity('Fetch Distinct ChNo').output.resultSets[0].rowCount,0)",
+						"type": "Expression"
 					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "AdlsCsvForZippedSrc",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@activity('read parameters').output.value[0].container",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "AdlsCsvForZippedSink",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": "@activity('read parameters').output.value[0].container",
-							"folder": {
-								"value": "@activity('read parameters').output.value[0].target_folder_path",
-								"type": "Expression"
+					"ifTrueActivities": [
+						{
+							"name": "zip files",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
 							},
-							"fileName": {
-								"value": "@{variables('date_yyyyMMddHHmmss')}.zip",
-								"type": "Expression"
-							}
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"wildcardFolderPath": {
+											"value": "@activity('read parameters').output.value[0].target_folder_path",
+											"type": "Expression"
+										},
+										"wildcardFileName": {
+											"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*",
+											"type": "Expression"
+										},
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "AdlsCsvForZippedSrc",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('read parameters').output.value[0].container",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "AdlsCsvForZippedSink",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "@activity('read parameters').output.value[0].container",
+										"folder": {
+											"value": "@activity('read parameters').output.value[0].target_folder_path",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@{variables('date_yyyyMMddHHmmss')}.zip",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						}
-					}
-				]
+					]
+				}
 			}
 		],
 		"parameters": {
