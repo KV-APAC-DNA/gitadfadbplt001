@@ -504,6 +504,10 @@
 										"container": {
 											"value": "@activity('read parameters').output.value[0].container",
 											"type": "Expression"
+										},
+										"folder": {
+											"value": "@activity('read parameters').output.value[0].target_folder_path",
+											"type": "Expression"
 										}
 									}
 								}
