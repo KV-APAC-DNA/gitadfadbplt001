@@ -117,35 +117,11 @@
 				}
 			},
 			{
-				"name": "Set date_yyyyMMddHHmmss",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "read parameters",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "date_yyyyMMddHHmmss",
-					"value": {
-						"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMddHHmmss')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
 				"name": "Fetch necessary columns",
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Set date_yyyyMMddHHmmss",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -232,20 +208,11 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Wait1",
-							"type": "Wait",
-							"dependsOn": [],
-							"userProperties": [],
-							"typeProperties": {
-								"waitTimeInSeconds": 1
-							}
-						},
-						{
 							"name": "Set chno",
 							"type": "SetVariable",
 							"dependsOn": [
 								{
-									"activity": "Wait1",
+									"activity": "Set date_yyyyMMddHHmmss",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -368,6 +335,23 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Set date_yyyyMMddHHmmss",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "date_yyyyMMddHHmmss",
+								"value": {
+									"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMddHHmmss')",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
