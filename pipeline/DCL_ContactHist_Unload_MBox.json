@@ -341,7 +341,7 @@
 							"typeProperties": {
 								"variableName": "appendedList",
 								"value": {
-									"value": "@if(contains(item().COLUMN_NAME,'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID'),concat(variables('temp'),', JPDCLEDW_INTEGRATION.encryption(顧客ID)  as \"顧客ID\"'),concat(variables('temp'),', ' ,'\"',item().COLUMN_NAME,'\"'))",
+									"value": "@if(contains(item().COLUMN_NAME,'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID'),concat(variables('temp'),', JPDCLEDW_INTEGRATION.encryption(顧客id)  as \"顧客ID\"'),concat(variables('temp'),', ' ,'\"',item().COLUMN_NAME,'\"'))",
 									"type": "Expression"
 								}
 							}
