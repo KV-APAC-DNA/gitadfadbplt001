@@ -181,7 +181,7 @@
 				"type": "Script",
 				"dependsOn": [
 					{
-						"activity": "Fetch necessary columns",
+						"activity": "Append all column names",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -266,6 +266,69 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Append all column names",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Fetch necessary columns",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Fetch necessary columns').output.resultSets[0].rows",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"activities": [
+						{
+							"name": "Set appendedList",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Set temp",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "appendedList",
+								"value": {
+									"value": "@concat(variables('temp'),', ' ,item().COLUMN_NAME)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "Set temp",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "temp",
+								"value": {
+									"value": "@variables('appendedList')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -301,6 +364,12 @@
 				"type": "String"
 			},
 			"chno": {
+				"type": "String"
+			},
+			"appendedList": {
+				"type": "String"
+			},
+			"temp": {
 				"type": "String"
 			}
 		},
