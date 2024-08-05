@@ -263,6 +263,42 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "Fetch Data for every chno",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Set chno",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName}",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
 						}
 					]
 				}
