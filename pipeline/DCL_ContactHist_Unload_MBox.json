@@ -679,7 +679,7 @@
 										"folder": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}"
 									}
 								},
-								"enableLogging": true,
+								"enableLogging": false,
 								"storeSettings": {
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
