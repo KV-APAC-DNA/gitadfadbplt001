@@ -335,12 +335,37 @@
 										}
 									}
 								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
 								"enableStaging": false
 							},
 							"inputs": [
 								{
 									"referenceName": "DNA_CORE_Dataset",
 									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "data_export_csv_tsv_blob_sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "@activity('read parameters').output.value[0].container",
+										"directory": "dev/DCL/jjrnki/contact_hist/unloads",
+										"file": "@{variables('date_yyyyMMddHHmmss')}.@{activity('read parameters').output.value[0].fileExtn}",
+										"quotesEnclosed": "N",
+										"headerNeeded": "Y",
+										"delimeter": ","
+									}
 								}
 							]
 						}
