@@ -13,10 +13,13 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
+				"fileName": "test.zip",
 				"folderPath": "dev/DCL/jjrnki/contact_hist/unloads",
 				"fileSystem": "jpn"
 			},
 			"columnDelimiter": ",",
+			"compressionCodec": "ZipDeflate",
+			"compressionLevel": "Optimal",
 			"escapeChar": "\\",
 			"firstRowAsHeader": true,
 			"quoteChar": ""
