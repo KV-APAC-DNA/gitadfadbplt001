@@ -289,7 +289,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "SnowflakeSource",
-									"query": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName}",
+									"query": {
+										"value": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
+										"type": "Expression"
+									},
 									"exportSettings": {
 										"type": "SnowflakeExportCopyCommand",
 										"additionalCopyOptions": {
