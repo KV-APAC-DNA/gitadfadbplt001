@@ -305,7 +305,7 @@
 							"typeProperties": {
 								"variableName": "appendedList",
 								"value": {
-									"value": "@concat(variables('temp'),', ' ,item().COLUMN_NAME)",
+									"value": "@if(empty(variables('temp')),item().COLUMN_NAME,concat(variables('temp'),', ' ,item().COLUMN_NAME))",
 									"type": "Expression"
 								}
 							}
