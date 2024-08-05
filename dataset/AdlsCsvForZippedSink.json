@@ -5,6 +5,17 @@
 			"referenceName": "adfadbplt001lsdlsadbplt001",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"container": {
+				"type": "string"
+			},
+			"folder": {
+				"type": "string"
+			},
+			"fileName": {
+				"type": "string"
+			}
+		},
 		"folder": {
 			"name": "ADF_Framework_Datasets/export"
 		},
@@ -13,9 +24,18 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobFSLocation",
-				"fileName": "test.zip",
-				"folderPath": "dev/DCL/jjrnki/contact_hist/unloads",
-				"fileSystem": "jpn"
+				"fileName": {
+					"value": "@dataset().fileName",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@dataset().folder",
+					"type": "Expression"
+				},
+				"fileSystem": {
+					"value": "@dataset().container",
+					"type": "Expression"
+				}
 			},
 			"columnDelimiter": ",",
 			"compressionCodec": "ZipDeflate",
