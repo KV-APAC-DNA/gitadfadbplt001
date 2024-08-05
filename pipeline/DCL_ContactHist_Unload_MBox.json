@@ -167,7 +167,10 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": " "
+							"text": {
+								"value": "select\n\tcase\n\t\twhen lower(column_name) = '顧客id' then 'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID '\n\t\telse column_name \n\tend as column_name\nfrom\n\t(select\tcolumn_name, ordinal_position\tfrom  INFORMATION_SCHEMA.COLUMNS WHERE table_name = 'contact_hist' and column_name not in ('source_file_date','inserted_date','inserted_by','updated_date','updated_by') order by\tordinal_position asc )",
+								"type": "Expression"
+							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
