@@ -447,8 +447,14 @@
 						"storeSettings": {
 							"type": "AzureBlobFSReadSettings",
 							"recursive": true,
-							"wildcardFolderPath": "dev/DCL/jjrnki/contact_hist/unloads",
-							"wildcardFileName": "20240805*",
+							"wildcardFolderPath": {
+								"value": "@activity('read parameters').output.value[0].target_folder_path",
+								"type": "Expression"
+							},
+							"wildcardFileName": {
+								"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*",
+								"type": "Expression"
+							},
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
@@ -479,13 +485,30 @@
 				"inputs": [
 					{
 						"referenceName": "AdlsCsvForZippedSrc",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@activity('read parameters').output.value[0].container",
+								"type": "Expression"
+							}
+						}
 					}
 				],
 				"outputs": [
 					{
 						"referenceName": "AdlsCsvForZippedSink",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "@activity('read parameters').output.value[0].container",
+							"folder": {
+								"value": "@activity('read parameters').output.value[0].target_folder_path",
+								"type": "Expression"
+							},
+							"fileName": {
+								"value": "@{variables('date_yyyyMMddHHmmss')}.zip",
+								"type": "Expression"
+							}
+						}
 					}
 				]
 			}
