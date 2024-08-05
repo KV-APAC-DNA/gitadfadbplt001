@@ -226,7 +226,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('Fetch Distinct ChNo').output",
+						"value": "@activity('Fetch Distinct ChNo').output.resultSets[0].rows",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -238,6 +238,30 @@
 							"userProperties": [],
 							"typeProperties": {
 								"waitTimeInSeconds": 1
+							}
+						},
+						{
+							"name": "Set chno",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "Wait1",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "chno",
+								"value": {
+									"value": "@item().コンタクト履歴番号",
+									"type": "Expression"
+								}
 							}
 						}
 					]
@@ -274,6 +298,9 @@
 				"type": "String"
 			},
 			"date_yyyyMMddHHmmss": {
+				"type": "String"
+			},
+			"chno": {
 				"type": "String"
 			}
 		},
