@@ -1,5 +1,5 @@
 {
-	"name": "AdlsCsvForZipped",
+	"name": "AdlsCsvForZippedSrc",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
