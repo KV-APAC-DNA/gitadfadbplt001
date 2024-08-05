@@ -211,6 +211,26 @@
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
 				}
+			},
+			{
+				"name": "For every chno",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "Fetch Distinct ChNo",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('Fetch Distinct ChNo').output",
+						"type": "Expression"
+					},
+					"isSequential": true
+				}
 			}
 		],
 		"parameters": {
