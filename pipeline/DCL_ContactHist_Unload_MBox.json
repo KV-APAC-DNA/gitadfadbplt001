@@ -299,6 +299,50 @@
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
 							}
+						},
+						{
+							"name": "create csv",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Fetch Data for every chno",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SnowflakeSource",
+									"query": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName}",
+									"exportSettings": {
+										"type": "SnowflakeExportCopyCommand",
+										"additionalCopyOptions": {
+											"MAX_FILE_SIZE": "524288000",
+											"OVERWRITE": "TRUE"
+										},
+										"additionalFormatOptions": {
+											"NULL_IF": "()",
+											"EMPTY_FIELD_AS_NULL": "FALSE"
+										}
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DNA_CORE_Dataset",
+									"type": "DatasetReference"
+								}
+							]
 						}
 					]
 				}
