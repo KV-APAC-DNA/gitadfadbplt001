@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "KR_OTC_INV_ETL_FRAMEWORK"
+					"category": "KR_OTC_ECOM_INV"
 				}
 			}
 		],
