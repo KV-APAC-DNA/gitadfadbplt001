@@ -20,7 +20,7 @@
 				"frequency": "Week",
 				"interval": 1,
 				"startTime": "2024-08-06T06:29:00",
-				"timeZone": "India Standard Time",
+				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						30
