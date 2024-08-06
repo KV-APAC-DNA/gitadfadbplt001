@@ -684,7 +684,7 @@
 									"type": "AzureBlobFSReadSettings",
 									"recursive": true,
 									"wildcardFileName": {
-										"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMddHH')}*.csv",
+										"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*.csv",
 										"type": "Expression"
 									},
 									"enablePartitionDiscovery": false
@@ -702,7 +702,10 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "date_for_zip",
-								"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMddHHmmss')"
+								"value": {
+									"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMddHHmmss')",
+									"type": "Expression"
+								}
 							}
 						}
 					]
