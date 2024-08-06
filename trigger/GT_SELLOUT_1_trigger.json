@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "GT_SELLOUT_1"
+					"category": "GT_SELLOUT"
 				}
 			}
 		],
