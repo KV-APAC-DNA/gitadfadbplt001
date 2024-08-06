@@ -579,7 +579,7 @@
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
 										"wildcardFolderPath": {
-											"value": "@activity('read parameters').output.value[0].target_folder_path",
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
 											"type": "Expression"
 										},
 										"wildcardFileName": {
