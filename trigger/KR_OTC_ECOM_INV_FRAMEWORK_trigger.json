@@ -1,5 +1,5 @@
 {
-	"name": "KR_OTC_INV_ETL_FRAMEWORK_trigger",
+	"name": "KR_OTC_ECOM_INV_FRAMEWORK_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
