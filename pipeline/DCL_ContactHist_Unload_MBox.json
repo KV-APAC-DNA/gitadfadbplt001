@@ -473,7 +473,7 @@
 											"type": "Expression"
 										},
 										"wildcardFileName": {
-											"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*",
+											"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*.csv",
 											"type": "Expression"
 										},
 										"enablePartitionDiscovery": false
