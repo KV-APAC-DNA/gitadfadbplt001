@@ -877,6 +877,136 @@
 									"enablePartitionDiscovery": false
 								}
 							}
+						},
+						{
+							"name": "error log - zip files",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "zip files",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "@activity('zip files').error?.message",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "@activity('zip files').error?.errorCode",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
+						},
+						{
+							"name": "Send error - zip files",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "zip files",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "FAIL",
+									"supportMessage": {
+										"value": "There is some issue while zipping csv files into ADLS : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**TARGET_FILE_PATH**: @{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path} \\n\n**TARGET_FILE_NAME**: @{variables('date_for_zip')}.zip \\n\n**SOURCE_FILE_PATH**: @{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path} \\n\n**SOURCE_FILE_NAME**: @{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*.csv \\n\n**ERROR**: _@{activity('zip files').error?.message}_",
+										"type": "Expression"
+									},
+									"isBusinessNotification": "No",
+									"isSupportNotification": "Yes",
+									"isError": "Yes"
+								}
+							}
+						},
+						{
+							"name": "zip files error",
+							"type": "Fail",
+							"dependsOn": [
+								{
+									"activity": "zip files",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"message": {
+									"value": "Error While zipping csv files into ADLS: @{activity('zip files').error?.errorCode} @{activity('zip files').error?.message}",
+									"type": "Expression"
+								},
+								"errorCode": "2000"
+							}
 						}
 					]
 				}
