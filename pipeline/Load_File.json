@@ -775,7 +775,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@if(greater(int(activity('load from file prox').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Kolkata''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set FILENAME=''',pipeline().parameters.sourceFileName,''', RUN_ID= TO_CHAR(current_timestamp(), ''YYYYMMDDHHmmss'') ,CRTD_DTTM=CURRENT_TIMESTAMP() where CRTD_DTTM is null;'),'Select ''no_update_needed'';')",
+													"value": "@if(greater(int(activity('load from file prox').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Kolkata''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set FILENAME=''',pipeline().parameters.sourceFileName,''', RUN_ID= TO_CHAR(current_timestamp(), ''YYYYMMDDHHmmss'') ,CRT_DTTM=CURRENT_TIMESTAMP() where CRT_DTTM is null;'),'Select ''no_update_needed'';')",
 													"type": "Expression"
 												}
 											}
