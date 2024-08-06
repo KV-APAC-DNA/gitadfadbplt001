@@ -1,5 +1,5 @@
 {
-	"name": "UAT_SAP_BW_BILLING_COND_trigger",
+	"name": "UAT_SAP_BW_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_BILLING_COND"
+					"category": "SAP_BW"
 				}
 			}
 		],
