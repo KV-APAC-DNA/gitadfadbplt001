@@ -139,7 +139,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "check running status",
+						"activity": "audit start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
