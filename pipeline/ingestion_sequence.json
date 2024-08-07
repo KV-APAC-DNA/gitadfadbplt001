@@ -57,7 +57,7 @@
 						"value": "@activity('get processes').output.value",
 						"type": "Expression"
 					},
-					"batchCount": 10,
+					"batchCount": 20,
 					"activities": [
 						{
 							"name": "decide source",
