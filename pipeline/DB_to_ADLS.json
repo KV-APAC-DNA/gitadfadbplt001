@@ -2486,7 +2486,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "sql_server_sink_compressed",
+											"referenceName": "sql_server_sink",
 											"type": "DatasetReference",
 											"parameters": {
 												"container": {

@@ -79,6 +79,52 @@
 								"errorCode": "1000"
 							}
 						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "audit start",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": 0,
+									"status": "START",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline().GroupId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": 0,
+									"group_id": 0
+								}
+							}
+						}
 					]
 				}
 			},
@@ -139,7 +185,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "audit start",
+						"activity": "check running status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1087,16 +1133,11 @@
 			"force_rerun": {
 				"type": "bool",
 				"defaultValue": false
-			},
-			"ignore_deps": {
-				"type": "bool",
-				"defaultValue": false
 			}
 		},
 		"variables": {
-			"deps_status": {
-				"type": "String",
-				"defaultValue": "WAIT"
+			"test_variable": {
+				"type": "String"
 			},
 			"isphasemasterfailed": {
 				"type": "Boolean",

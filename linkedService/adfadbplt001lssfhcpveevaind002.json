@@ -1,0 +1,25 @@
+{
+	"name": "adfadbplt001lssfhcpveevaind002",
+	"properties": {
+		"annotations": [],
+		"type": "SalesforceV2",
+		"typeProperties": {
+			"environmentUrl": "https://iconnect-consumer.my.salesforce.com/",
+			"clientId": "3MVG97quAmFZJfVy1Z4Us.i6dz4FDuElcBdgw4cAR5n.grxXhlMnH6Plo4pBVvqwj4f5OUXA_SgZb3XMD2f9s",
+			"clientSecret": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lssfhcpveevaind002"
+			},
+			"apiVersion": "61.0",
+			"authenticationType": "OAuth2ClientCredential"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
