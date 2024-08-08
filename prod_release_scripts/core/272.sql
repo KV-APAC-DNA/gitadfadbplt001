@@ -1,0 +1,2 @@
+insert into PROD_DNA_CORE.DBT_CLOUD_PR_5458_528.aspedw_integration__edw_rpt_retail_excellence_details 
+select * from PROD_DNA_CORE.DBT_CLOUD_PR_5458_528.ASPEDW_INTEGRATION__edw_my_rpt_retail_excellence_details;
