@@ -1,0 +1,3 @@
+INSERT INTO phlitg_integration.itg_ph_dms_sellout_sales_fact (dstrbtr_grp_cd,cntry_cd,dstrbtr_cust_id,trnsfrm_cust_id,order_dt,invoice_dt,order_no,invoice_no,sls_route_id,sls_route_nm,sls_grp,sls_rep_id,sls_rep_nm,dstrbtr_prod_id,uom,gross_price,qty,gts_val,dscnt,nts_val,line_num,prom_id,cdl_dttm,crtd_dttm,updt_dttm,wh_id,sls_rep_type,order_qty,order_delivery_dt,order_status) 
+VALUES
+  ('009','PH','000000298995','009000298995',DATE '2024-07-27',DATE '2024-07-27','SL00900136343','SII432357',NULL,NULL,'DMT 13','904','DARWIN CALIWAG','79633283','PC',111.7500,48.0000,5364.0000,0.0000,4789.2900,26.0000,NULL,'20240802163811',TIMESTAMP '2024-08-02 08:38:51.096869',NULL,'R1R','BOOKING',48.0000,DATE '1900-01-01','Completed');
