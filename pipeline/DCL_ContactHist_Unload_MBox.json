@@ -1344,7 +1344,7 @@
 											"type": "Expression"
 										},
 										"filename": {
-											"value": "adf_test_@{variables('date_for_zip')}.zip",
+											"value": "adf_test.zip",
 											"type": "Expression"
 										}
 									}
