@@ -29,6 +29,10 @@
 					"value": "@dataset().directory",
 					"type": "Expression"
 				}
+			},
+			"compression": {
+				"type": "ZipDeflate",
+				"level": "Optimal"
 			}
 		}
 	}
