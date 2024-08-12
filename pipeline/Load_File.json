@@ -815,8 +815,6 @@
 								{
 									"name": "load from file chn_otcsellout",
 									"type": "Script",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
@@ -846,8 +844,6 @@
 								{
 									"name": "Set Error Message11",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file chn_otcsellout",
@@ -872,8 +868,6 @@
 								{
 									"name": "update etl parameters chn_otcsellout",
 									"type": "Script",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file chn_otcsellout",
@@ -910,8 +904,6 @@
 								{
 									"name": "Set Error Message12",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters chn_otcsellout",
@@ -936,6 +928,8 @@
 								{
 									"name": "Move chn_otcsellout file to success",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters chn_otcsellout",
