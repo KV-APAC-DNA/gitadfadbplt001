@@ -977,9 +977,15 @@
 											"referenceName": "BinarySource",
 											"type": "DatasetReference",
 											"parameters": {
-												"container": "chn",
-												"directory": "dev/SelfCare_OTC",
-												"sourceFile": "OTC_Sellout_202407V2.parquet"
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
 											}
 										}
 									],
@@ -990,11 +996,11 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/ @{pipeline().parameters.parameters.value[0].folder_path}/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/success",
 													"type": "Expression"
 												},
 												"fileName": {
-													"value": "test_@{pipeline().parameters.sourceFileName}",
+													"value": "@{pipeline().parameters.sourceFileName}",
 													"type": "Expression"
 												}
 											}
