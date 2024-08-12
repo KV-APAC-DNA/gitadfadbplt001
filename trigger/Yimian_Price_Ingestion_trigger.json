@@ -1,0 +1,35 @@
+{
+	"name": "Yimian_Price_Ingestion_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "Yimian_Price_Ingestion"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-08-12T12:02:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						15
+					],
+					"hours": [
+						21
+					]
+				}
+			}
+		}
+	}
+}
