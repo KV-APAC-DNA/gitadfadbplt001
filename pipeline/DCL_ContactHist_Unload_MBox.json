@@ -1350,6 +1350,46 @@
 									}
 								}
 							]
+						},
+						{
+							"name": "Delete csv files error case",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "archive zip file",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "AdlsCsvForZippedSrc",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "@activity('read parameters').output.value[0].container",
+										"folder": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}"
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"wildcardFileName": {
+										"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*.csv",
+										"type": "Expression"
+									},
+									"enablePartitionDiscovery": false
+								}
+							}
 						}
 					]
 				}
