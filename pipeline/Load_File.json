@@ -993,7 +993,10 @@
 													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/ @{pipeline().parameters.parameters.value[0].folder_path}/success",
 													"type": "Expression"
 												},
-												"fileName": "@{pipeline().parameters.sourceFileName}"
+												"fileName": {
+													"value": "test_@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
 											}
 										}
 									]
