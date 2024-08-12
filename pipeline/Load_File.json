@@ -924,6 +924,81 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move chn_otcsellout file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters chn_otcsellout",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": true
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@{pipeline().parameters.parameters.value[0].container}",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/\n@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "adls_sink_binary",
+											"type": "DatasetReference",
+											"parameters": {
+												"adls_container": {
+													"value": "@{pipeline().parameters.parameters.value[0].container}",
+													"type": "Expression"
+												},
+												"adls_path": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/\n@{pipeline().parameters.parameters.value[0].folder_path}/success",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						}
