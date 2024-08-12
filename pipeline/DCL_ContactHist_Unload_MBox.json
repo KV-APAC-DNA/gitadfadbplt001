@@ -1332,7 +1332,10 @@
 									"referenceName": "JPDCL_sftp_csv_zipped_sink",
 									"type": "DatasetReference",
 									"parameters": {
-										"directory": "DCLJP_JAPAN_DCL_EDI_ci_next_cms_probance",
+										"directory": {
+											"value": "@{activity('read parameters').output.value[0].sftp_folder_path}",
+											"type": "Expression"
+										},
 										"filename": {
 											"value": "@{variables('date_for_zip')}.zip",
 											"type": "Expression"
