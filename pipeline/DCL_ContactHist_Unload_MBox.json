@@ -1282,7 +1282,7 @@
 											"type": "Expression"
 										},
 										"wildcardFileName": {
-											"value": "@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}*",
+											"value": "@{variables('date_for_zip')}.zip",
 											"type": "Expression"
 										},
 										"enablePartitionDiscovery": false
