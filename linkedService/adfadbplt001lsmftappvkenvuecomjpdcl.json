@@ -5,7 +5,7 @@
 		"annotations": [],
 		"type": "Sftp",
 		"typeProperties": {
-			"host": "mftappv.kenvue.com",
+			"host": "mftappv-int.kenvue.com",
 			"port": 22,
 			"skipHostKeyValidation": true,
 			"authenticationType": "SshPublicKey",
