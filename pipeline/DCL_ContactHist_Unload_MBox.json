@@ -1333,7 +1333,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"directory": {
-											"value": "@{activity('read parameters').output.value[0].sftp_folder_path}",
+											"value": "@{activity('read parameters').output.value[0].sftp_folder_path}/adf_test",
 											"type": "Expression"
 										},
 										"filename": {
