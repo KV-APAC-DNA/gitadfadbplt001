@@ -46,11 +46,12 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "adls_sink_binary",
+						"referenceName": "BinaryDestination",
 						"type": "DatasetReference",
 						"parameters": {
-							"adls_container": "dev",
-							"adls_path": "dev/SelfCare_OTC/success"
+							"container": "chn",
+							"directory": "dev/SelfCare_OTC/success",
+							"fileName": "2OTC_Sellout_202407V2.parquet"
 						}
 					}
 				]
