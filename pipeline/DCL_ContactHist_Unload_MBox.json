@@ -668,32 +668,9 @@
 							]
 						},
 						{
-							"name": "move to sftp",
-							"type": "Wait",
-							"dependsOn": [
-								{
-									"activity": "zip files",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
-							"userProperties": [],
-							"typeProperties": {
-								"waitTimeInSeconds": 1
-							}
-						},
-						{
 							"name": "archive zip file",
 							"type": "Copy",
-							"dependsOn": [
-								{
-									"activity": "move to sftp",
-									"dependencyConditions": [
-										"Succeeded"
-									]
-								}
-							],
+							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
 								"retry": 0,
@@ -1269,7 +1246,7 @@
 							}
 						},
 						{
-							"name": "move to sftp1",
+							"name": "move to sftp",
 							"type": "Copy",
 							"dependsOn": [
 								{
