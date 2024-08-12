@@ -815,6 +815,8 @@
 								{
 									"name": "load from file chn_otcsellout",
 									"type": "Script",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
@@ -844,6 +846,8 @@
 								{
 									"name": "Set Error Message11",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file chn_otcsellout",
@@ -868,6 +872,8 @@
 								{
 									"name": "update etl parameters chn_otcsellout",
 									"type": "Script",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file chn_otcsellout",
@@ -904,6 +910,8 @@
 								{
 									"name": "Set Error Message12",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters chn_otcsellout",
@@ -928,8 +936,6 @@
 								{
 									"name": "Move chn_otcsellout file to success",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters chn_otcsellout",
@@ -987,17 +993,15 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "adls_sink_binary",
+											"referenceName": "BinaryDestination",
 											"type": "DatasetReference",
 											"parameters": {
-												"adls_container": {
-													"value": "@{pipeline().parameters.parameters.value[0].container}",
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/ @{pipeline().parameters.parameters.value[0].folder_path}/success",
 													"type": "Expression"
 												},
-												"adls_path": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/\n@{pipeline().parameters.parameters.value[0].folder_path}/success",
-													"type": "Expression"
-												}
+												"fileName": "@{pipeline().parameters.sourceFileName}"
 											}
 										}
 									]
