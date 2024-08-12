@@ -1273,7 +1273,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
+									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
@@ -1284,67 +1284,41 @@
 										"wildcardFileName": {
 											"value": "@{variables('date_for_zip')}.zip",
 											"type": "Expression"
-										},
-										"enablePartitionDiscovery": false
+										}
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings",
-										"compressionProperties": {
-											"type": "ZipDeflateReadSettings"
-										}
+										"type": "BinaryReadSettings"
 									}
 								},
 								"sink": {
-									"type": "DelimitedTextSink",
+									"type": "BinarySink",
 									"storeSettings": {
 										"type": "SftpWriteSettings",
 										"operationTimeout": "01:00:00",
 										"useTempFileRename": true
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
+								"enableStaging": false
 							},
 							"inputs": [
 								{
-									"referenceName": "AdlsCsvForZippedSink",
+									"referenceName": "BinarySource",
 									"type": "DatasetReference",
 									"parameters": {
 										"container": "@activity('read parameters').output.value[0].container",
-										"folder": {
-											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
-											"type": "Expression"
-										},
-										"fileName": {
-											"value": "@{variables('date_for_zip')}.zip",
-											"type": "Expression"
-										}
+										"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
+										"sourceFile": "@{variables('date_for_zip')}.zip"
 									}
 								}
 							],
 							"outputs": [
 								{
-									"referenceName": "JPDCL_sftp_csv_zipped_sink",
+									"referenceName": "JPDCL_Binary_SFTP_Sink",
 									"type": "DatasetReference",
 									"parameters": {
-										"directory": {
-											"value": "@{activity('read parameters').output.value[0].sftp_folder_path}",
-											"type": "Expression"
-										},
+										"directory": "@{activity('read parameters').output.value[0].sftp_folder_path}",
 										"filename": {
-											"value": "adf_test.zip",
+											"value": "adf_test_@{variables('date_for_zip')}.zip",
 											"type": "Expression"
 										}
 									}
