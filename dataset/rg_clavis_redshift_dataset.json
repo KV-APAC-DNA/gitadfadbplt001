@@ -1,0 +1,12 @@
+{
+	"name": "rg_clavis_redshift_dataset",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsarsprdcon360002",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AmazonRedshiftTable",
+		"schema": []
+	}
+}

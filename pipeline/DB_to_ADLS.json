@@ -2657,13 +2657,8 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "AmazonRdsForSqlServerSource",
-											"sqlReaderQuery": {
-												"value": "@pipeline().parameters.source_query",
-												"type": "Expression"
-											},
-											"queryTimeout": "02:00:00",
-											"partitionOption": "None"
+											"type": "AmazonRedshiftSource",
+											"query": "@pipeline().parameters.source_query"
 										},
 										"sink": {
 											"type": "DelimitedTextSink",
@@ -2688,7 +2683,7 @@
 									},
 									"inputs": [
 										{
-											"referenceName": "AmazonRdsForCapturesqlrds",
+											"referenceName": "rg_clavis_redshift_dataset",
 											"type": "DatasetReference"
 										}
 									],
