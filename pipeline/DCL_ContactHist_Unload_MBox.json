@@ -770,7 +770,7 @@
 							"type": "Delete",
 							"dependsOn": [
 								{
-									"activity": "move to sftp",
+									"activity": "zip files",
 									"dependencyConditions": [
 										"Succeeded"
 									]
