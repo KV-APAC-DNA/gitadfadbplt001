@@ -383,6 +383,80 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move dcl file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -570,6 +644,80 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move japan file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters japan",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -688,6 +836,80 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move MarketShare file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters marketshare",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -806,6 +1028,80 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move prox file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters prox",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -815,8 +1111,6 @@
 								{
 									"name": "load from file chn_otcsellout",
 									"type": "Script",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [],
 									"policy": {
 										"timeout": "0.12:00:00",
@@ -846,8 +1140,6 @@
 								{
 									"name": "Set Error Message11",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file chn_otcsellout",
@@ -872,8 +1164,6 @@
 								{
 									"name": "update etl parameters chn_otcsellout",
 									"type": "Script",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file chn_otcsellout",
@@ -910,8 +1200,6 @@
 								{
 									"name": "Set Error Message12",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters chn_otcsellout",
@@ -996,7 +1284,7 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
 													"type": "Expression"
 												},
 												"fileName": {
