@@ -10,14 +10,7 @@
 			"skipHostKeyValidation": true,
 			"authenticationType": "SshPublicKey",
 			"userName": "DCL_CI_NEXT_CMS_PROBANCE",
-			"privateKeyContent": {
-				"type": "AzureKeyVaultSecret",
-				"store": {
-					"referenceName": "adfadbplt001lsakvadbplt001",
-					"type": "LinkedServiceReference"
-				},
-				"secretName": "adfadbplt001lsmftappvkenvuecomjpdcl"
-			}
+			"privateKeyPath": "F:\\adfirkey\\adfadbplt001lsmftappvkenvuecomjpdcl.key"
 		},
 		"connectVia": {
 			"referenceName": "adfiradbplt002",
