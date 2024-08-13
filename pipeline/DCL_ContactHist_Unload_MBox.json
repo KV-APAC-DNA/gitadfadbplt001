@@ -1277,14 +1277,7 @@
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": {
-											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].target_folder_path}",
-											"type": "Expression"
-										},
-										"wildcardFileName": {
-											"value": "@{variables('date_for_zip')}.zip",
-											"type": "Expression"
-										}
+										"deleteFilesAfterCompletion": false
 									},
 									"formatSettings": {
 										"type": "BinaryReadSettings"
@@ -1318,7 +1311,7 @@
 									"parameters": {
 										"directory": "@{activity('read parameters').output.value[0].sftp_folder_path}",
 										"filename": {
-											"value": "adf_test_@{variables('date_for_zip')}.zip",
+											"value": "KDP_File_@{variables('date_for_zip')}.zip",
 											"type": "Expression"
 										}
 									}
