@@ -1,5 +1,5 @@
 {
-	"name": "JP_DCL_SFTP_trigger",
+	"name": "JP_DCL_SFMC_DCL_ITG_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JP_DCL_SFTP"
+					"category": "JP_DCL_SFMC_DCL_ITG"
 				}
 			}
 		],
