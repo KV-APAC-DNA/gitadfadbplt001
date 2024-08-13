@@ -1067,7 +1067,7 @@
 									},
 									"status": "Run Dependent Categories",
 									"supportMessage": {
-										"value": "Running : \\n\n**CATEGORY**: @{pipeline().parameters.category} has completed. \\n\nAnd the below categories seem to be depending on this, please run them if necessary \\n\n@{activity('check_dependent_job').output.value} \\n\n",
+										"value": "Running : \\n\n**CATEGORY**: @{pipeline().parameters.category} has completed. \\n\nAnd the below categories seem to be depending on this, please run them if necessary \\n\n@{activity('read_successor_jobs').output.value} \\n\n",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "No",
