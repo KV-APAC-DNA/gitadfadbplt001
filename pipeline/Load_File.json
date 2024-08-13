@@ -1356,6 +1356,8 @@
 								{
 									"name": "update etl parameters rg_clavis",
 									"type": "Script",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "load from file rg_clavis",
@@ -1392,6 +1394,8 @@
 								{
 									"name": "Set Error Message14",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters rg_clavis",
@@ -1416,6 +1420,8 @@
 								{
 									"name": "Move rg_clavis file to success",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "update etl parameters rg_clavis",
