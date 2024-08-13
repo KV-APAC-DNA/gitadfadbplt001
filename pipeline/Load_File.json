@@ -1296,6 +1296,198 @@
 									]
 								}
 							]
+						},
+						{
+							"value": "rg_clavis",
+							"activities": [
+								{
+									"name": "load from file rg_clavis",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(TYPE = 'PARQUET') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message13",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "load from file rg_clavis",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('load from file rg_clavis').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "update etl parameters rg_clavis",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "load from file rg_clavis",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@if(greater(int(activity('load from file rg_clavis').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Kolkata''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set RUN_ID= TO_CHAR(current_timestamp(), ''YYYYMMDDHHmmss'') where RUN_ID is null;'),'Select ''no_update_needed'';')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message14",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters rg_clavis",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters rg_clavis').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Move rg_clavis file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters rg_clavis",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
 						}
 					]
 				}
