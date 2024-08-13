@@ -731,6 +731,8 @@
 											{
 												"name": "Wait_for_dependents",
 												"type": "Wait",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
@@ -740,6 +742,8 @@
 											{
 												"name": "reset_to_wait",
 												"type": "SetVariable",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [
 													{
 														"activity": "Wait_for_dependents",
@@ -766,6 +770,8 @@
 											{
 												"name": "Stop_Execution",
 												"type": "Fail",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
@@ -784,6 +790,8 @@
 											{
 												"name": "notify_and_proceed",
 												"type": "ExecutePipeline",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"policy": {
 													"secureInput": false
@@ -835,6 +843,8 @@
 											{
 												"name": "Fail_Execution",
 												"type": "Fail",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
@@ -853,6 +863,8 @@
 											{
 												"name": "Error_out_execution",
 												"type": "Fail",
+												"state": "Inactive",
+												"onInactiveMarkAs": "Succeeded",
 												"dependsOn": [],
 												"userProperties": [],
 												"typeProperties": {
@@ -884,6 +896,8 @@
 									{
 										"name": "check_dependent_job",
 										"type": "Script",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [],
 										"policy": {
 											"timeout": "0.12:00:00",
@@ -913,6 +927,8 @@
 									{
 										"name": "set_dependent_status",
 										"type": "SetVariable",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [
 											{
 												"activity": "check_dependent_job",
@@ -937,6 +953,8 @@
 									{
 										"name": "set_dependent_status_error",
 										"type": "SetVariable",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [
 											{
 												"activity": "check_dependent_job",
@@ -963,6 +981,8 @@
 									{
 										"name": "set_to_proceed",
 										"type": "SetVariable",
+										"state": "Inactive",
+										"onInactiveMarkAs": "Succeeded",
 										"dependsOn": [],
 										"policy": {
 											"secureOutput": false,
