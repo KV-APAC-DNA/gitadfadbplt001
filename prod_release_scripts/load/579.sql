@@ -1,0 +1,17 @@
+--JAPAN DCL Market
+
+--Updates in existing Process/parameters to follow on the MDS standard
+Update META_RAW.PROCESS Set PROCESS_NAME=replace(PROCESS_NAME,'DCL_MDS_Job','JP_DCL_MDS_Refresh')  where  USECASE_ID='249';
+
+Update META_RAW.PARAMETERS set PARAMETER_GROUP_NAME=replace(PARAMETER_GROUP_NAME,'DCL_MDS_Job','SDL_MDS')
+where PARAMETER_GROUP_ID in ('1034','1035','1036','1037','1038','1039');
+
+UPDATE META_RAW.PARAMETERS
+SET PARAMETER_VALUE = Replace(PARAMETER_GROUP_NAME,'_group','')
+where PARAMETER_GROUP_ID in ('1034','1035','1036','1037','1038','1039')
+AND PARAMETER_NAME='landing_file_name';
+
+UPDATE META_RAW.PARAMETERS
+SET PARAMETER_VALUE  = Concat('sql_server/MDS/',Replace(PARAMETER_GROUP_NAME,'_group',''), '/')
+where PARAMETER_GROUP_ID in ('1034','1035','1036','1037','1038','1039')
+AND PARAMETER_NAME='landing_file_path';
