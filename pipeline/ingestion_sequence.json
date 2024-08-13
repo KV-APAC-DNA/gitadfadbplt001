@@ -170,7 +170,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
-														"referenceName": "SQL Server",
+														"referenceName": "DB",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,

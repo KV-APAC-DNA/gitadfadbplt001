@@ -1,5 +1,5 @@
 {
-	"name": "SQL Server",
+	"name": "DB",
 	"properties": {
 		"activities": [
 			{
@@ -2506,7 +2506,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "extract_month",
-					"value": "@activity('read parameters').output.value[0].extract_month"
+					"value": {
+						"value": "@activity('read parameters').output.value[0].extract_month",
+						"type": "Expression"
+					}
 				}
 			}
 		],
