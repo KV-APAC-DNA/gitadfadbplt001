@@ -708,6 +708,8 @@
 						{
 							"name": "check_dependent_status",
 							"type": "Switch",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "check_for_depenedents",
@@ -869,6 +871,8 @@
 						{
 							"name": "check_for_depenedents",
 							"type": "IfCondition",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"userProperties": [],
 							"typeProperties": {
