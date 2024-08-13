@@ -2658,7 +2658,10 @@
 									"typeProperties": {
 										"source": {
 											"type": "AmazonRedshiftSource",
-											"query": "@pipeline().parameters.source_query"
+											"query": {
+												"value": "@replace(pipeline().parameters.source_query,'<<extract_month>>',pipeline().parameters.extract_month)",
+												"type": "Expression"
+											}
 										},
 										"sink": {
 											"type": "DelimitedTextSink",
@@ -2898,6 +2901,10 @@
 			},
 			"truncate_and_load": {
 				"type": "string"
+			},
+			"extract_month": {
+				"type": "string",
+				"defaultValue": "0"
 			}
 		},
 		"variables": {
