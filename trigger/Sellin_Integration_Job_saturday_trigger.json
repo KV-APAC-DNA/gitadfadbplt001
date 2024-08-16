@@ -1,5 +1,5 @@
 {
-	"name": "UAT_SAP_BW_LISTPRICE_trigger",
+	"name": "Sellin_Integration_Job_saturday_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_LISTPRICE"
+					"category": "Sellin_Integration_SAT"
 				}
 			}
 		],
@@ -19,16 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-22T16:00:00",
+				"startTime": "2024-08-06T07:27:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						30
+					],
 					"hours": [
-						2,
-						6,
-						10,
-						14,
-						18,
-						22
+						4
 					]
 				}
 			}

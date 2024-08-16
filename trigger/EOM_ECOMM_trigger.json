@@ -1,5 +1,5 @@
 {
-	"name": "JP_DCL_SFTP_trigger",
+	"name": "EOM_ECOMM_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JP_DCL_SFTP"
+					"category": "EOM_ECOMM"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-07-25T12:48:00",
+				"startTime": "2024-08-12T11:40:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						4
+						21
 					]
 				}
 			}

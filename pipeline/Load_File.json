@@ -383,6 +383,80 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move dcl file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						},
@@ -570,71 +644,13 @@
 											"type": "Expression"
 										}
 									}
-								}
-							]
-						},
-						{
-							"value": "MarketShare",
-							"activities": [
-								{
-									"name": "load from file marketshare",
-									"type": "Script",
-									"dependsOn": [],
-									"policy": {
-										"timeout": "0.12:00:00",
-										"retry": 0,
-										"retryIntervalInSeconds": 30,
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
-										"type": "LinkedServiceReference"
-									},
-									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
-													"type": "Expression"
-												}
-											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
 								},
 								{
-									"name": "Set Error Message7",
-									"type": "SetVariable",
+									"name": "Move japan file to success",
+									"type": "Copy",
 									"dependsOn": [
 										{
-											"activity": "load from file marketshare",
-											"dependencyConditions": [
-												"Failed"
-											]
-										}
-									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorMessage",
-										"value": {
-											"value": "Load Failed : @{activity('load from file marketshare').error?.message}",
-											"type": "Expression"
-										}
-									}
-								},
-								{
-									"name": "update etl parameters marketshare",
-									"type": "Script",
-									"dependsOn": [
-										{
-											"activity": "load from file marketshare",
+											"activity": "update etl parameters japan",
 											"dependencyConditions": [
 												"Succeeded"
 											]
@@ -648,46 +664,60 @@
 										"secureInput": false
 									},
 									"userProperties": [],
-									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
-										"type": "LinkedServiceReference"
-									},
 									"typeProperties": {
-										"scripts": [
-											{
-												"type": "Query",
-												"text": {
-													"value": "@if(greater(int(activity('load from file marketshare').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set CRTD_DTTM=CURRENT_TIMESTAMP() where CRTD_DTTM is null;'),'Select ''no_update_needed'';')\n\n",
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
 													"type": "Expression"
 												}
 											}
-										],
-										"scriptBlockExecutionTimeout": "02:00:00"
-									}
-								},
-								{
-									"name": "Set Error Message8",
-									"type": "SetVariable",
-									"dependsOn": [
-										{
-											"activity": "update etl parameters marketshare",
-											"dependencyConditions": [
-												"Failed"
-											]
 										}
 									],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "errorMessage",
-										"value": {
-											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters marketshare').error?.message}",
-											"type": "Expression"
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
 										}
-									}
+									]
 								}
 							]
 						},
@@ -775,7 +805,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@if(greater(int(activity('load from file prox').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Kolkata''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set FILENAME=''',pipeline().parameters.sourceFileName,''', RUN_ID= TO_CHAR(current_timestamp(), ''YYYYMMDDHHmmss'') ,CRTD_DTTM=CURRENT_TIMESTAMP() where CRTD_DTTM is null;'),'Select ''no_update_needed'';')",
+													"value": "@if(greater(int(activity('load from file prox').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Kolkata''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set FILENAME=''',pipeline().parameters.sourceFileName,''', RUN_ID= TO_CHAR(current_timestamp(), ''YYYYMMDDHHmmss'') ,CRT_DTTM=CURRENT_TIMESTAMP() where CRT_DTTM is null;'),'Select ''no_update_needed'';')",
 													"type": "Expression"
 												}
 											}
@@ -806,6 +836,464 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Move prox file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters prox",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "otcSellout",
+							"activities": [
+								{
+									"name": "load from file chn_otcsellout",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(TYPE = 'PARQUET') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message11",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "load from file chn_otcsellout",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('load from file chn_otcsellout').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "update etl parameters chn_otcsellout",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "load from file chn_otcsellout",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@if(greater(int(activity('load from file chn_otcsellout').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set FILE_NAME =''',pipeline().parameters.sourceFileName,''', CRTD_DTTM=CURRENT_TIMESTAMP() where CRTD_DTTM is null;'),'Select ''no_update_needed'';')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message12",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters chn_otcsellout",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters chn_otcsellout').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Move chn_otcsellout file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters chn_otcsellout",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "rg_clavis",
+							"activities": [
+								{
+									"name": "load from file rg_clavis",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(TYPE = 'PARQUET') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message13",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "load from file rg_clavis",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Failed : @{activity('load from file rg_clavis').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "update etl parameters rg_clavis",
+									"type": "Script",
+									"dependsOn": [
+										{
+											"activity": "load from file rg_clavis",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": {
+													"value": "@if(greater(int(activity('load from file rg_clavis').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Kolkata''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set RUN_ID= TO_CHAR(current_timestamp(), ''YYYYMMDDHHmmss'') where RUN_ID is null;'),'Select ''no_update_needed'';')",
+													"type": "Expression"
+												}
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								},
+								{
+									"name": "Set Error Message14",
+									"type": "SetVariable",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters rg_clavis",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorMessage",
+										"value": {
+											"value": "Load Success but updating etl parameters failed : @{activity('update etl parameters rg_clavis').error?.message}",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Move rg_clavis file to success",
+									"type": "Copy",
+									"dependsOn": [
+										{
+											"activity": "update etl parameters rg_clavis",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "AzureBlobFSReadSettings",
+												"recursive": false,
+												"deleteFilesAfterCompletion": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "AzureBlobFSWriteSettings"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySource",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinaryDestination",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": "@{pipeline().parameters.parameters.value[0].container}",
+												"directory": {
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"type": "Expression"
+												},
+												"fileName": {
+													"value": "@{pipeline().parameters.sourceFileName}",
+													"type": "Expression"
+												}
+											}
+										}
+									]
 								}
 							]
 						}
@@ -1962,12 +2450,6 @@
 						"dependencyConditions": [
 							"Succeeded"
 						]
-					},
-					{
-						"activity": "If  japan 002fjx2",
-						"dependencyConditions": [
-							"Succeeded"
-						]
 					}
 				],
 				"policy": {
@@ -2510,55 +2992,239 @@
 				}
 			},
 			{
-				"name": "If  japan 002fjx2",
-				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
+				"name": "audit fail - load",
+				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
 						"activity": "Check load method",
 						"dependencyConditions": [
-							"Succeeded"
+							"Failed"
 						]
 					}
 				],
+				"policy": {
+					"secureInput": false
+				},
 				"userProperties": [],
 				"typeProperties": {
-					"expression": {
-						"value": "@not(equals(pipeline().parameters.parameters.value[0].QueryOnSource, 'NA' ))",
-						"type": "Expression"
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
 					},
-					"ifTrueActivities": [
-						{
-							"name": "Script Run Query on Source",
-							"type": "Script",
-							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"linkedServiceName": {
-								"referenceName": "adfadbplt001lsvmcitsapl002fjx2com",
-								"type": "LinkedServiceReference"
-							},
-							"typeProperties": {
-								"scripts": [
-									{
-										"type": "Query",
-										"text": {
-											"value": "@pipeline().parameters.parameters.value[0].QueryOnSource",
-											"type": "Expression"
-										}
-									}
-								],
-								"scriptBlockExecutionTimeout": "02:00:00"
-							}
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
 						}
-					]
+					}
+				}
+			},
+			{
+				"name": "Execute Archival Error load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Check load method",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "File_Archival",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"sequence_id": {
+							"value": "@pipeline().parameters.sequence_id",
+							"type": "Expression"
+						},
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"isError": "Yes",
+						"container": {
+							"value": "@pipeline().parameters.Parameters.value[0].container",
+							"type": "Expression"
+						},
+						"directory": {
+							"value": "@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
+							"type": "Expression"
+						},
+						"sourceFile": {
+							"value": "@pipeline().parameters.sourceFileName",
+							"type": "Expression"
+						},
+						"sheetNames": {
+							"value": "@pipeline().parameters.sheetNames",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error log - check load",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Check load method",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"error_message": {
+							"value": "Data Load Failed :@{variables('errorMessage')}",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "102",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline()?.TriggeredByPipelineRunId",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "Send error - check load failed",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Check load method",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"supportMessage": {
+							"value": "Data Loading Failed : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{pipeline().parameters.Parameters.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{pipeline().parameters.sourceFileName} \\n\n**ERROR**: _@{variables('errorMessage')}_",
+							"type": "Expression"
+						},
+						"isBusinessNotification": "No",
+						"isSupportNotification": "Yes",
+						"isError": "Yes",
+						"container": {
+							"value": "@{pipeline().parameters.Parameters.value[0].container}",
+							"type": "Expression"
+						}
+					}
 				}
 			}
 		],

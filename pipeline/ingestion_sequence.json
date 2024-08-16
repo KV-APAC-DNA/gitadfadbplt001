@@ -57,7 +57,7 @@
 						"value": "@activity('get processes').output.value",
 						"type": "Expression"
 					},
-					"batchCount": 10,
+					"batchCount": 20,
 					"activities": [
 						{
 							"name": "decide source",
@@ -170,7 +170,7 @@
 												"userProperties": [],
 												"typeProperties": {
 													"pipeline": {
-														"referenceName": "SQL Server",
+														"referenceName": "DB",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,

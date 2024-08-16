@@ -1,5 +1,5 @@
 {
-	"name": "UAT_SAP_BW_DELIVERY_trigger",
+	"name": "JP_DCL_SFMC_DCL_ITG_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_DELIVERY"
+					"category": "JP_DCL_SFMC_DCL_ITG"
 				}
 			}
 		],
@@ -19,16 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-22T16:00:00",
+				"startTime": "2024-07-25T12:48:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						45
+					],
 					"hours": [
-						2,
-						6,
-						10,
-						14,
-						18,
-						22
+						3
 					]
 				}
 			}

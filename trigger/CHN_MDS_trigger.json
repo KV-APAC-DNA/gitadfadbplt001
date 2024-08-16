@@ -1,5 +1,5 @@
 {
-	"name": "KR_ECOMMERCE_2_trigger",
+	"name": "CHN_MDS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "KR_ECOMMERCE_2"
+					"category": "CHN_MDS"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-11T11:55:00",
+				"startTime": "2024-08-12T12:03:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						30
+						0
 					],
 					"hours": [
-						23
+						21
 					]
 				}
 			}

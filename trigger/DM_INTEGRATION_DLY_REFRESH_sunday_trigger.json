@@ -1,5 +1,5 @@
 {
-	"name": "UAT_SAP_BW_BILLING_trigger",
+	"name": "DM_INTEGRATION_DLY_REFRESH_sunday_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,25 +10,26 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_BW_BILLING"
+					"category": "DM_INTEGRATION_DLY_REFRESH"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Week",
 				"interval": 1,
-				"startTime": "2024-02-22T16:00:00",
+				"startTime": "2024-08-06T07:20:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						0
+					],
 					"hours": [
-						2,
-						6,
-						10,
-						14,
-						18,
-						22
+						23
+					],
+					"weekDays": [
+						"Sunday"
 					]
 				}
 			}

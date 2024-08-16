@@ -1,5 +1,5 @@
 {
-	"name": "GT_SELLOUT_2_trigger",
+	"name": "JPN_SELLIN_INTEGRATION_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,23 +10,30 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "GT_SELLOUT_2"
+					"category": "JPN_SELLIN_INTEGRATION"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Week",
 				"interval": 1,
-				"startTime": "2024-06-11T11:49:00",
+				"startTime": "2024-08-06T06:29:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						30
 					],
 					"hours": [
-						11
+						4
+					],
+					"weekDays": [
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday"
 					]
 				}
 			}

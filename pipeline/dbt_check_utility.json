@@ -479,7 +479,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/',pipeline().parameters.parameters.value[0].container,'/',item().model_name,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')} \nFROM (\n  @{replace(activity('Script3').output.resultSets[0].rows[0].QUERY,';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000;",
+											"value": "COPY INTO @{concat('@UTILITY_RAW.INTSTG_USERERRORNOTIFICATION/',pipeline().parameters.parameters.value[0].container,'/',item().model_name,'/',item().model_name,'_',formatDateTime(convertTimeZone(variables('currentTime'), 'UTC', 'Singapore Standard Time'),'yyyyMMdd_HHmmss'),'.csv')} \nFROM (\n  @{replace(activity('Script3').output.resultSets[0].rows[0].QUERY,';','')}\n)\nFILE_FORMAT = (\n  TYPE = 'CSV'\n  FIELD_DELIMITER = ','\n  ENCODING = 'UTF-8',\n  COMPRESSION = 'NONE'\n  NULL_IF =() \n  EMPTY_FIELD_AS_NULL = FALSE\n) \nsingle = true \nheader = true \nmax_file_size = 4900000000;",
 											"type": "Expression"
 										}
 									}

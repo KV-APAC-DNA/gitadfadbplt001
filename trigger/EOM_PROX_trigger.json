@@ -1,5 +1,5 @@
 {
-	"name": "GT_SELLOUT_1_trigger",
+	"name": "EOM_PROX_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "GT_SELLOUT_1"
+					"category": "EOM_PROX"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-06-11T11:48:00",
+				"startTime": "2024-08-12T11:39:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						11
+						3
 					]
 				}
 			}

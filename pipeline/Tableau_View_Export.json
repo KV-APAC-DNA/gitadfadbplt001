@@ -1,5 +1,5 @@
 {
-	"name": "Tableau",
+	"name": "Tableau_View_Export",
 	"properties": {
 		"activities": [
 			{
@@ -60,9 +60,10 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Trigger Tableau Refresh Status",
+						"activity": "Sign Out",
 						"dependencyConditions": [
-							"Succeeded"
+							"Succeeded",
+							"Failed"
 						]
 					}
 				],
@@ -81,7 +82,7 @@
 							"value": "@pipeline().parameters.process_id",
 							"type": "Expression"
 						},
-						"status": "REFRESH STARTED SEPARATELY",
+						"status": "FINISH",
 						"input_row_count": 0,
 						"output_row_count": 0,
 						"jobname": {
@@ -116,11 +117,11 @@
 				}
 			},
 			{
-				"name": "Audit_Finish_Fail",
+				"name": "Audit_Finish_Fail_8",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Trigger Tableau Refresh Status",
+						"activity": "copy data to windows shared",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -180,7 +181,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -276,7 +277,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseSignIn.json"
@@ -307,7 +308,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauSourceName'\" AS tableauSourceName,\n\"'waitTime'\" AS waitTime,\n\"'refreshType'\" AS refreshType,\n\"'container'\" AS container,\nIFNULL(\"'isSuccessNotification'\",'N') AS isSuccessNotification\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauSourceName',\n'waitTime',\n'refreshType',\n'container',\n'isSuccessNotification'\n));",
+							"value": "Select \n\"'contentUrl'\" AS contentUrl,\n\"'tableauViewName'\" AS tableauViewName,\n\"'container'\" AS container,\nIFNULL(\"'isSuccessNotification'\",'N') AS isSuccessNotification\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'contentUrl',\n'tableauViewName',\n'container',\n'isSuccessNotification'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -374,7 +375,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/@{variables('refreshType')}s?filter=name:eq:@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "sites/@{activity('Read token and siteId').output.value[0].credentials.site.id}/views?filter=name:eq:@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							}
 						}
@@ -390,7 +391,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseDetails.json"
@@ -438,7 +439,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseSignIn.json"
@@ -487,7 +488,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseDetails.json"
@@ -497,7 +498,7 @@
 				}
 			},
 			{
-				"name": "Hit Refresh",
+				"name": "Query Data",
 				"type": "Copy",
 				"dependsOn": [
 					{
@@ -553,7 +554,7 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"relativeURL": {
-								"value": "@if(equals(variables('refreshType'),'datasource'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].datasources.datasource[0].id,'/refresh'),concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/',variables('refreshType'),'s/',activity('Read Details').output.value[0].workbooks.workbook[0].id,'/refresh'))",
+								"value": "@concat('sites/',activity('Read token and siteId').output.value[0].credentials.site.id,'/views/',activity('Read Details').output.value[0].views.view[0].id,'/data')",
 								"type": "Expression"
 							}
 						}
@@ -569,7 +570,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
@@ -582,7 +583,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Hit Refresh",
+						"activity": "Query Data",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -617,7 +618,7 @@
 								"type": "Expression"
 							},
 							"tempDirectory": {
-								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauSourceName}",
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
 								"type": "Expression"
 							},
 							"tempFileName": "tableauResponseRefreshInitial.json"
@@ -798,7 +799,7 @@
 				}
 			},
 			{
-				"name": "error Fetching datasource id",
+				"name": "error Fetching id",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -855,7 +856,7 @@
 				}
 			},
 			{
-				"name": "error Reading Datasource details",
+				"name": "error Reading details",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
@@ -912,11 +913,11 @@
 				}
 			},
 			{
-				"name": "error triggering Refresh",
+				"name": "error querying data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Hit Refresh",
+						"activity": "Query Data",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -942,7 +943,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Hit Refresh').error?.message",
+							"value": "@activity('Query Data').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -958,7 +959,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Hit Refresh').error?.errorCode",
+							"value": "@activity('Query Data').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1026,11 +1027,11 @@
 				}
 			},
 			{
-				"name": "error triggering tab refresh status",
+				"name": "error writing data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Trigger Tableau Refresh Status",
+						"activity": "copy data to windows shared",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1056,7 +1057,7 @@
 							"type": "Expression"
 						},
 						"error_message": {
-							"value": "@activity('Trigger Tableau Refresh Status').error?.message",
+							"value": "@activity('copy data to windows shared').error?.message",
 							"type": "Expression"
 						},
 						"run_id": {
@@ -1072,7 +1073,7 @@
 							"type": "Expression"
 						},
 						"error_code": {
-							"value": "@activity('Trigger Tableau Refresh Status').error?.errorCode",
+							"value": "@activity('copy data to windows shared').error?.errorCode",
 							"type": "Expression"
 						},
 						"job_id": {
@@ -1147,7 +1148,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Hit Refresh",
+						"activity": "Query Data",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1503,107 +1504,6 @@
 				}
 			},
 			{
-				"name": "Set refreshType",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "read parameters",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "refreshType",
-					"value": {
-						"value": "@{activity('read parameters').output.value[0].refreshType}",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Trigger Tableau Refresh Status",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Read Refresh Initail Response",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "Tableau Refresh Status",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": false,
-					"parameters": {
-						"SiteId": {
-							"value": "@{activity('Read token and siteId').output.value[0].credentials.site.id}",
-							"type": "Expression"
-						},
-						"JobId": {
-							"value": "@{activity('Read Refresh Initail Response').output.value[0].job.id}",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"sequence_id": {
-							"value": "@pipeline().parameters.sequence_id",
-							"type": "Expression"
-						},
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"waitTime": {
-							"value": "@{activity('read parameters').output.value[0].waitTime}",
-							"type": "Expression"
-						},
-						"tableauSourceName": {
-							"value": "@{activity('read parameters').output.value[0].tableauSourceName}",
-							"type": "Expression"
-						},
-						"parentFolder": {
-							"value": "@variables('parentFolder')",
-							"type": "Expression"
-						},
-						"container": {
-							"value": "@{activity('read parameters').output.value[0].container}",
-							"type": "Expression"
-						},
-						"token": {
-							"value": "@activity('Read token and siteId').output.value[0].credentials.token",
-							"type": "Expression"
-						},
-						"isSuccessNotification": {
-							"value": "@{activity('read parameters').output.value[0].isSuccessNotification}",
-							"type": "Expression"
-						}
-					}
-				}
-			},
-			{
 				"name": "Set parentFolder",
 				"type": "SetVariable",
 				"dependsOn": [
@@ -1632,7 +1532,7 @@
 				"type": "WebActivity",
 				"dependsOn": [
 					{
-						"activity": "Set refreshType",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1989,11 +1889,11 @@
 				}
 			},
 			{
-				"name": "Send Error notification hitting refresh",
+				"name": "Send Error notification querying data",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Hit Refresh",
+						"activity": "Query Data",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -2032,7 +1932,7 @@
 						},
 						"status": "FAIL",
 						"supportMessage": {
-							"value": "Error triggering refresh for @{variables('refreshType')} (@{activity('read parameters').output.value[0].tableauSourceName}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Hit Refresh').error?.message}_\n",
+							"value": "Error fetching extract for view (@{activity('read parameters').output.value[0].tableauViewName}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Query Data').error?.message}_\n",
 							"type": "Expression"
 						},
 						"isBusinessNotification": "No",
@@ -2040,6 +1940,148 @@
 						"isError": "Yes"
 					}
 				}
+			},
+			{
+				"name": "copy data to windows shared",
+				"type": "Wait",
+				"dependsOn": [
+					{
+						"activity": "Read Refresh Initail Response",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"waitTimeInSeconds": 1
+				}
+			},
+			{
+				"name": "Send Error notification writing data",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "copy data to windows shared",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "NotifiyTeamsChannelPipeline",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"subscription": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+							"type": "Expression"
+						},
+						"resourceGroup": {
+							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+							"type": "Expression"
+						},
+						"runId": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"name": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"triggerTime": {
+							"value": "@pipeline().TriggerTime",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"supportMessage": {
+							"value": "Error exporting extract for view (@{activity('read parameters').output.value[0].tableauViewName}) to Shared windows path : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('Query Data').error?.message}_\n",
+							"type": "Expression"
+						},
+						"isBusinessNotification": "No",
+						"isSupportNotification": "Yes",
+						"isError": "Yes"
+					}
+				}
+			},
+			{
+				"name": "Sign Out",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "copy data to windows shared",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:05:00",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "POST",
+						"additionalHeaders": {
+							"x-tableau-auth": {
+								"value": "@activity('Read token and siteId').output.value[0].credentials.token",
+								"type": "Expression"
+							}
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "TableauRestAPI",
+						"type": "DatasetReference",
+						"parameters": {
+							"relativeURL": "auth/signout"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "TableauJsonResponse",
+						"type": "DatasetReference",
+						"parameters": {
+							"tempContainer": {
+								"value": "@{activity('read parameters').output.value[0].container}",
+								"type": "Expression"
+							},
+							"tempDirectory": {
+								"value": "@{variables('parentFolder')}/tableau/@{activity('read parameters').output.value[0].tableauViewName}",
+								"type": "Expression"
+							},
+							"tempFileName": {
+								"value": "tableauResponseSignOut.json",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"parameters": {
@@ -2078,7 +2120,7 @@
 			}
 		},
 		"folder": {
-			"name": "Consumption/Consumption Systems"
+			"name": "Consumption/Consumption Systems/Extras_NotInUse"
 		},
 		"annotations": [],
 		"lastPublishTime": "2023-11-23T12:26:48Z"

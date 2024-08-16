@@ -79,52 +79,6 @@
 								"errorCode": "1000"
 							}
 						}
-					],
-					"ifTrueActivities": [
-						{
-							"name": "audit start",
-							"type": "ExecutePipeline",
-							"dependsOn": [],
-							"policy": {
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"pipeline": {
-									"referenceName": "write_audit_log",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"process_id": 0,
-									"status": "START",
-									"input_row_count": 0,
-									"output_row_count": 0,
-									"jobname": {
-										"value": "@pipeline().Pipeline",
-										"type": "Expression"
-									},
-									"message": {
-										"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
-										"type": "Expression"
-									},
-									"runid": {
-										"value": "@pipeline().RunId",
-										"type": "Expression"
-									},
-									"pipeline_id": {
-										"value": "@pipeline().GroupId",
-										"type": "Expression"
-									},
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": 0,
-									"group_id": 0
-								}
-							}
-						}
 					]
 				}
 			},
@@ -185,7 +139,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "check running status",
+						"activity": "audit start",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -679,6 +633,453 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "audit start",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "repeat_until_no_dependents",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": 0,
+						"status": "START",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": {
+							"value": "@pipeline().Pipeline",
+							"type": "Expression"
+						},
+						"message": {
+							"value": "@concat(pipeline().Pipeline,' pipeline is executing for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().RunId",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().GroupId",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": 0,
+						"group_id": 0
+					}
+				}
+			},
+			{
+				"name": "repeat_until_no_dependents",
+				"type": "Until",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
+				"dependsOn": [
+					{
+						"activity": "check running status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(toUpper(variables('deps_status')),'WAIT'))",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "check_dependent_status",
+							"type": "Switch",
+							"dependsOn": [
+								{
+									"activity": "check_for_depenedents",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@if(greater(indexOf(variables('deps_status'),'STOP:'),0) ,'STOP',\nif(greater(indexOf(variables('deps_status'),'FAIL:'),0) ,'FAIL',\nif(greater(indexOf(variables('deps_status'),'WAIT:'),0),'WAIT',\nif(greater(indexOf(variables('deps_status'),'NOTIFY:'),0),'NOTIFY',\nif(greater(indexOf(toUpper(variables('deps_status')),'ERROR:'),0),'ERROR',\n'PROCEED')))))",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "WAIT",
+										"activities": [
+											{
+												"name": "Wait_for_dependents",
+												"type": "Wait",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"waitTimeInSeconds": 120
+												}
+											},
+											{
+												"name": "reset_to_wait",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "Wait_for_dependents",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "deps_status",
+													"value": "WAIT"
+												}
+											}
+										]
+									},
+									{
+										"value": "STOP",
+										"activities": [
+											{
+												"name": "Stop_Execution",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "One or more of the dependent processes has not run yet, please check and re-run when completed, @{variables('deps_status')}. If you want to ignore the dependent processes, re-run with ignore_deps as True",
+														"type": "Expression"
+													},
+													"errorCode": "1000"
+												}
+											}
+										]
+									},
+									{
+										"value": "NOTIFY",
+										"activities": [
+											{
+												"name": "notify_and_proceed",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "PROCEEDING WITH NOTIFICATION",
+														"supportMessage": {
+															"value": "Running : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\nCurrent run seems a second run after predecessor jobs are run, hence proceeding. However, if necessary, re-run the predecessor and run this job again.",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "FAIL",
+										"activities": [
+											{
+												"name": "Fail_Execution",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "One or more of the dependent processes has failed in latest run, please re-run that process, @{variables('deps_status')}, then run this. If you want to ignore the dependent processes, re-run this process with ignore_deps as True",
+														"type": "Expression"
+													},
+													"errorCode": "1000"
+												}
+											}
+										]
+									},
+									{
+										"value": "ERROR",
+										"activities": [
+											{
+												"name": "Error_out_execution",
+												"type": "Fail",
+												"dependsOn": [],
+												"userProperties": [],
+												"typeProperties": {
+													"message": {
+														"value": "the procedure to check dependent processes has failed. Please check and fix if necessary, then re-run this. @{variables('deps_status')}",
+														"type": "Expression"
+													},
+													"errorCode": "1000"
+												}
+											}
+										]
+									}
+								]
+							}
+						},
+						{
+							"name": "check_for_depenedents",
+							"type": "IfCondition",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@pipeline().parameters.ignore_deps",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "check_dependent_job",
+										"type": "Script",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"linkedServiceName": {
+											"referenceName": "adfadbplt001lssnfkpltdnaload",
+											"type": "LinkedServiceReference"
+										},
+										"typeProperties": {
+											"scripts": [
+												{
+													"type": "Query",
+													"text": {
+														"value": "CALL META_RAW.CHECK_DEPENDENT_JOB_STATUS (['@{pipeline().parameters.category}']);",
+														"type": "Expression"
+													}
+												}
+											],
+											"scriptBlockExecutionTimeout": "02:00:00"
+										}
+									},
+									{
+										"name": "set_dependent_status",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "check_dependent_job",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "deps_status",
+											"value": {
+												"value": "@activity('check_dependent_job').output.resultSets[0].rows[0].CHECK_DEPENDENT_JOB_STATUS",
+												"type": "Expression"
+											}
+										}
+									},
+									{
+										"name": "set_dependent_status_error",
+										"type": "SetVariable",
+										"dependsOn": [
+											{
+												"activity": "check_dependent_job",
+												"dependencyConditions": [
+													"Failed"
+												]
+											}
+										],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "deps_status",
+											"value": {
+												"value": "ERROR: @{activity('check_dependent_job').error?.message}",
+												"type": "Expression"
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "set_to_proceed",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "deps_status",
+											"value": "PROCEED"
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "0.12:00:00"
+				}
+			},
+			{
+				"name": "read_successor_jobs",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "check phasemaster status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeSource",
+						"query": {
+							"value": "WITH AUDIT_LOG AS\n(\n    SELECT MAX(MOMENT) MOMENT,PROCESS_ID \n    FROM META_RAW.PROCESS_AUDIT_LOG \n    GROUP BY PROCESS_ID\n) \nSELECT \n    DEP_USECASE.CATEGORY, \n    LISTAGG(DISTINCT DEP_PROC.PROCESS_ID,',') AS SUCCESSORS\nFROM META_RAW.PROCESS DEP_PROC\nCROSS JOIN TABLE(SPLIT_TO_TABLE(NULLIF(TRIM(DEP_PROC.DEPENDS_ON),''),',')) DEP_JOBS\nJOIN META_RAW.USECASE DEP_USECASE ON DEP_PROC.USECASE_ID = DEP_USECASE.USECASE_ID\nLEFT JOIN AUDIT_LOG DEP_AUDIT ON DEP_PROC.PROCESS_ID  = DEP_AUDIT.PROCESS_ID\nJOIN META_RAW.PROCESS CUR_PROC\nON DEP_JOBS.VALUE = CUR_PROC.PROCESS_ID\nJOIN META_RAW.USECASE CUR_USECASE\nON  CUR_PROC.USECASE_ID = CUR_USECASE.USECASE_ID\nLEFT JOIN AUDIT_LOG CUR_AUDIT ON CUR_PROC.PROCESS_ID  = CUR_AUDIT.PROCESS_ID\nWHERE CUR_USECASE.CATEGORY = '@{pipeline().parameters.category}' AND DEP_AUDIT.MOMENT<CUR_AUDIT.MOMENT\nGROUP BY DEP_USECASE.CATEGORY",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "if_successors_exit",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "read_successor_jobs",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@greaterOrEquals(activity('read_successor_jobs').output.count,1)",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "notify_to_run",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "Run Dependent Categories",
+									"supportMessage": {
+										"value": "Running : \\n\n**CATEGORY**: @{pipeline().parameters.category} has completed. \\n\nAnd the below categories seem to be depending on this, please run them if necessary \\n\n@{activity('read_successor_jobs').output.value} \\n\n",
+										"type": "Expression"
+									},
+									"isBusinessNotification": "No",
+									"isSupportNotification": "Yes",
+									"isError": "No"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -686,6 +1087,10 @@
 				"type": "string"
 			},
 			"force_rerun": {
+				"type": "bool",
+				"defaultValue": false
+			},
+			"ignore_deps": {
 				"type": "bool",
 				"defaultValue": false
 			}
@@ -697,6 +1102,10 @@
 			"isphasemasterfailed": {
 				"type": "Boolean",
 				"defaultValue": false
+			},
+			"deps_status": {
+				"type": "String",
+				"defaultValue": "false"
 			}
 		},
 		"folder": {

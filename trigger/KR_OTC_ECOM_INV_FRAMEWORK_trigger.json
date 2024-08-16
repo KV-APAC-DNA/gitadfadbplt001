@@ -1,5 +1,5 @@
 {
-	"name": "UAT_SAP_ECC_MASTER_trigger",
+	"name": "KR_OTC_ECOM_INV_FRAMEWORK_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "SAP_ECC_MASTER"
+					"category": "KR_OTC_ECOM_INV"
 				}
 			}
 		],
@@ -19,16 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-22T16:00:00",
+				"startTime": "2024-07-03T15:37:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						0
+					],
 					"hours": [
-						2,
-						6,
-						10,
-						14,
-						18,
-						22
+						18
 					]
 				}
 			}

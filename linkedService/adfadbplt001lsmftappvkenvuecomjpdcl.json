@@ -1,0 +1,20 @@
+{
+	"name": "adfadbplt001lsmftappvkenvuecomjpdcl",
+	"properties": {
+		"description": "linked service to jp dcl mbox",
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "mftappv-int.kenvue.com",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "SshPublicKey",
+			"userName": "DCL_CI_NEXT_CMS_PROBANCE",
+			"privateKeyPath": "F:\\adfirkey\\adfadbplt001lsmftappvkenvuecomjpdcl.key"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -113,6 +113,178 @@
 												}
 											}
 										]
+									},
+									{
+										"value": "GPT_Tableau_Export",
+										"activities": [
+											{
+												"name": "GPT_Tableau_Export",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "Tableau_View_Export",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "Data_Export",
+										"activities": [
+											{
+												"name": "Data_Export",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "Data_Export",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "Mbox_File_Copy",
+										"activities": [
+											{
+												"name": "Mbox_File_Copy",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "Mbox_File_Copy",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "DCL_ContactHist_Unload_MBox",
+										"activities": [
+											{
+												"name": "DCL_ContactHist_Unload_MBox",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "DCL_ContactHist_Unload_MBox",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
 									}
 								],
 								"defaultActivities": [
