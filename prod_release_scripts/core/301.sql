@@ -1,0 +1,14 @@
+delete from dbt_cloud_pr_5458_963.aspitg_integration__itg_pop6_executed_visits;
+
+insert into dbt_cloud_pr_5458_963.aspitg_integration__itg_pop6_executed_visits
+select * from aspitg_integration.itg_pop6_executed_visits;
+
+delete from dbt_cloud_pr_5458_963.aspitg_integration__itg_pop6_general_audits  ;
+
+insert into dbt_cloud_pr_5458_963.aspitg_integration__itg_pop6_general_audits  
+select * from aspitg_integration.itg_pop6_general_audits  ;
+
+delete from dbt_cloud_pr_5458_963.aspitg_integration__itg_pop6_sku_audits  ;
+
+insert into dbt_cloud_pr_5458_963.aspitg_integration__itg_pop6_sku_audits
+select * from aspitg_integration.itg_pop6_sku_audits;
