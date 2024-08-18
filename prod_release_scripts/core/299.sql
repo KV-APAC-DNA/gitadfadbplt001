@@ -1,1 +1,0 @@
-delete FROM PROD_DNA_CORE.dbt_cloud_pr_5458_1002.idnitg_integration__itg_distributor_province_dim;
