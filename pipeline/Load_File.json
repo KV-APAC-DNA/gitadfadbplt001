@@ -1129,7 +1129,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(TYPE = 'PARQUET') MATCH_BY_COLUMN_NAME = CASE_INSENSITIVE;",
+													"value": "COPY INTO \n    @{pipeline().parameters.parameters.value[0].target_schema\n}.@{pipeline().parameters.parameters.value[0].target_table\n}\n     FROM @{concat('''@', pipeline().parameters.parameters.value[0].snowflake_stage,'/',if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)\n, '/',pipeline().parameters.parameters.value[0].folder_path,'/',pipeline().parameters.sourceFileName\n,'''')}\n     FILE_FORMAT =(FORMAT_NAME = @{pipeline().parameters.parameters.value[0].snowflake_file_format});",
 													"type": "Expression"
 												}
 											}
