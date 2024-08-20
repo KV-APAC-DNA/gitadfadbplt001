@@ -1106,7 +1106,7 @@
 							]
 						},
 						{
-							"value": "rg_clavis",
+							"value": "RG_Clavis",
 							"activities": [
 								{
 									"name": "load from file rg_clavis",
