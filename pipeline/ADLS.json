@@ -447,7 +447,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Set fileExtnVal",
+							"name": "Set fileExtVal",
 							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
@@ -465,7 +465,7 @@
 							"type": "IfCondition",
 							"dependsOn": [
 								{
-									"activity": "Set fileExtnVal",
+									"activity": "Set fileExtVal",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -474,7 +474,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(equals(variables('fileExtVal'),'0'), and(equals(variables('fileExtnVal'),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
+									"value": "@or(equals(variables('fileExtVal '),'0'), and(equals(variables('fileExtVal '),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
