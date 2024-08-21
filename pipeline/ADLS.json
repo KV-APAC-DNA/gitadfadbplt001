@@ -489,7 +489,7 @@
 												]
 											},
 											{
-												"activity": "Send error - directory not present_copy1",
+												"activity": "Send error - file ext validation",
 												"dependencyConditions": [
 													"Succeeded"
 												]
@@ -549,7 +549,7 @@
 										}
 									},
 									{
-										"name": "Send error - directory not present_copy1",
+										"name": "Send error - file ext validation",
 										"type": "ExecutePipeline",
 										"dependsOn": [],
 										"policy": {
@@ -585,11 +585,12 @@
 												},
 												"status": "FAIL",
 												"supportMessage": {
-													"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('get file name').error?.message}_",
+													"value": "File Validation Failure : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{item().name} \\n\n**ERROR**: _File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"_",
 													"type": "Expression"
 												},
-												"isBusinessNotification": "No",
+												"isBusinessNotification": "Yes",
 												"isSupportNotification": "Yes",
+												"businessMessage": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{item().name} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{activity('read parameters').output.value[0].target_table} table under @{activity('read parameters').output.value[0].target_schema} schema. Kindly fix and reupload. File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"_",
 												"isError": "Yes",
 												"container": {
 													"value": "@activity('read parameters').output.value[0].CONTAINER",
