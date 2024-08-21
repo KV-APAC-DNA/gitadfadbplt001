@@ -430,6 +430,8 @@
 			{
 				"name": "ForEveryFile",
 				"type": "ForEach",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If is_truncate Y",
