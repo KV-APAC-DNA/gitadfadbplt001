@@ -477,6 +477,18 @@
 									"value": "@or(equals(variables('fileExtVal '),'0'), and(equals(variables('fileExtVal '),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
 									"type": "Expression"
 								},
+								"ifFalseActivities": [
+									{
+										"name": "File ext validation",
+										"type": "Fail",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"message": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
+											"errorCode": "200"
+										}
+									}
+								],
 								"ifTrueActivities": [
 									{
 										"name": "Execute Load_File",
