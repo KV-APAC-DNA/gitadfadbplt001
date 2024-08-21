@@ -208,7 +208,7 @@
 								"type": "Expression"
 							},
 							"src_filename": {
-								"value": "@concat('*',activity('read parameters').output.value[0].FILE_SPEC,'*.',activity('read parameters').output.value[0].SOURCE_EXTN)\n",
+								"value": "@concat('*',activity('read parameters').output.value[0].FILE_SPEC,'*')\n",
 								"type": "Expression"
 							}
 						}
