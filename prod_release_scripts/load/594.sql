@@ -1,0 +1,1 @@
+update  META_RAW.parameters SET PARAMETER_VALUE='INDSDL_RAW' where PARAMETER_ID='11712';
