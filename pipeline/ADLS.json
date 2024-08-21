@@ -456,7 +456,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "fileExtnVal ",
+								"variableName": "fileExtVal ",
 								"value": "@split(activity('read parameters').output.value[0].validation,'-')[1]"
 							}
 						},
@@ -474,7 +474,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(equals(variables('fileExtnVal'),'0'), and(equals(variables('fileExtnVal'),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
+									"value": "@or(equals(variables('fileExtVal'),'0'), and(equals(variables('fileExtnVal'),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
@@ -921,7 +921,7 @@
 			"queryOnSource": {
 				"type": "String"
 			},
-			"fileExtnVal ": {
+			"fileExtVal ": {
 				"type": "String"
 			}
 		},
