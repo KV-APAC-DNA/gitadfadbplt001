@@ -481,11 +481,121 @@
 									{
 										"name": "File ext validation",
 										"type": "Fail",
-										"dependsOn": [],
+										"dependsOn": [
+											{
+												"activity": "error log - file ext val",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											},
+											{
+												"activity": "Send error - directory not present_copy1",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
 										"userProperties": [],
 										"typeProperties": {
 											"message": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
 											"errorCode": "200"
+										}
+									},
+									{
+										"name": "error log - file ext val",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "write_error_log",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"process_id": {
+													"value": "@pipeline().parameters.process_id",
+													"type": "Expression"
+												},
+												"job_name": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"error_message": {
+													"value": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
+													"type": "Expression"
+												},
+												"run_id": {
+													"value": "@pipeline().RunId",
+													"type": "Expression"
+												},
+												"category": {
+													"value": "@pipeline().parameters.category",
+													"type": "Expression"
+												},
+												"phase_id": {
+													"value": "@pipeline().parameters.phase_id",
+													"type": "Expression"
+												},
+												"error_code": "200",
+												"job_id": {
+													"value": "@pipeline()?.TriggeredByPipelineRunId",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "Send error - directory not present_copy1",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "NotifiyTeamsChannelPipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"subscription": {
+													"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+													"type": "Expression"
+												},
+												"resourceGroup": {
+													"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+													"type": "Expression"
+												},
+												"runId": {
+													"value": "@pipeline().RunId",
+													"type": "Expression"
+												},
+												"name": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"triggerTime": {
+													"value": "@pipeline().TriggerTime",
+													"type": "Expression"
+												},
+												"status": "FAIL",
+												"supportMessage": {
+													"value": "There is some issue with folder path or file location : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_PREFIX**: @{activity('read parameters').output.value[0].FILE_SPEC} \\n\n**ERROR**: _@{activity('get file name').error?.message}_",
+													"type": "Expression"
+												},
+												"isBusinessNotification": "No",
+												"isSupportNotification": "Yes",
+												"isError": "Yes",
+												"container": {
+													"value": "@activity('read parameters').output.value[0].CONTAINER",
+													"type": "Expression"
+												}
+											}
 										}
 									}
 								],
