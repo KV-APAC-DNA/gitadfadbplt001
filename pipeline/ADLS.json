@@ -430,8 +430,6 @@
 			{
 				"name": "ForEveryFile",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If is_truncate Y",
@@ -458,7 +456,7 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "fileExtVal ",
+								"variableName": "fileExtVal",
 								"value": "@split(activity('read parameters').output.value[0].validation,'-')[1]"
 							}
 						},
@@ -476,7 +474,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@or(equals(variables('fileExtVal '),'0'), and(equals(variables('fileExtVal '),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
+									"value": "@or(equals(variables('fileExtVal'),'0'), and(equals(variables('fileExtVal'),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
 									"type": "Expression"
 								},
 								"ifFalseActivities": [
@@ -1107,7 +1105,7 @@
 			"queryOnSource": {
 				"type": "String"
 			},
-			"fileExtVal ": {
+			"fileExtVal": {
 				"type": "String"
 			}
 		},
