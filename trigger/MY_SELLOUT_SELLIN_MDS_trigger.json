@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_SELLOUT"
+					"category": "MY_SELLOUT_SELLIN_MDS"
 				}
 			}
 		],
