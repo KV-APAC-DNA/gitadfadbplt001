@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PH_BP_TARGET"
+					"category": "PH_BP_TARGET_IOP_TARGET"
 				}
 			}
 		],
