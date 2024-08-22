@@ -1,0 +1,2 @@
+drop view PROD_DNA_CORE.JPDCLEDW_INTEGRATION."wqwt74戦略商品別売上ｐ";
+drop view PROD_DNA_CORE.JPDCLEDW_INTEGRATION."wqwt34明細出力リスト";
