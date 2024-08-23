@@ -1,5 +1,5 @@
 {
-	"name": "MY_MDS_trigger",
+	"name": "Regional_Price_Tracker_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_MDS"
+					"category": "Regional_Price_Tracker"
 				}
 			}
 		],
@@ -19,15 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-28T00:00:00",
+				"startTime": "2024-08-21T14:34:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						0
+					],
 					"hours": [
-						16,
-						17,
-						18,
-						19,
-						20
+						8
 					]
 				}
 			}

@@ -1,5 +1,5 @@
 {
-	"name": "EOM_ECOMM_trigger",
+	"name": "EOM_ECOMM_rg_mrkt_RG_CLAVIS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "EOM_ECOMM"
+					"category": "EOM_ECOMM_rg_mrkt_RG_CLAVIS"
 				}
 			}
 		],

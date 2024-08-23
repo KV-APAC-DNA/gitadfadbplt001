@@ -1,5 +1,5 @@
 {
-	"name": "JPN_EDI_MASTER_INVENTORY_WORKFLOW_trigger",
+	"name": "PH_BP_TARGET_IOP_TARGET_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,30 +10,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JPN_EDI_MASTER_INVENTORY_WORKFLOW"
+					"category": "PH_BP_TARGET_IOP_TARGET"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Week",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-07-24T16:40:00",
+				"startTime": "2024-04-29T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						15
+						35
 					],
 					"hours": [
-						18
-					],
-					"weekDays": [
-						"Monday",
-						"Tuesday",
-						"Wednesday",
-						"Thursday",
-						"Friday"
+						20
 					]
 				}
 			}

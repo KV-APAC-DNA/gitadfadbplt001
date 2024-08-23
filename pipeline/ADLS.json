@@ -208,7 +208,7 @@
 								"type": "Expression"
 							},
 							"src_filename": {
-								"value": "@concat('*',activity('read parameters').output.value[0].FILE_SPEC,'*.',activity('read parameters').output.value[0].SOURCE_EXTN)\n",
+								"value": "@concat('*',activity('read parameters').output.value[0].FILE_SPEC,'*')\n",
 								"type": "Expression"
 							}
 						}
@@ -447,53 +447,272 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "Execute Load_File",
-							"type": "ExecutePipeline",
+							"name": "Set fileExtVal",
+							"type": "SetVariable",
 							"dependsOn": [],
 							"policy": {
+								"secureOutput": false,
 								"secureInput": false
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"pipeline": {
-									"referenceName": "Load_File",
-									"type": "PipelineReference"
-								},
-								"waitOnCompletion": true,
-								"parameters": {
-									"category": {
-										"value": "@pipeline().parameters.category",
-										"type": "Expression"
-									},
-									"usecase_id": {
-										"value": "@pipeline().parameters.usecase_id",
-										"type": "Expression"
-									},
-									"sequence_id": {
-										"value": "@pipeline().parameters.sequence_id",
-										"type": "Expression"
-									},
-									"process_id": {
-										"value": "@pipeline().parameters.process_id",
-										"type": "Expression"
-									},
-									"phase_id": {
-										"value": "@pipeline().parameters.phase_id",
-										"type": "Expression"
-									},
-									"sourceFileName": {
-										"value": "@item().name",
-										"type": "Expression"
-									},
-									"parameters": {
-										"value": "@activity('read parameters').output",
-										"type": "Expression"
-									},
-									"sheetNames": {
-										"value": "@variables('sheet_names')",
-										"type": "Expression"
-									}
+								"variableName": "fileExtVal",
+								"value": "@split(activity('read parameters').output.value[0].validation,'-')[1]"
+							}
+						},
+						{
+							"name": "If file extn validation",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Set fileExtVal",
+									"dependencyConditions": [
+										"Succeeded"
+									]
 								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@or(equals(variables('fileExtVal'),'0'), and(equals(variables('fileExtVal'),'1'), contains(item().name,activity('read parameters').output.value[0].source_extn)))",
+									"type": "Expression"
+								},
+								"ifFalseActivities": [
+									{
+										"name": "File ext validation",
+										"type": "Fail",
+										"dependsOn": [
+											{
+												"activity": "error log - file ext val",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											},
+											{
+												"activity": "Send error - file ext validation",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											},
+											{
+												"activity": "Execute Archival Error File Extn Val",
+												"dependencyConditions": [
+													"Succeeded"
+												]
+											}
+										],
+										"userProperties": [],
+										"typeProperties": {
+											"message": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
+											"errorCode": "200"
+										}
+									},
+									{
+										"name": "error log - file ext val",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "write_error_log",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"process_id": {
+													"value": "@pipeline().parameters.process_id",
+													"type": "Expression"
+												},
+												"job_name": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"error_message": {
+													"value": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
+													"type": "Expression"
+												},
+												"run_id": {
+													"value": "@pipeline().RunId",
+													"type": "Expression"
+												},
+												"category": {
+													"value": "@pipeline().parameters.category",
+													"type": "Expression"
+												},
+												"phase_id": {
+													"value": "@pipeline().parameters.phase_id",
+													"type": "Expression"
+												},
+												"error_code": "200",
+												"job_id": {
+													"value": "@pipeline()?.TriggeredByPipelineRunId",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "Send error - file ext validation",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "NotifiyTeamsChannelPipeline",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"subscription": {
+													"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+													"type": "Expression"
+												},
+												"resourceGroup": {
+													"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+													"type": "Expression"
+												},
+												"runId": {
+													"value": "@pipeline().RunId",
+													"type": "Expression"
+												},
+												"name": {
+													"value": "@pipeline().Pipeline",
+													"type": "Expression"
+												},
+												"triggerTime": {
+													"value": "@pipeline().TriggerTime",
+													"type": "Expression"
+												},
+												"status": "FAIL",
+												"supportMessage": {
+													"value": "File Validation Failure : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**FOLDER_PATH**: @{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{item().name} \\n\n**ERROR**: _File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"_",
+													"type": "Expression"
+												},
+												"isBusinessNotification": "Yes",
+												"isSupportNotification": "Yes",
+												"businessMessage": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{item().name} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{activity('read parameters').output.value[0].target_table} table under @{activity('read parameters').output.value[0].target_schema} schema. Kindly fix and reupload. File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"_",
+												"isError": "Yes",
+												"container": {
+													"value": "@activity('read parameters').output.value[0].CONTAINER",
+													"type": "Expression"
+												}
+											}
+										}
+									},
+									{
+										"name": "Execute Archival Error File Extn Val",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "File_Archival",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"category": {
+													"value": "@pipeline().parameters.category",
+													"type": "Expression"
+												},
+												"usecase_id": {
+													"value": "@pipeline().parameters.usecase_id",
+													"type": "Expression"
+												},
+												"sequence_id": {
+													"value": "@pipeline().parameters.sequence_id",
+													"type": "Expression"
+												},
+												"process_id": {
+													"value": "@pipeline().parameters.process_id",
+													"type": "Expression"
+												},
+												"phase_id": {
+													"value": "@pipeline().parameters.phase_id",
+													"type": "Expression"
+												},
+												"isError": "Yes",
+												"container": {
+													"value": "@activity('read parameters').output.value[0].container",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}",
+													"type": "Expression"
+												},
+												"sourceFile": {
+													"value": "@{item().name}",
+													"type": "Expression"
+												},
+												"sheetNames": {
+													"value": "@variables('sheet_names')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								],
+								"ifTrueActivities": [
+									{
+										"name": "Execute Load_File",
+										"type": "ExecutePipeline",
+										"dependsOn": [],
+										"policy": {
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"pipeline": {
+												"referenceName": "Load_File",
+												"type": "PipelineReference"
+											},
+											"waitOnCompletion": true,
+											"parameters": {
+												"category": {
+													"value": "@pipeline().parameters.category",
+													"type": "Expression"
+												},
+												"usecase_id": {
+													"value": "@pipeline().parameters.usecase_id",
+													"type": "Expression"
+												},
+												"sequence_id": {
+													"value": "@pipeline().parameters.sequence_id",
+													"type": "Expression"
+												},
+												"process_id": {
+													"value": "@pipeline().parameters.process_id",
+													"type": "Expression"
+												},
+												"phase_id": {
+													"value": "@pipeline().parameters.phase_id",
+													"type": "Expression"
+												},
+												"sourceFileName": {
+													"value": "@item().name",
+													"type": "Expression"
+												},
+												"parameters": {
+													"value": "@activity('read parameters').output",
+													"type": "Expression"
+												},
+												"sheetNames": {
+													"value": "@variables('sheet_names')",
+													"type": "Expression"
+												}
+											}
+										}
+									}
+								]
 							}
 						}
 					]
@@ -884,6 +1103,9 @@
 				"type": "String"
 			},
 			"queryOnSource": {
+				"type": "String"
+			},
+			"fileExtVal": {
 				"type": "String"
 			}
 		},

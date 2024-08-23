@@ -1,5 +1,5 @@
 {
-	"name": "my_sellout_sales_trigger",
+	"name": "my_sellout_inv_sales_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "my_sellout_sales"
+					"category": "my_sellout_inv_sales"
 				}
 			}
 		],
