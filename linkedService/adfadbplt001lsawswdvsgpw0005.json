@@ -1,0 +1,28 @@
+{
+	"name": "adfadbplt001lsawswdvsgpw0005",
+	"properties": {
+		"description": "Linked Service to Kenvue APAC MDS QA",
+		"annotations": [],
+		"type": "SqlServer",
+		"typeProperties": {
+			"server": "awswdvsgpw0005.jx2.com",
+			"database": "mds",
+			"encrypt": "mandatory",
+			"trustServerCertificate": true,
+			"authenticationType": "SQL",
+			"userName": "MDS_QA",
+			"password": {
+				"type": "AzureKeyVaultSecret",
+				"store": {
+					"referenceName": "adfadbplt001lsakvadbplt001",
+					"type": "LinkedServiceReference"
+				},
+				"secretName": "adfadbplt001lsawswdvsgpw0005"
+			}
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
