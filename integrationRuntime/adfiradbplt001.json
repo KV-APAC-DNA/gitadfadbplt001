@@ -19,7 +19,7 @@
 				"pipelineExternalComputeScaleProperties": {
 					"timeToLive": 30,
 					"numberOfPipelineNodes": 4,
-					"numberOfExternalNodes": 2
+					"numberOfExternalNodes": 4
 				}
 			}
 		},
