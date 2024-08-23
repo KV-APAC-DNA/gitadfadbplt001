@@ -1,5 +1,5 @@
 {
-	"name": "CHN_MDS_trigger",
+	"name": "JPN_DCL_SFTP_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "CHN_MDS"
+					"category": "JPN_DCL_SFTP"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-08-12T12:03:00",
+				"startTime": "2024-08-21T14:35:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						45
 					],
 					"hours": [
-						21
+						20
 					]
 				}
 			}

@@ -1,5 +1,5 @@
 {
-	"name": "MY_SELLIN_trigger",
+	"name": "MY_SELLOUT_SISO_morning_evening_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_SELLIN"
+					"category": "MY_SELLOUT_SISO"
 				}
 			}
 		],
@@ -22,12 +22,12 @@
 				"startTime": "2024-02-28T00:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						0
+					],
 					"hours": [
-						16,
-						17,
-						18,
-						19,
-						20
+						11,
+						5
 					]
 				}
 			}

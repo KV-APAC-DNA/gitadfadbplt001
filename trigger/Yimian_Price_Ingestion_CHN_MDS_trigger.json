@@ -1,5 +1,5 @@
 {
-	"name": "MY_SELLOUT_SISO_evening_trigger",
+	"name": "Yimian_Price_Ingestion_CHN_MDS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_SELLOUT_SISO"
+					"category": "Yimian_Price_Ingestion_CHN_MDS"
 				}
 			}
 		],
@@ -19,11 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-28T00:00:00",
+				"startTime": "2024-08-12T12:02:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						15
+					],
 					"hours": [
-						5
+						21
 					]
 				}
 			}

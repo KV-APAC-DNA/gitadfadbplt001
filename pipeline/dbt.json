@@ -65,7 +65,7 @@
 						"requestInterval": "00.00:00:00.010",
 						"requestMethod": "POST",
 						"requestBody": {
-							"value": "{\n  \"cause\": \"Triggered via ADF transformation pipeline in @{pipeline().globalParameters.environment}\"\n}",
+							"value": "{\n  \"cause\": \"Triggered via ADF transformation pipeline in @{pipeline().globalParameters.environment} for category @{pipeline().parameters.category}. ADF Pipeline run id is @{pipeline().RunId}\"\n}",
 							"type": "Expression"
 						},
 						"additionalHeaders": {

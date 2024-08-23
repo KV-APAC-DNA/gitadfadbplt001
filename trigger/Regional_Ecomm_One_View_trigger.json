@@ -1,5 +1,5 @@
 {
-	"name": "PH_BP_TARGET_trigger",
+	"name": "Regional_Ecomm_One_View_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PH_BP_TARGET"
+					"category": "Regional_Ecomm_One_View"
 				}
 			}
 		],
@@ -19,14 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-04-29T00:00:00",
+				"startTime": "2024-08-21T14:34:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						35
+						30
 					],
 					"hours": [
-						20
+						9
 					]
 				}
 			}

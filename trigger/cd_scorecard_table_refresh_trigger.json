@@ -1,5 +1,5 @@
 {
-	"name": "MY_SELLOUT_SISO_morning_trigger",
+	"name": "cd_scorecard_table_refresh_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "MY_SELLOUT_SISO"
+					"category": "cd_scorecard_table_refresh"
 				}
 			}
 		],
@@ -19,10 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-02-28T00:00:00",
+				"startTime": "2024-08-21T14:30:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
+					"minutes": [
+						0
+					],
 					"hours": [
+						9,
 						11
 					]
 				}

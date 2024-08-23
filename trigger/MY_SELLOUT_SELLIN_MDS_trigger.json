@@ -1,5 +1,5 @@
 {
-	"name": "my_sellout_inv_trigger",
+	"name": "MY_SELLOUT_SELLIN_MDS_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "my_sellout_inv"
+					"category": "MY_SELLOUT_SELLIN_MDS"
 				}
 			}
 		],
@@ -23,25 +23,11 @@
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"hours": [
-						0,
-						1,
-						2,
-						3,
-						4,
-						5,
-						6,
-						7,
-						8,
-						9,
-						10,
 						16,
 						17,
 						18,
 						19,
-						20,
-						21,
-						22,
-						23
+						20
 					]
 				}
 			}
