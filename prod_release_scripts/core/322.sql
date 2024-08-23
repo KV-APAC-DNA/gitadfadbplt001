@@ -1,0 +1,2 @@
+delete from PROD_DNA_CORE.dbt_cloud_pr_5458_593.aspedw_integration__edw_material_sales_dim;
+insert into PROD_DNA_CORE.dbt_cloud_pr_5458_593.aspedw_integration__edw_material_sales_dim select * from PROD_DNA_CORE.aspedw_integration.edw_material_sales_dim;
