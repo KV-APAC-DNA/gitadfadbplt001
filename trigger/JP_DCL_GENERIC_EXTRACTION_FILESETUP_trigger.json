@@ -1,5 +1,5 @@
 {
-	"name": "JP_DCL_GENERIC_EXTRACTION_2_FILESETUP_trigger",
+	"name": "JP_DCL_GENERIC_EXTRACTION_FILESETUP_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JP_DCL_GENERIC_EXTRACTION_2_FILESETUP"
+					"category": "JP_DCL_GENERIC_EXTRACTION_FILESETUP"
 				}
 			}
 		],
@@ -18,7 +18,7 @@
 		"typeProperties": {
 			"recurrence": {
 				"frequency": "Minute",
-				"interval": 30,
+				"interval": 45,
 				"startTime": "2024-07-26T00:00:00",
 				"timeZone": "Singapore Standard Time"
 			}

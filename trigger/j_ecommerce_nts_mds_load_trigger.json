@@ -1,5 +1,5 @@
 {
-	"name": "cd_scorecard_table_refresh_trigger",
+	"name": "j_ecommerce_nts_mds_load_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "cd_scorecard_table_refresh"
+					"category": "j_ecommerce_nts_mds_load"
 				}
 			}
 		],
@@ -19,15 +19,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-08-21T14:30:00",
+				"startTime": "2024-08-26T10:22:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0
+						30
 					],
 					"hours": [
-						9,
-						11
+						20
 					]
 				}
 			}

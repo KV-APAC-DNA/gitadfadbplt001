@@ -1,5 +1,5 @@
 {
-	"name": "JP_DCL_CINEXT_trigger",
+	"name": "cd_scorecard_health_inventory_table_refresh_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JP_DCL_CINEXT"
+					"category": "cd_scorecard_health_inventory_table_refresh"
 				}
 			}
 		],
@@ -19,14 +19,15 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-07-25T12:34:00",
+				"startTime": "2024-08-21T14:30:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						2
+						9,
+						11
 					]
 				}
 			}
