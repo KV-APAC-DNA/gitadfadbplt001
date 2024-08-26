@@ -1,5 +1,5 @@
 {
-	"name": "cd_scorecard_table_refresh_trigger",
+	"name": "cd_scorecard_health_inventory_table_refresh_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,7 +10,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "cd_scorecard_table_refresh"
+					"category": "cd_scorecard_health_inventory_table_refresh"
 				}
 			}
 		],
