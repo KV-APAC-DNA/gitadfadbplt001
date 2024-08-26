@@ -1,0 +1,1 @@
+ truncate table prod_dna_core.ntawks_integration.wks_sdl_kr_lotte_logistics_yang_ju_gt_sellout;
