@@ -4,6 +4,6 @@ values
 ('CNSC','EXCLUDE_RE_BASE_RET_ENV','t2-'),
 ('CNSC','EXCLUDE_RE_BASE_RET_ENV','other-'),
 ('CNSC','EXCLUDE_RE_BASE_RET_ENV','c-pool-audit'),
-('CNSC','EXCLUDE_RE_BASE_RET_ENV', c-pool-others),
-('CNSC','EXCLUDE_RE_BASE_RET_ENV',c-pool-注销/验证不到等),
+('CNSC','EXCLUDE_RE_BASE_RET_ENV', 'c-pool-others'),
+('CNSC','EXCLUDE_RE_BASE_RET_ENV','c-pool-注销/验证不到等'),
 ('CNSC','EXCLUDE_RE_BASE_RET_ENV','cbd-批发');
