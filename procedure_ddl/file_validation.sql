@@ -29,11 +29,11 @@
 -- 18/7/24  Thanish    Fixed logic for header validation
 -- 2/8/24   Thanish    Added file name validation logic for EOM
 
-CREATE OR REPLACE PROCEDURE DEV_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
+CREATE OR REPLACE PROCEDURE PROD_DNA_LOAD.ASPSDL_RAW.FILE_VALIDATION("PARAM" ARRAY)
 RETURNS VARCHAR(16777216)
 LANGUAGE PYTHON
 RUNTIME_VERSION = '3.11'
-PACKAGES = ('openpyxl==3.1.2','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1')
+PACKAGES = ('openpyxl==3.1.2','regex==2023.10.3','snowflake-snowpark-python==*','xlrd==2.0.1','pyarrow==14.0.2')
 HANDLER = 'main'
 EXECUTE AS OWNER
 AS '
@@ -46,13 +46,15 @@ import regex
 import pandas as pd
 from datetime import datetime
 import zipfile
+import pyarrow.parquet as pq
+import pyarrow as pa
 
 
 def main(session: snowpark.Session,Param):
     try:
 
-        
-        
+        # Variables passed from Parameters table
+        # CURRENT_FILE , index , validation, val_file_name,val_file_extn,val_header,file_header_row_num,stage_name,temp_stage_path,header_reg,sheet_names,schema
 
 
         CURRENT_FILE        =  Param[0]
@@ -68,28 +70,40 @@ def main(session: snowpark.Session,Param):
         sheet_names         =  Param[10]
         schema              =  Param[7].split(".")[0]
 
+        # Split the value from validation parameter to activate the respective validation
+        # 1-1-1 , first occurence of 1-FileNameValidation , second occurence of 1-FileExtnValidation, last occurence of 1-FileHeaderValidation
+
         FileNameValidation,FileExtnValidation,FileHeaderValidation = validation.split("-")
         counter             =  0 
 
+
+        # If validation flag is 0 for all, then return the success message to ADF
         if FileNameValidation=="0" and FileExtnValidation=="0" and FileHeaderValidation=="0":
              return "SUCCESS: File validation passed"
             
         
     
-        
+        # If the File belongs to Regional, then it enters the function
     
         if stage_name.split(".")[0]=="ASPSDL_RAW":
             processed_file_name=rg_travel_validation(CURRENT_FILE)
             
-        
+        # If the File belongs to Thailand, then it enters the function
+
         elif stage_name.split(".")[0]=="THASDL_RAW": 
             processed_file_name=thailand_processing(CURRENT_FILE)
+
+        # If the File belongs to Pacific, then it enters the function
 
         elif stage_name.split(".")[0]=="PCFSDL_RAW":
             processed_file_name=aus_processing(CURRENT_FILE)
 
+        # If the File belongs to North Asia, then it enters the function
+
         elif stage_name.split(".")[0]=="NTASDL_RAW":
             processed_file_name=north_asia_processing(CURRENT_FILE)
+
+        # If the File belongs to Indonesia, then it enters the function
 
         elif stage_name.split(".")[0]=="IDNSDL_RAW":
             processed_file_name=indonesia_processing(CURRENT_FILE)
@@ -98,7 +112,7 @@ def main(session: snowpark.Session,Param):
             processed_file_name=CURRENT_FILE
 
     
-        
+        # Extracting the filename based on index variable last, first, full, pre
         
         if index.lower() == "last":
             extracted_filename = processed_file_name.rsplit("_", 1)[0]
@@ -117,7 +131,7 @@ def main(session: snowpark.Session,Param):
 
     
     
-        
+        # Check for File name Validation, if the flag is 1 then call the File name Validation function
     
         if FileNameValidation=="1":
             file_name_validation_status,counter=file_validation(counter,extracted_filename,val_file_name,schema)
@@ -125,7 +139,7 @@ def main(session: snowpark.Session,Param):
             print("File Name Validation not required")
     
     
-        
+        # Check for File extn Validation, if the flag is 1 then call the File extn Validation function
     
         if FileExtnValidation == "1":
             file_ext_validation_status,counter=file_extn_validation(counter,CURRENT_FILE,val_file_extn)
@@ -133,11 +147,14 @@ def main(session: snowpark.Session,Param):
             print("File extension Validation not required")
     
     
-        
+        # Check for File Header Validation, if the flag is 1 then proceed with File Header Validation
     
         if FileHeaderValidation == "1" and counter==0:
 
-            
+            # Converting the extension from xlsx to csv
+            # Extracting the Header from the file
+            # If- else is bought in to handle files which requires additional process to extract
+            # Reading files with specific encoding, using pandas for specific need and normal way of reading files
             
             if "NTUC" in CURRENT_FILE:
                 # if Core
@@ -335,6 +352,15 @@ def main(session: snowpark.Session,Param):
                             with zip_ref.open(i_file_name) as file:
                                 df_pandas = pd.read_csv(file, delimiter="~", header =file_header_row_num, nrows = file_header_row_num+1, encoding_errors = "replace", quoting=3, na_filter=False)
                                 header=list(df_pandas)
+
+
+            elif "OTC_Sellout" in CURRENT_FILE and schema=="CHNSDL_RAW":
+                full_path = "@"+stage_name+"/"+temp_stage_path+"/"+CURRENT_FILE
+                with SnowflakeFile.open(full_path, "rb", require_scoped_url = False) as f:
+                    parquet_file = pq.ParquetFile(f)
+                    first_ten_rows = next(parquet_file.iter_batches(batch_size=10))
+                    df_pandas = pa.Table.from_batches([first_ten_rows]).to_pandas()
+                    header=df_pandas.columns
                        
             else:
                 file_name= CURRENT_FILE.replace("xlsx","csv").replace("xls","csv")
@@ -354,6 +380,7 @@ def main(session: snowpark.Session,Param):
             elif "Naver_keyword" in CURRENT_FILE:
                 header=header
                 
+            # If the Header from File is of comma separated or | or ~ separated then split accordingly
             else:
                 header_pipe_split = header[0].split(''|'')
                 header_tilda_split = header[0].split(''~'')
@@ -376,6 +403,7 @@ def main(session: snowpark.Session,Param):
             else:
                 result_list = header
 
+            # Handle null values, empty strings or any other handling if required
 
             if stage_name.split(".")[0]=="PCFSDL_RAW" and val_file_name=="FSSI Week":
                 filtered_list=list('''' if pd.isna(x) else x for x in result_list)
@@ -427,7 +455,8 @@ def main(session: snowpark.Session,Param):
                 result_list=list(filter(None,result_list))
                 filtered_list = [value for value in result_list if value is not None and not (isinstance(value, float) and math.isnan(value))]
 
-            
+            # to keep a common standard, we are replacing . and space with underscore
+
             file_header= [item.replace(" ", "_").replace(".", "_") for item in filtered_list]
             val_header= val_header.lower()
 
@@ -455,6 +484,8 @@ def main(session: snowpark.Session,Param):
 
             header_reg = header_reg.lower()
             regex_list = header_reg.split(''^'')
+
+            # Call the file header validation function
             
             file_header_validation_status,counter=file_header_validation(counter,final_val_header,file_header, regex_list)
         
@@ -462,6 +493,7 @@ def main(session: snowpark.Session,Param):
             print("File Header Validation not required")
 
 
+        # Return error message based on the failure on specific stage
         if counter == 0 :
                 validation_status = "SUCCESS: File validation passed" 
         elif counter == 1 :
@@ -486,7 +518,7 @@ def main(session: snowpark.Session,Param):
             error_message = f"FAILED: {str(e)}"
             return error_message
 
-
+# Function for Regional market
 def rg_travel_validation(CURRENT_FILE):
     #assigning the value to varibale file
     
@@ -511,6 +543,7 @@ def rg_travel_validation(CURRENT_FILE):
 
     return file
 
+# Function for Thailand market
 def thailand_processing(CURRENT_FILE):
 
     if "COP_1" in CURRENT_FILE:
@@ -528,6 +561,7 @@ def thailand_processing(CURRENT_FILE):
 
     return file
 
+# Function for Pacific market
 def aus_processing(CURRENT_FILE):
     if "Weekly_Sales_Report_-_Kenvue" in CURRENT_FILE:
         file= CURRENT_FILE.replace("_"," ",3)
@@ -560,7 +594,7 @@ def aus_processing(CURRENT_FILE):
 
     return file
 
-
+# Function for North Asia market
 def north_asia_processing(CURRENT_FILE):
 
     if "NU_RI_ZON" in CURRENT_FILE:
@@ -578,6 +612,7 @@ def north_asia_processing(CURRENT_FILE):
         
     return file
 
+# Function for Indonesia market
 def indonesia_processing(CURRENT_FILE):
     if "PROMO_COMPETITOR" in CURRENT_FILE or "BRAND_BLOCKING" in CURRENT_FILE or "VISIBILITY" in CURRENT_FILE or "PLANOGRAM" in CURRENT_FILE or "PRICING" in CURRENT_FILE or "SECONDARY_DISPLAY" in CURRENT_FILE or "PROMO" in CURRENT_FILE or "PRODUCT_AVAILABILITY" in CURRENT_FILE:
         file=CURRENT_FILE.replace("_"," ",1)
@@ -723,6 +758,7 @@ def file_extn_validation(counter,CURRENT_FILE,val_file_extn):
             counter = counter+2
         return file_ext_validation_status,counter
 
+# Function to perform file header validation
 def file_header_validation(counter,final_val_header,file_header, hreg):
 
         # Compare the header from file and the header from metadata
