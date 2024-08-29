@@ -1,0 +1,1 @@
+INSERT INTO PROD_DNA_CORE.dbt_cloud_pr_5458_593.pcfitg_integration__itg_iri_scan_sales SELECT * FROM PROD_DNA_CORE.pcfitg_integration.itg_iri_scan_sales
