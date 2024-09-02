@@ -1870,10 +1870,66 @@
 					},
 					"cases": [
 						{
-							"value": "dna_core"
+							"value": "dna_core",
+							"activities": [
+								{
+									"name": "Script Truncate Source core",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
 						},
 						{
-							"value": "dna_load"
+							"value": "dna_load",
+							"activities": [
+								{
+									"name": "Script Truncate Source load",
+									"type": "Script",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"linkedServiceName": {
+										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"type": "LinkedServiceReference"
+									},
+									"typeProperties": {
+										"scripts": [
+											{
+												"type": "Query",
+												"text": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}"
+											}
+										],
+										"scriptBlockExecutionTimeout": "02:00:00"
+									}
+								}
+							]
 						},
 						{
 							"value": "no_truncate_source",
