@@ -1070,7 +1070,7 @@
 									"typeProperties": {
 										"variableName": "watermark_value",
 										"value": {
-											"value": "@if(equals(variables('container'),'jpn'),formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Tokyo Standard Time'), 'yyyy-MM-dd HH:mm:ss'),formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss'))",
+											"value": "@if(equals(variables('container'),'jpn'),formatDateTime(convertTimeZone(adddays(pipeline().TriggerTime,-1),'UTC','Tokyo Standard Time'), 'yyyy-MM-dd HH:mm:ss'),formatDateTime(convertTimeZone(pipeline().TriggerTime,'UTC','Singapore Standard Time'), 'yyyy-MM-dd HH:mm:ss'))",
 											"type": "Expression"
 										}
 									}
