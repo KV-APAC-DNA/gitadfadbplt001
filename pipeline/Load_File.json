@@ -447,7 +447,7 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
 													"type": "Expression"
 												},
 												"fileName": {
@@ -708,7 +708,7 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
 													"type": "Expression"
 												},
 												"fileName": {
@@ -900,7 +900,7 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
 													"type": "Expression"
 												},
 												"fileName": {
@@ -1092,7 +1092,7 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
 													"type": "Expression"
 												},
 												"fileName": {
@@ -1284,7 +1284,7 @@
 											"parameters": {
 												"container": "@{pipeline().parameters.parameters.value[0].container}",
 												"directory": {
-													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success",
+													"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.parameters.value[0].folder_path}/processed/success/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
 													"type": "Expression"
 												},
 												"fileName": {
