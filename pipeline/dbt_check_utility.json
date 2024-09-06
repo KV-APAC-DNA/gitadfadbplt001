@@ -654,7 +654,10 @@
 								"scripts": [
 									{
 										"type": "Query",
-										"text": "@if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),replace(activity('Script3').output.resultSets[0].rows[0].QUERY,'*','LISTAGG(DISTINCT file_name, '', '') as file_names'), 'Select 1')"
+										"text": {
+											"value": "@if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),replace(activity('Script3').output.resultSets[0].rows[0].QUERY,'*','LISTAGG(DISTINCT file_name, '', '') as file_names'), 'Select 1')",
+											"type": "Expression"
+										}
 									}
 								],
 								"scriptBlockExecutionTimeout": "02:00:00"
@@ -968,7 +971,7 @@
 									}
 								},
 								{
-									"name": "error dbt run failed ing",
+									"name": "error dbt run failed ing check",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{
