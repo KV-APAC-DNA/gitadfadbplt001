@@ -1,0 +1,35 @@
+{
+	"name": "RE_Summary_Details_Execution_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "Retail_Excellence_Data_Load"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-09-06T10:29:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						17
+					]
+				}
+			}
+		}
+	}
+}
