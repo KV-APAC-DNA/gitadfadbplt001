@@ -2284,7 +2284,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "sql_server_sink_compressed",
+											"referenceName": "sql_server_sink_non_compressed",
 											"type": "DatasetReference",
 											"parameters": {
 												"container": {
@@ -2692,7 +2692,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "sql_server_sink_compressed",
+											"referenceName": "sql_server_sink_non_compressed",
 											"type": "DatasetReference",
 											"parameters": {
 												"container": {
