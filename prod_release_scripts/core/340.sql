@@ -1,0 +1,11 @@
+update  aspitg_integration.itg_pop6_displays a set field_code = 'Local_DISPLAY_QN_YESNO'
+from 
+aspitg_integration.itg_pop6_executed_visits exe,
+aspitg_integration.itg_pop6_pops pops
+where exe.visit_id = a.visit_id 
+and exe.visit_date like '2024-02%'
+and pops.popdb_id = exe.popdb_id
+and pops.active = 'Y'
+and a.cntry_cd = 'TH'
+and upper(pops.customer) in ('BIG C', 'GT SUPER' , 'GT SUPER VIP' , 'LOTUS''S' , 'THE MALL' , 'TOPS', 'WATSONS')
+and field_code = 'PS_DISPLAY_QN_YESNO';
