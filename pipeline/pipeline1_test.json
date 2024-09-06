@@ -5,6 +5,8 @@
 			{
 				"name": "Move chn_otcsellout file to success",
 				"type": "Copy",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -55,8 +57,30 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "test",
+					"value": {
+						"value": "@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/abc/processed/success/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy')}/@{formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'MM')}",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"test": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
