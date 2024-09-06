@@ -1,5 +1,5 @@
 {
-	"name": "sql_server_sink_compressed",
+	"name": "sql_server_sink_non_compressed",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lsdlsadbplt001",
