@@ -1,0 +1,36 @@
+{
+	"name": "ADF Trigger Details",
+	"properties": {
+		"description": "Obtain ADF Trigger details",
+		"activities": [
+			{
+				"name": "TriggerAPI",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": true
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"method": "GET",
+					"url": {
+						"value": "@concat('https://management.azure.com/subscriptions/',pipeline().globalParameters.dev_subscription_id,'/resourceGroups/',pipeline().globalParameters.prod_resource_group,'/providers/Microsoft.DataFactory/factories/',pipeline().DataFactory,'/triggers?api-version=2018-06-01')\n",
+						"type": "Expression"
+					},
+					"connectVia": {
+						"referenceName": "AutoResolveIntegrationRuntime",
+						"type": "IntegrationRuntimeReference"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "ADF Objects"
+		},
+		"annotations": []
+	}
+}
