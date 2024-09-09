@@ -1197,7 +1197,7 @@
 									"userProperties": [],
 									"typeProperties": {
 										"message": {
-											"value": "oracle_to_adls: @{activity('salesforce_to_adls').error?.errorCode} @{activity('salesforce_to_adls').error?.message}",
+											"value": "sakesforce_to_adls: @{activity('salesforce_to_adls').error?.errorCode} @{activity('salesforce_to_adls').error?.message}",
 											"type": "Expression"
 										},
 										"errorCode": "2000"
