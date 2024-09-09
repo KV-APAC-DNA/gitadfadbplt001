@@ -1201,6 +1201,130 @@
 											"type": "Expression"
 										}
 									}
+								},
+								{
+									"name": "Archive marketingcloudopsjpndcl file",
+									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Failed",
+									"dependsOn": [
+										{
+											"activity": "Copy marketingcloudopsjpndcl",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "BinarySource",
+											"storeSettings": {
+												"type": "SftpReadSettings",
+												"recursive": true,
+												"disableChunking": false
+											},
+											"formatSettings": {
+												"type": "BinaryReadSettings"
+											}
+										},
+										"sink": {
+											"type": "BinarySink",
+											"storeSettings": {
+												"type": "SftpWriteSettings",
+												"operationTimeout": "01:00:00",
+												"useTempFileRename": true
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "BinarySFTPmarketingcloudopsjpndcl",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "BinarySFTPpopcompany",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@{pipeline().parameters.FtpDirectory}/Archive/ADF_Archive",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								},
+								{
+									"name": "Set error marketingcloudopsjpndcl archive",
+									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [
+										{
+											"activity": "Archive marketingcloudopsjpndcl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "errorResponse1",
+										"value": {
+											"value": "@activity('Archive marketingcloudopsjpndcl file').error?.message",
+											"type": "Expression"
+										}
+									}
+								},
+								{
+									"name": "Archival fail 8",
+									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
+									"dependsOn": [
+										{
+											"activity": "Archive marketingcloudopsjpndcl file",
+											"dependencyConditions": [
+												"Failed"
+											]
+										}
+									],
+									"userProperties": [],
+									"typeProperties": {
+										"message": {
+											"value": "SFTP File Archival Fail: @{variables('errorResponse1')}",
+											"type": "Expression"
+										},
+										"errorCode": "002"
+									}
 								}
 							]
 						}
