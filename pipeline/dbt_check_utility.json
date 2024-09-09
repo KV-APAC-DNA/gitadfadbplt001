@@ -120,7 +120,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),'1','2'),'0')",
+						"value": "@if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'), '1', if(greater(pipeline().parameters.run_status,10), '2','0'))",
 						"type": "Expression"
 					},
 					"cases": [
@@ -388,7 +388,7 @@
 							"type": "ExecutePipeline",
 							"dependsOn": [
 								{
-									"activity": "Script Fetch presigned url",
+									"activity": "Script fetch file names",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -424,13 +424,13 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**DATASET**: @{item().model_name} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_",
+										"value": "Error due to DQ Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**DATASET**: @{item().model_name} \\n\n**ERROR**: _Dbt job failed due to DQ check, check on run_id @{pipeline().parameters.run_id} and retry. Download the file with this URL - @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_ \\n\n@{if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),concat('**FILE_NAMES**: ',activity('Script fetch file names').output.resultSets[0].rows[0].FILE_NAMES), '')}",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "Yes",
 									"isSupportNotification": "Yes",
 									"businessMessage": {
-										"value": "Error due to Data Quality Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**ERROR**: _Data load failed for @{item().model_name}. Please check the failed records here @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_ \\n \nKindly fix and reupload.",
+										"value": "Error due to Data Quality Checks in DBT job (@{pipeline().parameters.dbt_jobid}): \\n\n**ERROR**: _Data load failed for @{item().model_name}. Please check the failed records here @{activity('Script Fetch presigned url').output.resultSets[0].rows[0].URL}_ \\n \n@{if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),concat('Kindly fix and reupload these files - ',activity('Script fetch file names').output.resultSets[0].rows[0].FILE_NAMES), 'Kindly fix and reupload.')}",
 										"type": "Expression"
 									},
 									"isError": "Yes",
@@ -626,6 +626,42 @@
 									"isError": "Yes"
 								}
 							}
+						},
+						{
+							"name": "Script fetch file names",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "Script Fetch presigned url",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),replace(activity('Script3').output.resultSets[0].rows[0].QUERY,'*','LISTAGG(DISTINCT file_name, '', '') as file_names'), 'Select 1')",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
 						}
 					]
 				}
@@ -644,7 +680,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(and(greater(pipeline().parameters.run_status,10),equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion')),not(empty(variables('resultSet'))))",
+						"value": "@and(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),not(empty(variables('resultSet'))))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -699,7 +735,7 @@
 				"typeProperties": {
 					"variableName": "modelNameArray",
 					"value": {
-						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),variables('emptyArray'),variables('resultSet')[0].rows),variables('emptyArray')),variables('emptyArray'))",
+						"value": "@if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),variables('emptyArray'),variables('resultSet')[0].rows),variables('emptyArray'))",
 						"type": "Expression"
 					}
 				}
@@ -718,7 +754,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(greater(pipeline().parameters.run_status,10),if(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),if(empty(variables('resultSet')),'10','11'),'2'),'0')",
+						"value": "@if(and(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),not(empty(variables('resultSet')))),if(empty(variables('resultSet')),'10','11'),'0')",
 						"type": "Expression"
 					},
 					"cases": [
@@ -935,7 +971,7 @@
 									}
 								},
 								{
-									"name": "error dbt run failed ing",
+									"name": "error dbt run failed ing check",
 									"type": "ExecutePipeline",
 									"dependsOn": [
 										{

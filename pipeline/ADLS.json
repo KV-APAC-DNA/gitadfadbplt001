@@ -170,7 +170,7 @@
 						"type": "Expression"
 					},
 					"condition": {
-						"value": "@equals(item().type,'File')",
+						"value": "@and(equals(item().type,'File'),not(contains(item().name,'Trigger')))",
 						"type": "Expression"
 					}
 				}
@@ -457,7 +457,10 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "fileExtVal",
-								"value": "@split(activity('read parameters').output.value[0].validation,'-')[1]"
+								"value": {
+									"value": "@split(activity('read parameters').output.value[0].validation,'-')[1]",
+									"type": "Expression"
+								}
 							}
 						},
 						{
@@ -503,7 +506,10 @@
 										],
 										"userProperties": [],
 										"typeProperties": {
-											"message": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
+											"message": {
+												"value": "File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"",
+												"type": "Expression"
+											},
 											"errorCode": "200"
 										}
 									},
@@ -596,7 +602,10 @@
 												},
 												"isBusinessNotification": "Yes",
 												"isSupportNotification": "Yes",
-												"businessMessage": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{item().name} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{activity('read parameters').output.value[0].target_table} table under @{activity('read parameters').output.value[0].target_schema} schema. Kindly fix and reupload. File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"_",
+												"businessMessage": {
+													"value": "There is some issue with the structure of source file as File Validation was failed. Following are the details of the file: \\n\n**FOLDER_PATH**: @{activity('read parameters').output.value[0].container}/@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{activity('read parameters').output.value[0].FOLDER_PATH}@{if(equals(activity('read parameters').output.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')} \\n\n**FILE_NAME**: @{item().name} \\n\n**ERROR**: _An issue is reported with this source file which loads data into @{activity('read parameters').output.value[0].target_table} table under @{activity('read parameters').output.value[0].target_schema} schema. Kindly fix and reupload. File Extension Validation got failed. Received file name \"@{item().name}\" and valid extension is \"@{activity('read parameters').output.value[0].source_extn}\"_",
+													"type": "Expression"
+												},
 												"isError": "Yes",
 												"container": {
 													"value": "@activity('read parameters').output.value[0].CONTAINER",
