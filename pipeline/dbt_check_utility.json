@@ -655,7 +655,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "@if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),replace(activity('Script3').output.resultSets[0].rows[0].QUERY,'*','LISTAGG(DISTINCT file_name, '', '') as file_names'), 'Select 1')",
+											"value": "@if(or(equals(pipeline().parameters.parameters.value[0].container, 'phl'), false),concat('with fileName as (',replace(replace(activity('Script3').output.resultSets[0].rows[0].QUERY,'*','LISTAGG(DISTINCT file_name, '', '') as file_names'),';',''),') Select LISTAGG(DISTINCT file_names, '', '') as file_names from fileName  where file_names !='''''), 'Select 1')",
 											"type": "Expression"
 										}
 									}
