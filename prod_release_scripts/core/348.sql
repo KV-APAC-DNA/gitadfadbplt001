@@ -1,0 +1,2 @@
+create table prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_20240708 clone prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot;
+create table prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_temp_20240708 clone prod_dna_core.pcfedw_integration.edw_demand_forecast_snapshot_temp;
