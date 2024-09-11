@@ -157,7 +157,7 @@
 					"source": {
 						"type": "SnowflakeSource",
 						"query": {
-							"value": "SELECT DISTINCT\n    USECASE.SEQUENCE_ID AS USECASE_SEQUENCE_ID\nFROM META_RAW.MDS_ADF_USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.SEQUENCE_ID ASC;",
+							"value": "SELECT DISTINCT\n    USECASE.SEQUENCE_ID AS USECASE_SEQUENCE_ID\nFROM META_RAW.MDS_ADF_USECASE USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.SEQUENCE_ID ASC;",
 							"type": "Expression"
 						},
 						"exportSettings": {
