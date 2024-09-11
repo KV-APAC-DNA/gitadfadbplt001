@@ -688,8 +688,6 @@
 			{
 				"name": "repeat_until_no_dependents",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check running status",
