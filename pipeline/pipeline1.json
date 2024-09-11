@@ -1,0 +1,38 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Set isCountryDeployed",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "flag",
+					"value": {
+						"value": "@if(equals(pipeline().parameters.con, 'phl'),true,if(equals(pipeline().parameters.con, 'tha'), true, if(equals(pipeline().parameters.con, 'ind'), true,if(equals(pipeline().parameters.con, 'vnm'), true,if(equals(pipeline().parameters.con, 'mys'), true,if(equals(pipeline().parameters.con, 'sgp'), true, false))))))",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"con": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"flag": {
+				"type": "Boolean"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
