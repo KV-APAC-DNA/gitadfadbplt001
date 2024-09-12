@@ -1,0 +1,17 @@
+ALTER TABLE inditg_integration.itg_salesman_target ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE indwks_integration.wks_rpurchasedetail ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_rkeyacccustomer ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE indwks_integration.wks_ittarget ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE indwks_integration.wks_lks_plant ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_rstockdiscrepancy_withproduct ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_jnjreport_muser ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_rdssmweeklytarget_output ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_schemeutilization ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_dailysales_undelivered ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE indwks_integration.wks_csl_salesmanmaster ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_salesinvoiceorders ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_dailysales ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_csl_retailerhierarchy ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE indwks_integration.wks_day_cls_stock_fact ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_salesreturn ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE inditg_integration.itg_orderbooking ADD COLUMN file_name VARCHAR(255);
