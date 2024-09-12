@@ -22,3 +22,5 @@ alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_PRODUCT_DIM rename c
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_PROMOTION_LIST rename column source_file_name to file_name;
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SALES_ORG_DIM rename column source_file_name to file_name;
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SALES_STOCK_FACT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SELLTHRGH_SALES_FACT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_YEARLY_TARGET rename column source_file_name to file_name;
