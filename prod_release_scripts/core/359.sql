@@ -1,3 +1,12 @@
+alter table prod_dna_core.mysitg_integration.sdl_raw_my_afgr add column file_name varchar(255);
+alter table prod_dna_core.mysitg_integration.itg_my_afgr add column file_name varchar(255);
+alter table prod_dna_core.mysitg_integration.itg_my_le_trgt add column file_name varchar(255);
+alter table prod_dna_core.mysitg_integration.sdl_raw_my_le_trgt add column file_name varchar(255);
+alter table prod_dna_core.mysitg_integration.itg_my_ciw_map add column file_name varchar(255);
+alter table prod_dna_core.mysitg_integration.sdl_raw_my_ciw_map add column file_name varchar(255);
+alter table PROD_DNA_CORE.THAITG_INTEGRATION.ITG_TH_DMS_CUSTOMER_DIM add column file_name varchar(255);
+alter table PROD_DNA_CORE.THAITG_INTEGRATION.ITG_TH_DMS_SELLOUT_FACT add column file_name varchar(255);
+alter table PROD_DNA_CORE.THAITG_INTEGRATION.ITG_TH_DMS_INVENTORY_FACT add column file_name varchar(255);
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_CALL_DETAILS rename column source_file_name to file_name;
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_CUSTOMER_DIM rename column source_file_name to file_name;
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_D_SELLOUT_SALES_FACT rename column source_file_name to file_name;
@@ -13,5 +22,3 @@ alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_PRODUCT_DIM rename c
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_PROMOTION_LIST rename column source_file_name to file_name;
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SALES_ORG_DIM rename column source_file_name to file_name;
 alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SALES_STOCK_FACT rename column source_file_name to file_name;
-alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SELLTHRGH_SALES_FACT rename column source_file_name to file_name;
-alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_YEARLY_TARGET rename column source_file_name to file_name;
