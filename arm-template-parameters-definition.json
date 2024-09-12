@@ -23,61 +23,8 @@
         }
     },
     "Microsoft.DataFactory/factories/pipelines": {},
-    "Microsoft.DataFactory/factories/integrationRuntimes": {
-        "properties": {
-            "typeProperties": {
-                "ssisProperties": {
-                    "catalogInfo": {
-                        "catalogServerEndpoint": "=",
-                        "catalogAdminUserName": "=",
-                        "catalogAdminPassword": {
-                            "value": "-::secureString"
-                        }
-                    },
-                    "customSetupScriptProperties": {
-                        "sasToken": {
-                            "value": "-::secureString"
-                        }
-                    }
-                },
-                "linkedInfo": {
-                    "key": {
-                        "value": "-::secureString"
-                    },
-                    "resourceId": "="
-                },
-                "computeProperties": {
-                    "dataFlowProperties": {
-                        "externalComputeInfo": [
-                            {
-                                "accessToken": "-::secureString"
-                            }
-                        ]
-                    }
-                }
-            }
-        }
-    },
-    "Microsoft.DataFactory/factories/triggers": {
-        "properties": {
-            "pipelines": [
-                {
-                    "parameters": {
-                        "*": "="
-                    }
-                },
-                "pipelineReference.referenceName"
-            ],
-            "pipeline": {
-                "parameters": {
-                    "*": "="
-                }
-            },
-            "typeProperties": {
-                "scope": "="
-            }
-        }
-    },
+    "Microsoft.DataFactory/factories/integrationRuntimes": {},
+    "Microsoft.DataFactory/factories/triggers": {},
     "Microsoft.DataFactory/factories/linkedServices": {
         "*": {
             "properties": {
@@ -158,16 +105,7 @@
             }
         }
     },
-    "Microsoft.DataFactory/factories/datasets": {
-        "*": {
-            "properties": {
-                "typeProperties": {
-                    "folderPath": "=",
-                    "fileName": "="
-                }
-            }
-        }
-    },
+    "Microsoft.DataFactory/factories/datasets": {},
     "Microsoft.DataFactory/factories/credentials": {
         "*": {
             "properties": {
