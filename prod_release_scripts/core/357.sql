@@ -1,0 +1,17 @@
+ALTER TABLE prod_dna_core.itg_salesman_target ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.wks_rpurchasedetail ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_rkeyacccustomer ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.wks_ittarget ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.wks_lks_plant ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_rstockdiscrepancy_withproduct ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_jnjreport_muser ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_rdssmweeklytarget_output ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_schemeutilization ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_dailysales_undelivered ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.wks_csl_salesmanmaster ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_salesinvoiceorders ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_dailysales ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_csl_retailerhierarchy ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.wks_day_cls_stock_fact ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_salesreturn ADD COLUMN file_name VARCHAR(255);
+ALTER TABLE prod_dna_core.itg_orderbooking ADD COLUMN file_name VARCHAR(255);
