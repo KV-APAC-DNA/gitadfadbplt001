@@ -1,0 +1,15 @@
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_CALL_DETAILS add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_CUSTOMER_DIM add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_DISTRIBUTOR_DIM add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_FORECAST add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_HISTORY_SALEOUT add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_KPI add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_KPI_SELLIN_SELLTHRGH add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_MSL add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_ORDER_PROMOTION add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_PRODUCT_DIM add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_PROMOTION_LIST add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_SALES_ORG_DIM add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_SALES_STOCK_FACT add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_DMS_YEARLY_TARGET add column file_name varchar(255);
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.ITG_VN_PRODUCT_MAPPING add column file_name varchar(255);
