@@ -1,8 +1,6 @@
-alter table prod_dna_core.mysitg_integration.sdl_raw_my_afgr add column file_name varchar(255);
-alter table prod_dna_core.mysitg_integration.itg_my_afgr add column file_name varchar(255);
-alter table prod_dna_core.mysitg_integration.itg_my_le_trgt add column file_name varchar(255);
+
+
 alter table prod_dna_core.mysitg_integration.sdl_raw_my_le_trgt add column file_name varchar(255);
-alter table prod_dna_core.mysitg_integration.itg_my_ciw_map add column file_name varchar(255);
 alter table prod_dna_core.mysitg_integration.sdl_raw_my_ciw_map add column file_name varchar(255);
 alter table PROD_DNA_CORE.THAITG_INTEGRATION.ITG_TH_DMS_CUSTOMER_DIM add column file_name varchar(255);
 alter table PROD_DNA_CORE.THAITG_INTEGRATION.ITG_TH_DMS_SELLOUT_FACT add column file_name varchar(255);
