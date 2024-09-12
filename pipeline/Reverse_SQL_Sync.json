@@ -1604,7 +1604,7 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lsawswdvsgpw0006",
+					"referenceName": "adfadbplt001lsawswdvsgpw0005",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
@@ -1832,7 +1832,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lsawswdvsgpw0006",
+								"referenceName": "adfadbplt001lsawswdvsgpw0005",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -1892,7 +1892,10 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}"
+												"text": {
+													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}",
+													"type": "Expression"
+												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -1923,7 +1926,10 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}"
+												"text": {
+													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}",
+													"type": "Expression"
+												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
