@@ -682,7 +682,7 @@
 							"typeProperties": {
 								"variableName": "IsCountryDeployed",
 								"value": {
-									"value": "@if(equals(pipeline().parameters.parameters.value[0].container, 'phl'),true,if(equals(pipeline().parameters.parameters.value[0].container, 'tha'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'phl'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'vnm'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'mys'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'phl'), true, false))))))",
+									"value": "@if(equals(pipeline().parameters.parameters.value[0].container, 'phl'),true,if(equals(pipeline().parameters.parameters.value[0].container, 'tha'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'ind'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'vnm'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'mys'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'sgp'), true, false))))))",
 									"type": "Expression"
 								}
 							}
