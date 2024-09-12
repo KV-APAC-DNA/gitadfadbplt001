@@ -1,0 +1,17 @@
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_CALL_DETAILS rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_CUSTOMER_DIM rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_D_SELLOUT_SALES_FACT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_DISTRIBUTOR_DIM rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_FORECAST rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_H_SELLOUT_SALES_FACT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_HISTORY_SALEOUT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_KPI rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_KPI_SELLIN_SELLTHRGH rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_MSL rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_ORDER_PROMOTION rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_PRODUCT_DIM rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_PROMOTION_LIST rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SALES_ORG_DIM rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SALES_STOCK_FACT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_SELLTHRGH_SALES_FACT rename column source_file_name to file_name;
+alter table PROD_DNA_CORE.VNMITG_INTEGRATION.SDL_RAW_VN_DMS_YEARLY_TARGET rename column source_file_name to file_name;
