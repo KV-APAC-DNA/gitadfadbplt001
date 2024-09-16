@@ -476,7 +476,7 @@
 									"typeProperties": {
 										"variableName": "isFileNameColumn",
 										"value": {
-											"value": "@if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_CATEGORY'),true,if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CONTACT_HIST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_MST'), true, false)))",
+											"value": "@if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_CATEGORY'),true,if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CONTACT_HIST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_MST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CLUSTERMAPPING'), true, false))))",
 											"type": "Expression"
 										}
 									}
