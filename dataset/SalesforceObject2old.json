@@ -1,5 +1,5 @@
 {
-	"name": "SalesforceObject2",
+	"name": "SalesforceObject2old",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssfhcpveevaind001",
