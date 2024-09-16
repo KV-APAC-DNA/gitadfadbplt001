@@ -1018,12 +1018,9 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SalesforceSource",
-											"query": {
-												"value": "@pipeline().parameters.source_query",
-												"type": "Expression"
-											},
-											"readBehavior": "query"
+											"type": "SalesforceV2Source",
+											"query": "@pipeline().parameters.source_query",
+											"includeDeletedObjects": false
 										},
 										"sink": {
 											"type": "DelimitedTextSink",
