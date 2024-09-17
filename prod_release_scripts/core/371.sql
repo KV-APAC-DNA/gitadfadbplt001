@@ -1,0 +1,1 @@
+delete from prod_dna_core.ntaitg_integration.itg_pos  where crncy_cd = 'KRW' and src_sys_cd='Lotte mart' and pos_dt like '2024-01-14' and crncy_cd = 'KRW' and ean_num not in ('8801108005520','8801108002031','8801008700303') and upd_dttm like '2024-01-15%';
