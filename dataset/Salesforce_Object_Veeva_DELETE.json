@@ -1,9 +1,12 @@
 {
-	"name": "SalesforceObject2",
+	"name": "Salesforce_Object_Veeva_DELETE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssfhcpveevaind001",
 			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "ADF_Framework_Datasets/SQL"
 		},
 		"annotations": [],
 		"type": "SalesforceObject",

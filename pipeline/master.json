@@ -762,7 +762,14 @@
 											{
 												"name": "Stop_Execution",
 												"type": "Fail",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "stop execution notification",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
@@ -770,6 +777,52 @@
 														"type": "Expression"
 													},
 													"errorCode": "1000"
+												}
+											},
+											{
+												"name": "stop execution notification",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "EXECUTION STOPPED",
+														"supportMessage": {
+															"value": "Issue while running this category : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**MESSAGE**: One or more of the dependent processes has not run yet, please check and re-run when completed, @{variables('deps_status')}. If you want to ignore the dependent processes, re-run with ignore_deps as True",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
 												}
 											}
 										]
@@ -831,7 +884,14 @@
 											{
 												"name": "Fail_Execution",
 												"type": "Fail",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "fail execution notification",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
@@ -839,6 +899,52 @@
 														"type": "Expression"
 													},
 													"errorCode": "1000"
+												}
+											},
+											{
+												"name": "fail execution notification",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "EXECUTION FAILED",
+														"supportMessage": {
+															"value": "Issue while running this category : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**MESSAGE**: One or more of the dependent processes has failed in latest run, please re-run that process, @{variables('deps_status')}, then run this. If you want to ignore the dependent processes, re-run this process with ignore_deps as True",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
 												}
 											}
 										]
@@ -849,7 +955,14 @@
 											{
 												"name": "Error_out_execution",
 												"type": "Fail",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "error execution notification",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
@@ -857,6 +970,52 @@
 														"type": "Expression"
 													},
 													"errorCode": "1000"
+												}
+											},
+											{
+												"name": "error execution notification",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "TECHNICAL FAILURE",
+														"supportMessage": {
+															"value": "Issue while running this category : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**MESSAGE**: the procedure to check dependent processes has failed. Please check and fix if necessary, then re-run this. @{variables('deps_status')}",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
 												}
 											}
 										]
