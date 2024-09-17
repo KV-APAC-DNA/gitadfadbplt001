@@ -1,5 +1,5 @@
 {
-	"name": "Salesforce_Object_Veeva_old",
+	"name": "Salesforce_Object_Veeva_DELETE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssfhcpveevaind001",
