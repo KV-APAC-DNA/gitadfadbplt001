@@ -1,4 +1,3 @@
--- Pacific alter statements
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_CALL_OBJECTIVES add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_DIARY_ITEM add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_DIARY_ITEM_TIME add column file_name varchar(255);
@@ -9,10 +8,8 @@ alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_ORDER_DETAIL add column
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_ORDER_HEADER add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_OVER_AND_ABOVE_STATE add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_PROD_CHK_DISTRIBUTION add column file_name varchar(255);
-
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_STORE_CHK_HDR add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_SURVEY_RESULT add column file_name varchar(255);
-
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_API_DSTR_RAW add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_DSTR_COLES_INV_RAW add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_DSTR_WOOLWORTH_INV_RAW add column file_name varchar(255);
@@ -62,17 +59,10 @@ alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_RAW_SURVEY_PRODUCT_GRP_TO_CATEG
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_RAW_SURVEY_TARGETS add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_RAW_SURVEY_TYPE_TO_QUESTION_MAP add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_SYMBION_DSTR_RAW add column file_name varchar(255);
-
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_RAW_PERENSO_HEAD_OFFICE_REQ_STATE add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_PERENSO_OVER_AND_ABOVE add column file_name varchar(255);
 alter table PROD_DNA_CORE.PCFITG_INTEGRATION.SDL_RAW_PERENSO_TODO add column file_name varchar(255);
-
-
--- Japan
 alter table PROD_DNA_CORE.JPNITG_INTEGRATION.JP_POS_DAILY add column file_name varchar(255);
-
---japan_dcl
-
 alter table PROD_DNA_CORE.JPDCLITG_INTEGRATION.CONTACT_HIST add column file_name varchar(255);
 alter table PROD_DNA_CORE.JPDCLITG_INTEGRATION.SFCC_PRODUCT_CATEGORY add column file_name varchar(255);
 alter table PROD_DNA_CORE.JPDCLITG_INTEGRATION.SFCC_PRODUCT_MST add column file_name varchar(255);
