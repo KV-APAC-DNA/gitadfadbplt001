@@ -1517,7 +1517,7 @@
 									"typeProperties": {
 										"variableName": "errorResponse1",
 										"value": {
-											"value": "@activity('Archive popcompany file').error?.message",
+											"value": "@activity('Archive popcompanytrans file').error?.message",
 											"type": "Expression"
 										}
 									}
