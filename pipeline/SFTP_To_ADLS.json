@@ -1397,7 +1397,7 @@
 									]
 								},
 								{
-									"name": "Archive popcompany file_copy1",
+									"name": "Archive popcompanytrans file",
 									"type": "Copy",
 									"state": "Inactive",
 									"onInactiveMarkAs": "Failed",
@@ -1473,7 +1473,7 @@
 									]
 								},
 								{
-									"name": "Set error popcompany copy_copy1",
+									"name": "Set error popcompanytrans",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
@@ -1497,13 +1497,13 @@
 									}
 								},
 								{
-									"name": "Set error popcompany archive_copy1",
+									"name": "Set error popcompanytrans archive",
 									"type": "SetVariable",
 									"state": "Inactive",
 									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
-											"activity": "Archive popcompany file_copy1",
+											"activity": "Archive popcompanytrans file",
 											"dependencyConditions": [
 												"Failed"
 											]
@@ -1523,13 +1523,13 @@
 									}
 								},
 								{
-									"name": "Archival fail 7_copy1",
+									"name": "Archival fail 9",
 									"type": "Fail",
 									"state": "Inactive",
 									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
-											"activity": "Archive popcompany file_copy1",
+											"activity": "Archive popcompanytrans file",
 											"dependencyConditions": [
 												"Failed"
 											]
