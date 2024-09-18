@@ -1,0 +1,17 @@
+create table PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_IRI_SCAN_SALES_18092024 clone PROD_DNA_CORE.PCFITG_INTEGRATION.ITG_IRI_SCAN_SALES;
+create table PROD_DNA_CORE.pcfedw_integration.edw_demand_forecast_snapshot_18092024 clone PROD_DNA_CORE.pcfedw_integration.edw_demand_forecast_snapshot;
+create table PROD_DNA_CORE.pcfedw_integration.EDW_PACIFIC_PERENSO_IMS_PHARMACY_SNPSHOT_ANALYSIS_18092024 clone PROD_DNA_CORE.pcfedw_integration.EDW_PACIFIC_PERENSO_IMS_PHARMACY_SNPSHOT_ANALYSIS;
+create table PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_SALES_REPORTING_18092024 clone PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_SALES_REPORTING;
+create table PROD_DNA_CORE.pcfedw_integration.rpt_promo_analysis_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.v_rpt_promo_analysis;
+create table PROD_DNA_CORE.pcfedw_integration.rpt_invoice_analysis_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.v_rpt_invoice_analysis;
+create table PROD_DNA_CORE.pcfedw_integration.px_master_analysis_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_px_master_analysis;
+create table PROD_DNA_CORE.pcfedw_integration.demand_forecast_analysis_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_demand_forecast_analysis;
+create table PROD_DNA_CORE.pcfedw_integration.customer_dim_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_customer_dim;
+create table PROD_DNA_CORE.pcfedw_integration.apo_parent_child_dim_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_apo_parent_child_dim;
+create table PROD_DNA_CORE.pcfedw_integration.sapbw_futures_fact_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_sapbw_futures_fact;
+create table PROD_DNA_CORE.pcfedw_integration.sapbw_fact_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_sapbw_fact;
+create table PROD_DNA_CORE.pcfedw_integration.sapbw_ciw_fact_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_sapbw_ciw_fact;
+create table PROD_DNA_CORE.pcfedw_integration.customer_dim_v2_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_customer_dim_v2;
+create table PROD_DNA_CORE.pcfedw_integration.customer_dim_adj_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_customer_dim_adj;
+create table PROD_DNA_CORE.pcfedw_integration.invoice_analysis_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.vw_invoice_analysis;
+create table PROD_DNA_CORE.pcfedw_integration.IRI_SCAN_SALES_ANALYSIS_18092024 AS SELECT * FROM  PROD_DNA_CORE.pcfedw_integration.VW_IRI_SCAN_SALES_ANALYSIS;
