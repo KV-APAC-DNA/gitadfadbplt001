@@ -1,0 +1,2 @@
+create table PROD_DNA_CORE.pcfedw_integration.edw_gts_visibility_18092024 clone PROD_DNA_CORE.pcfedw_integration.edw_gts_visibility;
+create table PROD_DNA_CORE.pcfedw_integration.edw_pacific_perenso_ims_analysis_18092024 clone PROD_DNA_CORE.pcfedw_integration.edw_pacific_perenso_ims_analysis;
