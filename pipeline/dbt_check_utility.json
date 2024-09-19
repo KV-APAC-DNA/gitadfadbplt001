@@ -1328,6 +1328,60 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "error dbt syntax issues",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEveryModel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": "dbt",
+						"error_message": {
+							"value": "Process failed due to some Metadata issues for DQ checks. Please check the adf pipeline to find out the exact error.",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "2002",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
