@@ -1,39 +1,5 @@
 delete 
 from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_temp
 WHERE PAC_SUBSOURCE_TYPE  in ('PX_FORECAST')
-and year_month (snapshot_dt) =202403
+and to_char(snap_shot_dt, 'YYYYMM') =202403
 and jj_period < 202403;
-
-
-delete 
-from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_temp
-WHERE PAC_SUBSOURCE_TYPE  in ('PX_FORECAST')
-and to_char(snap_shot_dt, 'YYYYMM')) =202404
-and jj_period < 202404;
-
-
-delete 
-from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_temp
-WHERE PAC_SUBSOURCE_TYPE  in ('PX_FORECAST')
-and to_char(snap_shot_dt, 'YYYYMM') =202405
-and jj_period < 202405 ;
-
-
-delete 
-from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_temp
-WHERE PAC_SUBSOURCE_TYPE  in ('PX_FORECAST')
-and to_char(snap_shot_dt, 'YYYYMM') =202406
-and jj_period < 202406 ;
-
-delete 
-from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_temp
-WHERE PAC_SUBSOURCE_TYPE  in ('PX_FORECAST')
-and to_char(snap_shot_dt, 'YYYYMM') =202407
-and jj_period < 202407 ;
-
-
-delete 
-from PROD_DNA_CORE.PCFEDW_INTEGRATION.EDW_DEMAND_FORECAST_SNAPSHOT_temp
-WHERE PAC_SUBSOURCE_TYPE  in ('PX_FORECAST')
-and to_char(snap_shot_dt, 'YYYYMM') =202408
-and jj_period < 202408 ;
