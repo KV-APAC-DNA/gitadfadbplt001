@@ -1,4 +1,4 @@
-update table meta_raw.parameters
+update meta_raw.parameters
 set PARAMETER_VALUE='popcompanytrans'
 where parameter_id in
 (
