@@ -20,7 +20,7 @@
 				}
 			},
 			{
-				"name": "Script fetch file names",
+				"name": "Script fetch file name",
 				"type": "Script",
 				"dependsOn": [
 					{
