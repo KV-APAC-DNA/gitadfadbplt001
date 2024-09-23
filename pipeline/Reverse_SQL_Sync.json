@@ -76,17 +76,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
-						"query": {
-							"value": "Select SNOWFLAKE_STAGE,IS_INCREMENTAL,WATERMARK_VALUE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_schema_table'\" AS target_schema_table,\n\"'source_schema_table'\" AS source_schema_table,\n\"'source_query'\" AS source_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nIFNULL(\"'truncate_source'\",'N') AS truncate_source,\n\"'trunc_source_schema_table'\" AS trunc_source_schema_table\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT, IS_INCREMENTAL,WATERMARK_VALUE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS P USING (PARAMETER_GROUP_ID)\nLEFT JOIN (SELECT PROCESS_ID,WATERMARK_VALUE FROM META_RAW.INCREMENTAL_WATERMARK\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND LOAD_STATUS = 'SUCCESS'\nQUALIFY ROW_NUMBER() OVER(PARTITION BY PROCESS_ID ORDER BY INSERT_TIMESTAMP DESC) = 1) I USING(PROCESS_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_schema_table',\n'source_schema_table',\n'source_query',\n'truncate_and_load',\n'decide_source',\n'truncate_source',\n'trunc_source_schema_table'\n));",
-							"type": "Expression"
-						},
+						"type": "SnowflakeV2Source",
+						"query": "Select SNOWFLAKE_STAGE,IS_INCREMENTAL,WATERMARK_VALUE,\n\"'container'\" AS container,\n\"'landing_file_path'\" AS landing_file_path,\n\"'landing_file_name'\" AS landing_file_name,\n\"'target_schema_table'\" AS target_schema_table,\n\"'source_schema_table'\" AS source_schema_table,\n\"'source_query'\" AS source_query,\n\"'truncate_and_load'\" AS truncate_and_load,\n\"'decide_source'\" AS decide_source,\nIFNULL(\"'truncate_source'\",'N') AS truncate_source,\n\"'trunc_source_schema_table'\" AS trunc_source_schema_table\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT, IS_INCREMENTAL,WATERMARK_VALUE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS P USING (PARAMETER_GROUP_ID)\nLEFT JOIN (SELECT PROCESS_ID,WATERMARK_VALUE FROM META_RAW.INCREMENTAL_WATERMARK\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND LOAD_STATUS = 'SUCCESS'\nQUALIFY ROW_NUMBER() OVER(PARTITION BY PROCESS_ID ORDER BY INSERT_TIMESTAMP DESC) = 1) I USING(PROCESS_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'container',\n'landing_file_path',\n'landing_file_name',\n'target_schema_table',\n'source_schema_table',\n'source_query',\n'truncate_and_load',\n'decide_source',\n'truncate_source',\n'trunc_source_schema_table'\n));",
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
 					},
 					"dataset": {
-						"referenceName": "mtd_process_old",
+						"referenceName": "mtd_process",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
