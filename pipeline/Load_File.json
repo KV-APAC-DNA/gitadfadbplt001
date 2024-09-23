@@ -96,7 +96,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -162,17 +162,14 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Source",
+											"query": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand"
 											}
 										},
 										"dataset": {
-											"referenceName": "mtd_process_old",
+											"referenceName": "mtd_process",
 											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
@@ -261,7 +258,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -350,7 +347,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -499,7 +496,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -594,7 +591,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -1344,17 +1341,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
-						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex}','@{pipeline().parameters.sheetNames}'\n]);",
-							"type": "Expression"
-						},
+						"type": "SnowflakeV2Source",
+						"query": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex}','@{pipeline().parameters.sheetNames}'\n]);",
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
 					},
 					"dataset": {
-						"referenceName": "mtd_process_old",
+						"referenceName": "mtd_process",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
