@@ -288,11 +288,8 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SnowflakeSource",
-									"query": {
-										"value": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
-										"type": "Expression"
-									},
+									"type": "SnowflakeV2Source",
+									"query": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
 									"exportSettings": {
 										"type": "SnowflakeExportCopyCommand",
 										"additionalCopyOptions": {
@@ -320,7 +317,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DNA_CORE_Dataset_old",
+									"referenceName": "DNA_CORE_Dataset",
 									"type": "DatasetReference"
 								}
 							],
