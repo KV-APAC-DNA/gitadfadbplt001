@@ -1,5 +1,5 @@
 {
-	"name": "mtd_process_old2",
+	"name": "mtd_process_DELETE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssnfkpltdnaload",
