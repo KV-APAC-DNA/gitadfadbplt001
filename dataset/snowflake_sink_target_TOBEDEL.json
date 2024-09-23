@@ -1,5 +1,5 @@
 {
-	"name": "snowflake_sink_target_DELETE",
+	"name": "snowflake_sink_target_TOBEDEL",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssnfkpltdnaload",
