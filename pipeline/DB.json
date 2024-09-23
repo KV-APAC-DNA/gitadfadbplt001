@@ -603,7 +603,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -639,7 +639,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"referenceName": "adfadbplt001lssnfkpltdnaload002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -886,7 +886,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -965,17 +965,14 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('landing_file_name')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{variables('landing_file_path')}','@{activity('read parameters').output.value[0].TARGET_TABLE\n}']);\n",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Source",
+											"query": "CALL @{activity('read parameters').output.value[0].sp_name} (['@{variables('landing_file_name')}','@{activity('read parameters').output.value[0].snowflake_stage\n}','@{variables('landing_file_path')}','@{activity('read parameters').output.value[0].TARGET_TABLE\n}']);\n",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand"
 											}
 										},
 										"dataset": {
-											"referenceName": "mtd_process_old",
+											"referenceName": "mtd_process",
 											"type": "DatasetReference"
 										},
 										"firstRowOnly": false
@@ -1115,17 +1112,14 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "@replace(activity('read parameters').output.value[0].next_incremental_value,'query:','')",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Source",
+											"query": "@replace(activity('read parameters').output.value[0].next_incremental_value,'query:','')",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand"
 											}
 										},
 										"dataset": {
-											"referenceName": "mtd_process_old",
+											"referenceName": "mtd_process",
 											"type": "DatasetReference"
 										}
 									}
@@ -1231,7 +1225,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnaload",
+								"referenceName": "adfadbplt001lssnfkpltdnaload002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -1773,7 +1767,7 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"referenceName": "adfadbplt001lssnfkpltdnaload002",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
