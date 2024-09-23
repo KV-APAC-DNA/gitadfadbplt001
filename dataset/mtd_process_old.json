@@ -1,5 +1,5 @@
 {
-	"name": "mtd_process_old_old",
+	"name": "mtd_process_old",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssnfkpltdnaload",
