@@ -1,5 +1,5 @@
 {
-	"name": "DNA_CORE_Dataset_old_old",
+	"name": "DNA_CORE_Dataset_DELETE",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssnfkpltdnacore",
