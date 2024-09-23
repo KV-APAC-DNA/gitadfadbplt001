@@ -136,7 +136,7 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnacore",
+					"referenceName": "adfadbplt001lssnfkpltdnacore002",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
@@ -320,7 +320,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DNA_CORE_Dataset",
+									"referenceName": "DNA_CORE_Dataset_old",
 									"type": "DatasetReference"
 								}
 							],
