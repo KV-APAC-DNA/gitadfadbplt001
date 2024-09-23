@@ -341,11 +341,8 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "@{activity('read parameters').output.value[0].unloading_query}",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Source",
+											"query": "@{activity('read parameters').output.value[0].unloading_query}",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand",
 												"additionalCopyOptions": {
