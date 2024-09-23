@@ -420,11 +420,8 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "@{activity('read parameters').output.value[0].source_query}",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Source",
+											"query": "@{activity('read parameters').output.value[0].source_query}",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand",
 												"additionalCopyOptions": {
@@ -1892,7 +1889,10 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}"
+												"text": {
+													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}",
+													"type": "Expression"
+												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
@@ -1923,7 +1923,10 @@
 										"scripts": [
 											{
 												"type": "Query",
-												"text": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}"
+												"text": {
+													"value": "TRUNCATE TABLE @{activity('read parameters').output.value[0].trunc_source_schema_table}",
+													"type": "Expression"
+												}
 											}
 										],
 										"scriptBlockExecutionTimeout": "02:00:00"
