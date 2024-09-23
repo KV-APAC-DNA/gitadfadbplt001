@@ -16,11 +16,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
-						"query": {
-							"value": "WITH ranked_data AS (\n  SELECT\n    *,\n    ROW_NUMBER() OVER (PARTITION BY DB ORDER BY version DESC) AS row_num\n  FROM\n    META_RAW.prod_run_metadata\n)\nSELECT\n  DB,VERSION\nFROM\n  ranked_data\nWHERE\n  row_num = 1;",
-							"type": "Expression"
-						},
+						"type": "SnowflakeV2Source",
+						"query": "WITH ranked_data AS (\n  SELECT\n    *,\n    ROW_NUMBER() OVER (PARTITION BY DB ORDER BY version DESC) AS row_num\n  FROM\n    META_RAW.prod_run_metadata\n)\nSELECT\n  DB,VERSION\nFROM\n  ranked_data\nWHERE\n  row_num = 1;",
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
