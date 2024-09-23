@@ -1,5 +1,5 @@
 {
-	"name": "DNA_LOAD_Dataset_DELETE",
+	"name": "DNA_LOAD_Dataset_TOBEDEL",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "adfadbplt001lssnfkpltdnaload",
