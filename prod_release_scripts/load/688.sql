@@ -1,0 +1,6 @@
+
+update 
+from META_RAW.HISTORICAL_OBJ_METADATA 
+set source_table='EDW_DEMAND_FORECAST_SNAPSHOT_bkp1'
+where source_table='EDW_DEMAND_FORECAST_SNAPSHOT'
+and id=5037;
