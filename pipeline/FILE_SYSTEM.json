@@ -76,17 +76,14 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
-						"query": {
-							"value": "Select SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT,\n\"'filename'\" AS filename,\n\"'adls_path'\" as adls_path,\n\"'container'\" AS container,\n\"'filesystemName'\" AS filesystemName\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'filename',\n'adls_path',\n'container',\n'filesystemName'\n));",
-							"type": "Expression"
-						},
+						"type": "SnowflakeV2Source",
+						"query": "Select SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT,\n\"'filename'\" AS filename,\n\"'adls_path'\" as adls_path,\n\"'container'\" AS container,\n\"'filesystemName'\" AS filesystemName\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE,SNOWFLAKE_STAGE, SNOWFLAKE_FILE_FORMAT\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'filename',\n'adls_path',\n'container',\n'filesystemName'\n));",
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
 					},
 					"dataset": {
-						"referenceName": "mtd_process_old",
+						"referenceName": "mtd_process",
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
