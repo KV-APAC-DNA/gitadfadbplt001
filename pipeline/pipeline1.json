@@ -14,7 +14,7 @@
 				"typeProperties": {
 					"variableName": "flag",
 					"value": {
-						"value": "@dayOfWeek(utcNow())",
+						"value": "@dayOfWeek(adddays(utcNow(),-1))",
 						"type": "Expression"
 					}
 				}
