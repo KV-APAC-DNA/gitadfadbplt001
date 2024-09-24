@@ -21,12 +21,8 @@
 			}
 		],
 		"parameters": {
-			"con": {
+			"day": {
 				"type": "string"
-			},
-			"query": {
-				"type": "string",
-				"defaultValue": "Select * from abc union all select * from bcd"
 			}
 		},
 		"variables": {
