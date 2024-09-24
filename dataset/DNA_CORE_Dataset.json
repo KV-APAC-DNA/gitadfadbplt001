@@ -2,14 +2,14 @@
 	"name": "DNA_CORE_Dataset",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lssnfkpltdnacore",
+			"referenceName": "adfadbplt001lssnfkpltdnacore002",
 			"type": "LinkedServiceReference"
 		},
 		"folder": {
 			"name": "ADF_Framework_Datasets/DBT"
 		},
 		"annotations": [],
-		"type": "SnowflakeTable",
+		"type": "SnowflakeV2Table",
 		"schema": []
 	}
 }

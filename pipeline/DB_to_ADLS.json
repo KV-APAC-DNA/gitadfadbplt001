@@ -748,11 +748,8 @@
 											}
 										},
 										"sink": {
-											"type": "SnowflakeSink",
-											"preCopyScript": {
-												"value": "@if(equals(pipeline().parameters.truncate_and_load,'Y'),concat('TRUNCATE TABLE ',pipeline().parameters.target_schema,'.',pipeline().parameters.target_table),'')",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Sink",
+											"preCopyScript": "@if(equals(pipeline().parameters.truncate_and_load,'Y'),concat('TRUNCATE TABLE ',pipeline().parameters.target_schema,'.',pipeline().parameters.target_table),'')",
 											"importSettings": {
 												"type": "SnowflakeImportCopyCommand"
 											}
@@ -781,14 +778,8 @@
 											"referenceName": "snowflake_sink_target",
 											"type": "DatasetReference",
 											"parameters": {
-												"tablename": {
-													"value": "@pipeline().parameters.target_table",
-													"type": "Expression"
-												},
-												"schemaname": {
-													"value": "@pipeline().parameters.target_schema",
-													"type": "Expression"
-												}
+												"tablename": "@pipeline().parameters.target_table",
+												"schemaname": "@pipeline().parameters.target_schema"
 											}
 										}
 									]
