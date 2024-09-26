@@ -25,7 +25,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeV2Source",
-						"query": "SELECT \n    *\nFROM META_RAW.PROCESS\nWHERE PROCESS.USECASE_ID = @{pipeline().parameters.usecase_id}\nAND PROCESS.PHASE_ID = @{pipeline().parameters.phase_id}\nAND PROCESS.SEQUENCE_ID = @{pipeline().parameters.sequence_id}\nAND PROCESS.IS_ACTIVE = TRUE\nORDER BY PROCESS.SEQUENCE_ID ASC;",
+						"query": {
+							"value": "SELECT \n    *\nFROM META_RAW.PROCESS\nWHERE PROCESS.USECASE_ID = @{pipeline().parameters.usecase_id}\nAND PROCESS.PHASE_ID = @{pipeline().parameters.phase_id}\nAND PROCESS.SEQUENCE_ID = @{pipeline().parameters.sequence_id}\nAND PROCESS.IS_ACTIVE = TRUE\nORDER BY PROCESS.SEQUENCE_ID ASC;",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -254,6 +257,49 @@
 												"typeProperties": {
 													"pipeline": {
 														"referenceName": "DCL_ContactHist_Unload_MBox",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"category": {
+															"value": "@pipeline().parameters.category",
+															"type": "Expression"
+														},
+														"usecase_id": {
+															"value": "@pipeline().parameters.usecase_id",
+															"type": "Expression"
+														},
+														"phase_id": {
+															"value": "@pipeline().parameters.phase_id",
+															"type": "Expression"
+														},
+														"sequence_id": {
+															"value": "@pipeline().parameters.sequence_id",
+															"type": "Expression"
+														},
+														"process_id": {
+															"value": "@item().process_id",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "Data_Export_SFMC",
+										"activities": [
+											{
+												"name": "Data_Export_SFMC",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "Data_Export_SFMC",
 														"type": "PipelineReference"
 													},
 													"waitOnCompletion": true,
