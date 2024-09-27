@@ -341,7 +341,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@if(and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].isSFTP, 'Y')))\n",
+						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].isSFTP, 'Y'))\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
