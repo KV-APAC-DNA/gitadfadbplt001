@@ -38,6 +38,7 @@
 				}
 			},
 			"columnDelimiter": "|",
+			"rowDelimiter": "\n",
 			"compressionCodec": "gzip",
 			"compressionLevel": "Optimal",
 			"escapeChar": "\\",
