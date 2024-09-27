@@ -317,7 +317,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "@{concat(activity('read parameters').output.value[0].target_file_name, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}\n",
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}\n",
 											"type": "Expression"
 										}
 									}
