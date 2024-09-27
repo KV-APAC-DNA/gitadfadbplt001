@@ -96,7 +96,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -162,11 +162,8 @@
 									"userProperties": [],
 									"typeProperties": {
 										"source": {
-											"type": "SnowflakeSource",
-											"query": {
-												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
-												"type": "Expression"
-											},
+											"type": "SnowflakeV2Source",
+											"query": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand"
 											}
@@ -261,7 +258,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -333,6 +330,12 @@
 											"dependencyConditions": [
 												"Succeeded"
 											]
+										},
+										{
+											"activity": "Set isFileNameColumn",
+											"dependencyConditions": [
+												"Succeeded"
+											]
 										}
 									],
 									"policy": {
@@ -344,7 +347,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -352,7 +355,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@if(greater(int(activity('load from file 2').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY=''ETL_Batch'',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='''' where SOURCE_FILE_DATE is null;'),'Select ''no_update_needed'';')\n\n",
+													"value": "@if(greater(int(activity('load from file 2').output.resultSets[0].rows[0].rows_loaded),0),if(variables('isFileNameColumn'),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''', FILE_NAME=''',variables('fileName'),''',INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY=''ETL_Batch'',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='''' where SOURCE_FILE_DATE is null;'),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',INSERTED_DATE=CURRENT_TIMESTAMP(),INSERTED_BY=''ETL_Batch'',UPDATED_DATE=CURRENT_TIMESTAMP(),UPDATED_BY='''' where SOURCE_FILE_DATE is null;')),'Select ''no_update_needed'';')",
 													"type": "Expression"
 												}
 											}
@@ -457,6 +460,23 @@
 											}
 										}
 									]
+								},
+								{
+									"name": "Set isFileNameColumn",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "isFileNameColumn",
+										"value": {
+											"value": "@if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_CATEGORY'),true,if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CONTACT_HIST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_MST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CLUSTERMAPPING'), true, false))))",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						},
@@ -476,7 +496,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -571,7 +591,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -579,7 +599,7 @@
 											{
 												"type": "Query",
 												"text": {
-													"value": "@if(greater(int(activity('load from file 2 japan').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',upload_dt=''',variables('upload_date'),''',upload_time=''',variables('upload_time'),''' where SOURCE_FILE_DATE is null;'),'Select ''no_update_needed'';')",
+													"value": "@if(greater(int(activity('load from file 2 japan').output.resultSets[0].rows[0].rows_loaded),0),concat('alter session set  timezone =''Asia/Singapore''; update ',pipeline().parameters.parameters.value[0].target_schema,'.',pipeline().parameters.parameters.value[0].target_table, ' set SOURCE_FILE_DATE=''',variables('extractedDate'),''',upload_dt=''',variables('upload_date'),''',upload_time=''',variables('upload_time'),''' , FILE_NAME=''',variables('fileName'),''' where SOURCE_FILE_DATE is null;'),'Select ''no_update_needed'';')",
 													"type": "Expression"
 												}
 											}
@@ -737,7 +757,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -797,7 +817,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -929,7 +949,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -989,7 +1009,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -1121,7 +1141,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -1181,7 +1201,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnaload",
+										"referenceName": "adfadbplt001lssnfkpltdnaload002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -1321,11 +1341,8 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
-						"query": {
-							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex}','@{pipeline().parameters.sheetNames}'\n]);",
-							"type": "Expression"
-						},
+						"type": "SnowflakeV2Source",
+						"query": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex}','@{pipeline().parameters.sheetNames}'\n]);",
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -3285,6 +3302,9 @@
 			},
 			"queryOnSource": {
 				"type": "String"
+			},
+			"isFileNameColumn": {
+				"type": "Boolean"
 			}
 		},
 		"folder": {

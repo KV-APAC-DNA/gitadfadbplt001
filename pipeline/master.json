@@ -15,7 +15,7 @@
 				},
 				"userProperties": [],
 				"linkedServiceName": {
-					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"referenceName": "adfadbplt001lssnfkpltdnaload002",
 					"type": "LinkedServiceReference"
 				},
 				"typeProperties": {
@@ -42,7 +42,10 @@
 								}
 							],
 							"type": "Query",
-							"text": "SET JOB= ?;\nSET CATEGORY = ?;\nSELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETA_RAW.PROCESS_AUDIT_LOG\nWHERE JOB_NAME = $JOB\nAND CATEGORY = $CATEGORY\nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1\n;"
+							"text": {
+								"value": "SELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETA_RAW.PROCESS_AUDIT_LOG\nWHERE JOB_NAME = '@{pipeline().Pipeline}'\nAND CATEGORY = '@{pipeline().parameters.category}'\nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1\n;",
+								"type": "Expression"
+							}
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
@@ -155,7 +158,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
+						"type": "SnowflakeV2Source",
 						"query": {
 							"value": "SELECT DISTINCT\n    USECASE.SEQUENCE_ID AS USECASE_SEQUENCE_ID\nFROM META_RAW.USECASE\nWHERE UPPER(CATEGORY) = '@{toUpper(pipeline().parameters.category)}'\n    AND USECASE.IS_ACTIVE = TRUE\nORDER BY USECASE.SEQUENCE_ID ASC;",
 							"type": "Expression"
@@ -762,7 +765,14 @@
 											{
 												"name": "Stop_Execution",
 												"type": "Fail",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "stop execution notification",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
@@ -770,6 +780,52 @@
 														"type": "Expression"
 													},
 													"errorCode": "1000"
+												}
+											},
+											{
+												"name": "stop execution notification",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "EXECUTION STOPPED",
+														"supportMessage": {
+															"value": "Issue while running this category : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**MESSAGE**: One or more of the dependent processes has not run yet, please check and re-run when completed, @{variables('deps_status')}. If you want to ignore the dependent processes, re-run with ignore_deps as True",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
 												}
 											}
 										]
@@ -831,7 +887,14 @@
 											{
 												"name": "Fail_Execution",
 												"type": "Fail",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "fail execution notification",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
@@ -839,6 +902,52 @@
 														"type": "Expression"
 													},
 													"errorCode": "1000"
+												}
+											},
+											{
+												"name": "fail execution notification",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "EXECUTION FAILED",
+														"supportMessage": {
+															"value": "Issue while running this category : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**MESSAGE**: One or more of the dependent processes has failed in latest run, please re-run that process, @{variables('deps_status')}, then run this. If you want to ignore the dependent processes, re-run this process with ignore_deps as True",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
 												}
 											}
 										]
@@ -849,7 +958,14 @@
 											{
 												"name": "Error_out_execution",
 												"type": "Fail",
-												"dependsOn": [],
+												"dependsOn": [
+													{
+														"activity": "error execution notification",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
 												"userProperties": [],
 												"typeProperties": {
 													"message": {
@@ -857,6 +973,52 @@
 														"type": "Expression"
 													},
 													"errorCode": "1000"
+												}
+											},
+											{
+												"name": "error execution notification",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "NotifiyTeamsChannelPipeline",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"subscription": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+															"type": "Expression"
+														},
+														"resourceGroup": {
+															"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+															"type": "Expression"
+														},
+														"runId": {
+															"value": "@pipeline().RunId",
+															"type": "Expression"
+														},
+														"name": {
+															"value": "@pipeline().Pipeline",
+															"type": "Expression"
+														},
+														"triggerTime": {
+															"value": "@pipeline().TriggerTime",
+															"type": "Expression"
+														},
+														"status": "TECHNICAL FAILURE",
+														"supportMessage": {
+															"value": "Issue while running this category : \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**MESSAGE**: the procedure to check dependent processes has failed. Please check and fix if necessary, then re-run this. @{variables('deps_status')}",
+															"type": "Expression"
+														},
+														"isBusinessNotification": "No",
+														"isSupportNotification": "Yes",
+														"isError": "No"
+													}
 												}
 											}
 										]
@@ -888,7 +1050,7 @@
 										},
 										"userProperties": [],
 										"linkedServiceName": {
-											"referenceName": "adfadbplt001lssnfkpltdnaload",
+											"referenceName": "adfadbplt001lssnfkpltdnaload002",
 											"type": "LinkedServiceReference"
 										},
 										"typeProperties": {
@@ -996,7 +1158,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SnowflakeSource",
+						"type": "SnowflakeV2Source",
 						"query": {
 							"value": "WITH AUDIT_LOG AS\n(\n    SELECT MAX(MOMENT) MOMENT,PROCESS_ID \n    FROM META_RAW.PROCESS_AUDIT_LOG \n    GROUP BY PROCESS_ID\n) \nSELECT \n    DEP_USECASE.CATEGORY, \n    LISTAGG(DISTINCT DEP_PROC.PROCESS_ID,',') AS SUCCESSORS\nFROM META_RAW.PROCESS DEP_PROC\nCROSS JOIN TABLE(SPLIT_TO_TABLE(NULLIF(TRIM(DEP_PROC.DEPENDS_ON),''),',')) DEP_JOBS\nJOIN META_RAW.USECASE DEP_USECASE ON DEP_PROC.USECASE_ID = DEP_USECASE.USECASE_ID\nLEFT JOIN AUDIT_LOG DEP_AUDIT ON DEP_PROC.PROCESS_ID  = DEP_AUDIT.PROCESS_ID\nJOIN META_RAW.PROCESS CUR_PROC\nON DEP_JOBS.VALUE = CUR_PROC.PROCESS_ID\nJOIN META_RAW.USECASE CUR_USECASE\nON  CUR_PROC.USECASE_ID = CUR_USECASE.USECASE_ID\nLEFT JOIN AUDIT_LOG CUR_AUDIT ON CUR_PROC.PROCESS_ID  = CUR_AUDIT.PROCESS_ID\nWHERE CUR_USECASE.CATEGORY = '@{pipeline().parameters.category}' AND DEP_AUDIT.MOMENT<CUR_AUDIT.MOMENT\nGROUP BY DEP_USECASE.CATEGORY",
 							"type": "Expression"

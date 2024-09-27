@@ -195,7 +195,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"referenceName": "adfadbplt001lssnfkpltdnacore002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -231,7 +231,7 @@
 									},
 									"userProperties": [],
 									"linkedServiceName": {
-										"referenceName": "adfadbplt001lssnfkpltdnacore",
+										"referenceName": "adfadbplt001lssnfkpltdnacore002",
 										"type": "LinkedServiceReference"
 									},
 									"typeProperties": {
@@ -350,7 +350,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -471,7 +471,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -507,7 +507,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -647,7 +647,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -682,7 +682,7 @@
 							"typeProperties": {
 								"variableName": "IsCountryDeployed",
 								"value": {
-									"value": "@if(equals(pipeline().parameters.parameters.value[0].container, 'phl'),true,if(equals(pipeline().parameters.parameters.value[0].container, 'tha'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'phl'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'vnm'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'mys'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'phl'), true, false))))))",
+									"value": "@if(equals(pipeline().parameters.parameters.value[0].container, 'phl'),true,if(equals(pipeline().parameters.parameters.value[0].container, 'tha'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'ind'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'vnm'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'mys'), true,if(equals(pipeline().parameters.parameters.value[0].container, 'sgp'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'pac'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'jpn'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'hcp'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'idn'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'asp'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'kor'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'hkg'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'twn'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'chn'), true, if(equals(pipeline().parameters.parameters.value[0].container, 'ose'), true, false))))))))))))))))",
 									"type": "Expression"
 								}
 							}
@@ -707,6 +707,60 @@
 						"value": "@and(equals(pipeline().parameters.parameters.value[0].transformationType,'ingestion'),not(empty(variables('resultSet'))))",
 						"type": "Expression"
 					},
+					"ifFalseActivities": [
+						{
+							"name": "audit finish",
+							"type": "ExecutePipeline",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"status": "FINISH",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": "dbt",
+									"message": {
+										"value": "@concat('dbt pipeline is completed for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().parameters.dbt_runid",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline().parameters.parent_seq_run_id",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": {
+										"value": "@pipeline().parameters.usecase_id",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					],
 					"ifTrueActivities": [
 						{
 							"name": "Script5",
@@ -721,7 +775,7 @@
 							},
 							"userProperties": [],
 							"linkedServiceName": {
-								"referenceName": "adfadbplt001lssnfkpltdnacore",
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
 								"type": "LinkedServiceReference"
 							},
 							"typeProperties": {
@@ -1157,28 +1211,248 @@
 						"isError": "Yes"
 					}
 				}
+			},
+			{
+				"name": "audit failure for syntax issues",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEveryModel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": "dbt",
+						"message": {
+							"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit failure for syntax issues2",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "If not Ingestion Error",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": "dbt",
+						"message": {
+							"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "audit fail",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "Switch Build or DQ check failed",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_audit_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"status": "FAIL",
+						"input_row_count": 0,
+						"output_row_count": 0,
+						"jobname": "dbt",
+						"message": {
+							"value": "@concat('dbt pipeline has failed for use case ', string(pipeline().parameters.category))",
+							"type": "Expression"
+						},
+						"runid": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"pipeline_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"usecase_id": {
+							"value": "@pipeline().parameters.usecase_id",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						}
+					}
+				}
+			},
+			{
+				"name": "error dbt syntax issues",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "ForEveryModel",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "write_error_log",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true,
+					"parameters": {
+						"process_id": {
+							"value": "@pipeline().parameters.process_id",
+							"type": "Expression"
+						},
+						"job_name": "dbt",
+						"error_message": {
+							"value": "Process failed due to some Metadata issues for DQ checks. Please check the adf pipeline to find out the exact error.",
+							"type": "Expression"
+						},
+						"run_id": {
+							"value": "@pipeline().parameters.dbt_runid",
+							"type": "Expression"
+						},
+						"category": {
+							"value": "@pipeline().parameters.category",
+							"type": "Expression"
+						},
+						"phase_id": {
+							"value": "@pipeline().parameters.phase_id",
+							"type": "Expression"
+						},
+						"error_code": {
+							"value": "2002",
+							"type": "Expression"
+						},
+						"job_id": {
+							"value": "@pipeline().parameters.parent_seq_run_id",
+							"type": "Expression"
+						}
+					}
+				}
 			}
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "test"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 2
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 62
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 2
+				"type": "int"
 			},
 			"parameters": {
 				"type": "object"
