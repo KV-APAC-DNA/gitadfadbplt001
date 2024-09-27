@@ -62,7 +62,7 @@
 				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "export unload",
+						"activity": "If Condition1",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -140,7 +140,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "Select \n\"'table_name'\" AS table_name,\n\"'target_folder_path'\" AS target_folder_path,\n\"'schema_name'\" AS schema_name,\n\"'archival_folder_path'\" AS archival_folder_path,\n\"'unloading_query'\" AS unloading_query,\n\"'specificDay'\" AS specificDay,\n\"'container'\" AS container\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'table_name',\n'target_folder_path',\n'schema_name',\n'archival_folder_path',\n'unloading_query',\n'specificDay',\n'container'\n));",
+							"value": "Select \n\"'table_name'\" AS table_name,\n\"'target_folder_path'\" AS target_folder_path,\n\"'schema_name'\" AS schema_name,\n\"'archival_folder_path'\" AS archival_folder_path,\n\"'unloading_query'\" AS unloading_query,\n\"'specificDay'\" AS specificDay,\n\"'container'\" AS container,\n\"'isSFTP'\" AS isSFTP\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'table_name',\n'target_folder_path',\n'schema_name',\n'archival_folder_path',\n'unloading_query',\n'specificDay',\n'container',\n'isSFTP'\n));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -320,6 +320,95 @@
 											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}\n",
 											"type": "Expression"
 										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "If Condition1",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "export unload",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].isSFTP, 'Y')))\n",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "ADLS_TO_SFTP",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "SftpWriteSettings",
+										"operationTimeout": "01:00:00",
+										"useTempFileRename": true
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "DataExportSFMC_gz",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "BinarySFTPmarketingcloudopsjpndcl",
+									"type": "DatasetReference",
+									"parameters": {
+										"directory": {
+											"value": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"filename": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
 									}
 								}
 							]
