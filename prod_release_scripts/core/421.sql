@@ -1,0 +1,1 @@
+delete from prod_dna_core.dbt_cloud_pr_5458_1396.pcfedw_integration__edw_demand_forecast_snapshot_temp;
