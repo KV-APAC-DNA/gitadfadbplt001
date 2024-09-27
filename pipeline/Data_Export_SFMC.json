@@ -359,14 +359,16 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "DelimitedTextSource",
+									"type": "BinarySource",
 									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
 									},
 									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
+										"type": "BinaryReadSettings",
+										"compressionProperties": {
+											"type": "ZipDeflateReadSettings"
+										}
 									}
 								},
 								"sink": {
@@ -381,21 +383,12 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "DataExportSFMC_gz",
+									"referenceName": "sftp_adls_source_binary_zip",
 									"type": "DatasetReference",
 									"parameters": {
-										"container": {
-											"value": "@{activity('read parameters').output.value[0].container}",
-											"type": "Expression"
-										},
-										"directory": {
-											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
-											"type": "Expression"
-										},
-										"fileName": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
-											"type": "Expression"
-										}
+										"adls_container": "@{activity('read parameters').output.value[0].container}",
+										"adls_path": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+										"file_name": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
 									}
 								}
 							],
