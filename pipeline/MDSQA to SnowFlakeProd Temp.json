@@ -1,0 +1,90 @@
+{
+	"name": "MDSQA to SnowFlakeProd Temp",
+	"properties": {
+		"description": "Copy data from MDSQA to Temp table in SnowFlake Prod",
+		"activities": [
+			{
+				"name": "MDSQA_Copy_Data_ADLS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "@concat('SELECT * FROM MDS.',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerSink_QA",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "@pipeline().parameters.SourceSchema",
+							"table": "@pipeline().parameters.SourceTableName"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sql_server_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "@pipeline().parameters.Container",
+							"path": "@pipeline().parameters.Path",
+							"file": "@concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv')"
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"SourceSchema": {
+				"type": "string",
+				"defaultValue": "mdm"
+			},
+			"SourceTableName": {
+				"type": "string"
+			},
+			"Container": {
+				"type": "string"
+			},
+			"Path": {
+				"type": "string",
+				"defaultValue": "qa/sql_server/MDS/MDS_Adhoc/"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
