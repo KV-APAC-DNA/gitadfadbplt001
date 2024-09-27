@@ -351,7 +351,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "read parameters",
+						"activity": "If export needed today",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -435,6 +435,63 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "If export needed today",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@if(equals(activity('read parameters').output.value[0].specificDay,'none'),true, if(equals(activity('read parameters').output.value[0].specificDay,dayOfWeek(utcNow())),true, false))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "Set runExportJob2",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "runExportJob",
+								"value": {
+									"value": "false",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Set runExportJob1",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "runExportJob",
+								"value": {
+									"value": "true",
+									"type": "Expression"
+								}
+							}
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -456,6 +513,9 @@
 		},
 		"variables": {
 			"parentFolder": {
+				"type": "String"
+			},
+			"runExportJob": {
 				"type": "String"
 			}
 		},
