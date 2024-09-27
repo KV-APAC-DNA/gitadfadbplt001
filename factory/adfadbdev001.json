@@ -4,7 +4,7 @@
 		"globalParameters": {
 			"environment": {
 				"type": "string",
-				"value": "prod"
+				"value": "dev"
 			},
 			"dev_resource_group": {
 				"type": "string",
