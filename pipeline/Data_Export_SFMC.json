@@ -275,7 +275,8 @@
 									"exportSettings": {
 										"type": "SnowflakeExportCopyCommand",
 										"additionalCopyOptions": {
-											"OVERWRITE": "TRUE"
+											"OVERWRITE": "TRUE",
+											"MAX_FILE_SIZE": "524288000000000"
 										},
 										"additionalFormatOptions": {
 											"NULL_IF": "()",
