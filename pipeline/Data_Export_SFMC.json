@@ -58,6 +58,8 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "export unload",
@@ -171,7 +173,7 @@
 				"typeProperties": {
 					"variableName": "parentFolder",
 					"value": {
-						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)",
+						"value": "@if(equals(pipeline().globalParameters.environment, 'prod'), 'prd', if(equals(pipeline().globalParameters.environment, 'dev'), 'dev', pipeline().globalParameters.environment))\n",
 						"type": "Expression"
 					}
 				}
@@ -306,8 +308,18 @@
 									"referenceName": "DataExportSFMC_gz",
 									"type": "DatasetReference",
 									"parameters": {
-										"container": "jpn",
-										"fileName": "tablename_date.gz"
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].target_file_name, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}\n",
+											"type": "Expression"
+										}
 									}
 								}
 							]
