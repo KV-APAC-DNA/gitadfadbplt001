@@ -181,9 +181,11 @@
 			{
 				"name": "If export needed today",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
-						"activity": "read parameters",
+						"activity": "Set runExportJob",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -238,6 +240,8 @@
 			{
 				"name": "export unload",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If export needed today",
@@ -407,6 +411,27 @@
 							]
 						}
 					]
+				}
+			},
+			{
+				"name": "Set runExportJob",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "read parameters",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "runExportJob",
+					"value": "@if(equals(activity('read parameters').output.value[0].specificDay,'none'),true, if(equals(activity('read parameters').output.value[0].specificDay,dayOfWeek(utcNow())),true, false))"
 				}
 			}
 		],
