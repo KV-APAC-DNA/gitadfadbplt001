@@ -390,7 +390,10 @@
 									"parameters": {
 										"adls_container": "@{activity('read parameters').output.value[0].container}",
 										"adls_path": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
-										"file_name": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
+										"file_name": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv')}",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -403,7 +406,10 @@
 											"value": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
 											"type": "Expression"
 										},
-										"filename": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
+										"filename": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv')}",
+											"type": "Expression"
+										}
 									}
 								}
 							]
