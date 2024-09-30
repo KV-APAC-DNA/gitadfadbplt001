@@ -227,7 +227,7 @@
 							"typeProperties": {
 								"variableName": "runExportJob",
 								"value": {
-									"value": "true",
+									"value": "@'true'",
 									"type": "Expression"
 								}
 							}
