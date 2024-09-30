@@ -183,7 +183,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set runExportJob",
+						"activity": "read parameters",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -192,7 +192,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@if(equals(activity('read parameters').output.value[0].specificDay,'none'),true, if(equals(activity('read parameters').output.value[0].specificDay,dayOfWeek(utcNow())),true, false))",
+						"value": "@variables('runExportJob')",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -408,27 +408,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Set runExportJob",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "read parameters",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "runExportJob",
-					"value": "@if(equals(activity('read parameters').output.value[0].specificDay,'none'),true, if(equals(activity('read parameters').output.value[0].specificDay,dayOfWeek(utcNow())),true, false))"
-				}
 			}
 		],
 		"parameters": {
@@ -458,7 +437,7 @@
 				"type": "String"
 			},
 			"runExportJob": {
-				"type": "Boolean"
+				"type": "String"
 			}
 		},
 		"folder": {
