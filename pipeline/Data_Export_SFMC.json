@@ -343,7 +343,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "variables('runExportJob')",
+						"value": "equals(variables('runExportJob'), true)",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
