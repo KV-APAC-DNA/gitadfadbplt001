@@ -343,7 +343,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "equals(variables('runExportJob'), true)",
+						"value": "@bool(equals(variables('runExportJob'), 'true'))\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
