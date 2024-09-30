@@ -64,6 +64,91 @@
 						}
 					}
 				]
+			},
+			{
+				"name": "Tuncate Target Table",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "MDSQA_Copy_Data_ADLS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "adfadbplt001lssnfkpltdnaload",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "Query",
+							"text": {
+								"value": "@concat('TRUNCATE TABLE ', pipeline().parameters.TargetSchema, '.', pipeline().parameters.TargetTableName)",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			},
+			{
+				"name": "Lookup1",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "Tuncate Target Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SnowflakeV2Source",
+						"query": {
+							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD (',pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv'),);",
+							"type": "Expression"
+						},
+						"exportSettings": {
+							"type": "SnowflakeExportCopyCommand"
+						}
+					},
+					"dataset": {
+						"referenceName": "mtd_process",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Switch1",
+				"type": "Switch",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.Container",
+						"type": "Expression"
+					},
+					"cases": []
+				}
 			}
 		],
 		"parameters": {
@@ -80,6 +165,12 @@
 			"Path": {
 				"type": "string",
 				"defaultValue": "qa/sql_server/MDS/MDS_Adhoc/"
+			},
+			"TargetSchema": {
+				"type": "string"
+			},
+			"TargetTableName": {
+				"type": "string"
 			}
 		},
 		"folder": {
