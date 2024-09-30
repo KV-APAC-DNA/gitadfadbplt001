@@ -181,8 +181,6 @@
 			{
 				"name": "If export needed today",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Set runExportJob",
@@ -240,8 +238,6 @@
 			{
 				"name": "export unload",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If export needed today",
