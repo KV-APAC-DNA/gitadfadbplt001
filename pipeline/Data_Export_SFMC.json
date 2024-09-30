@@ -238,6 +238,8 @@
 			{
 				"name": "export unload",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If export needed today",
@@ -341,7 +343,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].isSFTP, 'Y'))\n",
+						"value": "variables('runExportJob')",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
