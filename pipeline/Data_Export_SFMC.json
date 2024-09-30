@@ -192,7 +192,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@variables('runExportJob')",
+						"value": "@if(equals(activity('read parameters').output.value[0].specificDay,'none'),true, if(equals(activity('read parameters').output.value[0].specificDay,dayOfWeek(utcNow())),true, false))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
