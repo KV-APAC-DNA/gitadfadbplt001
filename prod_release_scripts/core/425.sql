@@ -284,3 +284,4 @@ insert into PROD_DNA_CORE.NTAITG_INTEGRATION.itg_pos (
             "UPD_DTTM"
         from PROD_DNA_CORE.NTAITG_INTEGRATION.itg_pos__dbt_tmp1
     );
+drop view PROD_DNA_CORE.NTAITG_INTEGRATION.itg_pos__dbt_tmp1;
