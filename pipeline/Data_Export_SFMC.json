@@ -434,6 +434,20 @@
 						"type": "Expression"
 					}
 				}
+			},
+			{
+				"name": "Set is SSFTP var",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "ISSFTP",
+					"value": "equals(activity('read parameters').output.value[0].ISSFTP, 'Y')"
+				}
 			}
 		],
 		"parameters": {
@@ -466,6 +480,9 @@
 				"type": "String"
 			},
 			"adls_to_sftp": {
+				"type": "Boolean"
+			},
+			"ISSFTP": {
 				"type": "Boolean"
 			}
 		},
