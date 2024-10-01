@@ -339,7 +339,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(bool(equals(variables('runExportJob'), true)), bool(equals(activity('read parameters').output.value[0].isSFTP, 'Y')))\n",
+						"value": "@and(bool(equals(variables('runExportJob'), true)), equals(activity('read parameters').output.value[0].isSFTP, 'Y'))\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -431,7 +431,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5071
+				"defaultValue": 5070
 			}
 		},
 		"variables": {
