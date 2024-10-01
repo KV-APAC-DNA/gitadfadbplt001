@@ -1,0 +1,1 @@
+TRUNCATE TABLE PROD_DNA_LOAD.thasdl_raw.sdl_th_gt_msl_distribution;
