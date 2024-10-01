@@ -430,7 +430,7 @@
 				"typeProperties": {
 					"variableName": "adls_to_sftp",
 					"value": {
-						"value": "@and(equals(variables('runExportJob'), true), equals(variables('ISSFTP'), true))",
+						"value": "@and(bool(equals(variables('runExportJob'), true)), equals(variables('ISSFTP'), true))",
 						"type": "Expression"
 					}
 				}
@@ -453,7 +453,10 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "ISSFTP",
-					"value": "@equals(activity('read parameters').output.value[0].ISSFTP, 'Y')"
+					"value": {
+						"value": "@bool(equals(activity('read parameters').output.value[0].ISSFTP, 'Y'))",
+						"type": "Expression"
+					}
 				}
 			}
 		],
