@@ -1,0 +1,93 @@
+{
+	"name": "SnowFlakeProd to MDSQA",
+	"properties": {
+		"description": "Copy data from SnowFlake Prod Temp table to MDSQA",
+		"activities": [
+			{
+				"name": "ADLS_Copy_Data_MDSQA",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "sql_server_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "@pipeline().parameters.Container",
+							"path": "@pipeline().parameters.Path",
+							"file": {
+								"value": "@concat(pipeline().parameters.SourceTableName,'_0_0_0.csv')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServerSink_QA",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": {
+								"value": "@pipeline().parameters.TargetTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"Container": {
+				"type": "string"
+			},
+			"Path": {
+				"type": "string"
+			},
+			"SourceTableName": {
+				"type": "string"
+			},
+			"TargetTableName": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
