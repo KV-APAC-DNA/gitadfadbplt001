@@ -190,7 +190,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@or(equals(activity('read parameters').output.value[0].specificDay, 'none'), equals(activity('read parameters').output.value[0].specificDay, dayOfWeek(utcNow())))\n",
+						"value": "@or(equals(activity('read parameters').output.value[0].specificDay, 'none'), equals(activity('read parameters').output.value[0].specificDay, string(dayOfWeek(utcNow()))))\n",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
