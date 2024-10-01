@@ -410,6 +410,27 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set adls_to_sftp_var",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "export unload",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "adls_to_sftp",
+					"value": "@and(bool(equals(variables('runExportJob'), true)), equals(activity('read parameters').output.value[0].isSFTP, 'Y'))\n"
+				}
 			}
 		],
 		"parameters": {
@@ -440,6 +461,9 @@
 			},
 			"runExportJob": {
 				"type": "String"
+			},
+			"adls_to_sftp": {
+				"type": "Boolean"
 			}
 		},
 		"folder": {
