@@ -327,6 +327,7 @@
 			},
 			{
 				"name": "ADLS_to_SFTP_move",
+				"description": "added greater check to avoid error if we have 0 count from the query ",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
