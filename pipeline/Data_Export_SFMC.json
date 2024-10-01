@@ -58,8 +58,6 @@
 			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If Condition1",
@@ -433,7 +431,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5070
+				"defaultValue": 5071
 			}
 		},
 		"variables": {
