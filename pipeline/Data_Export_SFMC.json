@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "If Condition1",
+						"activity": "ADLS_to_SFTP",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -326,7 +326,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "ADLS_to_SFTP",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -431,7 +431,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5070
+				"defaultValue": 5073
 			}
 		},
 		"variables": {
