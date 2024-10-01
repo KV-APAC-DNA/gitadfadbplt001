@@ -330,7 +330,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "export unload",
+						"activity": "Set adls_to_sftp_var",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -339,7 +339,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(bool(equals(variables('runExportJob'), true)), equals(activity('read parameters').output.value[0].isSFTP, 'Y'))\n",
+						"value": "@variables('adls_to_sftp')",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
