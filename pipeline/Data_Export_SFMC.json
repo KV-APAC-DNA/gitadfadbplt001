@@ -206,7 +206,7 @@
 							"typeProperties": {
 								"variableName": "runExportJob",
 								"value": {
-									"value": "false",
+									"value": "@bool(equals(1,0))",
 									"type": "Expression"
 								}
 							}
@@ -225,7 +225,7 @@
 							"typeProperties": {
 								"variableName": "runExportJob",
 								"value": {
-									"value": "bool('1')",
+									"value": "@bool(equals(1,1))",
 									"type": "Expression"
 								}
 							}
