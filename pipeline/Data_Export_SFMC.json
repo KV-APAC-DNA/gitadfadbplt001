@@ -339,7 +339,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].ISSFTP, 'Y'))",
+						"value": "@and(and(\r\n    equals(variables('runExportJob'), true),\r\n    equals(activity('read parameters').output.value[0].ISSFTP, 'Y')\r\n) \r\n,\r\ngreater(activity('Export Dna Core Data into ADLS csv').output.dataRead, 0))\r\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
