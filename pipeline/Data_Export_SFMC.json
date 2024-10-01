@@ -190,7 +190,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@if(equals(activity('read parameters').output.value[0].specificDay,'none'),true, if(equals(activity('read parameters').output.value[0].specificDay,dayOfWeek(utcNow())),true, false))",
+						"value": "@or(equals(activity('read parameters').output.value[0].specificDay, 'none'), equals(activity('read parameters').output.value[0].specificDay, dayOfWeek(utcNow())))\n",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
@@ -431,7 +431,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5070
+				"defaultValue": 5071
 			}
 		},
 		"variables": {
