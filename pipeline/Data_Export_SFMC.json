@@ -454,7 +454,7 @@
 				"typeProperties": {
 					"variableName": "ISSFTP",
 					"value": {
-						"value": "@(equals(activity('read parameters').output.value[0].ISSFTP, 'Y')",
+						"value": "@equals(activity('read parameters').output.value[0].ISSFTP, 'Y')",
 						"type": "Expression"
 					}
 				}
