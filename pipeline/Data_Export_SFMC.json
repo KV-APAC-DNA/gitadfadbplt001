@@ -330,7 +330,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set adls_to_sftp_var",
+						"activity": "export unload",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -410,30 +410,6 @@
 						}
 					]
 				}
-			},
-			{
-				"name": "Set adls_to_sftp_var",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "export unload",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "adls_to_sftp",
-					"value": {
-						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].ISSFTP, 'Y'))",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
@@ -463,9 +439,6 @@
 				"type": "String"
 			},
 			"runExportJob": {
-				"type": "Boolean"
-			},
-			"adls_to_sftp": {
 				"type": "Boolean"
 			}
 		},
