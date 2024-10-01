@@ -416,7 +416,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "export unload",
+						"activity": "Set is SSFTP var",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -430,7 +430,7 @@
 				"typeProperties": {
 					"variableName": "adls_to_sftp",
 					"value": {
-						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].ISSFTP, 'Y'))",
+						"value": "@and(equals(variables('runExportJob'), true), equals(variables('ISSFTP'), true))",
 						"type": "Expression"
 					}
 				}
@@ -438,7 +438,14 @@
 			{
 				"name": "Set is SSFTP var",
 				"type": "SetVariable",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "export unload",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
