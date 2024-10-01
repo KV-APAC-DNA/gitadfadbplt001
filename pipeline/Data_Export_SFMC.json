@@ -339,7 +339,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@variables('adls_to_sftp')",
+						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].ISSFTP, 'Y'))",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -416,7 +416,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Set is SSFTP var",
+						"activity": "export unload",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -431,30 +431,6 @@
 					"variableName": "adls_to_sftp",
 					"value": {
 						"value": "@and(equals(variables('runExportJob'), true), equals(activity('read parameters').output.value[0].ISSFTP, 'Y'))",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "Set is SSFTP var",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "export unload",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "ISSFTP",
-					"value": {
-						"value": "@equals(activity('read parameters').output.value[0].ISSFTP, 'Y')",
 						"type": "Expression"
 					}
 				}
@@ -490,9 +466,6 @@
 				"type": "Boolean"
 			},
 			"adls_to_sftp": {
-				"type": "Boolean"
-			},
-			"ISSFTP": {
 				"type": "Boolean"
 			}
 		},
