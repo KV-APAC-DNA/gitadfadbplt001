@@ -102,11 +102,12 @@
 				}
 			},
 			{
-				"name": "Lookup1",
+				"name": "Execute Procedure to load data",
+				"description": "Execute Procedure to load data into Snowflake table",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "Tuncate Target Table",
+						"activity": "SnowflakeStageValue",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -124,7 +125,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD (',pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv'),);",
+							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD (',pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv', variables('SnowFlakeStage')));",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -138,16 +139,87 @@
 				}
 			},
 			{
-				"name": "Switch1",
+				"name": "SnowflakeStageValue",
 				"type": "Switch",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Tuncate Target Table",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
 						"value": "@pipeline().parameters.Container",
 						"type": "Expression"
 					},
-					"cases": []
+					"cases": [
+						{
+							"value": "idn",
+							"activities": [
+								{
+									"name": "IDNSnowflakeStage",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "SnowFlakeStage",
+										"value": {
+											"value": "@concat(pipeline().parameters.Environment,'_LOAD_STAGE_ADLS_IDN')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"value": "kor",
+							"activities": [
+								{
+									"name": "KORSnowflakeStage",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "SnowFlakeStage",
+										"value": {
+											"value": "@concat(pipeline().parameters.Environment,'_LOAD_STAGE_ADLS_KOR')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					],
+					"defaultActivities": [
+						{
+							"name": "DefaultSnowFlakeStage",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "SnowFlakeStage",
+								"value": {
+									"value": "@concat(pipeline().parameters.Environment,'_LOAD_STAGE_ADLS')",
+									"type": "Expression"
+								}
+							}
+						}
+					]
 				}
 			}
 		],
@@ -171,6 +243,15 @@
 			},
 			"TargetTableName": {
 				"type": "string"
+			},
+			"Environment": {
+				"type": "string",
+				"defaultValue": "DEV"
+			}
+		},
+		"variables": {
+			"SnowFlakeStage": {
+				"type": "String"
 			}
 		},
 		"folder": {
