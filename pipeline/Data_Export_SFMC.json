@@ -453,7 +453,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"variableName": "ISSFTP",
-					"value": "equals(activity('read parameters').output.value[0].ISSFTP, 'Y')"
+					"value": "@equals(activity('read parameters').output.value[0].ISSFTP, 'Y')"
 				}
 			}
 		],
