@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "ADLS_to_SFTP",
+						"activity": "ADLS_to_SFTP_move",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -326,7 +326,7 @@
 				}
 			},
 			{
-				"name": "ADLS_to_SFTP",
+				"name": "ADLS_to_SFTP_move",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
@@ -339,7 +339,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(bool(equals(variables('runExportJob'), true)), equals(activity('read parameters').output.value[0].isSFTP, 'Y'))\n",
+						"value": "@and(bool(equals(variables('runExportJob'), true)), bool(equals(activity('read parameters').output.value[0].isSFTP, 'Y')))\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -431,7 +431,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5073
+				"defaultValue": 5070
 			}
 		},
 		"variables": {
