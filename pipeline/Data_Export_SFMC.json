@@ -472,7 +472,21 @@
 							"outputs": [
 								{
 									"referenceName": "DataExportSFMC_gz",
-									"type": "DatasetReference"
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
+											"type": "Expression"
+										}
+									}
 								}
 							]
 						}
