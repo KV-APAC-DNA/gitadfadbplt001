@@ -1,0 +1,3 @@
+insert into PROD_DNA_core.PHLITG_INTEGRATION.ITG_QUERY_PARAMETERS values 
+('PH','ROSE_PHARMACY','ROSE PHARMACY, INC.','account_grp');
+ 
