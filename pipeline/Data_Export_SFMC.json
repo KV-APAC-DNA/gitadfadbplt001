@@ -444,10 +444,14 @@
 							"userProperties": [],
 							"typeProperties": {
 								"source": {
-									"type": "SnowflakeV2Source",
-									"query": "SELECT * FROM dual WHERE 1 = 0;",
-									"exportSettings": {
-										"type": "SnowflakeExportCopyCommand"
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobStorageReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
 									}
 								},
 								"sink": {
@@ -461,12 +465,28 @@
 										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
-									"referenceName": "DNA_CORE_Dataset",
-									"type": "DatasetReference"
+									"referenceName": "DataExportSFMC_gz",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "@{activity('read parameters').output.value[0].container}",
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"fileName": "do_not_delete.csv.gz"
+									}
 								}
 							],
 							"outputs": [
