@@ -445,7 +445,7 @@
 							"typeProperties": {
 								"source": {
 									"type": "SnowflakeV2Source",
-									"query": "SELECT \n    *\nWHERE\n    1=2;",
+									"query": "SELECT \n    *\nWHERE\n    1=2",
 									"exportSettings": {
 										"type": "SnowflakeExportCopyCommand"
 									}
