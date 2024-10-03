@@ -331,7 +331,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "If Condition1",
+						"activity": "if no data creat empty file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -340,7 +340,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(and(\r\n    equals(variables('runExportJob'), true),\r\n    equals(activity('read parameters').output.value[0].ISSFTP, 'Y')\r\n) \r\n,\r\ngreater(activity('Export Dna Core Data into ADLS csv').output.dataRead, 0))\r\n",
+						"value": "@and(\n    equals(variables('runExportJob'), true),\n    equals(activity('read parameters').output.value[0].ISSFTP, 'Y')\n) \n\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -413,7 +413,7 @@
 				}
 			},
 			{
-				"name": "If Condition1",
+				"name": "if no data creat empty file",
 				"type": "IfCondition",
 				"dependsOn": [
 					{
