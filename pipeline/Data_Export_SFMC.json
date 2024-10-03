@@ -443,13 +443,6 @@
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"source": {
-									"type": "SnowflakeV2Source",
-									"query": "SELECT \n\" \"\nWHERE\n    1=2",
-									"exportSettings": {
-										"type": "SnowflakeExportCopyCommand"
-									}
-								},
 								"sink": {
 									"type": "DelimitedTextSink",
 									"storeSettings": {
@@ -463,12 +456,6 @@
 								},
 								"enableStaging": false
 							},
-							"inputs": [
-								{
-									"referenceName": "DNA_CORE_Dataset",
-									"type": "DatasetReference"
-								}
-							],
 							"outputs": [
 								{
 									"referenceName": "DataExportSFMC_gz",
