@@ -450,11 +450,28 @@
 										"type": "SnowflakeExportCopyCommand"
 									}
 								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
 								"enableStaging": false
 							},
 							"inputs": [
 								{
-									"referenceName": "snowflake_sink_target",
+									"referenceName": "DNA_CORE_Dataset",
+									"type": "DatasetReference"
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "DataExportSFMC_gz",
 									"type": "DatasetReference"
 								}
 							]
