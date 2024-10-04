@@ -270,7 +270,8 @@
 				"type": "string"
 			},
 			"Path": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "qa/sql_server/MDS_Reverse_Sync/MDS_Adhoc/"
 			},
 			"SourceSchema": {
 				"type": "string"
