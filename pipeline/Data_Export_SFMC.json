@@ -594,9 +594,10 @@
 									"parameters": {
 										"container": "@{activity('read parameters').output.value[0].container}",
 										"directory": {
-											"value": "@{variables('parentFolder')}/jjrnki/",
+											"value": "@{variables('parentFolder')}/jjrnki",
 											"type": "Expression"
-										}
+										},
+										"fileName": "/"
 									}
 								}
 							]
