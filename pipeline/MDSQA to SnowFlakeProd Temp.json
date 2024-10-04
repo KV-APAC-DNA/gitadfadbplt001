@@ -18,7 +18,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "@concat('SELECT * FROM MDS.',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+						"sqlReaderQuery": {
+							"value": "@concat('SELECT * FROM MDS.',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -125,7 +128,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD (',pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv', variables('SnowFlakeStage')));",
+							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD (',pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv'));",
 							"type": "Expression"
 						},
 						"exportSettings": {
