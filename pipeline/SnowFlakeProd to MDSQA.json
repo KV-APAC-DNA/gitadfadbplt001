@@ -70,7 +70,7 @@
 						"parameters": {
 							"schema": "dbo",
 							"table": {
-								"value": "@pipeline().parameters.TargetTableName",
+								"value": "@pipeline().parameters.SourceTableName",
 								"type": "Expression"
 							}
 						}
