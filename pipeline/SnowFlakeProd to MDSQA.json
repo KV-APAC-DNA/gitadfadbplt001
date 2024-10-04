@@ -107,7 +107,7 @@
 										"source": {
 											"type": "SnowflakeV2Source",
 											"query": {
-												"value": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,pipeline().parameters.SourceTableName)",
+												"value": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -177,7 +177,10 @@
 									"typeProperties": {
 										"source": {
 											"type": "SnowflakeV2Source",
-											"query": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,pipeline().parameters.SourceTableName)",
+											"query": {
+												"value": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+												"type": "Expression"
+											},
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand",
 												"additionalCopyOptions": {
