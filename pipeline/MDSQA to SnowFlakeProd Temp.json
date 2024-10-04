@@ -162,10 +162,6 @@
 			},
 			"TargetTableName": {
 				"type": "string"
-			},
-			"Environment": {
-				"type": "string",
-				"defaultValue": "DEV"
 			}
 		},
 		"variables": {
