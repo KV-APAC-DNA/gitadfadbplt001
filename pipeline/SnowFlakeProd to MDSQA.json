@@ -150,7 +150,7 @@
 													"type": "Expression"
 												},
 												"file": {
-													"value": "@pipeline().parameters.SourceTableName",
+													"value": "@{pipeline().parameters.SourceTableName}.csv",
 													"type": "Expression"
 												}
 											}
@@ -218,7 +218,7 @@
 													"type": "Expression"
 												},
 												"file": {
-													"value": "@pipeline().parameters.SourceTableName",
+													"value": "@{pipeline().parameters.SourceTableName}.csv",
 													"type": "Expression"
 												}
 											}
