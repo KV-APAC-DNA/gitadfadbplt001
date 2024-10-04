@@ -57,7 +57,7 @@
 							"container": "@pipeline().parameters.Container",
 							"path": "@pipeline().parameters.Path",
 							"file": {
-								"value": "@concat(pipeline().parameters.SourceTableName,'_0_0_0.csv')",
+								"value": "@pipeline().parameters.SourceTableName",
 								"type": "Expression"
 							}
 						}
