@@ -423,7 +423,7 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "There is some issue while exporting data from dna core into ADLS : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**unloading_query**: @{activity('read parameters').output.value[0].unloading_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**TARGET_FILE_PATH**: @{activity('read parameters').output.value[0].target_folder_path} \\n\n**TARGET_FILE_NAME**: @{activity('read parameters').output.value[0].target_file_name} \\n\n**ERROR**: _@{activity('Export Dna Core Data into ADLS csv').error?.message}_",
+										"value": "There is some issue while exporting data from dna core into ADLS : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**unloading_query**: @{activity('read parameters').output.value[0].unloading_query} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].CONTAINER} \\n\n**TARGET_FILE_PATH**: @{activity('read parameters').output.value[0].TARGET_FOLDER_PATH} \\n\n**ERROR**: _@{activity('Export Dna Core Data into ADLS csv').error?.message}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "No",
