@@ -108,8 +108,6 @@
 				"name": "Execute Procedure to load data",
 				"description": "Execute Procedure to load data into Snowflake table",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tuncate Target Table",
@@ -130,7 +128,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD (',pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv'));",
+							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD(', pipeline().parameters.TargetTableName,pipeline().parameters.Path, concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv)'));",
 							"type": "Expression"
 						},
 						"exportSettings": {
