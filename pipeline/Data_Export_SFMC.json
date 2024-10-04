@@ -527,7 +527,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(\n    equals(variables('runExportJob'), true),\n    equals(activity('read parameters').output.value[0].ISSFTP, 'Y')\n) \n",
+						"value": "@and(\n    equals(variables('runExportJob'), true),\n    equals(activity('read parameters').output.value[0].ISSFTP, 'N')\n) \n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
