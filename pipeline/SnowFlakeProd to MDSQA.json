@@ -58,7 +58,7 @@
 							"container": "@pipeline().parameters.Container",
 							"path": "@pipeline().parameters.Path",
 							"file": {
-								"value": "@pipeline().parameters.SourceTableName",
+								"value": "@{pipeline().parameters.SourceTableName}.csv",
 								"type": "Expression"
 							}
 						}
