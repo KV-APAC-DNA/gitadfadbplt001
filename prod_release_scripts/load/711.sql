@@ -1,0 +1,7 @@
+ALTER TABLE IDNSDL_RAW.sdl_MDS_ID_distributor_customer_update_ADFTemp ADD COLUMN Additional_Information_4_Code VARCHAR(100);
+ALTER TABLE IDNSDL_RAW.sdl_MDS_ID_distributor_customer_update_ADFTemp ADD COLUMN Additional_Information_4_Name VARCHAR(100);
+ALTER TABLE IDNSDL_RAW.sdl_MDS_ID_distributor_customer_update_ADFTemp ADD COLUMN Additional_Information_4_ID   VARCHAR(100);
+ALTER TABLE IDNSDL_RAW.sdl_MDS_ID_distributor_customer_update_ADFTemp ADD COLUMN Additional_Information_5_Code VARCHAR(100);
+ALTER TABLE IDNSDL_RAW.sdl_MDS_ID_distributor_customer_update_ADFTemp ADD COLUMN Additional_Information_5_Name VARCHAR(100);
+ALTER TABLE IDNSDL_RAW.sdl_MDS_ID_distributor_customer_update_ADFTemp ADD COLUMN Additional_Information_5_ID   VARCHAR(100);
+CALL PROD_DNA_LOAD.IDNSDL_RAW.ADLSTOTABLEDATALOAD('sdl_MDS_ID_distributor_customer_update_ADFTemp','prd/sql_server/MDS/MDS_Adhoc/','ID_distributor_customer_update_ADFTemp');
