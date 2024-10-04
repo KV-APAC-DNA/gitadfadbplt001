@@ -700,7 +700,7 @@
 									},
 									"status": "FAIL",
 									"supportMessage": {
-										"value": "There is some issue while exporting data from dna core into ADLS : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('create empty file').error?.message}_",
+										"value": "There is some issue while exporting data from dna core into ADLS : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ERROR**: _@{activity('ADLS_TO_SFTP').error?.message}_",
 										"type": "Expression"
 									},
 									"isBusinessNotification": "No",
