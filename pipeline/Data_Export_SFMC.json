@@ -597,7 +597,7 @@
 											"value": "@{variables('parentFolder')}/jjrnki",
 											"type": "Expression"
 										},
-										"fileName": "/"
+										"fileName": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
 									}
 								}
 							]
@@ -625,7 +625,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5071
+				"defaultValue": 5076
 			}
 		},
 		"variables": {
