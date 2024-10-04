@@ -806,7 +806,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@equals(activity('Export Dna Core Data into ADLS csv').output.dataRead, 0)",
+						"value": "@and(\n    equals(variables('runExportJob'), true),\n    equals(activity('Export Dna Core Data into ADLS csv').output.dataRead, 0)\n) \n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
