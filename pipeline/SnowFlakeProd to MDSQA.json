@@ -87,7 +87,14 @@
 			{
 				"name": "SnowFlake_To_ADLS",
 				"type": "Switch",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
@@ -114,7 +121,7 @@
 										"source": {
 											"type": "SnowflakeV2Source",
 											"query": {
-												"value": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+												"value": "@variables('Query')",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -185,7 +192,7 @@
 										"source": {
 											"type": "SnowflakeV2Source",
 											"query": {
-												"value": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+												"value": "@variables('Query')",
 												"type": "Expression"
 											},
 											"exportSettings": {
@@ -239,6 +246,23 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Query",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Query",
+					"value": {
+						"value": "@if(empty(pipeline().parameters.Query) ,Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -260,6 +284,14 @@
 			},
 			"TargetTableName": {
 				"type": "string"
+			},
+			"Query": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"Query": {
+				"type": "String"
 			}
 		},
 		"folder": {
