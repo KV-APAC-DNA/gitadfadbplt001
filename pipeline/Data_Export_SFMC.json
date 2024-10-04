@@ -532,7 +532,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "archive to mbox location ",
+							"name": "archive to mbox location",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
@@ -556,12 +556,25 @@
 									}
 								},
 								"sink": {
-									"type": "BinarySink",
+									"type": "DelimitedTextSink",
 									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
+										"type": "AzureBlobStorageWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
 									}
 								},
-								"enableStaging": false
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
 							},
 							"inputs": [
 								{
@@ -576,12 +589,12 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "adls_sink_binary",
+									"referenceName": "DataExportSFMC_gz",
 									"type": "DatasetReference",
 									"parameters": {
-										"adls_container": "@{activity('read parameters').output.value[0].container}",
-										"adls_path": {
-											"value": "@{variables('parentFolder')}/jjrnki",
+										"container": "@{activity('read parameters').output.value[0].container}",
+										"directory": {
+											"value": "@{variables('parentFolder')}/jjrnki/",
 											"type": "Expression"
 										}
 									}
