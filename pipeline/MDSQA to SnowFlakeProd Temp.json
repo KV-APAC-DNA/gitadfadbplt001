@@ -108,6 +108,8 @@
 				"name": "Execute Procedure to load data",
 				"description": "Execute Procedure to load data into Snowflake table",
 				"type": "Lookup",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "Tuncate Target Table",
