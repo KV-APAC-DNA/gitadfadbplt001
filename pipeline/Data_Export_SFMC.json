@@ -1428,19 +1428,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "JPDCL_SFMC_Export"
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 408
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 3
 			},
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"process_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 5071
 			}
 		},
 		"variables": {
