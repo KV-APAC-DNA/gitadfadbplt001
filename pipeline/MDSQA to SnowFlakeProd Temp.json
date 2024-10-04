@@ -110,7 +110,7 @@
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "SnowflakeStageValue",
+						"activity": "Tuncate Target Table",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -139,90 +139,6 @@
 						"referenceName": "mtd_process",
 						"type": "DatasetReference"
 					}
-				}
-			},
-			{
-				"name": "SnowflakeStageValue",
-				"type": "Switch",
-				"dependsOn": [
-					{
-						"activity": "Tuncate Target Table",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"userProperties": [],
-				"typeProperties": {
-					"on": {
-						"value": "@pipeline().parameters.Container",
-						"type": "Expression"
-					},
-					"cases": [
-						{
-							"value": "idn",
-							"activities": [
-								{
-									"name": "IDNSnowflakeStage",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "SnowFlakeStage",
-										"value": {
-											"value": "@concat(pipeline().parameters.Environment,'_LOAD_STAGE_ADLS_IDN')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						},
-						{
-							"value": "kor",
-							"activities": [
-								{
-									"name": "KORSnowflakeStage",
-									"type": "SetVariable",
-									"dependsOn": [],
-									"policy": {
-										"secureOutput": false,
-										"secureInput": false
-									},
-									"userProperties": [],
-									"typeProperties": {
-										"variableName": "SnowFlakeStage",
-										"value": {
-											"value": "@concat(pipeline().parameters.Environment,'_LOAD_STAGE_ADLS_KOR')",
-											"type": "Expression"
-										}
-									}
-								}
-							]
-						}
-					],
-					"defaultActivities": [
-						{
-							"name": "DefaultSnowFlakeStage",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "SnowFlakeStage",
-								"value": {
-									"value": "@concat(pipeline().parameters.Environment,'_LOAD_STAGE_ADLS')",
-									"type": "Expression"
-								}
-							}
-						}
-					]
 				}
 			}
 		],
