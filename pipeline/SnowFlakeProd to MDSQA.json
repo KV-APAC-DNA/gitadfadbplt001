@@ -52,13 +52,19 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "sql_server_sink",
+						"referenceName": "sql_server_sink_soh_delim",
 						"type": "DatasetReference",
 						"parameters": {
-							"container": "@pipeline().parameters.Container",
-							"path": "@pipeline().parameters.Path",
+							"container": {
+								"value": "@pipeline().parameters.Container",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@pipeline().parameters.Path",
+								"type": "Expression"
+							},
 							"file": {
-								"value": "@{pipeline().parameters.SourceTableName}.csv",
+								"value": "@{pipeline().parameters.TargetTableName}.csv",
 								"type": "Expression"
 							}
 						}
@@ -251,6 +257,9 @@
 			"CopyType": {
 				"type": "string",
 				"defaultValue": "DNA_LOAD"
+			},
+			"TargetTableName": {
+				"type": "string"
 			}
 		},
 		"folder": {
