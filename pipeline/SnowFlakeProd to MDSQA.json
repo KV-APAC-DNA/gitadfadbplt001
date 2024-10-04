@@ -111,7 +111,10 @@
 												"type": "Expression"
 											},
 											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
 											}
 										},
 										"sink": {
@@ -176,7 +179,10 @@
 											"type": "SnowflakeV2Source",
 											"query": "@Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,pipeline().parameters.SourceTableName)",
 											"exportSettings": {
-												"type": "SnowflakeExportCopyCommand"
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
 											}
 										},
 										"sink": {
