@@ -570,15 +570,12 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "sftp_adls_source_binary_gz",
+									"referenceName": "sftp_adls_source_binary_sfmc_export",
 									"type": "DatasetReference",
 									"parameters": {
 										"adls_container": "@{activity('read parameters').output.value[0].container}",
 										"adls_path": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
-										"file_name": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
-											"type": "Expression"
-										}
+										"file_name": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
 									}
 								}
 							],
