@@ -527,8 +527,6 @@
 								{
 									"name": "Archive exacttargettha file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy exacttargettha file",
@@ -627,8 +625,6 @@
 								{
 									"name": "Set error exacttargettha archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -653,8 +649,6 @@
 								{
 									"name": "Archival fail 5",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -670,6 +664,49 @@
 											"type": "Expression"
 										},
 										"errorCode": "002"
+									}
+								},
+								{
+									"name": "sftp_exacttargettha_delete",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Archive exacttargettha file",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinarySFTPexacttargettha",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "SftpReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false,
+											"disableChunking": false
+										}
 									}
 								}
 							]
