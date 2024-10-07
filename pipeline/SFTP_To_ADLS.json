@@ -91,8 +91,6 @@
 								{
 									"name": "Archive iqviaaus file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy iqviaaus file",
@@ -191,8 +189,6 @@
 								{
 									"name": "Set error iqviaaus archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -217,8 +213,6 @@
 								{
 									"name": "Archival fail 1",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -234,6 +228,49 @@
 											"type": "Expression"
 										},
 										"errorCode": "002"
+									}
+								},
+								{
+									"name": "sftp_iqviaaus_delete",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Archive iqviaaus file",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinarySFTPiqviaaus",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": {
+													"value": "@pipeline().parameters.FtpDirectory",
+													"type": "Expression"
+												},
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "SftpReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false,
+											"disableChunking": false
+										}
 									}
 								}
 							]
