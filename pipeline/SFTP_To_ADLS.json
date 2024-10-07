@@ -1399,8 +1399,6 @@
 								{
 									"name": "Archive popcompanytrans file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Failed",
 									"dependsOn": [
 										{
 											"activity": "Copy popcompanytrans",
@@ -1499,8 +1497,6 @@
 								{
 									"name": "Set error popcompanytrans archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
@@ -1525,8 +1521,6 @@
 								{
 									"name": "Archival fail 9",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
@@ -1542,6 +1536,46 @@
 											"type": "Expression"
 										},
 										"errorCode": "002"
+									}
+								},
+								{
+									"name": "Delete1",
+									"type": "Delete",
+									"dependsOn": [
+										{
+											"activity": "Archive popcompanytrans file",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"dataset": {
+											"referenceName": "BinarySFTPpopcompany",
+											"type": "DatasetReference",
+											"parameters": {
+												"directory": "@pipeline().parameters.FtpDirectory",
+												"filename": {
+													"value": "@pipeline().parameters.FtpFileName",
+													"type": "Expression"
+												}
+											}
+										},
+										"enableLogging": false,
+										"storeSettings": {
+											"type": "SftpReadSettings",
+											"recursive": true,
+											"enablePartitionDiscovery": false,
+											"disableChunking": false
+										}
 									}
 								}
 							]
