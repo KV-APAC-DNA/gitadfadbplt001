@@ -581,17 +581,11 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "BinarySFTPmarketingcloudopsjpndcl",
+									"referenceName": "BinarySFTPmarketingcloudopsjpndcl_sfmc_sink",
 									"type": "DatasetReference",
 									"parameters": {
-										"directory": {
-											"value": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
-											"type": "Expression"
-										},
-										"filename": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
-											"type": "Expression"
-										}
+										"directory": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
+										"filename": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
 									}
 								}
 							]
