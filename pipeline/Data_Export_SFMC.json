@@ -315,7 +315,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}\n",
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}\n",
 											"type": "Expression"
 										}
 									}
@@ -570,13 +570,13 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "sftp_adls_source_binary_gz",
+									"referenceName": "sftp_adls_source_binary_sfmc_export",
 									"type": "DatasetReference",
 									"parameters": {
 										"adls_container": "@{activity('read parameters').output.value[0].container}",
 										"adls_path": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
 										"file_name": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
 											"type": "Expression"
 										}
 									}
@@ -584,15 +584,12 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "BinarySFTPmarketingcloudopsjpndcl",
+									"referenceName": "BinarySFTPmarketingcloudopsjpndcl_sfmc_sink",
 									"type": "DatasetReference",
 									"parameters": {
-										"directory": {
-											"value": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
-											"type": "Expression"
-										},
+										"directory": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
 										"filename": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
 											"type": "Expression"
 										}
 									}
@@ -1428,19 +1425,24 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "JPDCL_SFMC_Export"
 			},
 			"usecase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 408
 			},
 			"phase_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 3
 			},
 			"sequence_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 1
 			},
 			"process_id": {
-				"type": "int"
+				"type": "int",
+				"defaultValue": 5070
 			}
 		},
 		"variables": {
