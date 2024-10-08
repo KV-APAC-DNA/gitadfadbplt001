@@ -1,0 +1,2 @@
+delete from prod_dna_core.dbt_cloud_pr_5458_1401.idnitg_integration__itg_distributor_ivy_outlet_master
+where FILE_NAME  = 'OutletMaster_20241007_0030' ;
