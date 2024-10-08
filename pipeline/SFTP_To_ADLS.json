@@ -91,6 +91,8 @@
 								{
 									"name": "Archive iqviaaus file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy iqviaaus file",
@@ -189,6 +191,8 @@
 								{
 									"name": "Set error iqviaaus archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -213,6 +217,8 @@
 								{
 									"name": "Archival fail 1",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -348,6 +354,8 @@
 								{
 									"name": "Archive perensoaus file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy perensoaus file",
@@ -446,6 +454,8 @@
 								{
 									"name": "Set error perensoaus archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -470,6 +480,8 @@
 								{
 									"name": "Archival fail 2",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -605,6 +617,8 @@
 								{
 									"name": "Archive exacttargettha file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy exacttargettha file",
@@ -703,6 +717,8 @@
 								{
 									"name": "Set error exacttargettha archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -727,6 +743,8 @@
 								{
 									"name": "Archival fail 5",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -1117,6 +1135,8 @@
 								{
 									"name": "Archive popcompany file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy popcompany file",
@@ -1215,6 +1235,8 @@
 								{
 									"name": "Set error popcompany archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompany file",
@@ -1239,6 +1261,8 @@
 								{
 									"name": "Archival fail 7",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompany file",
@@ -1398,6 +1422,8 @@
 								{
 									"name": "Archive marketingcloudopsjpndcl file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy marketingcloudopsjpndcl",
@@ -1472,6 +1498,8 @@
 								{
 									"name": "Set error marketingcloudopsjpndcl archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
@@ -1496,6 +1524,8 @@
 								{
 									"name": "Archival fail 8",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
@@ -1631,6 +1661,8 @@
 								{
 									"name": "Archive popcompanytrans file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy popcompanytrans",
@@ -1729,6 +1761,8 @@
 								{
 									"name": "Set error popcompanytrans archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
@@ -1753,6 +1787,8 @@
 								{
 									"name": "Archival fail 9",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
