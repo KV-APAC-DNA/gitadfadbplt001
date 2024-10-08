@@ -499,7 +499,10 @@
 									"userProperties": [],
 									"typeProperties": {
 										"variableName": "currentTimestamp",
-										"value": ""
+										"value": {
+											"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'HH:mm:ss')",
+											"type": "Expression"
+										}
 									}
 								}
 							]
