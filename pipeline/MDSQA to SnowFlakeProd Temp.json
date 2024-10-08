@@ -6,7 +6,14 @@
 			{
 				"name": "MDSQA_Copy_Data_ADLS",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -19,7 +26,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@concat('SELECT * FROM MDS.',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName)",
+							"value": "@variables('Query')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -96,7 +103,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "@concat('TRUNCATE TABLE ', pipeline().parameters.TargetSchema, '.', pipeline().parameters.TargetTableName)",
+								"value": "@concat('TRUNCATE TABLE ', pipeline().parameters.TargetSchema, '.', variables('TargetTableName'))",
 								"type": "Expression"
 							}
 						}
@@ -128,7 +135,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', pipeline().parameters.TargetSchema,''',''',pipeline().parameters.TargetTableName,''',''',pipeline().parameters.Path, ''',''', pipeline().parameters.SourceTableName,'_ADFTemp'');')",
+							"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', pipeline().parameters.TargetSchema,''',''',variables('TargetTableName'),''',''',pipeline().parameters.Path, ''',''', pipeline().parameters.SourceTableName,'_ADFTemp'');')",
 							"type": "Expression"
 						},
 						"exportSettings": {
@@ -138,6 +145,48 @@
 					"dataset": {
 						"referenceName": "mtd_process",
 						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "Query",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "TargetTableName",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Query",
+					"value": {
+						"value": "@if(empty(pipeline().parameters.Query) ,concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "TargetTableName",
+				"description": "Set TargetTableName",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "TargetTableName",
+					"value": {
+						"value": "@if(contains(toLower(pipeline().parameters.TargetTableName),'adftemp'),pipeline().parameters.TargetTableName,concat(pipeline().parameters.TargetTableName,'_ADFTemp'))",
+						"type": "Expression"
 					}
 				}
 			}
@@ -163,10 +212,19 @@
 			},
 			"TargetTableName": {
 				"type": "string"
+			},
+			"Query": {
+				"type": "string"
 			}
 		},
 		"variables": {
 			"SnowFlakeStage": {
+				"type": "String"
+			},
+			"Query": {
+				"type": "String"
+			},
+			"TargetTableName": {
 				"type": "String"
 			}
 		},
