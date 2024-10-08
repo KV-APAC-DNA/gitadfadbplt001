@@ -77,7 +77,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeV2Source",
-						"query": "Select \n\"'tableName'\" AS tableName,\n\"'schemaName'\" AS schemaName,\n\"'excludedColumns'\" AS excludedColumns,\n\"'target_folder_path'\" AS target_folder_path,\n\"'sftp_folder_path'\" AS sftp_folder_path,\n\"'fileExtn'\" AS fileExtn,\n\"'container'\" AS container,\n\"'zip_archive_path'\" AS zip_archive_path\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'tableName',\n'schemaName',\n'excludedColumns',\n'target_folder_path',\n'sftp_folder_path',\n'fileExtn',\n'container',\n'zip_archive_path'\n));",
+						"query": {
+							"value": "Select \n\"'tableName'\" AS tableName,\n\"'schemaName'\" AS schemaName,\n\"'excludedColumns'\" AS excludedColumns,\n\"'target_folder_path'\" AS target_folder_path,\n\"'sftp_folder_path'\" AS sftp_folder_path,\n\"'fileExtn'\" AS fileExtn,\n\"'container'\" AS container,\n\"'zip_archive_path'\" AS zip_archive_path\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'tableName',\n'schemaName',\n'excludedColumns',\n'target_folder_path',\n'sftp_folder_path',\n'fileExtn',\n'container',\n'zip_archive_path'\n));",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -141,7 +144,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "select distinct\n\tcase\n\t\twhen lower(column_name) = '顧客id' then 'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID '\n\t\telse column_name \n\tend as column_name\nfrom\n\t(select\tcolumn_name, ordinal_position\tfrom  INFORMATION_SCHEMA.COLUMNS WHERE table_name = '@{activity('read parameters').output.value[0].tableName}' and lower(column_name) not in (@{activity('read parameters').output.value[0].excludedColumns}) order by\tordinal_position asc )",
+								"value": "select \n\tcase\n\t\twhen lower(column_name) = '顧客id' then 'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID '\n\t\telse column_name \n\tend as column_name\nfrom\n\t(select\tcolumn_name, ordinal_position\tfrom  INFORMATION_SCHEMA.COLUMNS WHERE table_name = '@{activity('read parameters').output.value[0].tableName}' and lower(column_name) not in (@{activity('read parameters').output.value[0].excludedColumns}) order by\tordinal_position asc )",
 								"type": "Expression"
 							}
 						}
@@ -286,7 +289,10 @@
 							"typeProperties": {
 								"source": {
 									"type": "SnowflakeV2Source",
-									"query": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
+									"query": {
+										"value": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
+										"type": "Expression"
+									},
 									"exportSettings": {
 										"type": "SnowflakeExportCopyCommand",
 										"additionalCopyOptions": {
