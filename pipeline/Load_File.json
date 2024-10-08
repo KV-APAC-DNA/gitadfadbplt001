@@ -500,7 +500,7 @@
 									"typeProperties": {
 										"variableName": "currentTimestamp",
 										"value": {
-											"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'HH:mm:ss')",
+											"value": "@formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd')",
 											"type": "Expression"
 										}
 									}
