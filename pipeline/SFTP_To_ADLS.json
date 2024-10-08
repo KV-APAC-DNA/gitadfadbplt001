@@ -91,6 +91,8 @@
 								{
 									"name": "Archive iqviaaus file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy iqviaaus file",
@@ -233,6 +235,8 @@
 								{
 									"name": "sftp_iqviaaus_delete",
 									"type": "Delete",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
