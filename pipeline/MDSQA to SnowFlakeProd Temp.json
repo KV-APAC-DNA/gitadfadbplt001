@@ -128,7 +128,7 @@
 					"source": {
 						"type": "SnowflakeV2Source",
 						"query": {
-							"value": "@concat('CALL ', pipeline().parameters.TargetSchema, '.ADLSTOTABLEDATALOAD(''', pipeline().parameters.TargetTableName,''',''',pipeline().parameters.Path, ''',''', pipeline().parameters.SourceTableName,'_ADFTemp'');')",
+							"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', pipeline().parameters.TargetSchema,''',''',pipeline().parameters.TargetTableName,''',''',pipeline().parameters.Path, ''',''', pipeline().parameters.SourceTableName,'_ADFTemp'');')",
 							"type": "Expression"
 						},
 						"exportSettings": {
