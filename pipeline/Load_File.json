@@ -163,7 +163,10 @@
 									"typeProperties": {
 										"source": {
 											"type": "SnowflakeV2Source",
-											"query": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
+											"query": {
+												"value": "CALL @{pipeline().parameters.parameters.value[0].sp_name} (['@{variables('paramfilename')}','@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].target_table}','@{pipeline().parameters.sheetNames}']);\n",
+												"type": "Expression"
+											},
 											"exportSettings": {
 												"type": "SnowflakeExportCopyCommand"
 											}
@@ -301,7 +304,14 @@
 								{
 									"name": "Set extracted date",
 									"type": "SetVariable",
-									"dependsOn": [],
+									"dependsOn": [
+										{
+											"activity": "Set currentTimestamp",
+											"dependencyConditions": [
+												"Succeeded"
+											]
+										}
+									],
 									"policy": {
 										"secureOutput": false,
 										"secureInput": false
@@ -310,7 +320,7 @@
 									"typeProperties": {
 										"variableName": "extractedDate",
 										"value": {
-											"value": "@take(replace(replace(pipeline().parameters.sourceFileName, pipeline().parameters.parameters.value[0].FILE_SPEC,'' ),'_',''),8)",
+											"value": "@if(equals(toLower(pipeline().parameters.parameters.value[0].target_table), 'mykokya_param'),variables('currentTimestamp') ,if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'mykokya'), variables('currentTimestamp') , if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'ec_predictionresult'), variables('currentTimestamp') , if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'cc_predictionresult'), variables('currentTimestamp') , if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'acgel_predictionresult'), variables('currentTimestamp') , if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'vc100_predictionresult'), variables('currentTimestamp') , if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'cluster_predictionresult'), variables('currentTimestamp') , take(replace(replace(pipeline().parameters.sourceFileName, pipeline().parameters.parameters.value[0].FILE_SPEC,'' ),'_',''),8))))))))",
 											"type": "Expression"
 										}
 									}
@@ -476,6 +486,20 @@
 											"value": "@if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_CATEGORY'),true,if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CONTACT_HIST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'SFCC_PRODUCT_MST'), true, if(equals(toUpper(pipeline().parameters.parameters.value[0].target_table), 'CLUSTERMAPPING'), true, false))))",
 											"type": "Expression"
 										}
+									}
+								},
+								{
+									"name": "Set currentTimestamp",
+									"type": "SetVariable",
+									"dependsOn": [],
+									"policy": {
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"variableName": "currentTimestamp",
+										"value": ""
 									}
 								}
 							]
@@ -1342,7 +1366,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeV2Source",
-						"query": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex}','@{pipeline().parameters.sheetNames}'\n]);",
+						"query": {
+							"value": "CALL ASPSDL_RAW.FILE_VALIDATION(['@{replace(pipeline().parameters.sourceFileName,' ','_')}','@{pipeline().parameters.parameters.value[0].INDEX}','@{pipeline().parameters.parameters.value[0].Validation\n}','@{pipeline().parameters.parameters.value[0].val_file_name\n}','@{pipeline().parameters.parameters.value[0].val_file_extn\n}','@{pipeline().parameters.parameters.value[0].val_file_header}',@{pipeline().parameters.parameters.value[0].file_header_row_num},'@{pipeline().parameters.parameters.value[0].snowflake_stage\n}','@{if(equals(pipeline().globalParameters.environment, 'prod'),'prd', pipeline().globalParameters.environment)}/@{pipeline().parameters.Parameters.value[0].FOLDER_PATH}@{if(equals(pipeline().parameters.Parameters.value[0].hasDateInPath,'Y'),formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyy-MM-dd'),'')}','@{pipeline().parameters.parameters.value[0].header_regex}','@{pipeline().parameters.sheetNames}'\n]);",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -3305,6 +3332,9 @@
 			},
 			"isFileNameColumn": {
 				"type": "Boolean"
+			},
+			"currentTimestamp": {
+				"type": "String"
 			}
 		},
 		"folder": {
