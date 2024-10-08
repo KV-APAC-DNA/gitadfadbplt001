@@ -144,7 +144,7 @@
 						{
 							"type": "Query",
 							"text": {
-								"value": "select \n\tcase\n\t\twhen lower(column_name) = '顧客id' then 'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID '\n\t\telse column_name \n\tend as column_name\nfrom\n\t(select\tcolumn_name, ordinal_position\tfrom  INFORMATION_SCHEMA.COLUMNS WHERE table_name = '@{activity('read parameters').output.value[0].tableName}' and lower(column_name) not in (@{activity('read parameters').output.value[0].excludedColumns}) order by\tordinal_position asc )",
+								"value": "select\n\tcase\n\t\twhen lower(column_name) = '顧客id' then 'JPDCLEDW_INTEGRATION.encryption(顧客ID)  as 顧客ID '\n\t\telse column_name \n\tend as column_name\nfrom\n\t(select\tcolumn_name, ordinal_position\tfrom  INFORMATION_SCHEMA.COLUMNS WHERE table_name = '@{activity('read parameters').output.value[0].tableName}' and lower(column_name) not in (@{activity('read parameters').output.value[0].excludedColumns}) order by\tordinal_position asc )",
 								"type": "Expression"
 							}
 						}
