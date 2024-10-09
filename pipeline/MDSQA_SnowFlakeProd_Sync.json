@@ -216,7 +216,17 @@
 									"referenceName": "MDSQA to SnowFlakeProd",
 									"type": "PipelineReference"
 								},
-								"waitOnCompletion": true
+								"waitOnCompletion": true,
+								"parameters": {
+									"Path": {
+										"value": "@pipeline().parameters.Path",
+										"type": "Expression"
+									},
+									"Container": {
+										"value": "@pipeline().parameters.Container",
+										"type": "Expression"
+									}
+								}
 							}
 						}
 					]
@@ -263,6 +273,12 @@
 				"type": "String"
 			},
 			"ForwardSyncTargetTableName": {
+				"type": "String"
+			},
+			"FowardSyncTargetTable": {
+				"type": "String"
+			},
+			"ForwardSyncQuery": {
 				"type": "String"
 			}
 		},
