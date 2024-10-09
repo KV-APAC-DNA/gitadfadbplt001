@@ -246,7 +246,7 @@
 												"typeProperties": {
 													"variableName": "ForwardSyncQuery",
 													"value": {
-														"value": "@concat('SELECT * FROM ',item().SourceSchema,'.',item().SourceTableName)",
+														"value": "@if(empty(item().Query), concat('SELECT * FROM ',item().SourceSchema,'.',item().SourceTableName),item().Query)",
 														"type": "Expression"
 													}
 												}
