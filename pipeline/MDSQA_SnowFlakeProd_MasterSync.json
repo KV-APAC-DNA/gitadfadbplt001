@@ -1,5 +1,5 @@
 {
-	"name": "MDSQA_SnowFlakeProd_Sync",
+	"name": "MDSQA_SnowFlakeProd_MasterSync",
 	"properties": {
 		"description": "Forward and Reverse Sync Master pipeline for MDSQA",
 		"activities": [
