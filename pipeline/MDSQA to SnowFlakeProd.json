@@ -303,7 +303,7 @@
 															"type": "Expression"
 														},
 														"CopyType": {
-															"value": "@item().LoadType",
+															"value": "@item().LoadType_Code",
 															"type": "Expression"
 														},
 														"TargetTableName": {
