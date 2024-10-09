@@ -18,7 +18,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT SourceSchema, SourceTableName, TargetSchema, TargetTableName, SyncType_Code, LoadType_Code, Query FROM MDS.MDM.Regional_ADF_QASyncConfig\nWhere Is_Active_Code = 'True' ",
+						"sqlReaderQuery": "SELECT SourceSchema, SourceTableName, TargetSchema, TargetTableName, SyncType_Code, LoadType_Code, Query FROM MDS.MDM.Regional_ADF_QASyncConfig\nWhere Is_Active_Code = 'True'  and ValidationStatus != 'Validation Failed'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
