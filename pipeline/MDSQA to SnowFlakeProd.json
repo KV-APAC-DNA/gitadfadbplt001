@@ -29,7 +29,8 @@
 							"schema": "mdm",
 							"table": "Regional_ADF_QASyncConfig"
 						}
-					}
+					},
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -46,7 +47,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('MDSQASyncConfig').output",
+						"value": "@activity('MDSQASyncConfig').output.value",
 						"type": "Expression"
 					},
 					"isSequential": false,
