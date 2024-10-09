@@ -259,7 +259,7 @@
 				"typeProperties": {
 					"variableName": "Query",
 					"value": {
-						"value": "@if(empty(pipeline().parameters.Query) ,Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
+						"value": "@if(empty(item().Query) , Concat('SELECT * FROM ',item().SourceSchema,'.',item().SourceTableName),item().Query)\n\n",
 						"type": "Expression"
 					}
 				}
