@@ -34,7 +34,7 @@
 				}
 			},
 			{
-				"name": "MDS QA TableName",
+				"name": "For each MDS QA TableName",
 				"type": "ForEach",
 				"dependsOn": [
 					{
