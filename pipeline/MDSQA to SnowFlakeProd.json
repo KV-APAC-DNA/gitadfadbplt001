@@ -309,6 +309,10 @@
 														"TargetTableName": {
 															"value": "@item().TargetTableName",
 															"type": "Expression"
+														},
+														"Query": {
+															"value": "item().Query",
+															"type": "Expression"
 														}
 													}
 												}
