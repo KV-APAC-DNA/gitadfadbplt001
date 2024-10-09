@@ -267,7 +267,8 @@
 		],
 		"parameters": {
 			"Container": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "asp"
 			},
 			"Path": {
 				"type": "string",
