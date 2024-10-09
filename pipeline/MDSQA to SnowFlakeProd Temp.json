@@ -246,10 +246,11 @@
 							"userProperties": [],
 							"typeProperties": {
 								"items": {
-									"value": "@activity('MDSQASyncConfig').output",
+									"value": "@activity('MDSQASyncConfig').output.value",
 									"type": "Expression"
 								},
-								"isSequential": true,
+								"isSequential": false,
+								"batchCount": 20,
 								"activities": [
 									{
 										"name": "DecideLoad",
