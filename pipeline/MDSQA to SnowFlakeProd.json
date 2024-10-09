@@ -311,7 +311,7 @@
 															"type": "Expression"
 														},
 														"Query": {
-															"value": "item().Query",
+															"value": "@item().Query",
 															"type": "Expression"
 														}
 													}
