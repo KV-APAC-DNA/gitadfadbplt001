@@ -18,7 +18,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
-						"sqlReaderQuery": "SELECT SourceSchema, SourceTableName, TargetSchema, TargetTableName, SyncType_Code FROM MDS.MDM.Regional_ADF_QASyncConfig\nWhere Is_Active_Code = 'True' and SyncType_Code = 'ReverseSync'",
+						"sqlReaderQuery": "SELECT SourceSchema, SourceTableName, TargetSchema, TargetTableName, SyncType_Code, LoadType_Code FROM MDS.MDM.Regional_ADF_QASyncConfig\nWhere Is_Active_Code = 'True' and SyncType_Code = 'ReverseSync'",
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
