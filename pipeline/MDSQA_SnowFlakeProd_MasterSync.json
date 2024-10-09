@@ -10,7 +10,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@and(empty(pipeline().parameters.TargetTableName),empty(pipeline().parameters.SourceSchema))",
+						"value": "@and(empty(pipeline().parameters.TargetTableName),empty(pipeline().parameters.SourceTableName))",
 						"type": "Expression"
 					},
 					"ifFalseActivities": [
