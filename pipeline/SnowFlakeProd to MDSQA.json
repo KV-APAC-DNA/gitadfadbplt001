@@ -280,8 +280,7 @@
 				"type": "string"
 			},
 			"CopyType": {
-				"type": "string",
-				"defaultValue": "DNA_LOAD"
+				"type": "string"
 			},
 			"TargetTableName": {
 				"type": "string"
