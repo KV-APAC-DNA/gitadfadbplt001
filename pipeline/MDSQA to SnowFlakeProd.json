@@ -89,7 +89,7 @@
 													"source": {
 														"type": "SqlServerSource",
 														"sqlReaderQuery": {
-															"value": "@variables('Query')",
+															"value": "@variables('ForwardSyncQuery')",
 															"type": "Expression"
 														},
 														"queryTimeout": "02:00:00",
@@ -181,7 +181,7 @@
 														{
 															"type": "Query",
 															"text": {
-																"value": "@concat('TRUNCATE TABLE ', item().TargetSchema, '.', variables('TargetTableName'))",
+																"value": "@concat('TRUNCATE TABLE ', item().TargetSchema, '.', variables('FowardSyncTargetTable'))",
 																"type": "Expression"
 															}
 														}
@@ -213,7 +213,7 @@
 													"source": {
 														"type": "SnowflakeV2Source",
 														"query": {
-															"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', item().TargetSchema,''',''',variables('TargetTableName'),''',''',pipeline().parameters.Path, ''',''', item().SourceTableName,'_ADFTemp'');')",
+															"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', item().TargetSchema,''',''',variables('FowardSyncTargetTable'),''',''',pipeline().parameters.Path, ''',''', item().SourceTableName,'_ADFTemp'');')",
 															"type": "Expression"
 														},
 														"exportSettings": {
@@ -243,7 +243,7 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"variableName": "Query",
+													"variableName": "ForwardSyncQuery",
 													"value": {
 														"value": "@concat('SELECT * FROM ',item().SourceSchema,'.',item().SourceTableName)",
 														"type": "Expression"
@@ -261,7 +261,7 @@
 												},
 												"userProperties": [],
 												"typeProperties": {
-													"variableName": "TargetTableName",
+													"variableName": "FowardSyncTargetTable",
 													"value": {
 														"value": "@if(contains(toLower(item().TargetTableName),'adftemp'),item().TargetTableName,concat(item().TargetTableName,'_ADFTemp'))",
 														"type": "Expression"
@@ -321,6 +321,22 @@
 				}
 			}
 		],
+		"parameters": {
+			"Path": {
+				"type": "string"
+			},
+			"Container": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"FowardSyncTargetTable": {
+				"type": "String"
+			},
+			"ForwardSyncQuery": {
+				"type": "String"
+			}
+		},
 		"folder": {
 			"name": "Miscellaneous Pipelines"
 		},
