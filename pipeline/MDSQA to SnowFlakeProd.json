@@ -60,7 +60,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"on": {
-									"value": "@item().SyncType",
+									"value": "@item().SyncType_Code",
 									"type": "Expression"
 								},
 								"cases": [
