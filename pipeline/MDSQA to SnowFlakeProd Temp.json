@@ -246,7 +246,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"items": {
-									"value": "@activity('MDSQASyncConfig').output.value",
+									"value": "@activity('MDSQASyncConfig').output",
 									"type": "Expression"
 								},
 								"isSequential": true,
