@@ -4,7 +4,7 @@
 		"description": "Copy data from SnowFlake Prod Temp table to MDSQA",
 		"activities": [
 			{
-				"name": "ADLS_Copy_Data_MDSQA_copy1",
+				"name": "ADLS_Copy_Data_MDSQA",
 				"type": "Copy",
 				"dependsOn": [
 					{
