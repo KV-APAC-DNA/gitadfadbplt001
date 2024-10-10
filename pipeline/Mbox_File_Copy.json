@@ -77,7 +77,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeV2Source",
-						"query": "Select \n\"'prefix_flag'\" AS prefix_flag,\n\"'suffix_flag'\" AS suffix_flag,\n\"'split_file'\" AS split_file,\n\"'target_folder_path'\" AS target_folder_path,\n\"'target_file_name'\" AS target_file_name,\n\"'source_folder_path'\" AS source_folder_path,\n\"'source_file_name'\" AS source_file_name,\n\"'file_extn'\" AS file_extn,\n\"'container'\" AS container,\n\"'encoding'\" AS encoding\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'prefix_flag',\n'suffix_flag',\n'split_file',\n'target_folder_path',\n'target_file_name',\n'source_folder_path',\n'source_file_name',\n'file_extn',\n'container',\n'encoding'\n));",
+						"query": {
+							"value": "Select \n\"'prefix_flag'\" AS prefix_flag,\n\"'suffix_flag'\" AS suffix_flag,\n\"'split_file'\" AS split_file,\n\"'target_folder_path'\" AS target_folder_path,\n\"'target_file_name'\" AS target_file_name,\n\"'source_folder_path'\" AS source_folder_path,\n\"'source_file_name'\" AS source_file_name,\n\"'file_extn'\" AS file_extn,\n\"'container'\" AS container,\n\"'encoding'\" AS encoding,\nIFNULL(\"'source_update_query'\",'N') AS source_update_query\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'prefix_flag',\n'suffix_flag',\n'split_file',\n'target_folder_path',\n'target_file_name',\n'source_folder_path',\n'source_file_name',\n'file_extn',\n'container',\n'encoding',\n'source_update_query'\n));",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -938,7 +941,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Delete source",
+						"activity": "If source_update_needed",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -998,7 +1001,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Delete source",
+						"activity": "If source_update_needed",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1281,6 +1284,56 @@
 						"isSupportNotification": "Yes",
 						"isError": "Yes"
 					}
+				}
+			},
+			{
+				"name": "If source_update_needed",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "Delete source",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@not(equals(activity('read parameters').output.value[0].source_update_query,'N'))\n",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Execute_Update_Source_Query",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@activity('read parameters').output.value[0].source_update_query",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
 				}
 			}
 		],
