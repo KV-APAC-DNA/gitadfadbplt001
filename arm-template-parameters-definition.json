@@ -58,7 +58,26 @@
             }
         }
     },
-    "Microsoft.DataFactory/factories/triggers": {},
+    "Microsoft.DataFactory/factories/triggers": {
+        "properties": {
+            "pipelines": [
+                {
+                    "parameters": {
+                        "*": "="
+                    }
+                },
+                "pipelineReference.referenceName"
+            ],
+            "pipeline": {
+                "parameters": {
+                    "*": "="
+                }
+            },
+            "typeProperties": {
+                "scope": "="
+            }
+        }
+    },
     "Microsoft.DataFactory/factories/linkedServices": {
         "*": {
             "properties": {
