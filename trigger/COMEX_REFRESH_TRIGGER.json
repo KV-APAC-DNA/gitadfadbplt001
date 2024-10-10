@@ -11,9 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "Commercial_Excellence_Data_Load",
-					"force_rerun": false,
-					"ignore_deps": false
+					"category": "Commercial_Excellence_Data_Load"
 				}
 			}
 		],
