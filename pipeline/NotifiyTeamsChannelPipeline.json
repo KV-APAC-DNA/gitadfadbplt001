@@ -97,15 +97,6 @@
 				}
 			},
 			{
-				"name": "WaitSecond",
-				"type": "Wait",
-				"dependsOn": [],
-				"userProperties": [],
-				"typeProperties": {
-					"waitTimeInSeconds": 1
-				}
-			},
-			{
 				"name": "If business error notification",
 				"type": "IfCondition",
 				"dependsOn": [
@@ -205,14 +196,7 @@
 			{
 				"name": "Set containerWebhook",
 				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "WaitSecond",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"secureOutput": false,
 					"secureInput": false
