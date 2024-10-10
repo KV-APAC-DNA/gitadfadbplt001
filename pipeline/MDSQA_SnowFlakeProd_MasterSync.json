@@ -283,7 +283,7 @@
 			}
 		},
 		"folder": {
-			"name": "Miscellaneous Pipelines/MDS QA SnowFlakeProd Sync"
+			"name": "Miscellaneous Pipelines/MDSQA SnowFlakeProd Sync"
 		},
 		"annotations": []
 	}
