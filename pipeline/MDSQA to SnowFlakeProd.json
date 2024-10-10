@@ -224,7 +224,8 @@
 													"dataset": {
 														"referenceName": "mtd_process",
 														"type": "DatasetReference"
-													}
+													},
+													"firstRowOnly": false
 												}
 											},
 											{
