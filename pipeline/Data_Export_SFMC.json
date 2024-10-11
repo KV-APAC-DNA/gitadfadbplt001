@@ -1457,7 +1457,8 @@
 									"type": "BinarySource",
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
-										"recursive": true
+										"recursive": false,
+										"deleteFilesAfterCompletion": false
 									},
 									"formatSettings": {
 										"type": "BinaryReadSettings"
@@ -1520,7 +1521,7 @@
 			},
 			"process_id": {
 				"type": "int",
-				"defaultValue": 5073
+				"defaultValue": 5077
 			}
 		},
 		"variables": {
