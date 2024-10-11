@@ -1488,7 +1488,10 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"adls_container": "@{activity('read parameters').output.value[0].container}",
-										"adls_path": " @{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+										"adls_path": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
 										"file_name": "do_not_delete.csv"
 									}
 								}
