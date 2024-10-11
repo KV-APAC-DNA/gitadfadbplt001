@@ -1441,7 +1441,7 @@
 					},
 					"ifTrueActivities": [
 						{
-							"name": "Copy data1",
+							"name": "create proces end file",
 							"type": "Copy",
 							"dependsOn": [],
 							"policy": {
