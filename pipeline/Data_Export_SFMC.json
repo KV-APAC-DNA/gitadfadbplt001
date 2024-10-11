@@ -1493,6 +1493,7 @@
 									"referenceName": "BinarySFTPmarketingcloudopsjpndcl_sfmc_sink",
 									"type": "DatasetReference",
 									"parameters": {
+										"directory": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
 										"filename": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
 									}
 								}
