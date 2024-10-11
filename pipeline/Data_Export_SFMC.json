@@ -179,6 +179,8 @@
 			{
 				"name": "If export needed today",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read parameters",
@@ -236,6 +238,8 @@
 			{
 				"name": "export unload",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "If export needed today",
@@ -519,6 +523,8 @@
 				"name": "ADLS_to_SFTP_move",
 				"description": "",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "if no data creat empty file",
@@ -792,6 +798,8 @@
 			{
 				"name": "if no data creat empty file",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "export unload",
@@ -1083,6 +1091,8 @@
 			{
 				"name": "if isftp is N then mbox",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "ADLS_to_SFTP_move",
