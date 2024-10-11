@@ -880,7 +880,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
 											"type": "Expression"
 										}
 									}
