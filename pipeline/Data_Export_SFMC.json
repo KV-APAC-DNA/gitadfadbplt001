@@ -1467,7 +1467,9 @@
 								"sink": {
 									"type": "BinarySink",
 									"storeSettings": {
-										"type": "AzureBlobFSWriteSettings"
+										"type": "SftpWriteSettings",
+										"operationTimeout": "01:00:00",
+										"useTempFileRename": true
 									}
 								},
 								"enableStaging": false
@@ -1488,15 +1490,10 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "sftp_adls_source_binary_sfmc_export",
+									"referenceName": "BinarySFTPmarketingcloudopsjpndcl_sfmc_sink",
 									"type": "DatasetReference",
 									"parameters": {
-										"adls_container": "@{activity('read parameters').output.value[0].container}",
-										"adls_path": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
-										"file_name": {
-											"value": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}",
-											"type": "Expression"
-										}
+										"filename": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
 									}
 								}
 							]
