@@ -202,7 +202,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "get file name",
+						"activity": "ifFileExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -211,7 +211,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),'splitCase',activity('read parameters').output.value[0].encoding)",
+						"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),'splitCase',if(activity('ifFileExists').output.exists,activity('read parameters').output.value[0].encoding,'do_nothing'))",
 						"type": "Expression"
 					},
 					"cases": [
@@ -558,6 +558,20 @@
 											"type": "Expression"
 										},
 										"errorCode": "2000"
+									}
+								}
+							]
+						},
+						{
+							"value": "do_nothing",
+							"activities": [
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
 									}
 								}
 							]
@@ -1300,7 +1314,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"expression": {
-						"value": "@not(equals(activity('read parameters').output.value[0].source_update_query,'N'))\n",
+						"value": "@and(not(equals(activity('read parameters').output.value[0].source_update_query,'N')),activity('ifFileExists').output.exists)\n",
 						"type": "Expression"
 					},
 					"ifTrueActivities": [
@@ -1337,7 +1351,7 @@
 				}
 			},
 			{
-				"name": "get file name",
+				"name": "ifFileExists",
 				"type": "GetMetadata",
 				"dependsOn": [
 					{
