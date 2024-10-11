@@ -202,7 +202,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "If prefix or suffix",
+						"activity": "get file name",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1334,6 +1334,57 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "get file name",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "If prefix or suffix",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "adls_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"src_path": {
+								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
+								"type": "Expression"
+							},
+							"src_container": {
+								"value": "@activity('read parameters').output.value[0].container",
+								"type": "Expression"
+							},
+							"src_filename": {
+								"value": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
+								"type": "Expression"
+							}
+						}
+					},
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
+					}
 				}
 			}
 		],
