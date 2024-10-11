@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if isftp is N then mbox",
+						"activity": "create success file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -1367,7 +1367,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if isftp is N then mbox",
+						"activity": "create success file",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1420,6 +1420,84 @@
 							"type": "Expression"
 						}
 					}
+				}
+			},
+			{
+				"name": "create success file",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "if isftp is N then mbox",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('read parameters').output.value[0].TABLE_NAME,'dm_user_attr')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Copy data1",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "sftp_adls_source_binary_sfmc_export",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": "@{activity('read parameters').output.value[0].container}",
+										"adls_path": " @{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+										"file_name": "do_not_delete.csv"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sftp_adls_source_binary_sfmc_export",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": "@{activity('read parameters').output.value[0].container}",
+										"adls_path": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+										"file_name": {
+											"value": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
 				}
 			}
 		],
