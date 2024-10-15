@@ -24,7 +24,25 @@
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "SqlServerSink",
+						"preCopyScript": {
+							"value": "@concat('TRUNCATE TABLE ',pipeline().parameters.TargetSchema,'.',pipeline().parameters.TargetTableName)",
+							"type": "Expression"
+						},
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
@@ -37,6 +55,22 @@
 							},
 							"table": {
 								"value": "@pipeline().parameters.SourceTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServerSink_QA",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": {
+								"value": "@pipeline().parameters.TargetSchema",
+								"type": "Expression"
+							},
+							"table": {
+								"value": "@pipeline().parameters.TargetTableName",
 								"type": "Expression"
 							}
 						}
