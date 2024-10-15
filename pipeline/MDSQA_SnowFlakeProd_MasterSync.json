@@ -196,7 +196,7 @@
 							"typeProperties": {
 								"variableName": "TargetTableName",
 								"value": {
-									"value": "@if(contains(toLower(pipeline().parameters.TargetTableName),'adftemp'),pipeline().parameters.TargetTableName,concat(pipeline().parameters.TargetTableName,'_ADFTemp'))",
+									"value": "@if(contains(toLower(pipeline().parameters.TargetTableName),'adftemp'),\n    if(contains(toLower(pipeline().parameters.TargetTableName),'sdl_mds_'), pipeline().parameters.TargetTableName, concat('SDL_MDS_',pipeline().parameters.TargetTableName)\n      ),\n      if(contains(toLower(pipeline().parameters.TargetTableName),'sdl_mds_'),\n      concat(pipeline().parameters.TargetTableName,'_ADFTemp'),\n      concat('SDL_MDS',pipeline().parameters.TargetTableName,'_ADFTemp')      \n        )\n    )\n",
 									"type": "Expression"
 								}
 							}
