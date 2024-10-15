@@ -1,0 +1,32 @@
+{
+	"name": "Okinawa_CC_EXPORT_trigger",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "Okinawa_CC_EXPORT"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2024-10-15T16:04:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"monthDays": [
+						10
+					]
+				}
+			}
+		}
+	}
+}
