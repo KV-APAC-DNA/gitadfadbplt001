@@ -77,7 +77,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SnowflakeV2Source",
-						"query": "Select \n\"'prefix_flag'\" AS prefix_flag,\n\"'suffix_flag'\" AS suffix_flag,\n\"'split_file'\" AS split_file,\n\"'target_folder_path'\" AS target_folder_path,\n\"'target_file_name'\" AS target_file_name,\n\"'source_folder_path'\" AS source_folder_path,\n\"'source_file_name'\" AS source_file_name,\n\"'file_extn'\" AS file_extn,\n\"'container'\" AS container,\n\"'encoding'\" AS encoding\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'prefix_flag',\n'suffix_flag',\n'split_file',\n'target_folder_path',\n'target_file_name',\n'source_folder_path',\n'source_file_name',\n'file_extn',\n'container',\n'encoding'\n));",
+						"query": {
+							"value": "Select \n\"'prefix_flag'\" AS prefix_flag,\n\"'suffix_flag'\" AS suffix_flag,\n\"'split_file'\" AS split_file,\n\"'target_folder_path'\" AS target_folder_path,\n\"'target_file_name'\" AS target_file_name,\n\"'source_folder_path'\" AS source_folder_path,\n\"'source_file_name'\" AS source_file_name,\n\"'file_extn'\" AS file_extn,\n\"'container'\" AS container,\n\"'encoding'\" AS encoding,\nIFNULL(\"'source_update_query'\",'N') AS source_update_query\nfrom (SELECT PARAMETERS.PARAMETER_NAME,PARAMETER_VALUE,PARAMETER_GROUP_NAME,IS_SENSITIVE\nFROM META_RAW.PARAMETERS \nJOIN META_RAW.PROCESS USING (PARAMETER_GROUP_ID)\nWHERE PROCESS_ID = @{pipeline().parameters.process_id}\nAND IS_ACTIVE = TRUE)\nas A pivot ( MAX (PARAMETER_VALUE) for PARAMETER_NAME in (\n'prefix_flag',\n'suffix_flag',\n'split_file',\n'target_folder_path',\n'target_file_name',\n'source_folder_path',\n'source_file_name',\n'file_extn',\n'container',\n'encoding',\n'source_update_query'\n));",
+							"type": "Expression"
+						},
 						"exportSettings": {
 							"type": "SnowflakeExportCopyCommand"
 						}
@@ -199,7 +202,7 @@
 				"type": "Switch",
 				"dependsOn": [
 					{
-						"activity": "If prefix or suffix",
+						"activity": "ifFileExists",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -208,7 +211,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"on": {
-						"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),'splitCase',activity('read parameters').output.value[0].encoding)",
+						"value": "@if(not(activity('ifFileExists').output.exists),'do_nothing', if(equals(activity('read parameters').output.value[0].split_file,'Y'),'splitCase',activity('read parameters').output.value[0].encoding))",
 						"type": "Expression"
 					},
 					"cases": [
@@ -558,6 +561,20 @@
 									}
 								}
 							]
+						},
+						{
+							"value": "do_nothing",
+							"activities": [
+								{
+									"name": "Wait1",
+									"type": "Wait",
+									"dependsOn": [],
+									"userProperties": [],
+									"typeProperties": {
+										"waitTimeInSeconds": 1
+									}
+								}
+							]
 						}
 					],
 					"defaultActivities": [
@@ -791,154 +808,11 @@
 				}
 			},
 			{
-				"name": "Move to Achive",
-				"type": "Copy",
-				"dependsOn": [
-					{
-						"activity": "Switch For Encoding",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobFSReadSettings",
-							"recursive": true,
-							"enablePartitionDiscovery": false
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
-						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobFSWriteSettings"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"typeConversion": true,
-						"typeConversionSettings": {
-							"allowDataTruncation": true,
-							"treatBooleanAsNumber": false
-						}
-					}
-				},
-				"inputs": [
-					{
-						"referenceName": "Mbox_File_Copy_adls",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@activity('read parameters').output.value[0].container",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
-								"type": "Expression"
-							},
-							"encoding": "UTF-8",
-							"delimeter": {
-								"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
-								"type": "Expression"
-							}
-						}
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "Mbox_File_Copy_adls",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": {
-								"value": "@activity('read parameters').output.value[0].container",
-								"type": "Expression"
-							},
-							"directory": {
-								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive/@{variables('dateCCYYMMDD')}",
-								"type": "Expression"
-							},
-							"fileName": {
-								"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
-								"type": "Expression"
-							},
-							"encoding": "UTF-8",
-							"delimeter": {
-								"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
-								"type": "Expression"
-							}
-						}
-					}
-				]
-			},
-			{
-				"name": "Delete source",
-				"type": "Delete",
-				"dependsOn": [
-					{
-						"activity": "Move to Achive",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"dataset": {
-						"referenceName": "AdlsFileDataset",
-						"type": "DatasetReference",
-						"parameters": {
-							"container": "@activity('read parameters').output.value[0].container",
-							"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
-							"fileName": {
-								"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
-								"type": "Expression"
-							}
-						}
-					},
-					"enableLogging": false,
-					"storeSettings": {
-						"type": "AzureBlobFSReadSettings",
-						"recursive": true,
-						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
 				"name": "Audit_Finish_Success",
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Delete source",
+						"activity": "If source_update_needed",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -998,7 +872,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "Delete source",
+						"activity": "If source_update_needed",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1114,173 +988,431 @@
 				}
 			},
 			{
-				"name": "error log - archive file",
-				"type": "ExecutePipeline",
+				"name": "If source_update_needed",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Move to Achive",
+						"activity": "Archiving_Deleting",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(not(equals(activity('read parameters').output.value[0].source_update_query,'N')),activity('ifFileExists').output.exists)\n",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "Execute_Update_Source_Query",
+							"type": "Script",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnacore002",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@activity('read parameters').output.value[0].source_update_query",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						}
+					]
+				}
+			},
+			{
+				"name": "ifFileExists",
+				"type": "GetMetadata",
+				"dependsOn": [
+					{
+						"activity": "If prefix or suffix",
+						"dependencyConditions": [
+							"Succeeded"
 						]
 					}
 				],
 				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_error_log",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
-						},
-						"job_name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"error_message": {
-							"value": "@activity('Move to Achive').error?.message",
-							"type": "Expression"
-						},
-						"run_id": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
-						},
-						"error_code": {
-							"value": "@activity('Move to Achive').error?.errorCode",
-							"type": "Expression"
-						},
-						"job_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
+					"dataset": {
+						"referenceName": "adls_src",
+						"type": "DatasetReference",
+						"parameters": {
+							"src_path": {
+								"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
+								"type": "Expression"
+							},
+							"src_container": {
+								"value": "@activity('read parameters').output.value[0].container",
+								"type": "Expression"
+							},
+							"src_filename": {
+								"value": "@{activity('read parameters').output.value[0].source_file_name}.@{activity('read parameters').output.value[0].file_extn}",
+								"type": "Expression"
+							}
 						}
+					},
+					"fieldList": [
+						"exists"
+					],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"recursive": true,
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "DelimitedTextReadSettings"
 					}
 				}
 			},
 			{
-				"name": "Audit_Fail_archiving",
-				"type": "ExecutePipeline",
+				"name": "Archiving_Deleting",
+				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Move to Achive",
+						"activity": "Switch For Encoding",
 						"dependencyConditions": [
-							"Failed"
+							"Succeeded"
 						]
 					}
 				],
-				"policy": {
-					"secureInput": false
-				},
 				"userProperties": [],
 				"typeProperties": {
-					"pipeline": {
-						"referenceName": "write_audit_log",
-						"type": "PipelineReference"
+					"expression": {
+						"value": "@activity('ifFileExists').output.exists",
+						"type": "Expression"
 					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"process_id": {
-							"value": "@pipeline().parameters.process_id",
-							"type": "Expression"
+					"ifTrueActivities": [
+						{
+							"name": "Move to Achive",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "DelimitedTextSource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": true,
+										"enablePartitionDiscovery": false
+									},
+									"formatSettings": {
+										"type": "DelimitedTextReadSettings"
+									}
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "Mbox_File_Copy_adls",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('read parameters').output.value[0].container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
+											"type": "Expression"
+										},
+										"encoding": "UTF-8",
+										"delimeter": {
+											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "Mbox_File_Copy_adls",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('read parameters').output.value[0].container",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive/@{variables('dateCCYYMMDD')}",
+											"type": "Expression"
+										},
+										"fileName": {
+											"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
+											"type": "Expression"
+										},
+										"encoding": "UTF-8",
+										"delimeter": {
+											"value": "@if(equals(activity('read parameters').output.value[0].file_extn,'csv'),',','\\t')",
+											"type": "Expression"
+										}
+									}
+								}
+							]
 						},
-						"status": "FAIL",
-						"input_row_count": 0,
-						"output_row_count": 0,
-						"jobname": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
+						{
+							"name": "Delete source",
+							"type": "Delete",
+							"dependsOn": [
+								{
+									"activity": "Move to Achive",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "AdlsFileDataset",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "@activity('read parameters').output.value[0].container",
+										"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}",
+										"fileName": {
+											"value": "@if(equals(activity('read parameters').output.value[0].split_file,'Y'),concat(variables('fileNameWithDate'),'.',activity('read parameters').output.value[0].file_extn),concat(activity('read parameters').output.value[0].source_file_name,'.',activity('read parameters').output.value[0].file_extn))",
+											"type": "Expression"
+										}
+									}
+								},
+								"enableLogging": false,
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								}
+							}
 						},
-						"message": {
-							"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
-							"type": "Expression"
+						{
+							"name": "error log - archive file",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Move to Achive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_error_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"job_name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"error_message": {
+										"value": "@activity('Move to Achive').error?.message",
+										"type": "Expression"
+									},
+									"run_id": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									},
+									"error_code": {
+										"value": "@activity('Move to Achive').error?.errorCode",
+										"type": "Expression"
+									},
+									"job_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									}
+								}
+							}
 						},
-						"runid": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
+						{
+							"name": "Audit_Fail_archiving",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Move to Achive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "write_audit_log",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"process_id": {
+										"value": "@pipeline().parameters.process_id",
+										"type": "Expression"
+									},
+									"status": "FAIL",
+									"input_row_count": 0,
+									"output_row_count": 0,
+									"jobname": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"message": {
+										"value": "@concat(pipeline().Pipeline,' pipeline has failed for use case ', string(pipeline().parameters.category))",
+										"type": "Expression"
+									},
+									"runid": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"pipeline_id": {
+										"value": "@pipeline()?.TriggeredByPipelineRunId",
+										"type": "Expression"
+									},
+									"category": {
+										"value": "@pipeline().parameters.category",
+										"type": "Expression"
+									},
+									"usecase_id": {
+										"value": "@pipeline().parameters.usecase_id",
+										"type": "Expression"
+									},
+									"phase_id": {
+										"value": "@pipeline().parameters.phase_id",
+										"type": "Expression"
+									}
+								}
+							}
 						},
-						"pipeline_id": {
-							"value": "@pipeline()?.TriggeredByPipelineRunId",
-							"type": "Expression"
-						},
-						"category": {
-							"value": "@pipeline().parameters.category",
-							"type": "Expression"
-						},
-						"usecase_id": {
-							"value": "@pipeline().parameters.usecase_id",
-							"type": "Expression"
-						},
-						"phase_id": {
-							"value": "@pipeline().parameters.phase_id",
-							"type": "Expression"
+						{
+							"name": "Send error - Move File_copy1",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "Move to Achive",
+									"dependencyConditions": [
+										"Failed"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "NotifiyTeamsChannelPipeline",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"subscription": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
+										"type": "Expression"
+									},
+									"resourceGroup": {
+										"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
+										"type": "Expression"
+									},
+									"runId": {
+										"value": "@pipeline().RunId",
+										"type": "Expression"
+									},
+									"name": {
+										"value": "@pipeline().Pipeline",
+										"type": "Expression"
+									},
+									"triggerTime": {
+										"value": "@pipeline().TriggerTime",
+										"type": "Expression"
+									},
+									"status": "FAIL",
+									"supportMessage": {
+										"value": "There is some issue while archiving file : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ENCODING**: @{activity('read parameters').output.value[0].encoding} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**TARGET_FILE_PATH**: @{activity('read parameters').output.value[0].source_folder_path}/archive/@{variables('dateCCYYMMDD')} \\n\n**TARGET_FILE_NAME**: @{variables('fileNameWithDate')}.@{activity('read parameters').output.value[0].file_extn} \\n\n**SOURCE_FILE_PATH**: @{activity('read parameters').output.value[0].source_folder_path} \\n\n**SOURCE_FILE_NAME**: @{activity('read parameters').output.value[0].source_file_name} \\n\n**ERROR**: _@{activity('Move to Achive').error?.message}_",
+										"type": "Expression"
+									},
+									"isBusinessNotification": "No",
+									"isSupportNotification": "Yes",
+									"isError": "Yes"
+								}
+							}
 						}
-					}
-				}
-			},
-			{
-				"name": "Send error - Move File_copy1",
-				"type": "ExecutePipeline",
-				"dependsOn": [
-					{
-						"activity": "Move to Achive",
-						"dependencyConditions": [
-							"Failed"
-						]
-					}
-				],
-				"policy": {
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"pipeline": {
-						"referenceName": "NotifiyTeamsChannelPipeline",
-						"type": "PipelineReference"
-					},
-					"waitOnCompletion": true,
-					"parameters": {
-						"subscription": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_subscription_id, pipeline().globalParameters.dev_subscription_id)",
-							"type": "Expression"
-						},
-						"resourceGroup": {
-							"value": "@if(equals(pipeline().globalParameters.environment, 'prod'),pipeline().globalParameters.prod_resource_group, pipeline().globalParameters.dev_resource_group)",
-							"type": "Expression"
-						},
-						"runId": {
-							"value": "@pipeline().RunId",
-							"type": "Expression"
-						},
-						"name": {
-							"value": "@pipeline().Pipeline",
-							"type": "Expression"
-						},
-						"triggerTime": {
-							"value": "@pipeline().TriggerTime",
-							"type": "Expression"
-						},
-						"status": "FAIL",
-						"supportMessage": {
-							"value": "There is some issue while archiving file : \\n\n**PROCESS_ID**:  @{pipeline().parameters.process_id}  \\n\n**CATEGORY**: @{pipeline().parameters.category} \\n\n**PHASE_ID**:   @{pipeline().parameters.phase_id}   \\n\n**USECASE_ID**: @{pipeline().parameters.usecase_id} \\n\n**SEQUENCE_ID**: @{pipeline().parameters.sequence_id} \\n\n**ENCODING**: @{activity('read parameters').output.value[0].encoding} \\n\n**CONTAINER**: @{activity('read parameters').output.value[0].container} \\n\n**TARGET_FILE_PATH**: @{activity('read parameters').output.value[0].source_folder_path}/archive/@{variables('dateCCYYMMDD')} \\n\n**TARGET_FILE_NAME**: @{variables('fileNameWithDate')}.@{activity('read parameters').output.value[0].file_extn} \\n\n**SOURCE_FILE_PATH**: @{activity('read parameters').output.value[0].source_folder_path} \\n\n**SOURCE_FILE_NAME**: @{activity('read parameters').output.value[0].source_file_name} \\n\n**ERROR**: _@{activity('Move to Achive').error?.message}_",
-							"type": "Expression"
-						},
-						"isBusinessNotification": "No",
-						"isSupportNotification": "Yes",
-						"isError": "Yes"
-					}
+					]
 				}
 			}
 		],
