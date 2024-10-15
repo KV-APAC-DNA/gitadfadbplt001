@@ -1150,7 +1150,10 @@
 									"parameters": {
 										"container": "@{activity('read parameters').output.value[0].container}",
 										"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
-										"fileName": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -1164,7 +1167,10 @@
 											"value": "@{variables('parentFolder')}/jjrnki",
 											"type": "Expression"
 										},
-										"fileName": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
+											"type": "Expression"
+										}
 									}
 								}
 							]
