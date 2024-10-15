@@ -558,8 +558,6 @@
 			{
 				"name": "If Files Generated",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For every chno",
