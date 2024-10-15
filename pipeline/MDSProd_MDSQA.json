@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@if(empty(pipeline().parameters.Query),concat('SELECT * FROM ',pipeline().parameters.TargetSchema,'.',pipeline().parameters.TargetTableName),pipeline().parameters.Query)",
+							"value": "@if(empty(pipeline().parameters.Query),concat('SELECT * FROM ',pipeline().parameters.SourceSchema,pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
