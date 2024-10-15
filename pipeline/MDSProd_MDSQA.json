@@ -1,0 +1,71 @@
+{
+	"name": "MDSProd_MDSQA",
+	"properties": {
+		"activities": [
+			{
+				"name": "MDSProd_MDSQA_Sync",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@if(empty(pipeline().parameters.Query),concat('SELECT * FROM ',pipeline().parameters.TargetSchema,'.',pipeline().parameters.TargetTableName),pipeline().parameters.Query)",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerSink",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": {
+								"value": "@pipeline().parameters.SourceSchema",
+								"type": "Expression"
+							},
+							"table": {
+								"value": "@pipeline().parameters.SourceTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			}
+		],
+		"parameters": {
+			"SourceSchema": {
+				"type": "string",
+				"defaultValue": "mdm"
+			},
+			"SourceTableName": {
+				"type": "string"
+			},
+			"TargetSchema": {
+				"type": "string",
+				"defaultValue": "dbo"
+			},
+			"TargetTableName": {
+				"type": "string"
+			},
+			"Query": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines"
+		},
+		"annotations": []
+	}
+}
