@@ -1582,24 +1582,19 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "JP_DCL_SFMC_DCL_ITG"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 408
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 3
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 5076
+				"type": "int"
 			}
 		},
 		"variables": {
