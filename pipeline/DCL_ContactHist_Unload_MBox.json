@@ -259,7 +259,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "select @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
+											"value": "select @{replace(variables('appendedList'),',,','')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
 											"type": "Expression"
 										}
 									}
@@ -558,6 +558,8 @@
 			{
 				"name": "If Files Generated",
 				"type": "IfCondition",
+				"state": "Inactive",
+				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "For every chno",
@@ -1913,7 +1915,8 @@
 				"type": "String"
 			},
 			"appendedList": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": ","
 			},
 			"temp": {
 				"type": "String"
