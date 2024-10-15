@@ -3,9 +3,16 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "MDSProd_MDSQA_Sync",
+				"name": "Copy ADLS To MDS QA",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "Copy MDS Prod Data to ADLS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -16,13 +23,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "SqlServerSource",
-						"sqlReaderQuery": {
-							"value": "@if(empty(pipeline().parameters.Query),concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
-							"type": "Expression"
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
 						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
 					},
 					"sink": {
 						"type": "SqlServerSink",
@@ -42,15 +51,13 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "SqlServerSink",
+						"referenceName": "sql_server_sink_soh_delim",
 						"type": "DatasetReference",
 						"parameters": {
-							"schema": {
-								"value": "@pipeline().parameters.SourceSchema",
-								"type": "Expression"
-							},
-							"table": {
-								"value": "@pipeline().parameters.SourceTableName",
+							"container": "asp",
+							"path": "qa/sql_server/MDS/MDS_Adhoc/",
+							"file": {
+								"value": "@pipeline().parameters.TargetTableName",
 								"type": "Expression"
 							}
 						}
@@ -66,6 +73,74 @@
 								"type": "Expression"
 							},
 							"table": {
+								"value": "@pipeline().parameters.TargetTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "Copy MDS Prod Data to ADLS",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "@if(empty(pipeline().parameters.Query),concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "SqlServerSink",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "@pipeline().parameters.SourceSchema",
+							"table": {
+								"value": "@pipeline().parameters.SourceTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sql_server_sink",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": "asp",
+							"path": "qa/sql_server/MDS/MDS_Adhoc/",
+							"file": {
 								"value": "@pipeline().parameters.TargetTableName",
 								"type": "Expression"
 							}
