@@ -1366,7 +1366,7 @@
 							}
 						},
 						{
-							"name": "create proces end file_copy1",
+							"name": "create proces end file_adls",
 							"type": "Copy",
 							"dependsOn": [
 								{
@@ -1420,11 +1420,15 @@
 							],
 							"outputs": [
 								{
-									"referenceName": "BinarySinkAdlsDataset",
+									"referenceName": "BinaryDestination",
 									"type": "DatasetReference",
 									"parameters": {
-										"container": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
-										"directory": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
+										"fileName": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
 									}
 								}
 							]
