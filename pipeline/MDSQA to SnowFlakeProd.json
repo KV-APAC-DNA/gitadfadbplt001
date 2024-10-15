@@ -265,7 +265,7 @@
 												"typeProperties": {
 													"variableName": "FowardSyncTargetTable",
 													"value": {
-														"value": "@if(contains(toLower(item().TargetTableName),'adftemp'),\n    if(contains(toLower(item().TargetTableName),'sdl_mds_'), item().TargetTableName, concat('SDL_MDS_',item().TargetTableName)\n      ),\n      if(contains(toLower(item().TargetTableName),'sdl_mds_'),\n      concat(item().TargetTableName,'_ADFTemp'),\n      concat('SDL_MDS',item().TargetTableName,'_ADFTemp')      \n        )\n    )\n",
+														"value": "@if(contains(toLower(item().TargetTableName),'adftemp'),\n    if(contains(toLower(item().TargetTableName),'sdl_mds_'), item().TargetTableName, concat('SDL_MDS_',item().TargetTableName)\n      ),\n      if(contains(toLower(item().TargetTableName),'sdl_mds_'),\n      concat(item().TargetTableName,'_ADFTemp'),\n      concat('SDL_MDS_',item().TargetTableName,'_ADFTemp')      \n        )\n    )\n",
 														"type": "Expression"
 													}
 												}
