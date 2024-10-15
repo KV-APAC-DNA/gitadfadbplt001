@@ -1427,7 +1427,10 @@
 											"value": "@{activity('read parameters').output.value[0].container}",
 											"type": "Expression"
 										},
-										"directory": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
+										"directory": {
+											"value": "@{variables('parentFolder')}/jjrnki",
+											"type": "Expression"
+										},
 										"fileName": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
 									}
 								}
