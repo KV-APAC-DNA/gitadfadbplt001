@@ -1,5 +1,5 @@
 {
-	"name": "JPN_POS_LOAD_trigger",
+	"name": "hcponesea_snapshot_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,30 +10,26 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JPN_POS_LOAD"
+					"category": "hcponesea_snapshot_trigger"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Month",
 				"interval": 1,
-				"startTime": "2024-07-24T17:30:00",
+				"startTime": "2024-10-09T07:12:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0,
-						30
+						0
 					],
 					"hours": [
-						17,
-						18,
-						19,
-						20,
-						21,
-						22,
-						23
+						1
+					],
+					"monthDays": [
+						1
 					]
 				}
 			}

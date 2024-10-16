@@ -1,5 +1,5 @@
 {
-	"name": "JPN_POS_LOAD_trigger",
+	"name": "TELEPHONE_STATION_EXPORT_trigger",
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Started",
@@ -10,30 +10,27 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JPN_POS_LOAD"
+					"category": "TELEPHONE_STATION_EXPORT"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Day",
+				"frequency": "Week",
 				"interval": 1,
-				"startTime": "2024-07-24T17:30:00",
+				"startTime": "2024-10-15T16:02:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0,
-						30
+						0
 					],
 					"hours": [
-						17,
-						18,
-						19,
-						20,
-						21,
-						22,
-						23
+						7
+					],
+					"weekDays": [
+						"Monday",
+						"Thursday"
 					]
 				}
 			}

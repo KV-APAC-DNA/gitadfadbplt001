@@ -2,7 +2,7 @@
 	"name": "snowflake_sink_target",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "adfadbplt001lssnfkpltdnaload",
+			"referenceName": "adfadbplt001lssnfkpltdnaload002",
 			"type": "LinkedServiceReference"
 		},
 		"parameters": {
@@ -17,7 +17,7 @@
 			"name": "ADF_Framework_Datasets"
 		},
 		"annotations": [],
-		"type": "SnowflakeTable",
+		"type": "SnowflakeV2Table",
 		"schema": [],
 		"typeProperties": {
 			"schema": {

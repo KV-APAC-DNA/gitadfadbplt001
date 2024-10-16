@@ -1,6 +1,7 @@
 {
-	"name": "JPN_POS_LOAD_trigger",
+	"name": "COMEX_REFRESH_TRIGGER",
 	"properties": {
+		"description": "COMEX_REFRESH_TRIGGER",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -10,7 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "JPN_POS_LOAD"
+					"category": "Commercial_Excellence_Data_Load"
 				}
 			}
 		],
@@ -19,21 +20,14 @@
 			"recurrence": {
 				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-07-24T17:30:00",
+				"startTime": "2024-10-10T11:28:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
-						0,
-						30
+						45
 					],
 					"hours": [
-						17,
-						18,
-						19,
-						20,
-						21,
-						22,
-						23
+						13
 					]
 				}
 			}
