@@ -41,7 +41,7 @@
 			"rowDelimiter": "\n",
 			"compressionCodec": "gzip",
 			"compressionLevel": "Optimal",
-			"escapeChar": "\\",
+			"escapeChar": "",
 			"firstRowAsHeader": false,
 			"quoteChar": ""
 		},

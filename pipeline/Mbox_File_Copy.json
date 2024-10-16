@@ -192,7 +192,7 @@
 				"typeProperties": {
 					"variableName": "dateCCYYMMDD",
 					"value": {
-						"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')",
+						"value": "@formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMddhhmmss')",
 						"type": "Expression"
 					}
 				}
