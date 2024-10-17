@@ -60,7 +60,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if isftp is N then mbox",
+						"activity": "create success file",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -880,7 +880,7 @@
 											"type": "Expression"
 										},
 										"fileName": {
-											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}",
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
 											"type": "Expression"
 										}
 									}
@@ -1150,7 +1150,10 @@
 									"parameters": {
 										"container": "@{activity('read parameters').output.value[0].container}",
 										"directory": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
-										"fileName": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
+											"type": "Expression"
+										}
 									}
 								}
 							],
@@ -1164,7 +1167,10 @@
 											"value": "@{variables('parentFolder')}/jjrnki",
 											"type": "Expression"
 										},
-										"fileName": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(utcNow(), 'yyyyMMdd'), '.csv.gz')}"
+										"fileName": {
+											"value": "@{concat(activity('read parameters').output.value[0].TABLE_NAME, '_', formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv.gz')}",
+											"type": "Expression"
+										}
 									}
 								}
 							]
@@ -1358,6 +1364,77 @@
 									}
 								}
 							}
+						},
+						{
+							"name": "create proces end file_adls",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "archive to mbox location",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": false,
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "sftp_adls_source_binary_sfmc_export",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": "@{activity('read parameters').output.value[0].container}",
+										"adls_path": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"file_name": "do_not_delete.csv"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "BinaryDestination",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@{activity('read parameters').output.value[0].container}",
+											"type": "Expression"
+										},
+										"directory": {
+											"value": "@{variables('parentFolder')}/jjrnki",
+											"type": "Expression"
+										},
+										"fileName": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
+									}
+								}
+							]
 						}
 					]
 				}
@@ -1367,7 +1444,7 @@
 				"type": "ExecutePipeline",
 				"dependsOn": [
 					{
-						"activity": "if isftp is N then mbox",
+						"activity": "create success file",
 						"dependencyConditions": [
 							"Failed"
 						]
@@ -1421,28 +1498,103 @@
 						}
 					}
 				}
+			},
+			{
+				"name": "create success file",
+				"type": "IfCondition",
+				"dependsOn": [
+					{
+						"activity": "if isftp is N then mbox",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@equals(activity('read parameters').output.value[0].TABLE_NAME,'dm_user_attr')",
+						"type": "Expression"
+					},
+					"ifTrueActivities": [
+						{
+							"name": "create proces end file",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "BinarySource",
+									"storeSettings": {
+										"type": "AzureBlobFSReadSettings",
+										"recursive": false,
+										"deleteFilesAfterCompletion": false
+									},
+									"formatSettings": {
+										"type": "BinaryReadSettings"
+									}
+								},
+								"sink": {
+									"type": "BinarySink",
+									"storeSettings": {
+										"type": "SftpWriteSettings",
+										"operationTimeout": "01:00:00",
+										"useTempFileRename": true
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "sftp_adls_source_binary_sfmc_export",
+									"type": "DatasetReference",
+									"parameters": {
+										"adls_container": "@{activity('read parameters').output.value[0].container}",
+										"adls_path": {
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].ARCHIVAL_FOLDER_PATH}",
+											"type": "Expression"
+										},
+										"file_name": "do_not_delete.csv"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "BinarySFTPmarketingcloudopsjpndcl_sfmc_sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"directory": "@{activity('read parameters').output.value[0].TARGET_FOLDER_PATH}",
+										"filename": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
+									}
+								}
+							]
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "JPDCL_SFMC_Export"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 408
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 3
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 5070
+				"type": "int"
 			}
 		},
 		"variables": {

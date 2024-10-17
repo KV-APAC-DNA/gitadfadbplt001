@@ -1,0 +1,36 @@
+{
+	"name": "COMEX_REFRESH_TRIGGER",
+	"properties": {
+		"description": "COMEX_REFRESH_TRIGGER",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "Commercial_Excellence_Data_Load"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 1,
+				"startTime": "2024-10-10T11:28:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						45
+					],
+					"hours": [
+						13
+					]
+				}
+			}
+		}
+	}
+}
