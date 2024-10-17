@@ -1,0 +1,290 @@
+{
+	"name": "MDSQA_SnowFlakeProd_MasterSync",
+	"properties": {
+		"description": "Forward and Reverse Sync Master pipeline for MDSQA",
+		"activities": [
+			{
+				"name": "TargetTable Parameters Exists",
+				"type": "IfCondition",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@and(empty(pipeline().parameters.TargetTableName),empty(pipeline().parameters.SourceTableName))",
+						"type": "Expression"
+					},
+					"ifFalseActivities": [
+						{
+							"name": "MDSQA_Copy_Data_ADLS",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "Query",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SqlServerSource",
+									"sqlReaderQuery": {
+										"value": "@variables('Query')",
+										"type": "Expression"
+									},
+									"queryTimeout": "02:00:00",
+									"partitionOption": "None"
+								},
+								"sink": {
+									"type": "DelimitedTextSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "DelimitedTextWriteSettings",
+										"quoteAllText": true,
+										"fileExtension": ".txt"
+									}
+								},
+								"enableStaging": false,
+								"translator": {
+									"type": "TabularTranslator",
+									"typeConversion": true,
+									"typeConversionSettings": {
+										"allowDataTruncation": true,
+										"treatBooleanAsNumber": false
+									}
+								}
+							},
+							"inputs": [
+								{
+									"referenceName": "SqlServerSink_QA",
+									"type": "DatasetReference",
+									"parameters": {
+										"schema": "@pipeline().parameters.SourceSchema",
+										"table": "@pipeline().parameters.SourceTableName"
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "sql_server_sink",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": "@pipeline().parameters.Container",
+										"path": "@pipeline().parameters.Path",
+										"file": "@concat(pipeline().parameters.SourceTableName,'_ADFTemp.csv')"
+									}
+								}
+							]
+						},
+						{
+							"name": "Tuncate Target Table",
+							"type": "Script",
+							"dependsOn": [
+								{
+									"activity": "MDSQA_Copy_Data_ADLS",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"linkedServiceName": {
+								"referenceName": "adfadbplt001lssnfkpltdnaload002",
+								"type": "LinkedServiceReference"
+							},
+							"typeProperties": {
+								"scripts": [
+									{
+										"type": "Query",
+										"text": {
+											"value": "@concat('TRUNCATE TABLE ', pipeline().parameters.TargetSchema, '.', variables('TargetTableName'))",
+											"type": "Expression"
+										}
+									}
+								],
+								"scriptBlockExecutionTimeout": "02:00:00"
+							}
+						},
+						{
+							"name": "Execute Procedure to load data",
+							"description": "Execute Procedure to load data into Snowflake table",
+							"type": "Lookup",
+							"dependsOn": [
+								{
+									"activity": "Tuncate Target Table",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "SnowflakeV2Source",
+									"query": {
+										"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', pipeline().parameters.TargetSchema,''',''',variables('TargetTableName'),''',''',pipeline().parameters.Path, ''',''', pipeline().parameters.SourceTableName,'_ADFTemp'');')",
+										"type": "Expression"
+									},
+									"exportSettings": {
+										"type": "SnowflakeExportCopyCommand"
+									}
+								},
+								"dataset": {
+									"referenceName": "mtd_process",
+									"type": "DatasetReference"
+								}
+							}
+						},
+						{
+							"name": "Query",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "TargetTableName",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "Query",
+								"value": {
+									"value": "@if(empty(pipeline().parameters.Query) ,concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "TargetTableName",
+							"description": "Set TargetTableName",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "TargetTableName",
+								"value": {
+									"value": "@if(contains(toLower(pipeline().parameters.TargetTableName),'adftemp'),\n    if(contains(toLower(pipeline().parameters.TargetTableName),'sdl_mds_'), pipeline().parameters.TargetTableName, concat('SDL_MDS_',pipeline().parameters.TargetTableName)\n      ),\n      if(contains(toLower(pipeline().parameters.TargetTableName),'sdl_mds_'),\n      concat(pipeline().parameters.TargetTableName,'_ADFTemp'),\n      concat('SDL_MDS_',pipeline().parameters.TargetTableName,'_ADFTemp')      \n        )\n    )\n",
+									"type": "Expression"
+								}
+							}
+						}
+					],
+					"ifTrueActivities": [
+						{
+							"name": "Execute Paramterized Sync",
+							"type": "ExecutePipeline",
+							"dependsOn": [],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "MDSQA to SnowFlakeProd",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"Path": {
+										"value": "@pipeline().parameters.Path",
+										"type": "Expression"
+									},
+									"Container": {
+										"value": "@pipeline().parameters.Container",
+										"type": "Expression"
+									}
+								}
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"SourceSchema": {
+				"type": "string",
+				"defaultValue": "mdm"
+			},
+			"SourceTableName": {
+				"type": "string"
+			},
+			"Container": {
+				"type": "string",
+				"defaultValue": "asp"
+			},
+			"Path": {
+				"type": "string",
+				"defaultValue": "qa/sql_server/MDS/MDS_Adhoc/"
+			},
+			"TargetSchema": {
+				"type": "string"
+			},
+			"TargetTableName": {
+				"type": "string"
+			},
+			"Query": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"SnowFlakeStage": {
+				"type": "String"
+			},
+			"Query": {
+				"type": "String"
+			},
+			"TargetTableName": {
+				"type": "String"
+			},
+			"FowardSyncQuery": {
+				"type": "String"
+			},
+			"ForwardSyncTargetTableName": {
+				"type": "String"
+			},
+			"FowardSyncTargetTable": {
+				"type": "String"
+			},
+			"ForwardSyncQuery": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/MDSQA SnowFlakeProd Sync"
+		},
+		"annotations": []
+	}
+}

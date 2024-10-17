@@ -1,0 +1,304 @@
+{
+	"name": "SnowFlakeProd to MDSQA",
+	"properties": {
+		"description": "Copy data from SnowFlake Prod Temp table to MDSQA",
+		"activities": [
+			{
+				"name": "ADLS_Copy_Data_MDSQA",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "SnowFlake_To_ADLS",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SqlServerSink",
+						"writeBehavior": "insert",
+						"sqlWriterUseTableLock": false,
+						"tableOption": "autoCreate"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "sql_server_sink_soh_delim",
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@pipeline().parameters.Container",
+								"type": "Expression"
+							},
+							"path": {
+								"value": "@pipeline().parameters.Path",
+								"type": "Expression"
+							},
+							"file": {
+								"value": "@{pipeline().parameters.TargetTableName}.csv",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SqlServerSink_QA",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "dbo",
+							"table": {
+								"value": "@pipeline().parameters.SourceTableName",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "SnowFlake_To_ADLS",
+				"type": "Switch",
+				"dependsOn": [
+					{
+						"activity": "Query",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"on": {
+						"value": "@pipeline().parameters.CopyType",
+						"type": "Expression"
+					},
+					"cases": [
+						{
+							"value": "DNA_LOAD",
+							"activities": [
+								{
+									"name": "Copy Load data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeV2Source",
+											"query": {
+												"value": "@variables('Query')",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "DNA_LOAD_Dataset",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "csv_blob_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.Container",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@pipeline().parameters.Path",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@{pipeline().parameters.SourceTableName}.csv",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						},
+						{
+							"value": "DNA_CORE",
+							"activities": [
+								{
+									"name": "Copy Core data",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "0.12:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "SnowflakeV2Source",
+											"query": {
+												"value": "@variables('Query')",
+												"type": "Expression"
+											},
+											"exportSettings": {
+												"type": "SnowflakeExportCopyCommand",
+												"additionalCopyOptions": {
+													"MAX_FILE_SIZE": "524288000"
+												}
+											}
+										},
+										"sink": {
+											"type": "DelimitedTextSink",
+											"storeSettings": {
+												"type": "AzureBlobStorageWriteSettings"
+											},
+											"formatSettings": {
+												"type": "DelimitedTextWriteSettings",
+												"quoteAllText": true,
+												"fileExtension": ".txt"
+											}
+										},
+										"enableStaging": false
+									},
+									"inputs": [
+										{
+											"referenceName": "DNA_CORE_Dataset",
+											"type": "DatasetReference"
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "csv_blob_sink",
+											"type": "DatasetReference",
+											"parameters": {
+												"container": {
+													"value": "@pipeline().parameters.Container",
+													"type": "Expression"
+												},
+												"directory": {
+													"value": "@pipeline().parameters.Path",
+													"type": "Expression"
+												},
+												"file": {
+													"value": "@{pipeline().parameters.SourceTableName}.csv",
+													"type": "Expression"
+												}
+											}
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "Query",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "Query",
+					"value": {
+						"value": "@if(empty(pipeline().parameters.Query), Concat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.SourceTableName),pipeline().parameters.Query)",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"Container": {
+				"type": "string",
+				"defaultValue": "asp"
+			},
+			"Path": {
+				"type": "string",
+				"defaultValue": "qa/sql_server/MDS_Reverse_Sync/MDS_Adhoc/"
+			},
+			"SourceSchema": {
+				"type": "string"
+			},
+			"SourceTableName": {
+				"type": "string"
+			},
+			"CopyType": {
+				"type": "string",
+				"defaultValue": "DNA_LOAD"
+			},
+			"TargetTableName": {
+				"type": "string"
+			},
+			"Query": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"Query": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/MDSQA SnowFlakeProd Sync"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,351 @@
+{
+	"name": "MDSQA to SnowFlakeProd",
+	"properties": {
+		"description": "Copy data from MDSQA to SnowFlakeProd Temp Table",
+		"activities": [
+			{
+				"name": "MDSQASyncConfig",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlServerSource",
+						"sqlReaderQuery": "SELECT SourceSchema, SourceTableName, TargetSchema, TargetTableName, SyncType_Code, LoadType_Code, Query FROM MDS.MDM.Regional_ADF_QASyncConfig\nWhere Is_Active_Code = 'True'  and ValidationStatus != 'Validation Failed'",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "SqlServerSink_QA",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "mdm",
+							"table": "Regional_ADF_QASyncConfig"
+						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "For each MDS QA TableName",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "MDSQASyncConfig",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('MDSQASyncConfig').output.value",
+						"type": "Expression"
+					},
+					"isSequential": false,
+					"batchCount": 20,
+					"activities": [
+						{
+							"name": "DecideLoad",
+							"type": "Switch",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"on": {
+									"value": "@item().SyncType_Code",
+									"type": "Expression"
+								},
+								"cases": [
+									{
+										"value": "ForwardSync",
+										"activities": [
+											{
+												"name": "ForwardSync_MDSQA_Copy_Data_ADLS",
+												"type": "Copy",
+												"dependsOn": [
+													{
+														"activity": "ForwardSync Query",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SqlServerSource",
+														"sqlReaderQuery": {
+															"value": "@variables('ForwardSyncQuery')",
+															"type": "Expression"
+														},
+														"queryTimeout": "02:00:00",
+														"partitionOption": "None"
+													},
+													"sink": {
+														"type": "DelimitedTextSink",
+														"storeSettings": {
+															"type": "AzureBlobFSWriteSettings"
+														},
+														"formatSettings": {
+															"type": "DelimitedTextWriteSettings",
+															"quoteAllText": true,
+															"fileExtension": ".txt"
+														}
+													},
+													"enableStaging": false,
+													"translator": {
+														"type": "TabularTranslator",
+														"typeConversion": true,
+														"typeConversionSettings": {
+															"allowDataTruncation": true,
+															"treatBooleanAsNumber": false
+														}
+													}
+												},
+												"inputs": [
+													{
+														"referenceName": "SqlServerSink_QA",
+														"type": "DatasetReference",
+														"parameters": {
+															"schema": {
+																"value": "@item().SourceSchema",
+																"type": "Expression"
+															},
+															"table": {
+																"value": "@item().SourceTableName",
+																"type": "Expression"
+															}
+														}
+													}
+												],
+												"outputs": [
+													{
+														"referenceName": "sql_server_sink",
+														"type": "DatasetReference",
+														"parameters": {
+															"container": {
+																"value": "@pipeline().parameters.Container",
+																"type": "Expression"
+															},
+															"path": {
+																"value": "@pipeline().parameters.Path",
+																"type": "Expression"
+															},
+															"file": {
+																"value": "@concat(item().SourceTableName,'_ADFTemp.csv')",
+																"type": "Expression"
+															}
+														}
+													}
+												]
+											},
+											{
+												"name": "ForwardSync_Truncate Target Table",
+												"type": "Script",
+												"dependsOn": [
+													{
+														"activity": "ForwardSync_MDSQA_Copy_Data_ADLS",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"linkedServiceName": {
+													"referenceName": "adfadbplt001lssnfkpltdnaload002",
+													"type": "LinkedServiceReference"
+												},
+												"typeProperties": {
+													"scripts": [
+														{
+															"type": "Query",
+															"text": {
+																"value": "@concat('TRUNCATE TABLE ', item().TargetSchema, '.', variables('FowardSyncTargetTable'))",
+																"type": "Expression"
+															}
+														}
+													],
+													"scriptBlockExecutionTimeout": "02:00:00"
+												}
+											},
+											{
+												"name": "ForwardSync Execute Procedure to load data",
+												"description": "Execute Procedure to load data into Snowflake table",
+												"type": "Lookup",
+												"dependsOn": [
+													{
+														"activity": "ForwardSync_Truncate Target Table",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"timeout": "0.12:00:00",
+													"retry": 0,
+													"retryIntervalInSeconds": 30,
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"source": {
+														"type": "SnowflakeV2Source",
+														"query": {
+															"value": "@concat('CALL ASPSDL_RAW.ADLSTOTABLEDATALOAD(''', item().TargetSchema,''',''',variables('FowardSyncTargetTable'),''',''',pipeline().parameters.Path, ''',''', item().SourceTableName,'_ADFTemp'');')",
+															"type": "Expression"
+														},
+														"exportSettings": {
+															"type": "SnowflakeExportCopyCommand"
+														}
+													},
+													"dataset": {
+														"referenceName": "mtd_process",
+														"type": "DatasetReference"
+													},
+													"firstRowOnly": false
+												}
+											},
+											{
+												"name": "ForwardSync Query",
+												"type": "SetVariable",
+												"dependsOn": [
+													{
+														"activity": "ForwardSync TargetTableName",
+														"dependencyConditions": [
+															"Succeeded"
+														]
+													}
+												],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "ForwardSyncQuery",
+													"value": {
+														"value": "@if(empty(item().Query), concat('SELECT * FROM ',item().SourceSchema,'.',item().SourceTableName),item().Query)",
+														"type": "Expression"
+													}
+												}
+											},
+											{
+												"name": "ForwardSync TargetTableName",
+												"description": "Set  ForwardSync TargetTableName",
+												"type": "SetVariable",
+												"dependsOn": [],
+												"policy": {
+													"secureOutput": false,
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"variableName": "FowardSyncTargetTable",
+													"value": {
+														"value": "@if(contains(toLower(item().TargetTableName),'adftemp'),\n    if(contains(toLower(item().TargetTableName),'sdl_mds_'), item().TargetTableName, concat('SDL_MDS_',item().TargetTableName)\n      ),\n      if(contains(toLower(item().TargetTableName),'sdl_mds_'),\n      concat(item().TargetTableName,'_ADFTemp'),\n      concat('SDL_MDS_',item().TargetTableName,'_ADFTemp')      \n        )\n    )\n",
+														"type": "Expression"
+													}
+												}
+											}
+										]
+									},
+									{
+										"value": "ReverseSync",
+										"activities": [
+											{
+												"name": "Execute Reverse Sync Pipeline",
+												"type": "ExecutePipeline",
+												"dependsOn": [],
+												"policy": {
+													"secureInput": false
+												},
+												"userProperties": [],
+												"typeProperties": {
+													"pipeline": {
+														"referenceName": "SnowFlakeProd to MDSQA",
+														"type": "PipelineReference"
+													},
+													"waitOnCompletion": true,
+													"parameters": {
+														"Container": "asp",
+														"Path": {
+															"value": "qa/sql_server/MDS_Reverse_Sync/MDS_Adhoc/",
+															"type": "Expression"
+														},
+														"SourceSchema": {
+															"value": "@item().SourceSchema",
+															"type": "Expression"
+														},
+														"SourceTableName": {
+															"value": "@item().SourceTableName",
+															"type": "Expression"
+														},
+														"CopyType": {
+															"value": "@item().LoadType_Code",
+															"type": "Expression"
+														},
+														"TargetTableName": {
+															"value": "@item().TargetTableName",
+															"type": "Expression"
+														},
+														"Query": {
+															"value": "@item().Query",
+															"type": "Expression"
+														}
+													}
+												}
+											}
+										]
+									}
+								]
+							}
+						}
+					]
+				}
+			}
+		],
+		"parameters": {
+			"Path": {
+				"type": "string"
+			},
+			"Container": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"FowardSyncTargetTable": {
+				"type": "String"
+			},
+			"ForwardSyncQuery": {
+				"type": "String"
+			}
+		},
+		"folder": {
+			"name": "Miscellaneous Pipelines/MDSQA SnowFlakeProd Sync"
+		},
+		"annotations": []
+	}
+}
