@@ -259,7 +259,7 @@
 									{
 										"type": "Query",
 										"text": {
-											"value": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
+											"value": "select @{replace(variables('appendedList'),',,','')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where \"コンタクト履歴番号\" ='@{variables('chno')}'",
 											"type": "Expression"
 										}
 									}
@@ -290,7 +290,7 @@
 								"source": {
 									"type": "SnowflakeV2Source",
 									"query": {
-										"value": "select \"コンタクト履歴番号\" as chno @{variables('appendedList')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where chno='@{variables('chno')}'",
+										"value": "select @{replace(variables('appendedList'),',,','')} from @{activity('read parameters').output.value[0].schemaName}.@{activity('read parameters').output.value[0].tableName} where \"コンタクト履歴番号\" ='@{variables('chno')}'",
 										"type": "Expression"
 									},
 									"exportSettings": {
@@ -1913,7 +1913,8 @@
 				"type": "String"
 			},
 			"appendedList": {
-				"type": "String"
+				"type": "String",
+				"defaultValue": ","
 			},
 			"temp": {
 				"type": "String"
