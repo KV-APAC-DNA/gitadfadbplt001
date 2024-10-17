@@ -1,0 +1,1 @@
+delete from prod_dna_load.sgpsdl_raw.sdl_sg_scan_data_marketplace;
