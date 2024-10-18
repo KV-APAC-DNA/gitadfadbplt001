@@ -6,10 +6,10 @@ with wks_vn_base_retail_excellence as (
     select * from PROD_DNA_CORE.DBT_CLOUD_PR_5458_1220.VNMWKS_INTEGRATION__WKS_VN_BASE_RETAIL_EXCELLENCE
 ),
 edw_vw_cal_retail_excellence_dim as (
-    select * from PROD_DNA_COREaspedw_integration.v_edw_vw_cal_Retail_excellence_dim
+    select * from PROD_DNA_CORE.aspedw_integration.v_edw_vw_cal_Retail_excellence_dim
 ),
 edw_vw_os_time_dim as (
-    select * from PROD_DNA_COREsgpedw_integration.edw_vw_os_time_dim
+    select * from PROD_DNA_CORE.sgpedw_integration.edw_vw_os_time_dim
 )
     SELECT ALL_MONTHS.CNTRY_CD,
        ALL_MONTHS.SELLOUT_DIM_KEY,
