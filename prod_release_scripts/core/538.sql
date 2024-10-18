@@ -15,7 +15,7 @@ itg_vn_dms_customer_dim as (
 select * from PROD_DNA_CORE.vnmitg_integration.itg_vn_dms_customer_dim
 ),
 sdl_mds_vn_store_retail_environment_mapping as (
-select * from PROD_DNA_CORE.vnmsdl_raw.sdl_mds_vn_store_retail_environment_mapping_adftemp
+select * from DEV_DNA_LOAD.VNMSDL_RAW.SDL_MDS_VN_STORE_RETAIL_ENVIRONMENT_MAPPING_ADFTEMP
 ),
 edw_vw_os_time_dim as (
 select * from PROD_DNA_CORE.sgpedw_integration.edw_vw_os_time_dim
