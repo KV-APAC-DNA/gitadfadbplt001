@@ -215,9 +215,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive iqviaaus file",
+											"activity": "Set error iqviaaus archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -470,9 +470,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive perensoaus file",
+											"activity": "Set error perensoaus archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -725,9 +725,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive exacttargettha file",
+											"activity": "Set error exacttargettha archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -980,9 +980,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive marketingclouadopstha file",
+											"activity": "Set error marketingcloudopstha archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -1235,9 +1235,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive popcompany file",
+											"activity": "Set error popcompany archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -1364,7 +1364,7 @@
 									]
 								},
 								{
-									"name": "Set error Copy marketingcloudopsjpndcl",
+									"name": "Set error marketingcloudopsjpndcl copy",
 									"type": "SetVariable",
 									"dependsOn": [
 										{
@@ -1490,9 +1490,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive marketingcloudopsjpndcl file",
+											"activity": "Set error marketingcloudopsjpndcl archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -1745,9 +1745,9 @@
 									"type": "Fail",
 									"dependsOn": [
 										{
-											"activity": "Archive popcompanytrans file",
+											"activity": "Set error popcompanytrans archive",
 											"dependencyConditions": [
-												"Failed"
+												"Succeeded"
 											]
 										}
 									],
@@ -2541,6 +2541,9 @@
 		},
 		"variables": {
 			"errorResponse1": {
+				"type": "String"
+			},
+			"error": {
 				"type": "String"
 			}
 		},
