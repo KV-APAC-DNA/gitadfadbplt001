@@ -346,8 +346,6 @@
 								{
 									"name": "Archive perensoaus file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy perensoaus file",
@@ -446,8 +444,6 @@
 								{
 									"name": "Set error perensoaus archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -472,8 +468,6 @@
 								{
 									"name": "Archival fail 2",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -494,8 +488,6 @@
 								{
 									"name": "sftp_perensoaus_delete",
 									"type": "Delete",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive perensoaus file",
@@ -609,8 +601,6 @@
 								{
 									"name": "Archive exacttargettha file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy exacttargettha file",
@@ -709,8 +699,6 @@
 								{
 									"name": "Set error exacttargettha archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -735,8 +723,6 @@
 								{
 									"name": "Archival fail 5",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -757,8 +743,6 @@
 								{
 									"name": "sftp_exacttargettha_delete",
 									"type": "Delete",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -1127,8 +1111,6 @@
 								{
 									"name": "Archive popcompany file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy popcompany file",
@@ -1227,8 +1209,6 @@
 								{
 									"name": "Set error popcompany archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompany file",
@@ -1253,8 +1233,6 @@
 								{
 									"name": "Archival fail 7",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompany file",
@@ -1275,8 +1253,6 @@
 								{
 									"name": "sftp_popcompany1_delete",
 									"type": "Delete",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompany file",
