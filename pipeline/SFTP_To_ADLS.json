@@ -1390,8 +1390,6 @@
 								{
 									"name": "Archive marketingcloudopsjpndcl file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy marketingcloudopsjpndcl",
@@ -1448,7 +1446,7 @@
 									],
 									"outputs": [
 										{
-											"referenceName": "BinarySFTPpopcompany",
+											"referenceName": "BinarySFTPmarketingcloudopsjpndcl",
 											"type": "DatasetReference",
 											"parameters": {
 												"directory": {
@@ -1466,8 +1464,6 @@
 								{
 									"name": "Set error marketingcloudopsjpndcl archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
@@ -1492,8 +1488,6 @@
 								{
 									"name": "Archival fail 8",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
@@ -1514,8 +1508,6 @@
 								{
 									"name": "sftp_marketingcloudopsjpndcl_delete",
 									"type": "Delete",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
@@ -1629,8 +1621,6 @@
 								{
 									"name": "Archive popcompanytrans file",
 									"type": "Copy",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy popcompanytrans",
@@ -1729,8 +1719,6 @@
 								{
 									"name": "Set error popcompanytrans archive",
 									"type": "SetVariable",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
@@ -1755,8 +1743,6 @@
 								{
 									"name": "Archival fail 9",
 									"type": "Fail",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
@@ -1777,8 +1763,6 @@
 								{
 									"name": "sftp_popcompany_delete",
 									"type": "Delete",
-									"state": "Inactive",
-									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive popcompanytrans file",
