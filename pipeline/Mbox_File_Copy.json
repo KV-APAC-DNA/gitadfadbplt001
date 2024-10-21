@@ -256,7 +256,7 @@
 											},
 											"formatSettings": {
 												"type": "DelimitedTextWriteSettings",
-												"maxRowsPerFile": 2000,
+												"maxRowsPerFile": 20000,
 												"fileNamePrefix": "",
 												"quoteAllText": true,
 												"fileExtension": {
@@ -1186,7 +1186,7 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive/@{variables('dateCCYYMMDD')}",
+											"value": "@{variables('parentFolder')}/@{activity('read parameters').output.value[0].source_folder_path}/archive/@{formatDateTime(convertTimeZone(UTCnow(),'UTC','Tokyo Standard Time'), 'yyyyMMdd')}",
 											"type": "Expression"
 										},
 										"fileName": {
