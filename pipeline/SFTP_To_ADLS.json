@@ -91,6 +91,8 @@
 								{
 									"name": "Archive iqviaaus file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy iqviaaus file",
@@ -189,6 +191,8 @@
 								{
 									"name": "Set error iqviaaus archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -213,6 +217,8 @@
 								{
 									"name": "Archival fail 1",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Set error iqviaaus archive",
@@ -233,6 +239,8 @@
 								{
 									"name": "sftp_iqviaaus_delete",
 									"type": "Delete",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive iqviaaus file",
@@ -601,6 +609,8 @@
 								{
 									"name": "Archive exacttargettha file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy exacttargettha file",
@@ -699,6 +709,8 @@
 								{
 									"name": "Set error exacttargettha archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
@@ -723,6 +735,8 @@
 								{
 									"name": "Archival fail 5",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Set error exacttargettha archive",
@@ -743,6 +757,8 @@
 								{
 									"name": "sftp_exacttargettha_delete",
 									"type": "Delete",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive exacttargettha file",
