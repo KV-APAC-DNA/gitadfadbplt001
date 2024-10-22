@@ -1,0 +1,3 @@
+DELETE FROM PROD_DNA_CORE.NTAITG_INTEGRATION.ITG_KR_GT_SELLOUT
+where dstr_cd = 'OTC'
+and ims_txn_dt between '2024-08-01' and '2024-08-31';
