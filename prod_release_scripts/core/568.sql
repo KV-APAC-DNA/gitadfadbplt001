@@ -2,7 +2,7 @@ Delete from PROD_DNA_CORE.ASPITG_INTEGRATION.ITG_RE_MSL_INPUT_DEFINITION;
 
 Insert into PROD_DNA_CORE.ASPITG_INTEGRATION.ITG_RE_MSL_INPUT_DEFINITION (
 with source as (
-    select * from PROD_DNA_LOAD.ASPSDL_RAW.SDL_MDS_MDS_REDS_MARKET_MSL 
+    select * from PROD_DNA_LOAD.ASPSDL_RAW.SDL_MDS_MDS_REDS_MARKET_MSL where market = 'Vietnam'
 )
     SELECT TO_CHAR ((start_ddmmyyyy :: DATE),'DD/MM/YYYY') AS start_date,
        TO_CHAR ((end_ddmmyyyy :: DATE),'DD/MM/YYYY') AS end_date,
