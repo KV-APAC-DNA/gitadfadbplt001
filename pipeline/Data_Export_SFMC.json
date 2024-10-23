@@ -278,7 +278,8 @@
 										},
 										"additionalFormatOptions": {
 											"NULL_IF": "()",
-											"EMPTY_FIELD_AS_NULL": "FALSE"
+											"EMPTY_FIELD_AS_NULL": "FALSE",
+											"ESCAPE_UNENCLOSED_FIELD": "NONE"
 										}
 									}
 								},
