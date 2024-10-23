@@ -1,0 +1,2 @@
+update META_RAW.PARAMETERS SET PARAMETER_VALUE='select PO_NUMBER as "PO#", VENDOR_CODE as "VendorCode", VENDOR_NAME as "VendorName", FROM_STORE as "FromStore", TO_STORE as "ToStore", STORE_NAME as "StoreName", SKU as "SKU", SKU_DESC as "Description", QTY as "QTY", RCR_NUMBER as "RCRNumber", SUBSTRING(FILE_NAME,0,9) as "File_Name", ''N'' as "LoaedToMDSCust", ''N'' as "LoadedToMDSProd"
+from PHLSDL_RAW.SDL_PH_MDS_POS_PUREGOLD' WHERE PARAMETER_ID='27792';
