@@ -1164,7 +1164,7 @@
 									"parameters": {
 										"container": "@{activity('read parameters').output.value[0].container}",
 										"directory": {
-											"value": "@{variables('parentFolder')}/DCL/jjrnki/SFCCUnload",
+											"value": "@{variables('parentFolder')}/DCL/jjrnki/SFCC_Unload",
 											"type": "Expression"
 										},
 										"fileName": {
@@ -1428,7 +1428,7 @@
 											"type": "Expression"
 										},
 										"directory": {
-											"value": "@{variables('parentFolder')}/DCL/jjrnki/SFCCUnload",
+											"value": "@{variables('parentFolder')}/DCL/jjrnki/SFCC_Unload",
 											"type": "Expression"
 										},
 										"fileName": "@{concat('process_end', '_',formatDateTime(convertFromUtc(utcnow(),'Singapore Standard Time'),'yyyyMMdd'), '.csv')}"
