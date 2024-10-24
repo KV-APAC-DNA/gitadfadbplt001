@@ -4,4 +4,4 @@
 # https://help.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners#codeowners-syntax
 # Prefer GitHub teams over individuals to make it easier to find a suitable owner when someone is OOO or leaves the team.
 
-* @KV-APAC-DNA/KV-APAC-DNA-ADF-TEAM
+* @KV-APAC-DNA/KV-APAC-DNA-ADF-LEADS
