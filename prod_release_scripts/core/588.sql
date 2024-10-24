@@ -71,7 +71,7 @@ delete from PROD_DNA_CORE.DBT_CLOUD_PR_5458_1220.ntawks_integration__wks_tw_re_a
 
 insert into PROD_DNA_CORE.DBT_CLOUD_PR_5458_1220.ntawks_integration__wks_tw_re_act_l3m (
 with wks_tw_re_allmonths as (
-    select * from from PROD_DNA_CORE.DBT_CLOUD_PR_5458_1220.ntawks_integration__wks_tw_re_allmonths
+    select * from PROD_DNA_CORE.DBT_CLOUD_PR_5458_1220.ntawks_integration__wks_tw_re_allmonths
 ) 
 
 SELECT SO.CNTRY_CD,
