@@ -1406,6 +1406,8 @@
 								{
 									"name": "Archive marketingcloudopsjpndcl file",
 									"type": "Copy",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Copy marketingcloudopsjpndcl",
@@ -1480,6 +1482,8 @@
 								{
 									"name": "Set error marketingcloudopsjpndcl archive",
 									"type": "SetVariable",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
@@ -1504,6 +1508,8 @@
 								{
 									"name": "Archival fail 8",
 									"type": "Fail",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Set error marketingcloudopsjpndcl archive",
@@ -1524,6 +1530,8 @@
 								{
 									"name": "sftp_marketingcloudopsjpndcl_delete",
 									"type": "Delete",
+									"state": "Inactive",
+									"onInactiveMarkAs": "Succeeded",
 									"dependsOn": [
 										{
 											"activity": "Archive marketingcloudopsjpndcl file",
