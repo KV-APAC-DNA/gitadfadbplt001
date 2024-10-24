@@ -2080,24 +2080,19 @@
 		],
 		"parameters": {
 			"category": {
-				"type": "string",
-				"defaultValue": "test_contactHist"
+				"type": "string"
 			},
 			"usecase_id": {
-				"type": "int",
-				"defaultValue": 378
+				"type": "int"
 			},
 			"phase_id": {
-				"type": "int",
-				"defaultValue": 3
+				"type": "int"
 			},
 			"sequence_id": {
-				"type": "int",
-				"defaultValue": 1
+				"type": "int"
 			},
 			"process_id": {
-				"type": "int",
-				"defaultValue": 1978
+				"type": "int"
 			}
 		},
 		"variables": {
