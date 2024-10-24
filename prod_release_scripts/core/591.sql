@@ -169,10 +169,9 @@ FROM (SELECT TARGET.jj_year::numeric(18,0) as jj_year,
 			   ON LTRIM(COALESCE(ACTUAL.SKU_CODE,TARGET.SKU_CODE),'0') = LTRIM(PRODUCT.sap_matl_num,'0')
               AND product.rank = 1
 	) Q
-  JOIN (SELECT DISTINCT "cluster",
-               CTRY_GROUP
+  JOIN (SELECT DISTINCT "cluster"
         FROM EDW_COMPANY_DIM
-        WHERE CTRY_GROUP in ('Taiwan')) COM ON UPPER (TRIM (Q.market)) = UPPER (TRIM (com.CTRY_GROUP))
+        WHERE CTRY_GROUP in ('Taiwan')) COM 
 WHERE jj_mnth_id::NUMERIC<= (SELECT MAX(mnth_id)::NUMERIC FROM WKS_TW_RE_ACTUALS)
 ),
 
@@ -338,10 +337,9 @@ FROM (SELECT LEFT(ACTUAL.MNTH_ID,4)::numeric(18,0) AS YEAR,
         LEFT JOIN product_heirarchy PRODUCT
                ON LTRIM (actual.sku_code,'0') = LTRIM (PRODUCT.SAP_MATL_NUM,'0')
               AND product.rank = 1) Q
-			  JOIN (SELECT DISTINCT "cluster",
-               CTRY_GROUP
+			  JOIN (SELECT DISTINCT "cluster"
         FROM EDW_COMPANY_DIM
-        WHERE CTRY_GROUP in ('Taiwan')) COM ON UPPER (TRIM (Q.market)) = UPPER (TRIM (com.CTRY_GROUP))
+        WHERE CTRY_GROUP in ('Taiwan')) COM 
 
 )
 
