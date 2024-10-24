@@ -1311,7 +1311,7 @@
 									"parameters": {
 										"directory": "@{activity('read parameters').output.value[0].sftp_folder_path}",
 										"filename": {
-											"value": "KDP_File_@{variables('date_for_zip')}.zip",
+											"value": "@{variables('date_for_zip')}.zip",
 											"type": "Expression"
 										}
 									}
@@ -1417,7 +1417,7 @@
 									"parameters": {
 										"directory": "@{activity('read parameters').output.value[0].sftp_folder_path}",
 										"filename": {
-											"value": "KDP_File_@{variables('date_for_zip')}.end",
+											"value": "@{variables('date_for_zip')}.end",
 											"type": "Expression"
 										}
 									}
