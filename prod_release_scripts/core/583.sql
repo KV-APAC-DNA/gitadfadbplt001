@@ -1,0 +1,2 @@
+create table pcfedw_integration.edw_demand_forecast_snapshot_temp_20241024
+clone pcfedw_integration.edw_demand_forecast_snapshot_temp;
