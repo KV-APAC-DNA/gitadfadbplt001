@@ -1,0 +1,3 @@
+alter table prod_dna_core.idnitg_integration.itg_distributor_dim
+drop column CUSTOMER_SEGMENTATION_LEVEL_1 ,
+ column CUSTOMER_SEGMENTATION_LEVEL_2 ;
