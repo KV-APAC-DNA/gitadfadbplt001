@@ -29,9 +29,16 @@
 						"writeBehavior": "insert",
 						"sqlWriterUseTableLock": false
 					},
-					"enableStaging": false,
+					"enableStaging": true,
+					"stagingSettings": {
+						"linkedServiceName": {
+							"referenceName": "adfadbplt001lsdlsadbplt001",
+							"type": "LinkedServiceReference"
+						},
+						"path": "asp/qa/sql_server/MDS/MDS_Adhoc/",
+						"enableCompression": false
+					},
 					"parallelCopies": 3,
-					"validateDataConsistency": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
