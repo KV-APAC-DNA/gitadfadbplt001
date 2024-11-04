@@ -31,7 +31,7 @@
 					},
 					"enableStaging": false,
 					"parallelCopies": 5,
-					"validateDataConsistency": true,
+					"validateDataConsistency": false,
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
