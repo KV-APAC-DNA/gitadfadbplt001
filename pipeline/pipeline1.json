@@ -100,7 +100,8 @@
 				"defaultValue": "rs_edw_copa_trans_fact"
 			},
 			"Query": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "select * from dbo.rs_edw_copa_trans_fact where caln_yr_mo = 202312"
 			}
 		},
 		"folder": {
