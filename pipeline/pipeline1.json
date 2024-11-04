@@ -17,6 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "SqlServerSource",
+						"sqlReaderQuery": {
+							"value": "@if(empty(pipeline().parameters.Query),\nconcat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.ScourceTableName),pipeline().parameters.Query)",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -71,15 +75,22 @@
 		],
 		"parameters": {
 			"SourceSchema": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "dbo"
 			},
 			"ScourceTableName": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "rs_edw_copa_trans_fact"
 			},
 			"TargetSchema": {
-				"type": "string"
+				"type": "string",
+				"defaultValue": "dbo"
 			},
 			"TargetTableName": {
+				"type": "string",
+				"defaultValue": "rs_edw_copa_trans_fact"
+			},
+			"Query": {
 				"type": "string"
 			}
 		},
