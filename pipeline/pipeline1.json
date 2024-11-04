@@ -38,7 +38,6 @@
 						"path": "asp/qa/sql_server/MDS/MDS_Adhoc/",
 						"enableCompression": false
 					},
-					"parallelCopies": 3,
 					"translator": {
 						"type": "TabularTranslator",
 						"typeConversion": true,
