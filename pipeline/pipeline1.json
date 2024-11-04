@@ -18,7 +18,7 @@
 					"source": {
 						"type": "SqlServerSource",
 						"sqlReaderQuery": {
-							"value": "@pipeline().parameters.Query",
+							"value": "@if(empty(pipeline().parameters.Query),\nconcat('SELECT * FROM ',pipeline().parameters.SourceSchema,'.',pipeline().parameters.ScourceTableName),pipeline().parameters.Query)",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -92,8 +92,7 @@
 				"defaultValue": "rs_edw_copa_trans_fact"
 			},
 			"Query": {
-				"type": "string",
-				"defaultValue": "select * from dbo.rs_edw_copa_trans_fact where caln_yr_mo = 202312"
+				"type": "string"
 			}
 		},
 		"folder": {
