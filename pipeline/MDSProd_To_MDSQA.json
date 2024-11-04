@@ -1,5 +1,5 @@
 {
-	"name": "pipeline1",
+	"name": "MDSProd_To_MDSQA",
 	"properties": {
 		"activities": [
 			{
