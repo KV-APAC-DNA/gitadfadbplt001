@@ -88,8 +88,6 @@
 			{
 				"name": "audit fail on for loop",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "for each usecase",
@@ -142,8 +140,6 @@
 				"name": "read usecases",
 				"description": "Get distinct use case sequence id's",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "audit start",
@@ -182,8 +178,6 @@
 				"name": "for each usecase",
 				"description": "Runs for each usecase, executes the phase_master pipeline with usecase_id as parameter",
 				"type": "ForEach",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read usecases",
@@ -267,8 +261,6 @@
 			{
 				"name": "audit fail on lookup",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read usecases",
@@ -320,8 +312,6 @@
 			{
 				"name": "eror log 2",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read usecases",
@@ -468,8 +458,6 @@
 			{
 				"name": "check phasemaster status",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "for each usecase",
@@ -652,8 +640,6 @@
 			{
 				"name": "audit start",
 				"type": "ExecutePipeline",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "repeat_until_no_dependents",
@@ -705,8 +691,6 @@
 			{
 				"name": "repeat_until_no_dependents",
 				"type": "Until",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check running status",
@@ -1156,8 +1140,6 @@
 			{
 				"name": "read_successor_jobs",
 				"type": "Lookup",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "check phasemaster status",
@@ -1195,8 +1177,6 @@
 			{
 				"name": "if_successors_exit",
 				"type": "IfCondition",
-				"state": "Inactive",
-				"onInactiveMarkAs": "Succeeded",
 				"dependsOn": [
 					{
 						"activity": "read_successor_jobs",
