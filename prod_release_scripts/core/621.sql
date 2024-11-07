@@ -15,7 +15,7 @@ edi_cstm_m as (
 	select * from PROD_DNA_CORE.jpnedw_integration.edi_cstm_m
 ),
 wks_japan_regional_sellout_base as(
-	select * from PROD_DNA_CORE.DBT_CLOUD_PR_5458_1525.JPNWKS_INTEGRATION.WKS_JAPAN_REGIONAL_SELLOUT_BASE
+	select * from PROD_DNA_CORE.DBT_CLOUD_PR_5458_1525.JPNWKS_INTEGRATION__WKS_JAPAN_REGIONAL_SELLOUT_BASE
 ),
 edw_material_dim as (
 	select * from PROD_DNA_CORE.aspedw_integration.edw_material_dim
