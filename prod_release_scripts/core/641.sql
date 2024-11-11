@@ -1,0 +1,28 @@
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_landmark_sm add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_landmark_ds add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_waltermart add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_svi_smc add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_svi_smc add column STORE_LOCATION VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_robinsons_ds add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_robinsons_sm  add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_super_8  add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_shm add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_shm add column STORE_LOCATION VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_puregold add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_puregold add column DISER_NAME  VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_puregold add column MSL_RESELLER VARCHAR(10);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_puregold add column MSL_PRICECLUB  VARCHAR(10);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__sdl_raw_ph_non_ise_rustans  add column SUB_CHANNEL VARCHAR(200);
+
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_msl_osa add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_msl_osa add column STORE_LOCATION VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_msl_osa add column DISER_NAME VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_msl_osa add column MSL_RESELLER VARCHAR(10);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_msl_osa add column MSL_PRICECLUB VARCHAR(10);
+
+
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_exceptions add column SUB_CHANNEL VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_exceptions add column STORE_LOCATION VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_exceptions add column DISER_NAME VARCHAR(200);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_exceptions add column MSL_RESELLER VARCHAR(10);
+alter table dbt_cloud_pr_5458_1551.phlitg_integration__itg_ph_non_ise_exceptions add column MSL_PRICECLUB VARCHAR(10);
