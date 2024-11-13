@@ -70,17 +70,9 @@ Distributor_vod__c,
 JJ_Core_Country__c,
 JJ_LegacyID__c
 FROM
-    Sample_Transaction_vod__c where CALENDAR_YEAR(CreatedDate ) = 2024 and CALENDAR_QUARTER(CreatedDate)>=3'
+    Sample_Transaction_vod__c'
 where parameter_group_id=2225 AND PARAMETER_NAME='ms_query';
 
-update prod_DNA_LOAD.META_RAW.PROCESS
-set is_incremental='TRUE'
-where parameter_group_id=2225;
-
 update prod_dna_load.meta_raw.parameters
-set is_active='TRUE'
-where parameter_group_id=2225 and PARAMETER_NAME='next_incremental_value';
-
-update prod_dna_load.meta_raw.parameters
-set is_active='TRUE'
+set PARAMETER_VALUE='WHERE LastModifiedDate>={WATERMARK_VALUE}'
 where parameter_group_id=2225 and PARAMETER_NAME='incremental_filter';
