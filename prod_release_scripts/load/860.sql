@@ -70,5 +70,5 @@ Distributor_vod__c,
 JJ_Core_Country__c,
 JJ_LegacyID__c
 FROM
-    Sample_Transaction_vod__c where CALENDAR_YEAR(CreatedDate ) = 2024 and RecordType.Name=''Disbursement_vod'''
+    Sample_Transaction_vod__c where CALENDAR_YEAR(CreatedDate ) = 2024 and CALENDAR_QUARTER(CreatedDate)=1'
 where parameter_group_id=2225 AND PARAMETER_NAME='ms_query';
