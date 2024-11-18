@@ -1,0 +1,8 @@
+UPDATE META_RAW.PARAMETERS SET PARAMETER_VALUE='select MNTH_ID as "Effective_Sales_Cycle", STORE_CD as "StoreCode", STORE_NM as "StoreName", ITEM_CD as "Item_Code", ITEM_NM as "LongName", replace(FILE_NAME,''xlsx'',''xls'') as "FileName", ITEM_CATEGORY as "Category", ''N'' as "LoadedToMDSCust", ''N'' as "LoadedToMDSProduct"
+from PHLSDL_RAW.SDL_PH_MDS_POS_711' WHERE PARAMETER_ID='27776';
+UPDATE META_RAW.PARAMETERS SET PARAMETER_VALUE='select PO_NUMBER as "PO#", VENDOR_CODE as "VendorCode", VENDOR_NAME as "VendorName", FROM_STORE as "FromStore", TO_STORE as "ToStore", STORE_NAME as "StoreName", SKU as "SKU", SKU_DESC as "Description", QTY as "QTY", RCR_NUMBER as "RCRNumber", concat(SUBSTRING(FILE_NAME,0,9),''.xlsx'') as "File_Name", ''N'' as "LoaedToMDSCust", ''N'' as "LoadedToMDSProd"
+from PHLSDL_RAW.SDL_PH_MDS_POS_PUREGOLD' WHERE PARAMETER_ID='27792';
+UPDATE META_RAW.PARAMETERS SET PARAMETER_VALUE='select ARTICLENUMBER as "ArticleNumber", ARTICLEDESCRIPTION as "ArticleDescription", UPC as "UPC", UOM as "UOM", ''1077AA132'' as "ParentCustomerCode", concat(TO_CHAR(TO_DATE(SUBSTR(FILE_NAME, 7, 6),''YYYYMM''),''Mon YYYY''),'' PO GR.xlsx'') as "File_Name", ''N'' as "LoadedToMDSCust", ''N'' as "LoadedtoMDSProcuct"
+from PHLSDL_RAW.SDL_PH_MDS_POS_SM_GR' WHERE PARAMETER_ID='27808';
+UPDATE META_RAW.PARAMETERS SET PARAMETER_VALUE='select BUYCOST as "BuyCost", SITECODE as "SiteCode", SITENAME as "SiteName", SITEADDRESS as "SiteAddress", concat(TO_CHAR(TO_DATE(SUBSTR(FILE_NAME, 7, 6),''YYYYMM''),''Mon YYYY''),'' PO GR.xlsx'') as "File_Name", ''N'' as "LoadedToMDSCust" 
+from PHLSDL_RAW.SDL_PH_MDS_POS_SM_PO' WHERE PARAMETER_ID='27818';
