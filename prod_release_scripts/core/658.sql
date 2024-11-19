@@ -1,0 +1,8 @@
+create table IDNITG_INTEGRATION.itg_id_ps_brand_blocking_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_brand_blocking;
+create table IDNITG_INTEGRATION.itg_id_ps_pricing_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_pricing;
+create table IDNITG_INTEGRATION.itg_id_ps_product_availability_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_product_availability;
+create table IDNITG_INTEGRATION.itg_id_ps_promotion_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_promotion;
+create table IDNITG_INTEGRATION.itg_id_ps_promotion_competitor_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_promotion_competitor;
+create table IDNITG_INTEGRATION.itg_id_ps_visibility_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_visibility;
+create table IDNITG_INTEGRATION.itg_id_ps_planogram_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_planogram;
+create table IDNITG_INTEGRATION.itg_id_ps_secondary_display_bkp_20241119 as select * from IDNITG_INTEGRATION.itg_id_ps_secondary_display;
