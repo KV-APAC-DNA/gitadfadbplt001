@@ -16,7 +16,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"dataset": {
-						"referenceName": "file_cpy_src",
+						"referenceName": "file_cpy",
 						"type": "DatasetReference"
 					},
 					"fieldList": [
