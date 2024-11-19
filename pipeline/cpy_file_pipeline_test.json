@@ -68,8 +68,6 @@
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
-										"wildcardFolderPath": "dev/DCL/test_src",
-										"wildcardFileName": "*2024*",
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
@@ -116,7 +114,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"filename": {
-											"value": "@item().name",
+											"value": "@startswith(item().name,'src_file_')",
 											"type": "Expression"
 										}
 									}
