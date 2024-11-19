@@ -67,6 +67,8 @@
 									"storeSettings": {
 										"type": "AzureBlobFSReadSettings",
 										"recursive": true,
+										"wildcardFolderPath": "dev/DCL/test_src",
+										"wildcardFileName": "src_file_*",
 										"enablePartitionDiscovery": false
 									},
 									"formatSettings": {
