@@ -1,11 +1,11 @@
-delete from PROD_DNA_CORE.ASPEDW_INTEGRATION.EDW_RPT_REGIONAL_SELLOUT_OFFTAKE WHERE country_code='PH' AND 
-mnth_id>= (case when (select param_value from PROD_DNA_CORE.ASPITG_INTEGRATION.ITG_MDS_AP_CUSTOMER360_CONFIG where code='base_load_ph')='ALL' THEN '190001' ELSE to_char(add_months(to_date(convert_timezone('UTC',current_timestamp())), -((select param_value from PROD_DNA_CORE.ASPITG_INTEGRATION.ITG_MDS_AP_CUSTOMER360_CONFIG where code='base_load_ph')::integer)), 'YYYYMM') END);
+delete from PROD_DNA_CORE.ASPEDW_INTEGRATION.EDW_RPT_REGIONAL_SELLOUT_OFFTAKE WHERE country_name='China Selfcare' AND 
+mnth_id>= (case when (select param_value from PROD_DNA_CORE.ASPITG_INTEGRATION.ITG_MDS_AP_CUSTOMER360_CONFIG where code='base_load_cn_otc')='ALL' THEN '190001' ELSE to_char(add_months(to_date(convert_timezone('UTC',current_timestamp())), -((select param_value from PROD_DNA_CORE.ASPITG_INTEGRATION.ITG_MDS_AP_CUSTOMER360_CONFIG where code='base_load_cn_otc')::integer)), 'YYYYMM') END);
 
 insert into PROD_DNA_CORE.ASPEDW_INTEGRATION.EDW_RPT_REGIONAL_SELLOUT_OFFTAKE (
 
-with wks_rpt_regional_ph_sellout_offtake_npd as 
+with wks_rpt_regional_cn_sc_sellout_offtake_npd as
 (
-	 select * from PROD_DNA_CORE.PHLWKS_INTEGRATION.WKS_RPT_REGIONAL_PH_SELLOUT_OFFTAKE_NPD
+    select * from PROD_DNA_CORE.chnwks_integration.wks_rpt_regional_cn_sc_sellout_offtake_npd
 ),
 sdl_raw_sap_bw_price_list as
 (
@@ -23,7 +23,7 @@ edw_list_price as
     select * from PROD_DNA_CORE.aspedw_integration.edw_list_price
 )
 
-SELECT * FROM (SELECT main.year,
+    SELECT * FROM (SELECT main.year,
         main.qrtr_no,
         main.mnth_id,
         main.mnth_no,
@@ -80,9 +80,9 @@ SELECT * FROM (SELECT main.year,
         main.sellout_sales_quantity,
         main.sellout_sales_value,
         main.sellout_sales_value_usd,
-        CASE WHEN main.data_source IN ('POS','STOCK TRANSFER') THEN main.list_price::numeric(38,6) ELSE NVL(lp1.amount::numeric(38,6),lp2.amount::numeric(38,6)) END AS list_price,
-        CASE WHEN main.data_source IN ('POS','STOCK TRANSFER') THEN main.sellout_value_list_price::numeric(38,6) ELSE (NVL(lp1.amount::numeric(38,6),lp2.amount::numeric(38,6)))*main.sellout_sales_quantity END AS sellout_value_list_price,
-        CASE WHEN main.data_source IN ('POS','STOCK TRANSFER') THEN main.sellout_value_list_price::numeric(38,6)*main.exchange_rate ELSE ((NVL(lp1.amount::numeric(38,6),lp2.amount::numeric(38,6)))*main.sellout_sales_quantity)*main.exchange_rate END AS sellout_value_list_price_usd ,
+        NVL(lp1.amount::numeric(38,6),lp2.amount::numeric(38,6)) AS list_price,
+        (NVL(lp1.amount::numeric(38,6),lp2.amount::numeric(38,6)))*main.sellout_sales_quantity AS sellout_value_list_price,
+        ((NVL(lp1.amount::numeric(38,6),lp2.amount::numeric(38,6)))*main.sellout_sales_quantity)*main.exchange_rate AS sellout_value_list_price_usd,
         main.selling_price,
         FIRST_SCAN_FLAG_PARENT_CUSTOMER_LEVEL,
         FIRST_SCAN_FLAG_MARKET_LEVEL,
@@ -93,13 +93,13 @@ SELECT * FROM (SELECT main.year,
         main.msl_product_desc,
         'NA' AS store_grade,
         main.retail_env,
-        main.channel,
+        'NA' AS channel,
         main.crtd_dttm::timestamp_ntz(9) as crtd_dttm,
         main.updt_dttm::timestamp_ntz(9) as updt_dttm,
         0 AS numeric_distribution,
         0 AS weighted_distribution,
         0 AS store_count_where_scanned 
-        FROM wks_rpt_regional_ph_sellout_offtake_npd main
+        FROM wks_rpt_regional_cn_sc_sellout_offtake_npd main
         left join (Select * from (select distinct a.material,a.dt_from,a.valid_to,a.amount,a.sls_org,b.ctry_key,row_number() OVER(PARTITION BY 
         ltrim(a.material, 0) ORDER BY to_date(a.valid_to, 'YYYYMMDD') DESC, to_date(a.dt_from, 'YYYYMMDD') DESC) AS rn FROM 
         (select material,dt_from,valid_to,max(amount) as amount,sls_org,cdl_dttm,currency from sdl_raw_sap_bw_price_list
@@ -109,7 +109,7 @@ SELECT * FROM (SELECT main.year,
         to_date(valid_to, 'YYYYMMDD'))   
         left join (Select * from (SELECT distinct ltrim(material, 0) AS material, amount, row_number() OVER(PARTITION BY 
         ltrim(material, 0) ORDER BY to_date(valid_to, 'YYYYMMDD') DESC, to_date(dt_from, 'YYYYMMDD') DESC) AS rn FROM edw_list_price 
-        WHERE sls_org in (select distinct sls_org from edw_sales_org_dim where ctry_key = 'PH')) where rn = 1) lp2 on ltrim(main.sku_code, '0') = ltrim(lp2.material, '0')
+        WHERE sls_org in (select distinct sls_org from edw_sales_org_dim where ctry_key = 'CN')) where rn = 1) lp2 on ltrim(main.sku_code, '0') = ltrim(lp2.material, '0')
         )	   
-        where year > (select max(year) from wks_rpt_regional_ph_sellout_offtake_npd)::integer - (select param_value from itg_mds_ap_customer360_config where code='retention_years')::integer
+        where year > (select max(year) from wks_rpt_regional_cn_sc_sellout_offtake_npd)::integer - (select param_value from itg_mds_ap_customer360_config where code='retention_years')::integer
 );
