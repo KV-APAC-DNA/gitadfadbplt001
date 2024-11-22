@@ -14,10 +14,18 @@
 			],
 			"sinks": [
 				{
-					"name": "sink1"
+					"dataset": {
+						"referenceName": "Asia_Data_Sales_sample",
+						"type": "DatasetReference"
+					},
+					"name": "AsiaDataCsv"
 				},
 				{
-					"name": "sink2"
+					"dataset": {
+						"referenceName": "Europe_Data_Sales_sample",
+						"type": "DatasetReference"
+					},
+					"name": "EuropeDataCsv"
 				}
 			],
 			"transformations": [
@@ -25,7 +33,7 @@
 					"name": "AsiaData"
 				},
 				{
-					"name": "filter2"
+					"name": "EuropeData"
 				},
 				{
 					"name": "TotalProfitAsia"
@@ -57,18 +65,28 @@
 				"     partitionBy('hash', 1)) ~> Salesdata",
 				"Salesdata filter(Region == 'Asia',",
 				"     partitionBy('hash', 1)) ~> AsiaData",
-				"Salesdata filter(Region == 'Europe') ~> filter2",
+				"Salesdata filter(Region == 'Europe') ~> EuropeData",
 				"AsiaData derive({Total Profit Calculated} = {Total Revenue}-{Total Cost},",
 				"     partitionBy('hash', 1)) ~> TotalProfitAsia",
-				"filter2 derive() ~> TotalProfitEurope",
+				"EuropeData derive({Total Profit Calculated} = {Total Revenue}-{Total Cost}) ~> TotalProfitEurope",
 				"TotalProfitAsia sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['Asia_Sales.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> AsiaDataCsv",
 				"TotalProfitEurope sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
+				"     partitionFileNames:['Europe_Sales.csv'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
-				"     skipDuplicateMapOutputs: true) ~> sink2"
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> EuropeDataCsv"
 			]
 		}
 	}

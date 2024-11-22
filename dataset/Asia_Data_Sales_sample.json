@@ -1,0 +1,23 @@
+{
+	"name": "Asia_Data_Sales_sample",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"folderPath": "dev/DCL/test_aggr",
+				"fileSystem": "jpn"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
