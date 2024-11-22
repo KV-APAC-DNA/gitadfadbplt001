@@ -1,0 +1,31 @@
+COPY INTO PROD_DNA_LOAD.INDSDL_RAW.LKP_HARMONIZATION_UNIVERAL_EXCEPTION
+FROM '@PROD_DNA_LOAD.INDSDL_RAW.PROD_LOAD_STAGE_ADLS/prd/lidar/flat_files/lkp_harmonization_univeral_exception.csv'
+FILE_FORMAT = (
+  TYPE = 'CSV',
+  FIELD_DELIMITER = ',',
+  RECORD_DELIMITER = '\n',
+  SKIP_HEADER = 1,
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+);
+
+COPY INTO PROD_DNA_LOAD.INDSDL_RAW.lkp_harmonization_patterns
+FROM '@PROD_DNA_LOAD.INDSDL_RAW.PROD_LOAD_STAGE_ADLS/prd/lidar/flat_files/lkp_harmonization_patterns.csv
+'
+FILE_FORMAT = ( 
+  TYPE = 'CSV',
+  FIELD_DELIMITER = ',',
+  RECORD_DELIMITER = '\n',
+  SKIP_HEADER = 1,
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+);
+
+
+COPY INTO PROD_DNA_LOAD.INDSDL_RAW.t_harmonization_rule_mstr
+FROM '@PROD_DNA_LOAD.INDSDL_RAW.PROD_LOAD_STAGE_ADLS/prd/lidar/flat_files/t_harmonization_rule_mstr.csv'
+FILE_FORMAT = (
+  TYPE = 'CSV',
+  FIELD_DELIMITER = ',',
+  RECORD_DELIMITER = '\n',
+  SKIP_HEADER = 1,
+  FIELD_OPTIONALLY_ENCLOSED_BY = '"'
+);
