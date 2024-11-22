@@ -102,13 +102,170 @@
 												"mappings": [
 													{
 														"source": {
+															"name": "Region",
 															"type": "String",
-															"ordinal": 1
+															"physicalType": "String"
 														},
 														"sink": {
+															"name": "Region",
 															"type": "String",
-															"physicalType": "String",
-															"ordinal": 1
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Country",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Country",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Item Type",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Item Type",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Sales Channel",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Sales Channel",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Order Priority",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Order Priority",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Order Date",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Order Date",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Order ID",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Order ID",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Ship Date",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Ship Date",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Units Sold",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Units Sold",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Unit Price",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Unit Price",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Unit Cost",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Unit Cost",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Total Revenue",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Total Revenue",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Total Cost",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Total Cost",
+															"type": "String",
+															"physicalType": "String"
+														}
+													},
+													{
+														"source": {
+															"name": "Total Profit",
+															"type": "String",
+															"physicalType": "String"
+														},
+														"sink": {
+															"name": "Total Profit",
+															"type": "String",
+															"physicalType": "String"
 														}
 													}
 												],
