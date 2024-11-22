@@ -8,7 +8,7 @@
 			"url": "https://dlsadbplt001.dfs.core.windows.net/"
 		},
 		"connectVia": {
-			"referenceName": "adfiradbplt002",
+			"referenceName": "AutoResolveIntegrationRuntime",
 			"type": "IntegrationRuntimeReference"
 		}
 	},
