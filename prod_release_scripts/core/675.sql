@@ -1,0 +1,3 @@
+create dbt_cloud_pr_5458_1569.aspedw_access__edw_rpt_copa_customergp_agg 
+as 
+select * from dbt_cloud_pr_5458_1569.aspedw_integration__edw_rpt_copa_customergp_agg;
