@@ -40,6 +40,12 @@
 				},
 				{
 					"name": "TotalProfitEurope"
+				},
+				{
+					"name": "AggregateEuropedata"
+				},
+				{
+					"name": "AggregateAsia"
 				}
 			],
 			"scriptLines": [
@@ -69,7 +75,13 @@
 				"AsiaData derive({Total Profit Calculated} = {Total Revenue}-{Total Cost},",
 				"     partitionBy('hash', 1)) ~> TotalProfitAsia",
 				"EuropeData derive({Total Profit Calculated} = {Total Revenue}-{Total Cost}) ~> TotalProfitEurope",
-				"TotalProfitAsia sink(allowSchemaDrift: true,",
+				"TotalProfitEurope aggregate(groupBy(Region),",
+				"     {Total Profit} = sum({Total Profit}),",
+				"          {Total Profit Calculated} = sum({Total Profit Calculated})) ~> AggregateEuropedata",
+				"TotalProfitAsia aggregate(groupBy(Region),",
+				"     {Total Profit} = sum({Total Profit}),",
+				"          {Total Profit Calculated} = sum({Total Profit Calculated})) ~> AggregateAsia",
+				"AggregateAsia sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['Asia_Sales.csv'],",
 				"     umask: 0022,",
@@ -78,7 +90,7 @@
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
 				"     partitionBy('hash', 1)) ~> AsiaDataCsv",
-				"TotalProfitEurope sink(allowSchemaDrift: true,",
+				"AggregateEuropedata sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     partitionFileNames:['Europe_Sales.csv'],",
 				"     umask: 0022,",
