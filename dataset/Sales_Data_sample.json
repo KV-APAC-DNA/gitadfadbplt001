@@ -1,0 +1,81 @@
+{
+	"name": "Sales_Data_sample",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "adfadbplt001lsdlsadbplt001",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "100 Sales Records.csv",
+				"folderPath": "dev/DCL/test_dest",
+				"fileSystem": "jpn"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Region",
+				"type": "String"
+			},
+			{
+				"name": "Country",
+				"type": "String"
+			},
+			{
+				"name": "Item Type",
+				"type": "String"
+			},
+			{
+				"name": "Sales Channel",
+				"type": "String"
+			},
+			{
+				"name": "Order Priority",
+				"type": "String"
+			},
+			{
+				"name": "Order Date",
+				"type": "String"
+			},
+			{
+				"name": "Order ID",
+				"type": "String"
+			},
+			{
+				"name": "Ship Date",
+				"type": "String"
+			},
+			{
+				"name": "Units Sold",
+				"type": "String"
+			},
+			{
+				"name": "Unit Price",
+				"type": "String"
+			},
+			{
+				"name": "Unit Cost",
+				"type": "String"
+			},
+			{
+				"name": "Total Revenue",
+				"type": "String"
+			},
+			{
+				"name": "Total Cost",
+				"type": "String"
+			},
+			{
+				"name": "Total Profit",
+				"type": "String"
+			}
+		]
+	}
+}
