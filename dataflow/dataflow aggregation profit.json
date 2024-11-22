@@ -1,0 +1,75 @@
+{
+	"name": "dataflow aggregation profit",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Sales_Data_sample",
+						"type": "DatasetReference"
+					},
+					"name": "Salesdata"
+				}
+			],
+			"sinks": [
+				{
+					"name": "sink1"
+				},
+				{
+					"name": "sink2"
+				}
+			],
+			"transformations": [
+				{
+					"name": "AsiaData"
+				},
+				{
+					"name": "filter2"
+				},
+				{
+					"name": "TotalProfitAsia"
+				},
+				{
+					"name": "TotalProfitEurope"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Region as string,",
+				"          Country as string,",
+				"          {Item Type} as string,",
+				"          {Sales Channel} as string,",
+				"          {Order Priority} as string,",
+				"          {Order Date} as string,",
+				"          {Order ID} as string,",
+				"          {Ship Date} as string,",
+				"          {Units Sold} as string,",
+				"          {Unit Price} as string,",
+				"          {Unit Cost} as string,",
+				"          {Total Revenue} as decimal(10,0),",
+				"          {Total Cost} as decimal(10,0),",
+				"          {Total Profit} as decimal(10,0)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     partitionBy('hash', 1)) ~> Salesdata",
+				"Salesdata filter(Region == 'Asia',",
+				"     partitionBy('hash', 1)) ~> AsiaData",
+				"Salesdata filter(Region == 'Europe') ~> filter2",
+				"AsiaData derive({Total Profit Calculated} = {Total Revenue}-{Total Cost},",
+				"     partitionBy('hash', 1)) ~> TotalProfitAsia",
+				"filter2 derive() ~> TotalProfitEurope",
+				"TotalProfitAsia sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1",
+				"TotalProfitEurope sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink2"
+			]
+		}
+	}
+}
