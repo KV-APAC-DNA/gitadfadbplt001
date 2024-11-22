@@ -24,50 +24,64 @@
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
-			"firstRowAsHeader": false,
+			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
 		"schema": [
 			{
+				"name": "Region",
 				"type": "String"
 			},
 			{
+				"name": "Country",
 				"type": "String"
 			},
 			{
+				"name": "Item Type",
 				"type": "String"
 			},
 			{
+				"name": "Sales Channel",
 				"type": "String"
 			},
 			{
+				"name": "Order Priority",
 				"type": "String"
 			},
 			{
+				"name": "Order Date",
 				"type": "String"
 			},
 			{
+				"name": "Order ID",
 				"type": "String"
 			},
 			{
+				"name": "Ship Date",
 				"type": "String"
 			},
 			{
+				"name": "Units Sold",
 				"type": "String"
 			},
 			{
+				"name": "Unit Price",
 				"type": "String"
 			},
 			{
+				"name": "Unit Cost",
 				"type": "String"
 			},
 			{
+				"name": "Total Revenue",
 				"type": "String"
 			},
 			{
+				"name": "Total Cost",
 				"type": "String"
 			},
 			{
+				"name": "Total Profit",
 				"type": "String"
 			}
 		]
