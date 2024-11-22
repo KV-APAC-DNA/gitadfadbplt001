@@ -57,7 +57,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@startswith(item().name,'sales')",
+									"value": "@contains(item().name,'Sales')",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
