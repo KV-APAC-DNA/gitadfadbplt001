@@ -57,7 +57,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"expression": {
-									"value": "@startswith(item().name,'src_file_')",
+									"value": "@startswith(item().name,'sales')",
 									"type": "Expression"
 								},
 								"ifTrueActivities": [
