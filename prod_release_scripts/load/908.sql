@@ -1,0 +1,1 @@
+Update META_RAW.Parameters set PARAMETER_VALUE='SELECT * FROM MDS.mdm.[ID_Ref_Salesman] where effective_from<>''------'' or effective_to<>''------'' and ValidationStatus <>''Validation failed''' where parameter_id='10893';
