@@ -17,7 +17,7 @@ jobs:
     - name: Setup Node.js environment
       uses: actions/setup-node@v3.4.1
       with:
-        node-version: 18.x
+        node-version: 20.x
 
     - name: install ADF Utilities package
       run: npm install
@@ -59,7 +59,7 @@ jobs:
       shell: pwsh
       run: |
           Set-PSRepository PSGallery -InstallationPolicy Trusted
-          Install-Module Az
+          Install-Module Az -Force
           Import-Module Az
           
     - name: Login via Az module
@@ -70,7 +70,7 @@ jobs:
         subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
         enable-AzPSSession: true 
       
-    - name: Run Pre-deployment script adfadbdev001-live
+    - name: Run Pre-deployment script dev001-build
       shell: pwsh
       run: |
        $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
@@ -84,14 +84,14 @@ jobs:
       #shell: pwsh
       #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "adfadbdev001" -predeployment $true -deleteDeployment $false
 
-    - name: Run ARM deploy adfadbdev001-live
+    - name: Run ARM deploy dev001-live
       uses: azure/arm-deploy@v1
       with:
         resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
         template: ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json
         parameters: ${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=adfadbdev001
         
-    - name: Run Post-deployment script adfadbdev001-live
+    - name: Run Post-deployment script dev001-build
       shell: pwsh
       run: |
        $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
@@ -102,9 +102,46 @@ jobs:
             Write-Error "Script not found at: $scriptPath"
             exit 1
         }
+###### Deploy to QA
+    - name: Run Pre-deployment script qas001-test
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "${{ vars.ADF_QA_FACTORYNAME }}" -predeployment:$True -deleteDeployment:$False
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
+      #shell: pwsh
+      #run: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "${{ vars.ADF_QA_FACTORYNAME }}" -predeployment $true -deleteDeployment $false
+
+    - name: Run ARM deploy qas001-test
+      uses: azure/arm-deploy@v1
+      with:
+        resourceGroupName: ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}
+        template: ${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json
+        parameters: ${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json factoryName=${{ vars.ADF_QA_FACTORYNAME }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_password_secretName=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNACORE002PWD }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_password_secretName=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNALOAD002PWD }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_user=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNACORE002USER }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_user=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNALOAD002USER }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_role=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNACORE002ROLE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_role=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNALOAD002ROLE }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_database=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNACORE002DATABASE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_database=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNALOAD002DATABASE }} adfadbplt001lssnfkpltdnacore002_properties_typeProperties_warehouse=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNACORE002WAREHOUSE }} adfadbplt001lssnfkpltdnaload002_properties_typeProperties_warehouse=${{ vars.QA_ADFADBPLT001LSSNFKPLTDNALOAD00WAREHOUSE }} adfadbplt001lspltbitabap_properties_typeProperties_url=${{ vars.QA_ADFADBPLT001LSPLTBITABAP }}
         
-#    - name: Run Post-deployment script adfadbdev001-live
-#      uses: Azure/powershell@v2
-#      with:
-#        inlineScript: ${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1 -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -#armTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -DataFactoryName 'adfadbdev001' -predeployment $false -deleteDeployment $true
-#        azPSVersion: "latest"
+    - name: Run Post-deployment script qas001-test
+      shell: pwsh
+      run: |
+       $scriptPath = "${{github.workspace}}/build/adf-artifact/PrePostDeploymentScript.ps1"
+        if (Test-Path $scriptPath) {
+            Write-Output "Running script: $scriptPath"
+            pwsh -File $scriptPath -ArmTemplate "${{github.workspace}}/build/adf-artifact/ARMTemplateForFactory.json" -ArmTemplateParameters "${{github.workspace}}/build/adf-artifact/ARMTemplateParametersForFactory.json" -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "${{ vars.ADF_QA_FACTORYNAME }}" -predeployment:$False -deleteDeployment:$True
+        } else {
+            Write-Error "Script not found at: $scriptPath"
+            exit 1
+        }
+    - name: Stop Triggers in qas001-test
+      shell: pwsh
+      run: | 
+       $Triggers = Get-AzDataFactoryV2Trigger -ResourceGroupName "${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }}" -DataFactoryName "${{ vars.ADF_QA_FACTORYNAME }}"
+       if($triggers) {
+        foreach($trigger in $triggers) {
+          Stop-AzDataFactoryV2Trigger -ResourceGroupName ${{ secrets.AZURE_DATAFACTORY_RESOURCEGROUP }} -DataFactoryName ${{ vars.ADF_QA_FACTORYNAME }} -Name $trigger.Name -Force
+          Write-Host "Stopped trigger $($trigger.Name)."
+        }
+       }
