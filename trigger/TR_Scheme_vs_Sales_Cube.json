@@ -11,9 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "In_Scheme_vs_Sales_cube",
-					"force_rerun": false,
-					"ignore_deps": false
+					"category": "In_Scheme_vs_Sales_cube"
 				}
 			}
 		],
