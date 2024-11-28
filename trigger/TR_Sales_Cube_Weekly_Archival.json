@@ -11,9 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "In_Sales_Cube_Weekly_Archival",
-					"force_rerun": false,
-					"ignore_deps": false
+					"category": "In_Sales_Cube_Weekly_Archival"
 				}
 			}
 		],
