@@ -76,20 +76,17 @@
 		],
 		"parameters": {
 			"SourceSchema": {
-				"type": "string",
-				"defaultValue": "dbo"
+				"type": "string"
 			},
 			"ScourceTableName": {
-				"type": "string",
-				"defaultValue": "rs_edw_copa_trans_fact"
+				"type": "string"
 			},
 			"TargetSchema": {
 				"type": "string",
 				"defaultValue": "dbo"
 			},
 			"TargetTableName": {
-				"type": "string",
-				"defaultValue": "rs_edw_copa_trans_fact"
+				"type": "string"
 			},
 			"Query": {
 				"type": "string"
