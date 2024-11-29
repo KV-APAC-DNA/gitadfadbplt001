@@ -1,0 +1,2 @@
+UPDATE META_RAW.PARAMETERS SET PARAMETER_VALUE='select JJ_MNTH_ID as "Effective_Sales_Cycle", POS_PROD_CD as "SKU Code", POS_PROD_NM as "SKU Description", UPC as "UPC", SUPPLIER_PROD_CD as "Supplier Product Code", STORE_CD as "Store Code", STORE_NM as "Store Description", QTY as "Units Sold TY", AMT as "Net Sales TY", FILE_NM as "File_Name", ''N'' as "LoadedInMDSCust", ''N'' as "LoadedInMDSProduct"
+from PHLSDL_RAW.SDL_PH_MDS_POS_South_star' WHERE PARAMETER_ID='27826';
