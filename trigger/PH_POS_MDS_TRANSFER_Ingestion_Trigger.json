@@ -11,8 +11,7 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "PH_POS_MDS_TRANSFER_Ingestion",
-					"force_rerun": "FALSE"
+					"category": "PH_POS_MDS_TRANSFER_Ingestion"
 				}
 			}
 		],
