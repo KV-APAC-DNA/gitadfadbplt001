@@ -3,7 +3,7 @@
 	"properties": {
 		"description": "PH_POS_MDS_PriceList_Ingestion_Trigger",
 		"annotations": [],
-		"runtimeState": "Stopped",
+		"runtimeState": "Started",
 		"pipelines": [
 			{
 				"pipelineReference": {
