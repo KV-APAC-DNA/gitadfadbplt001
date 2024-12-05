@@ -1,0 +1,1 @@
+drop table dbt_cloud_pr_5458_1590.vnmitg_integration__itg_mds_vn_customer_segmentation;
