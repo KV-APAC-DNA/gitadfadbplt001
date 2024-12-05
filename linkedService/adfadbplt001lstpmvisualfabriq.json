@@ -1,7 +1,7 @@
 {
 	"name": "adfadbplt001lstpmvisualfabriq",
 	"properties": {
-		"description": "Linked Services to export data out to TPM platform",
+		"description": "Linked Services to export data out to TPM platform.",
 		"annotations": [],
 		"type": "Sftp",
 		"typeProperties": {
