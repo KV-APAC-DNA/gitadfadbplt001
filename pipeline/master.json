@@ -43,7 +43,7 @@
 							],
 							"type": "Query",
 							"text": {
-								"value": "SELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETA_RAW.PROCESS_AUDIT_LOG\nWHERE JOB_NAME = '@{pipeline().Pipeline}'\nAND CATEGORY = '@{pipeline().parameters.category}'\nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1\n;",
+								"value": "SELECT AUDIT_LOG_ID ,PROCESS_STATUS FROM \nMETA_RAW.PROCESS_AUDIT_LOG \nWHERE JOB_NAME = '@{pipeline().Pipeline}' \nAND CATEGORY = '@{pipeline().parameters.category}' \nAND DATEDIFF(s, to_timestamp(moment), CONVERT_TIMEZONE( 'Asia/Singapore' , CURRENT_TIMESTAMP())) < 43200 \nQUALIFY ROW_NUMBER() OVER(ORDER BY AUDIT_LOG_ID DESC) =1;",
 								"type": "Expression"
 							}
 						}

@@ -1,6 +1,7 @@
 {
-	"name": "Okinawa_CC_EXPORT_trigger",
+	"name": "TR_Sales_Cube_Weekly_Archival",
 	"properties": {
+		"description": "Sales cube weekly archival",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -10,26 +11,26 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "Okinawa_CC_EXPORT"
+					"category": "In_Sales_Cube_Weekly_Archival"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Month",
+				"frequency": "Week",
 				"interval": 1,
-				"startTime": "2024-10-15T16:04:00",
+				"startTime": "2024-11-29T06:00:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						7
+						15
 					],
-					"monthDays": [
-						10
+					"weekDays": [
+						"Friday"
 					]
 				}
 			}

@@ -1,6 +1,7 @@
 {
-	"name": "Okinawa_CC_EXPORT_trigger",
+	"name": "PH_POS_MDS_TRANSFER_Ingestion_Trigger",
 	"properties": {
+		"description": "PH_POS_MDS_TRANSFER_Ingestion_Trigger",
 		"annotations": [],
 		"runtimeState": "Started",
 		"pipelines": [
@@ -10,26 +11,23 @@
 					"type": "PipelineReference"
 				},
 				"parameters": {
-					"category": "Okinawa_CC_EXPORT"
+					"category": "PH_POS_MDS_TRANSFER_Ingestion"
 				}
 			}
 		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Month",
+				"frequency": "Day",
 				"interval": 1,
-				"startTime": "2024-10-15T16:04:00",
+				"startTime": "2024-12-02T12:14:00",
 				"timeZone": "Singapore Standard Time",
 				"schedule": {
 					"minutes": [
 						0
 					],
 					"hours": [
-						7
-					],
-					"monthDays": [
-						10
+						20
 					]
 				}
 			}
