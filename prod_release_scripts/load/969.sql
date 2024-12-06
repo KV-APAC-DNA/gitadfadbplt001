@@ -1,0 +1,1 @@
+update META_RAW.PARAMETERS set PARAMETER_VALUE ='DCL/jjrnki/transaction/Mykokya' where parameter_id='14637' and parameter_group_id='1262' and parameter_group_name = 'mykokya_param_group';
