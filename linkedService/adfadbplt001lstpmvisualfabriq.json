@@ -1,0 +1,20 @@
+{
+	"name": "adfadbplt001lstpmvisualfabriq",
+	"properties": {
+		"description": "Linked Services to export data out to TPM platform.",
+		"annotations": [],
+		"type": "Sftp",
+		"typeProperties": {
+			"host": "inbound.sftp.ap.visualfabriq.com",
+			"port": 22,
+			"skipHostKeyValidation": true,
+			"authenticationType": "SshPublicKey",
+			"userName": "kenvue_au_qa",
+			"privateKeyPath": "F:\\adfirkey\\adfadbplt001lstpmvisualfabriq.key"
+		},
+		"connectVia": {
+			"referenceName": "adfiradbplt002",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
