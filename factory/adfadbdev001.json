@@ -4,7 +4,7 @@
 		"globalParameters": {
 			"environment": {
 				"type": "string",
-				"value": "prod"
+				"value": "dev"
 			},
 			"dev_resource_group": {
 				"type": "string",
@@ -19,6 +19,14 @@
 				"value": "AZR-WEK-rg-adf-adb-001"
 			},
 			"prod_subscription_id": {
+				"type": "string",
+				"value": "00ab5361-0cd5-44b3-b4df-8f24e00fe1df"
+			},
+			"qa_resource_group": {
+				"type": "string",
+				"value": "AZR-WEK-rg-adf-adb-001"
+			},
+			"qa_subscription_id": {
 				"type": "string",
 				"value": "00ab5361-0cd5-44b3-b4df-8f24e00fe1df"
 			}
