@@ -1,0 +1,6 @@
+CREATE OR REPLACE TABLE prod_dna_core.pcfedw_integration.edw_sls_evolution_history_20241211 
+clone prod_dna_core.pcfedw_integration.edw_sls_evolution_history;
+
+
+CREATE OR REPLACE TABLE  prod_dna_core.pcfedw_integration.edw_invoice_fact_snapshot_20241211
+clone prod_dna_core.pcfedw_integration.edw_invoice_fact_snapshot;
