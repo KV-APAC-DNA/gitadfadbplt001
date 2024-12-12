@@ -1,0 +1,41 @@
+{
+	"name": "Tr_SKURecom_Monthly_Target",
+	"properties": {
+		"description": "To generate SKURecom Monthly Targets.",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "master",
+					"type": "PipelineReference"
+				},
+				"parameters": {
+					"category": "In_SKURecom_Monthly_Target",
+					"force_rerun": false,
+					"ignore_deps": false
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Month",
+				"interval": 1,
+				"startTime": "2024-12-13T05:01:00",
+				"timeZone": "Singapore Standard Time",
+				"schedule": {
+					"minutes": [
+						0
+					],
+					"hours": [
+						10
+					],
+					"monthDays": [
+						26
+					]
+				}
+			}
+		}
+	}
+}
