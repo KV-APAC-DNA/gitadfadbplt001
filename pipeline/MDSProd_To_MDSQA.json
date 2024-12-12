@@ -30,6 +30,7 @@
 						"sqlWriterUseTableLock": false
 					},
 					"enableStaging": false,
+					"parallelCopies": 2,
 					"validateDataConsistency": false,
 					"translator": {
 						"type": "TabularTranslator",
