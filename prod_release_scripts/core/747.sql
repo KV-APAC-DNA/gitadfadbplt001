@@ -1,0 +1,1 @@
+create table JPDCLITG_INTEGRATION.c_tbeckesai_20241212 as select * from JPDCLITG_INTEGRATION.c_tbeckesai;
