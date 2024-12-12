@@ -1,0 +1,2 @@
+INSERT  OVERWRITE INTO JPDCLITG_INTEGRATION.c_tbeckesai
+select distinct * from JPDCLITG_INTEGRATION.c_tbeckesai_20241212;
